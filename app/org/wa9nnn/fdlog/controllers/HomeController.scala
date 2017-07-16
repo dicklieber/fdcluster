@@ -1,4 +1,4 @@
-package controllers
+package org.wa9nnn.fdlog.controllers
 
 import javax.inject._
 import play.api.mvc._

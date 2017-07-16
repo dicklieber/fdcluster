@@ -31,10 +31,10 @@
     </p>
 
     <pre><code># Home page
-GET     /               controllers.HomeController.index</code></pre>
+        GET     /               HomeController.index</code></pre>
 
     <p>
-      Play has invoked the <code>controllers.HomeController.index</code> method to obtain the <code>Action</code> to execute:
+      Play has invoked the <code>HomeController.index</code> method to obtain the <code>Action</code> to execute:
     </p>
 
     <pre><code>def index = Action { implicit request: Request[AnyContent] =>
