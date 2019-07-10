@@ -39,7 +39,7 @@ class StoreMapImpl @Inject()(implicit nodeInfo: NodeInfo) extends Store with Str
       case None =>
         val contact = potentialContact.toContact(nodeInfo)
         add(contact)
-        None
+        Some(contact)
     }
   }
 

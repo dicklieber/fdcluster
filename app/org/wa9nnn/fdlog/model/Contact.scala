@@ -32,14 +32,21 @@ case class Contact(contest: Contest,
   override def compare(that: Contact): Int = this.workedStation compareToIgnoreCase that.workedStation
 
   override def equals(o: Any): Boolean = o match {
-    case c:Contact ⇒
+    case c: Contact ⇒
       this.uuid == uuid
     case _ ⇒
       false
   }
-  override def hashCode: Int = uuid.hashCode()
-}
 
+  override def hashCode: Int = uuid.hashCode()
+
+  def dup(contact: Contact): Boolean = {
+    band == contact.band &&
+      mode == contact.mode &&
+      workedStation == contact.workedStation
+  }
+
+}
 
 case class PotentialContact(operatorCallsign: OperatorCallsign,
                             workedStation: WorkedCallsign,
