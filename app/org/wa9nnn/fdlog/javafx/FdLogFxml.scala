@@ -26,9 +26,9 @@ object FdLogFxml extends JFXApp {
   loader.setLocation(resource)
   val root: jfxs.Parent = loader.load()
 
-  private val controller: FDLogEntryController = loader.getController[org.wa9nnn.fdlog.javafx.FDLogEntryController]
+  private val controller: FDLogEntryControllerJava = loader.getController[FDLogEntryControllerJava]
 
-
+  controller.init()
 //  val root: Parent = loader.load[jfxs.Parent]
 //  private val controller: FDLogEntryController = loader.getController[FDLogEntryController]
 
