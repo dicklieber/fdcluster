@@ -6,16 +6,16 @@ class CallsignSpec extends Specification {
 
   "CallsignSpec" should {
     "Full callsign" in {
-     Callsign.isCallsign("WA9NNN") must beTrue
+     ContestCallsign.valid("WA9NNN") must beTrue
     }
     "No Suffix" in {
-     Callsign.isCallsign("WA9") must beFalse
+     ContestCallsign.valid("WA9") must beFalse
     }
    "empty" in {
-     Callsign.isCallsign("") must beFalse
+     ContestCallsign.valid("") must beFalse
     }
    "no area" in {
-     Callsign.isCallsign("KD") must beFalse
+     ContestCallsign.valid("KD") must beFalse
     }
 
   }

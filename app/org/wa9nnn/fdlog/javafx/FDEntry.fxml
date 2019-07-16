@@ -1,21 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.999-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.wa9nnn.fdlog.javafx.FDLogEntryControllerJava">
+<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.999-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.wa9nnn.fdlog.javafx.FDLogEntryController">
    <center>
       <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <TextField fx:id="qsoCallsign" onKeyReleased="#onKeyReleased" prefHeight="27.0" prefWidth="82.0" promptText="Callsign" />
-            <TextField fx:id="qsoClass" prefHeight="27.0" prefWidth="50.0" promptText="Class" />
-            <TextField fx:id="qsoSection" prefHeight="27.0" prefWidth="61.0" promptText="Section" />
-            <Button mnemonicParsing="false" text="Save" />
+            <VBox prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <Label text="Callsign" />
+                  <TextField fx:id="qsoCallsign" prefHeight="27.0" prefWidth="82.0" />
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <Label text="Class" />
+                  <TextField fx:id="qsoClass" prefHeight="27.0" prefWidth="50.0" />
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <Label text="Section" />
+                  <TextField fx:id="qsoSection" prefHeight="27.0" prefWidth="61.0" />
+                  <TextArea fx:id="sectionPrompt" prefHeight="200.0" prefWidth="200.0" />
+               </children>
+            </VBox>
+            <Button mnemonicParsing="false" onAction="#save" text="Save" />
          </children>
       </HBox>
    </center>

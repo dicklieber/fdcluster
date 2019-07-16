@@ -1,12 +1,13 @@
 
 package org.wa9nnn.fdlog.javafx
 
-import java.io.IOException
 import java.net.URL
 
 import javafx.fxml.FXMLLoader
-import javafx.{fxml ⇒ jfxf}
-import javafx.{scene ⇒ jfxs}
+import javafx.{fxml ⇒ jfxf, scene ⇒ jfxs}
+import org.wa9nnn.fdlog.model
+import org.wa9nnn.fdlog.model.{NodeInfo, NodeInfoImpl, StationContext}
+import org.wa9nnn.fdlog.store.StoreMapImpl
 import scalafx.Includes._
 import scalafx.application.JFXApp
 import scalafx.application.JFXApp.PrimaryStage
@@ -14,31 +15,37 @@ import scalafx.scene.Scene
 
 object FdLogFxml extends JFXApp {
 
-    val resource: URL = getClass.getResource("/org/wa9nnn/fdlog/javafx/FDEntry.fxml")
-//    val root = FXMLLoader.load(resource)
+  val resource: URL = getClass.getResource("/org/wa9nnn/fdlog/javafx/FDEntry.fxml")
+  //    val root = FXMLLoader.load(resource)
 
-//  private val loader = new jfxf.FXMLLoader
-//  private val controller: FDLogEntryController = new FDLogEntryController
-//  loader.setController(controller)
-//  loader.setLocation(resource)
+  //  private val loader = new jfxf.FXMLLoader
+  //  private val controller: FDLogEntryController = new FDLogEntryController
+  //  loader.setController(controller)
+  //  loader.setLocation(resource)
 
   private val loader: FXMLLoader = new jfxf.FXMLLoader()
   loader.setLocation(resource)
   val root: jfxs.Parent = loader.load()
 
-  private val controller: FDLogEntryControllerJava = loader.getController[FDLogEntryControllerJava]
+  private val controller = loader.getController[FDLogEntryController]
 
-  controller.init()
-//  val root: Parent = loader.load[jfxs.Parent]
-//  private val controller: FDLogEntryController = loader.getController[FDLogEntryController]
+  private val contest = model.Contest("WFD", 2019)
+  implicit val nodeInfo: NodeInfo = new NodeInfoImpl(contest)
 
-//  println(root)
+  private val store = new StoreMapImpl(nodeInfo)
+  private val stationContext = StationContext(store = store)
+  controller.injectContext(stationContext)
+  //  controller.init()
+  //  val root: Parent = loader.load[jfxs.Parent]
+  //  private val controller: FDLogEntryController = loader.getController[FDLogEntryController]
+
+  //  println(root)
   private val scene1 = new Scene(root)
 
   stage = new PrimaryStage() {
-      title = "FXML GridPane Demo"
-      scene = scene1
-    }
-
-//  controller.idQsoCallsign.setText("WA9NNN")
+    title = "FXML GridPane Demo"
+    scene = scene1
   }
+
+  //  controller.idQsoCallsign.setText("WA9NNN")
+}

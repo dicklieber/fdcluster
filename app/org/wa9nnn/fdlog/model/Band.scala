@@ -18,8 +18,17 @@
 
 package org.wa9nnn.fdlog.model
 
+import play.api.libs.json.{Format, JsError, JsResult, JsString, JsSuccess, JsValue}
+
+case class Band(band:String){
+  if (Band.bands.contains(band)) {
+  }else{
+    throw new IllegalArgumentException
+  }
+}
+
 object Band {
-  val bands = Set(
+  val bands: Set[String] = Set(
     "160m",
     "80m",
     "40m",
@@ -31,4 +40,24 @@ object Band {
     "1.25m",
     "70cm"
   )
+
+
+
+    implicit val  bandFormat: Format[Band] = new Format[Band] {
+      override def reads(json: JsValue): JsResult[Band] = {
+        val ss = json.as[String]
+
+        try {
+          JsSuccess(Band(ss))
+        }
+        catch {
+          case e: IllegalArgumentException ⇒ JsError(e.getMessage)
+        }
+      }
+
+      override def writes(mode: Band): JsValue = {
+        JsString(mode.band)
+      }
+    }
+
 }

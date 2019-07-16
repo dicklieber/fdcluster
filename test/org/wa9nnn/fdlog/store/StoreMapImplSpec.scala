@@ -18,20 +18,22 @@
 package org.wa9nnn.fdlog.store
 
 import org.specs2.mutable.Specification
-import org.wa9nnn.fdlog.model.Contact.OperatorCallsign
 import org.wa9nnn.fdlog.model._
+import org.wa9nnn.fdlog.model.Contact._
 
 class StoreMapImplSpec extends Specification {
 
   implicit val nodeInfo: NodeInfoImpl = new NodeInfoImpl(contest = Contest("WFD", 2017))
-  private val storeMapImpl = new StoreMapImpl()
-  private val  op1:OperatorCallsign = "WA9NNN"
-  private val  worked1:OperatorCallsign = "K2ORS"
+  private val storeMapImpl = new StoreMapImpl(nodeInfo)
+  private val  worked1:CallSign = "K2ORS"
+  val station = Station(worked1, Band("20m"), Mode.digital)
   private val  exchange1:Exchange = Exchange("2I", "WPA")
+  implicit val stationContext = StationContext(storeMapImpl)
+
   "StoreMapImplSpec" >> {
     "happy path" >> {
-      val maybeAddedContact = storeMapImpl.add(PotentialContact(op1, worked1, exchange1, "2M", Mode.cw))
-      maybeAddedContact must beSome[Contact]
+      val maybeAddedContact = storeMapImpl.add(Qso(station, exchange1))
+      maybeAddedContact must beSome[QsoRecord]
 
       val contactIds = storeMapImpl.contactIds
       contactIds.contactIds must haveSize(1)

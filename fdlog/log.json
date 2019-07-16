@@ -1,0 +1,26 @@
+{
+  "contest": "WFD:2019",
+  "ourStation": {
+    "callsign": "WA9NNN",
+    "band": "20m",
+    "mode": "digital"
+  },
+  "qso": {
+    "station": {
+      "callsign": "KD9BYW",
+      "band": "20m",
+      "mode": "digital"
+    },
+    "exchange": "2I;IL",
+    "stamp": "2019-07-13T04:15:23.156Z"
+  },
+  "fdLogId": {
+    "nodeSn": 1,
+    "nodeAddress": "192.168.0.27",
+    "uuid": "3bc13abd-2d4b-4550-bd3b-b99e689dd92e"
+  }
+}
+
+
+{"contest":"WFD:2019","ourStation":{"callsign":"WA9NNN","band":"20m","mode":"digital"},"qso":{"station":{"callsign":"W9BBQ","band":"20m","mode":"digital"},"exchange":"1H;IL","stamp":"2019-07-13T04:14:56.961Z"},"fdLogId":{"nodeSn":0,"nodeAddress":"192.168.0.27","uuid":"299e0141-957c-4d1e-9a44-d3d89aabe780"}}
+{"contest":"WFD:2019","ourStation":{"callsign":"WA9NNN","band":"20m","mode":"digital"},"qso":{"station":{"callsign":"KD9BYW","band":"20m","mode":"digital"},"exchange":"2I;IL","stamp":"2019-07-13T04:15:23.156Z"},"fdLogId":{"nodeSn":1,"nodeAddress":"192.168.0.27","uuid":"3bc13abd-2d4b-4550-bd3b-b99e689dd92e"}}

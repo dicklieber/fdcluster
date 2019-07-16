@@ -50,10 +50,10 @@ object NodeIuids {
   *
   * @param stamp    as of.
   * @param node     where this came from.
-  * @param contacts on node.
+  * @param records on node.
   */
-case class Contacts(contacts: Seq[Contact], node: Node, stamp: Instant = Instant.now())
+case class NodeDatabase(records: Seq[QsoRecord], node: Node, stamp: Instant = Instant.now())
 
-object Contacts {
-  def apply(contacts: Seq[Contact])(implicit node: Node): Contacts = Contacts(contacts, node)
+object NodeDatabase {
+  def apply(contacts: Seq[QsoRecord])(implicit node: Node): NodeDatabase = NodeDatabase(contacts, node)
 }
