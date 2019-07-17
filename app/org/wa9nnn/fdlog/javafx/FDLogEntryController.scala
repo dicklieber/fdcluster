@@ -1,33 +1,24 @@
 
 package org.wa9nnn.fdlog.javafx
 
-import java.net.URL
-import java.util.ResourceBundle
-
-import javafx.beans.property.StringProperty
-import javafx.beans.value.ObservableValue
-import javafx.fxml.Initializable
 import javafx.scene.control.TextFormatter
 import javafx.scene.input.KeyEvent
-import javafx.scene.{Node, control ⇒ jfxsc, layout ⇒ jfxsl}
-import javafx.{fxml ⇒ jfxf}
-import javax.swing.event.{ChangeEvent, ChangeListener}
+import javafx.scene.{control ⇒ jfxsc}
 import org.wa9nnn.fdlog.model.{Exchange, Qso, StationContext}
-import scalafx.scene.control.TextField
-import scalafx.Includes._
-class FDLogEntryController extends Initializable {
+import scalafx.application.Platform
+class FDLogEntryController(scene: FDLogEntryScene) {
   val sections = new Sections
-  @jfxf.FXML
-  var qsoCallsign: jfxsc.TextField = _
-  @jfxf.FXML
-  var qsoClass: jfxsc.TextField = _
-  @jfxf.FXML
-  var qsoSection: jfxsc.TextField = _
-  @jfxf.FXML
-  var sectionPrompt: jfxsc.TextArea = _
-
-  //  @jfxf.FXML
-  var xyzzID: jfxsl.BorderPane = _
+//  @jfxf.FXML
+//  var qsoCallsign: jfxsc.TextField = _
+//  @jfxf.FXML
+//  var qsoClass: jfxsc.TextField = _
+//  @jfxf.FXML
+//  var qsoSection: jfxsc.TextField = _
+//  @jfxf.FXML
+//  var sectionPrompt: jfxsc.TextArea = _
+//
+//  //  @jfxf.FXML
+//  var xyzzID: jfxsl.BorderPane = _
 
   /**
     * todo: inject somehow
@@ -40,63 +31,74 @@ class FDLogEntryController extends Initializable {
 
   //  val self = this
 
-  override def initialize(location: URL, resources: ResourceBundle): Unit = {
+//  override def initialize(location: URL, resources: ResourceBundle): Unit = {
 
-    forceCaps(qsoCallsign)
-    forceCaps(qsoClass)
-    forceCaps(qsoSection)
+    forceCaps(scene.qsoCallsign)
+    forceCaps(scene.qsoClass)
+    forceCaps(scene.qsoSection)
 
 
-    qsoCallsign.addEventFilter(KeyEvent.KEY_TYPED,
+    scene.qsoCallsign.addEventFilter(KeyEvent.KEY_TYPED,
       (event: KeyEvent) => {
         val current = event.getSource.asInstanceOf[jfxsc.TextField].getText
         if (event.getCharacter.charAt(0).isDigit && ContestCallsign.valid(current)) {
-          nextField(event, qsoClass)
+          nextField(event, scene.qsoClass)
         }
       }
     )
-    qsoClass.addEventFilter(KeyEvent.KEY_TYPED,
+    scene.qsoClass.addEventFilter(KeyEvent.KEY_TYPED,
       (event: KeyEvent) => {
         val current = event.getSource.asInstanceOf[jfxsc.TextField].getText
         if (ContestClass.valid(current)) {
-          nextField(event, qsoSection)
+          nextField(event, scene.qsoSection)
         }
       }
     )
 
-    qsoSection.addEventFilter(KeyEvent.KEY_TYPED, (event: KeyEvent) ⇒ {
-      val current = event.getSource.asInstanceOf[jfxsc.TextField].getText
-      val choices = sections
-        .find(current)
-        .map(section ⇒ section.section + ": " + section.name)
-        .mkString("\n")
-      sectionPrompt.setText(choices)
+    scene.qsoSection.addEventFilter(KeyEvent.KEY_TYPED, (event: KeyEvent) ⇒ {
+println(event.toString)
+      Platform.runLater {
+        println("Its later")
+        val current = event.getSource.asInstanceOf[jfxsc.TextField].getText
+        val choices = sections
+          .find(current)
+          .map(section ⇒ section.section + ": " + section.name)
+          .mkString("\n")
+        scene.sectionPrompt.setText(choices)
+      }
+
     })
 
-    qsoSection.textProperty().addListener(new ChangeListener[Node] {
-      def changed(p1: ObservableValue[_ <: Node], p2: Node, p3: Node) {}
-    })
-  }
+//  private val property = scene.qsoSection.onAction = (a: ActionEvent) => {
+//      val str = a.toString()
+//      println(str)
+////      val str = text()
+////      val message = converter.fromString(str) + "\n"
+////      outputTextArea.text = message + outputTextArea.text()
+////      text() = ""
+//    }
+//  }
 
 
   def save(): Unit = {
-    println("save")
+
+  println("save")
     val potentialQso = readQso()
 
     stationContext.store.add(potentialQso) foreach { dup ⇒ println("Dup: " + dup) }
 
     //handle dup
-    qsoCallsign.clear()
-    qsoClass.clear()
-    qsoSection.clear()
-    qsoCallsign.requestFocus()
+    scene.qsoCallsign.clear()
+    scene.qsoClass.clear()
+    scene.qsoSection.clear()
+    scene.qsoCallsign.requestFocus()
 
   }
 
   def readQso(): Qso = {
     //    start with our station and just replace the callsign with the worked sttion
-    val station = stationContext.station.copy(callsign = qsoCallsign.getText)
-    val exchange = Exchange(qsoClass.getText, qsoSection.getText)
+    val station = stationContext.station.copy(callsign = scene.qsoCallsign.getText)
+    val exchange = Exchange(scene.qsoClass.getText, scene.qsoSection.getText)
     Qso(station, exchange)
   }
 

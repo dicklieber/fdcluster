@@ -13,7 +13,7 @@ import scalafx.application.JFXApp
 import scalafx.application.JFXApp.PrimaryStage
 import scalafx.scene.Scene
 
-object FdLogFxml extends JFXApp {
+object FdLog extends JFXApp {
 
   val resource: URL = getClass.getResource("/org/wa9nnn/fdlog/javafx/FDEntry.fxml")
   //    val root = FXMLLoader.load(resource)
@@ -23,29 +23,34 @@ object FdLogFxml extends JFXApp {
   //  loader.setController(controller)
   //  loader.setLocation(resource)
 
-  private val loader: FXMLLoader = new jfxf.FXMLLoader()
-  loader.setLocation(resource)
-  val root: jfxs.Parent = loader.load()
-
-  private val controller = loader.getController[FDLogEntryController]
+//  private val loader: FXMLLoader = new jfxf.FXMLLoader()
+//  loader.setLocation(resource)
+//  val root: jfxs.Parent = loader.load()
+//
+//  private val controller = loader.getController[FDLogEntryController]
 
   private val contest = model.Contest("WFD", 2019)
   implicit val nodeInfo: NodeInfo = new NodeInfoImpl(contest)
 
   private val store = new StoreMapImpl(nodeInfo)
-  private val stationContext = StationContext(store = store)
-  controller.injectContext(stationContext)
+  private val entryScene = new FDLogEntryScene()
   //  controller.init()
   //  val root: Parent = loader.load[jfxs.Parent]
   //  private val controller: FDLogEntryController = loader.getController[FDLogEntryController]
 
   //  println(root)
-  private val scene1 = new Scene(root)
+
+  private val stationContext = StationContext(store = store)
+
+  new FDLogEntryController(entryScene)
+  private val ourScene: Scene = entryScene.scene
+  ourScene.getStylesheets.add()
 
   stage = new PrimaryStage() {
     title = "FXML GridPane Demo"
-    scene = scene1
+    scene = ourScene
   }
+
 
   //  controller.idQsoCallsign.setText("WA9NNN")
 }
