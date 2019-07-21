@@ -21,6 +21,10 @@ package org.wa9nnn.fdlog.model
 import play.api.libs.json._
 
 class Exchange(val category: String, val section: String) {
+  /**
+    *
+    * @return compact form
+    */
   override def toString: String = s"""$category;$section"""
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[Exchange]
@@ -54,7 +58,9 @@ object Exchange {
   }
 
   private val Parse = """(\d*\p{Upper});(.*)""".r
-
+  /**
+    * to make JSON a bit more compact
+    */
   implicit val sessionKeyFormat: Format[Exchange] = new Format[Exchange] {
     override def reads(json: JsValue): JsResult[Exchange] = {
       val ss = json.as[String]

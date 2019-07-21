@@ -25,19 +25,21 @@ class StoreMapImplSpec extends Specification {
 
   implicit val nodeInfo: NodeInfoImpl = new NodeInfoImpl(contest = Contest("WFD", 2017))
   private val storeMapImpl = new StoreMapImpl(nodeInfo)
-  private val  worked1:CallSign = "K2ORS"
-  val station = Station(worked1, Band("20m"), Mode.digital)
-  private val  exchange1:Exchange = Exchange("2I", "WPA")
-  implicit val stationContext = StationContext(storeMapImpl)
+  private val worked: CallSign = "K2ORS"
+  private val exchange: Exchange = Exchange("2I", "WPA")
+  implicit val stationContext = StationContext(
+    store = storeMapImpl,
+    operator = OurStation("WA9NNN", "IC-7300", "Endfed"),
+    bandMode = BandMode(Band("20m"), Mode.phone))
 
   "StoreMapImplSpec" >> {
     "happy path" >> {
-      val maybeAddedContact = storeMapImpl.add(Qso(station, exchange1))
+      val maybeAddedContact = storeMapImpl.add(Qso(worked, stationContext.bandMode, exchange))
       maybeAddedContact must beSome[QsoRecord]
 
       val contactIds = storeMapImpl.contactIds
       contactIds.contactIds must haveSize(1)
-      contactIds.node must beEqualTo ("")
+      contactIds.node must beEqualTo("")
       ok
     }
 

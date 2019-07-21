@@ -9,12 +9,12 @@ import play.api.libs.json.{Format, Json}
 /**
   *
   * @param contest     ARRL winter and year
-  * @param ourStation  within our site.
+  * @param ourStation    within our site.
   * @param qso         who we worked.
   * @param fdLogId     housekeeping info for replication.
   */
 case class QsoRecord(contest: Contest,
-                     ourStation: Station,
+                     ourStation: OurStation,
                      qso: Qso,
                      fdLogId: FdLogId) extends Ordered[QsoRecord] {
   def callsign: CallSign = qso.callsign
@@ -24,27 +24,23 @@ case class QsoRecord(contest: Contest,
 
   override def hashCode: Int = fdLogId.uuid.hashCode()
 
-  def dup(station: Station): Boolean = {
-    station equals qso.station
+  def dup(qso: Qso): Boolean = {
+    this.qso.isDup(qso)
   }
 
   override def compare(that: QsoRecord): Int = this.callsign compareTo that.callsign
 }
 
-/**
-  * Can be an operator at this field day site or a station worked
-  */
-case class Station(callsign: CallSign, band: Band, mode: Mode)
 
 /**
   * One contact with another station.
   *
-  * @param station  that we worked.
-  * @param exchange from that worked station.
-  * @param stamp    when this occurred.
   */
-case class Qso(station: Station, exchange: Exchange, stamp: Instant = Instant.now()) {
-  def callsign: CallSign = station.callsign
+case class Qso(callsign: CallSign, bandMode: BandMode, exchange: Exchange, stamp: Instant = Instant.now()) {
+  def isDup(that: Qso): Boolean = {
+    this.callsign == that.callsign &&
+      this.bandMode == that.bandMode
+  }
 
 }
 
@@ -58,6 +54,7 @@ case class FdLogId(nodeSn: Int,
                    nodeAddress: String,
                    uuid: UUID = UUID.randomUUID) {
   override def equals(obj: Any): Boolean = uuid == this.uuid
+
 }
 
 object Contact {
@@ -67,7 +64,8 @@ object Contact {
   import Band._
 
   //  implicit val modeFormat: Format[Mode] = Json.format[Mode]
-  implicit val stationFormat: Format[Station] = Json.format[Station]
+  implicit val transmitterFormat: Format[OurStation] = Json.format[OurStation]
+  implicit val bandModeFormat: Format[BandMode] = Json.format[BandMode]
   implicit val qsoFormat: Format[Qso] = Json.format[Qso]
   implicit val fdLogIdFormat: Format[FdLogId] = Json.format[FdLogId]
   implicit val contactFormat: Format[QsoRecord] = Json.format[QsoRecord]

@@ -1,0 +1,24 @@
+
+.happyQso {
+    -fx-text-fill: green;
+    -fx-stroke-width: 5;
+    -fx-stroke-dash-array: 12 2 4 2;
+    -fx-stroke-dash-offset: 6;
+    -fx-stroke-line-cap: butt;
+}
+
+.sadQso {
+    -fx-text-fill: red;
+    -fx-stroke: red;
+    -fx-stroke-width: 5;
+    -fx-stroke-dash-array: 12 2 4 2;
+    -fx-stroke-dash-offset: 6;
+    -fx-stroke-line-cap: butt;
+}
+TextArea {
+    -fx-font-family: monospace;
+}
+TextField {
+    -fx-font-family: monospace;
+}
+ 

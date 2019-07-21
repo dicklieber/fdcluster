@@ -3,18 +3,20 @@
  */
 package org.wa9nnn.fdlog.store
 
-import java.io.{File, OutputStream, PrintWriter}
+import java.io.OutputStream
 import java.nio.file.{Files, Path, Paths, StandardOpenOption}
 import java.util.UUID
 
-import javax.inject.Inject
 import org.wa9nnn.fdlog.model.Contact.CallSign
 import org.wa9nnn.fdlog.model.NodeInfo.Node
 import org.wa9nnn.fdlog.model._
 import org.wa9nnn.fdlog.util.StructuredLogging
 import play.api.libs.json.{JsValue, Json}
+import resource._
 
 import scala.collection.concurrent.TrieMap
+import scala.io.Source
+import org.wa9nnn.fdlog.model.Contact._
 
 class StoreMapImpl(nodeInfo: NodeInfo) extends Store with StructuredLogging {
   implicit val node: Node = nodeInfo.node
@@ -28,15 +30,32 @@ class StoreMapImpl(nodeInfo: NodeInfo) extends Store with StructuredLogging {
     *
     * @param qsoRecord from log or another node
     */
-  def add(qsoRecord: QsoRecord): Unit = {
+  def addRecord(qsoRecord: QsoRecord): Unit = {
     contacts.putIfAbsent(qsoRecord.uuid, qsoRecord)
   }
-val jpuirnalDir = Paths.get("fdlog/")
-  Files.createDirectories(jpuirnalDir)
-  private val path: Path = jpuirnalDir.resolve("journal.log")
-  private val outputStream: OutputStream = Files.newOutputStream(path, StandardOpenOption.APPEND , StandardOpenOption.CREATE)
 
-  def writeJournal(jsValue: JsValue) = {
+  val journalDir: Path = Paths.get("fdlog/")
+  Files.createDirectories(journalDir)
+  private val url: Path = journalDir.resolve("journal.log")
+  private val outputStream: OutputStream = Files.newOutputStream(url, StandardOpenOption.APPEND, StandardOpenOption.CREATE)
+
+  def load(): Unit = {
+    var count = 0
+    managed(Source.fromFile(url.toUri)) acquireAndGet { bufferedSource ⇒
+      bufferedSource.getLines().foreach { line: String ⇒
+
+        Json.parse(line).asOpt[QsoRecord].foreach { qsoRecord ⇒
+          addRecord(qsoRecord)
+          count = count + 1
+        }
+      }
+      println(s"loaded $count records.")
+    }
+  }
+
+  load()
+
+  def writeJournal(jsValue: JsValue): Unit = {
     val lineOfJson = jsValue.toString()
 
     outputStream.write(lineOfJson.getBytes())
@@ -47,17 +66,16 @@ val jpuirnalDir = Paths.get("fdlog/")
   /**
     * Add this qso if not a dup.
     *
-    * @param potentialContact that may be added.
+    * @param potentialQso that may be added.
     * @return None if added, otherwise [[Contact]] that this is a dup of.
     */
-  override def add(potentialContact: Qso)(implicit stationContext: StationContext): Option[QsoRecord] = {
-    findDup(potentialContact) match {
+  override def add(potentialQso: Qso)(implicit stationContext: StationContext): Option[QsoRecord] = {
+    findDup(potentialQso) match {
       case dup@Some(_) =>
         dup
       case None =>
-        val newRecord = QsoRecord(nodeInfo.contest, stationContext.station, potentialContact, nodeInfo.fdLogId)
-        add(newRecord)
-        import org.wa9nnn.fdlog.model.Contact._
+        val newRecord = QsoRecord(nodeInfo.contest, stationContext.operator, potentialQso, nodeInfo.fdLogId)
+        addRecord(newRecord)
         val jsValue = Json.toJson(newRecord)
         writeJournal(jsValue)
         None
@@ -67,7 +85,7 @@ val jpuirnalDir = Paths.get("fdlog/")
   def findDup(potentialQso: Qso): Option[QsoRecord] = {
     for {
       contacts <- byCallsign.get(potentialQso.callsign)
-      dup ← contacts.find(_.qso.station == potentialQso.station)
+      dup ← contacts.find(_.dup(potentialQso))
     } yield {
       dup
     }
@@ -77,7 +95,9 @@ val jpuirnalDir = Paths.get("fdlog/")
     contacts.values.find(_.qso.callsign.contains(in))
   }.toSeq
 
-  override def dump: Seq[QsoRecord] = contacts.values.toSeq.sorted
+  override def dump: Seq[QsoRecord]
+
+  = contacts.values.toSeq.sorted
 
   /**
     *

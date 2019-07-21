@@ -1,17 +1,21 @@
 package org.wa9nnn.fdlog.javafx
 
-import java.io
-
-case class Section(name: String, section: String, area: String) extends Ordered[Section] {
-  override def compare(that: Section): Int = this.section compareTo that.section
+/**
+  * One ARRL section
+  * @param name user friendly name.
+  * @param code actual code
+  * @param area callsign area
+  */
+case class Section(name: String, code: String, area: String) extends Ordered[Section] {
+  override def compare(that: Section): Int = this.code compareTo that.code
 }
 
 
-
-class Sections {
+object Sections {
   def find(partial:String):Seq[Section] = {
-    sections.filter(_.section.startsWith(partial))
+    sections.filter(_.code.startsWith(partial))
   }
+
 
   val sections: Seq[Section] = Seq(
     Section("Connecticut", "CT", "1"),
@@ -99,4 +103,7 @@ class Sections {
     Section("Northern Territories", "NT", "CA"),
     Section("DX", "DX", "DX")
   ).sorted
+
+
+  val byCode: Map[String, Section] = sections.map(s ⇒ s.code → s) toMap
 }

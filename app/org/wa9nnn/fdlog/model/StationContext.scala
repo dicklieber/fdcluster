@@ -6,4 +6,11 @@ import org.wa9nnn.fdlog.store.Store
 
 case class StationContext(
                            store: Store,
-                           station: Station = Station(new CallSign("WA9NNN"), Band("20m"), Mode.digital))
+                           operator: OurStation = OurStation("WA9NNN", "IC-7300", "endfed"),
+                           bandMode: BandMode
+                         )
+
+
+case class BandMode(band: Band, mode: Mode)
+
+case class OurStation(operator:CallSign, rig:String = "", antenna:String = "")
