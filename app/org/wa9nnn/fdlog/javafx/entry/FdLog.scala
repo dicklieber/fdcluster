@@ -1,6 +1,7 @@
 
-package org.wa9nnn.fdlog.javafx
+package org.wa9nnn.fdlog.javafx.entry
 
+import org.wa9nnn.fdlog.javafx.{FDLogEntryController, FDLogEntryScene}
 import org.wa9nnn.fdlog.model
 import org.wa9nnn.fdlog.model.{Band, BandMode, NodeInfo, NodeInfoImpl, OurStation, StationContext}
 import org.wa9nnn.fdlog.store.StoreMapImpl
