@@ -9,7 +9,7 @@ import org.wa9nnn.fdlog.model._
 trait Store {
 
   /**
-    * Add this qso iof not a dup.
+    * Add this qso if not a dup.
     *
     * @param potentialQso that may be added.
     * @return None if added, otherwise [[Contact]] that this is a dup of.

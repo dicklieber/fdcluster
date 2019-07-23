@@ -25,26 +25,27 @@ class FDLogEntryScene {
   val qsoSubmit = new Button("Log")
   qsoSubmit.disable = true
   qsoSubmit.getStyleClass.add("sadQso")
+   val pane: BorderPane = new BorderPane {
+    padding = Insets(25)
+    center = new HBox(
+      new VBox(
+        new Label("Callsign"),
+        qsoCallsign
+      ),
+      new VBox(
+        new Label("Class"),
+        qsoClass,
+        qsoSubmit
+      ),
+      new VBox(
+        new Label("Section"),
+        qsoSection,
+        sectionPrompt
+      )
+    )
+  }
 
   val scene: Scene = new Scene {
-    root = new BorderPane {
-      padding = Insets(25)
-      center = new HBox(
-        new VBox(
-          new Label("Callsign"),
-          qsoCallsign
-        ),
-        new VBox(
-          new Label("Class"),
-          qsoClass,
-          qsoSubmit
-        ),
-        new VBox(
-          new Label("Section"),
-          qsoSection,
-          sectionPrompt
-        )
-      )
-    }
+    root = pane
   }
 }

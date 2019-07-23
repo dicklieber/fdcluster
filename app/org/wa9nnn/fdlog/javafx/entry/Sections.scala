@@ -12,6 +12,7 @@ case class Section(name: String, code: String, area: String) extends Ordered[Sec
 
 
 object Sections {
+
   def find(partial:String):Seq[Section] = {
     sections.filter(_.code.startsWith(partial))
   }
