@@ -33,10 +33,12 @@ class StoreMapImpl(nodeInfo: NodeInfo) extends Store with StructuredLogging {
   def addRecord(qsoRecord: QsoRecord): Unit = {
     contacts.putIfAbsent(qsoRecord.uuid, qsoRecord)
   }
-
-  val journalDir: Path = Paths.get("fdlog/")
+  val homeDir = Paths.get(Option(System.getProperty("user.home")).foldLeft("") { (a, v) ⇒ a + v})
+  val journalDir: Path = homeDir.resolve("fdlog")
   Files.createDirectories(journalDir)
   private val url: Path = journalDir.resolve("journal.log")
+  private val absolutePath: Path = url.toAbsolutePath
+  println(s"absolutePath: ${absolutePath.toString}")
   private val outputStream: OutputStream = Files.newOutputStream(url, StandardOpenOption.APPEND, StandardOpenOption.CREATE)
 
   def load(): Unit = {

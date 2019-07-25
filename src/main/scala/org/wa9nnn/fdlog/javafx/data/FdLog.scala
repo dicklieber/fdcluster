@@ -25,15 +25,11 @@ object FdLog extends JFXApp {
 
   private val entryScene = new DataScene(stationContext).scene
 
-//  new FDLogEntryController(entryScene, stationContext)
-//  private val ourScene: Scene = entryScene.scene
+  //  new FDLogEntryController(entryScene, stationContext)
+  //  private val ourScene: Scene = entryScene.scene
 
-//  private val cssUrl: String = getClass.getResource("/org/wa9nnn/fdlog/javafx/fdlog.css").toExternalForm
-//  ourScene.getStylesheets.add(cssUrl)
-
-
-
-
+  //  private val cssUrl: String = getClass.getResource("/org/wa9nnn/fdlog/javafx/fdlog.css").toExternalForm
+  //  ourScene.getStylesheets.add(cssUrl)
 
 
   stage = new PrimaryStage() {
