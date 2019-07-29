@@ -14,18 +14,23 @@ import scalafx.scene.control.TableColumn._
 import scalafx.scene.control.{TableColumn, TableView}
 
 /**
-  * Create JavaFX UI to view data base.
-  */
-class DataScene @Inject() (@Inject() store:Store) {
+ * Create JavaFX UI to view data base.
+ */
+class DataScene @Inject()(@Inject() store: Store) {
+  def refresh(): Unit = {
+    data.clear()
+    data.addAll(ObservableBuffer[QsoRecord](store.dump))
+  }
+
 
   import java.time.format.DateTimeFormatter
 
   val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
 
-  val data: ObservableBuffer[QsoRecord] = ObservableBuffer[QsoRecord](store.dump)
+  private var data: ObservableBuffer[QsoRecord] = ObservableBuffer[QsoRecord](store.dump)
 
 
-   val tableView: TableView[QsoRecord] = new TableView[QsoRecord](data) {
+  var tableView: TableView[QsoRecord] = new TableView[QsoRecord](data) {
     columns ++= List(
       new TableColumn[QsoRecord, String] {
         text = "Stamp"
@@ -33,14 +38,16 @@ class DataScene @Inject() (@Inject() store:Store) {
           val ldt = LocalDateTime.ofInstant(q.value.qso.stamp, ZoneOffset.UTC)
           val s = ldt.format(formatter)
           val wrapper = ReadOnlyStringWrapper(s)
-          wrapper }
+          wrapper
+        }
         prefWidth = 150
       },
       new TableColumn[QsoRecord, String] {
         text = "Callsign"
         cellValueFactory = { q =>
           val wrapper = ReadOnlyStringWrapper(q.value.qso.callsign)
-          wrapper }
+          wrapper
+        }
         prefWidth = 75
       },
       new TableColumn[QsoRecord, String] {
@@ -68,7 +75,7 @@ class DataScene @Inject() (@Inject() store:Store) {
         text = "Section"
         cellValueFactory = { q =>
           val section: String = q.value.qso.exchange.section
-          val name = Sections.find(section).foldLeft(""){(accum, section) ⇒ accum + section.name}
+          val name = Sections.find(section).foldLeft("") { (accum, section) ⇒ accum + section.name }
 
           val display: String = section + " " + name
           ReadOnlyStringWrapper(display)
