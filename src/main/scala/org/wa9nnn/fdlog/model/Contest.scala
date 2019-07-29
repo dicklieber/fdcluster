@@ -18,16 +18,20 @@
 
 package org.wa9nnn.fdlog.model
 
+import java.time.LocalDate
+
 import play.api.libs.json._
 
-case class Contest(event: String, year: Int) {
+case class Contest(event: String, year: Int = {
+  LocalDate.now().getYear
+}) {
   override def toString: String = {
     s"$event:$year"
   }
 }
 
 object Contest {
-  val r = """(.*):(\d{4})""".r
+  private val r = """(.*):(\d{4})""".r
 
   def apply(in: String): Contest = {
     in match {

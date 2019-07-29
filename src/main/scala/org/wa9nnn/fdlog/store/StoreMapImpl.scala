@@ -7,6 +7,7 @@ import java.io.OutputStream
 import java.nio.file.{Files, Path, Paths, StandardOpenOption}
 import java.util.UUID
 
+import com.google.inject.Inject
 import org.wa9nnn.fdlog.model.Contact.CallSign
 import org.wa9nnn.fdlog.model.NodeInfo.Node
 import org.wa9nnn.fdlog.model._
@@ -18,7 +19,7 @@ import scala.collection.concurrent.TrieMap
 import scala.io.Source
 import org.wa9nnn.fdlog.model.Contact._
 
-class StoreMapImpl(nodeInfo: NodeInfo) extends Store with StructuredLogging {
+class StoreMapImpl @Inject() (@Inject() nodeInfo: NodeInfo, @Inject() currentStationProvider: CurrentStationProvider) extends Store with StructuredLogging {
   implicit val node: Node = nodeInfo.node
   private val contacts = new TrieMap[UUID, QsoRecord]()
   private val byCallsign = new TrieMap[CallSign, Set[QsoRecord]]
@@ -33,7 +34,7 @@ class StoreMapImpl(nodeInfo: NodeInfo) extends Store with StructuredLogging {
   def addRecord(qsoRecord: QsoRecord): Unit = {
     contacts.putIfAbsent(qsoRecord.uuid, qsoRecord)
   }
-  val homeDir = Paths.get(Option(System.getProperty("user.home")).foldLeft("") { (a, v) ⇒ a + v})
+  private val homeDir = Paths.get(Option(System.getProperty("user.home")).foldLeft("") { (a, v) ⇒ a + v})
   val journalDir: Path = homeDir.resolve("fdlog")
   Files.createDirectories(journalDir)
   private val url: Path = journalDir.resolve("journal.log")
@@ -71,12 +72,12 @@ class StoreMapImpl(nodeInfo: NodeInfo) extends Store with StructuredLogging {
     * @param potentialQso that may be added.
     * @return None if added, otherwise [[Contact]] that this is a dup of.
     */
-  override def add(potentialQso: Qso)(implicit stationContext: StationContext): Option[QsoRecord] = {
+  override def add(potentialQso: Qso): Option[QsoRecord] = {
     findDup(potentialQso) match {
       case dup@Some(_) =>
         dup
       case None =>
-        val newRecord = QsoRecord(nodeInfo.contest, stationContext.operator, potentialQso, nodeInfo.fdLogId)
+        val newRecord = QsoRecord(nodeInfo.contest, currentStationProvider.stationContext.ourStation, potentialQso, nodeInfo.fdLogId)
         addRecord(newRecord)
         val jsValue = Json.toJson(newRecord)
         writeJournal(jsValue)

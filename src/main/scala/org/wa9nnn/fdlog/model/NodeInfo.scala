@@ -23,15 +23,19 @@ import java.util.concurrent.atomic.AtomicInteger
 
 
 /**
-  *
-  * @param nodeSerialNumbers source of node serialnumbers.
-  * @param node              this node.
-  */
+ *
+ * @param nodeSerialNumbers source of node serialnumbers.
+ * @param node              this node.
+ */
 class NodeInfoImpl(val contest: Contest,
                    val nodeSerialNumbers: AtomicInteger = new AtomicInteger(),
                    val node: String = InetAddress.getLocalHost.getHostAddress
-                   ) extends NodeInfo {
+                  ) extends NodeInfo {
   override def nextSn: Int = nodeSerialNumbers.getAndIncrement()
+
+  def this() {
+    this( Contest("FD", 2019))
+  }
 }
 
 trait NodeInfo {

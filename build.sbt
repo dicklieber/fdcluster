@@ -10,7 +10,7 @@ resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
 
 //resolvers += "Akka Snapshot Repository" at "http://repo.akka.io/snapshots/"
 
-scalaVersion := "2.12.2"
+scalaVersion := "2.12.4"
 
 mainClass in (Compile, run) := Some("org.wa9nnn.fdlog.javafx.entry.FdLog")
 
@@ -21,7 +21,8 @@ unmanagedJars in (Compile, run) += Attributed.blank(file(System.getenv("JAVA_HOM
 
 libraryDependencies ++= Seq(jdbc, ehcache, ws, specs2 % Test, guice,
   "org.scalafx" %% "scalafx" % "8.0.192-R14",
-  "com.jsuereth" %% "scala-arm" % "2.0"
+  "com.jsuereth" %% "scala-arm" % "2.0",
+  "net.codingwell" %% "scala-guice" % "4.2.6"
 )
 
 

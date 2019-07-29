@@ -14,7 +14,7 @@ trait Store {
     * @param potentialQso that may be added.
     * @return None if added, otherwise [[Contact]] that this is a dup of.
     */
-  def add(potentialQso: Qso)(implicit stationContext: StationContext): Option[QsoRecord]
+  def add(potentialQso: Qso): Option[QsoRecord]
 
   /**
     * find potential matchs by callsign

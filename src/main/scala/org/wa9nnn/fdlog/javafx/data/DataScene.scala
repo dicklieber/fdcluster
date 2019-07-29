@@ -3,8 +3,10 @@ package org.wa9nnn.fdlog.javafx.data
 
 import java.time.{LocalDateTime, ZoneOffset}
 
-import org.wa9nnn.fdlog.javafx.{Section, Sections}
-import org.wa9nnn.fdlog.model.{QsoRecord, StationContext}
+import com.google.inject.Inject
+import org.wa9nnn.fdlog.javafx.Sections
+import org.wa9nnn.fdlog.model.QsoRecord
+import org.wa9nnn.fdlog.store.Store
 import scalafx.beans.property.ReadOnlyStringWrapper
 import scalafx.collections.ObservableBuffer
 import scalafx.scene.Scene
@@ -14,13 +16,13 @@ import scalafx.scene.control.{TableColumn, TableView}
 /**
   * Create JavaFX UI to view data base.
   */
-class DataScene(stationContext: StationContext) {
+class DataScene @Inject() (@Inject() store:Store) {
 
   import java.time.format.DateTimeFormatter
 
   val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
 
-  val data: ObservableBuffer[QsoRecord] = ObservableBuffer[QsoRecord](stationContext.store.dump)
+  val data: ObservableBuffer[QsoRecord] = ObservableBuffer[QsoRecord](store.dump)
 
 
    val tableView: TableView[QsoRecord] = new TableView[QsoRecord](data) {

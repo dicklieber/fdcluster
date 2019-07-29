@@ -16,3 +16,4 @@ dist
 native
 .DS_Store
 conf/generated.keystore
+/fdlog/
