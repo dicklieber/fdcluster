@@ -19,7 +19,7 @@ import scala.collection.concurrent.TrieMap
 import scala.io.Source
 import org.wa9nnn.fdlog.model.Contact._
 
-class StoreMapImpl @Inject() (@Inject() nodeInfo: NodeInfo, @Inject() currentStationProvider: CurrentStationProvider) extends Store with StructuredLogging {
+class StoreMapImpl @Inject()(@Inject() nodeInfo: NodeInfo, @Inject() currentStationProvider: CurrentStationProvider) extends Store with StructuredLogging {
   implicit val node: Node = nodeInfo.node
   private val contacts = new TrieMap[UUID, QsoRecord]()
   private val byCallsign = new TrieMap[CallSign, Set[QsoRecord]]
@@ -27,14 +27,18 @@ class StoreMapImpl @Inject() (@Inject() nodeInfo: NodeInfo, @Inject() currentSta
   def length: Int = contacts.size
 
   /**
-    * for sync
-    *
-    * @param qsoRecord from log or another node
-    */
+   * for sync
+   *
+   * @param qsoRecord from log or another node
+   */
   def addRecord(qsoRecord: QsoRecord): Unit = {
     contacts.putIfAbsent(qsoRecord.uuid, qsoRecord)
+    val callsign = qsoRecord.qso.callsign
+    val qsoRecords: Set[QsoRecord] = byCallsign.getOrElse(callsign, Set.empty) + qsoRecord
+    byCallsign.put(callsign, qsoRecords)
   }
-  private val homeDir = Paths.get(Option(System.getProperty("user.home")).foldLeft("") { (a, v) ⇒ a + v})
+
+  private val homeDir = Paths.get(Option(System.getProperty("user.home")).foldLeft("") { (a, v) ⇒ a + v })
   val journalDir: Path = homeDir.resolve("fdlog")
   Files.createDirectories(journalDir)
   private val url: Path = journalDir.resolve("journal.log")
@@ -67,11 +71,11 @@ class StoreMapImpl @Inject() (@Inject() nodeInfo: NodeInfo, @Inject() currentSta
   }
 
   /**
-    * Add this qso if not a dup.
-    *
-    * @param potentialQso that may be added.
-    * @return None if added, otherwise [[Contact]] that this is a dup of.
-    */
+   * Add this qso if not a dup.
+   *
+   * @param potentialQso that may be added.
+   * @return None if added, otherwise [[Contact]] that this is a dup of.
+   */
   override def add(potentialQso: Qso): Option[QsoRecord] = {
     findDup(potentialQso) match {
       case dup@Some(_) =>
@@ -96,16 +100,16 @@ class StoreMapImpl @Inject() (@Inject() nodeInfo: NodeInfo, @Inject() currentSta
 
   override def search(in: String): Seq[QsoRecord] = {
     contacts.values.find(_.qso.callsign.contains(in))
-  }.toSeq
+    }.toSeq
 
   override def dump: Seq[QsoRecord]
 
   = contacts.values.toSeq.sorted
 
   /**
-    *
-    * @return ids of all [[NodeDatabase]] known to this node.
-    */
+   *
+   * @return ids of all [[NodeDatabase]] known to this node.
+   */
   def contactIds: NodeUuids = {
     NodeUuids(contacts.keys.toSet)
   }

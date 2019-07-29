@@ -7,6 +7,7 @@ import javafx.scene.{control ⇒ jfxsc}
 import org.wa9nnn.fdlog.javafx._
 import org.wa9nnn.fdlog.model.{CurrentStationProvider, Exchange, Qso}
 import org.wa9nnn.fdlog.store.Store
+import play.api.libs.json.Json
 import scalafx.Includes._
 import scalafx.application.Platform
 import scalafx.css.Styleable
@@ -31,6 +32,11 @@ class FDLogEntryScene @Inject()(@Inject() currentStationProvider: CurrentStation
   qsoSection.getStyleClass.add("sadQso")
 
   var sectionPrompt = new TextArea()
+  sectionPrompt.getStyleClass.add("sectionPrompt")
+  sectionPrompt.disable
+  var dupPrompt = new TextArea()
+  dupPrompt.getStyleClass.add("dupPrompt")
+  dupPrompt.disable
 
   val qsoSubmit = new Button("Log")
   qsoSubmit.disable = true
@@ -40,7 +46,8 @@ class FDLogEntryScene @Inject()(@Inject() currentStationProvider: CurrentStation
     center = new HBox(
       new VBox(
         new Label("Callsign"),
-        qsoCallsign
+        qsoCallsign,
+        dupPrompt
       ),
       new VBox(
         new Label("Class"),
@@ -96,6 +103,9 @@ class FDLogEntryScene @Inject()(@Inject() currentStationProvider: CurrentStation
       if (character.isDefinedAt(0) && character.charAt(0).isDigit && ContestCallsign.valid(current)) {
         nextField(event, qsoClass)
       }
+      if(current.isEmpty){
+        dupPrompt.clear()
+     }
 
       Platform.runLater {
         validateQso()
@@ -164,9 +174,12 @@ class FDLogEntryScene @Inject()(@Inject() currentStationProvider: CurrentStation
   def save(): Unit = {
     val potentialQso = readQso()
 
-    store.add(potentialQso) foreach { dup ⇒ println("Dup: " + dup) }
+    store.add(potentialQso) foreach { dup ⇒
+      import org.wa9nnn.fdlog.model.Contact._
+      val pretty = Json.prettyPrint(Json.toJson(dup.qso))
+      dupPrompt.setText("Duplicate:\n" + pretty)
+    }
 
-    //handle dup
     qsoCallsign.clear()
     qsoClass.clear()
     //    qsoSection.value = ""
