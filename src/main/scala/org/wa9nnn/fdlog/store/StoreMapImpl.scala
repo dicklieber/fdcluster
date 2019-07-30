@@ -5,10 +5,11 @@ package org.wa9nnn.fdlog.store
 
 import java.io.OutputStream
 import java.nio.file.{Files, Path, Paths, StandardOpenOption}
+import java.time.{Duration, Instant}
 import java.util.UUID
 
 import com.google.inject.Inject
-import org.wa9nnn.fdlog.model.Contact.CallSign
+import org.wa9nnn.fdlog.model.Contact.{CallSign, _}
 import org.wa9nnn.fdlog.model.NodeInfo.Node
 import org.wa9nnn.fdlog.model._
 import org.wa9nnn.fdlog.util.StructuredLogging
@@ -17,7 +18,6 @@ import resource._
 
 import scala.collection.concurrent.TrieMap
 import scala.io.Source
-import org.wa9nnn.fdlog.model.Contact._
 
 class StoreMapImpl @Inject()(@Inject() nodeInfo: NodeInfo, @Inject() currentStationProvider: CurrentStationProvider) extends Store with StructuredLogging {
   implicit val node: Node = nodeInfo.node
@@ -38,6 +38,7 @@ class StoreMapImpl @Inject()(@Inject() nodeInfo: NodeInfo, @Inject() currentStat
     byCallsign.put(callsign, qsoRecords)
   }
 
+
   private val homeDir = Paths.get(Option(System.getProperty("user.home")).foldLeft("") { (a, v) ⇒ a + v })
   val journalDir: Path = homeDir.resolve("fdlog")
   Files.createDirectories(journalDir)
@@ -48,15 +49,27 @@ class StoreMapImpl @Inject()(@Inject() nodeInfo: NodeInfo, @Inject() currentStat
 
   def load(): Unit = {
     var count = 0
+    val start =  Instant.now()
     managed(Source.fromFile(url.toUri)) acquireAndGet { bufferedSource ⇒
       bufferedSource.getLines().foreach { line: String ⇒
 
         Json.parse(line).asOpt[QsoRecord].foreach { qsoRecord ⇒
           addRecord(qsoRecord)
           count = count + 1
+
+          if(count % 250 == 0) {
+            val seconds = Duration.between(start, Instant.now()).getSeconds
+            if (seconds > 0) {
+              val qsoPerSecond = count / seconds
+              println(f"loaded $count%,d records. ($qsoPerSecond%,d)/per sec")
+            }
+          }
+
         }
       }
-      println(s"loaded $count records.")
+      val seconds = Duration.between(start, Instant.now()).getSeconds
+      val qsoPerSecond = count / seconds
+      println(f"loaded $count%,d records. ($qsoPerSecond%,d)/per sec")
     }
   }
 
@@ -81,7 +94,7 @@ class StoreMapImpl @Inject()(@Inject() nodeInfo: NodeInfo, @Inject() currentStat
       case dup@Some(_) =>
         dup
       case None =>
-        val newRecord = QsoRecord(nodeInfo.contest, currentStationProvider.stationContext.ourStation, potentialQso, nodeInfo.fdLogId)
+        val newRecord = QsoRecord(nodeInfo.contest, currentStationProvider.currentStation.ourStation, potentialQso, nodeInfo.fdLogId)
         addRecord(newRecord)
         val jsValue = Json.toJson(newRecord)
         writeJournal(jsValue)
@@ -102,9 +115,7 @@ class StoreMapImpl @Inject()(@Inject() nodeInfo: NodeInfo, @Inject() currentStat
     contacts.values.find(_.qso.callsign.contains(in))
     }.toSeq
 
-  override def dump: Seq[QsoRecord]
-
-  = contacts.values.toSeq.sorted
+  override def dump: Seq[QsoRecord] = contacts.values.toSeq.sorted
 
   /**
    *
@@ -143,4 +154,6 @@ class StoreMapImpl @Inject()(@Inject() nodeInfo: NodeInfo, @Inject() currentStat
     }
     }
   }
+
+  override def size: Int = contacts.size
 }

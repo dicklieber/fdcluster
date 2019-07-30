@@ -14,7 +14,7 @@ trait CurrentStationProvider {
    *
    * @return
    */
-  def stationContext: CurrentStation
+  def currentStation: CurrentStation
 }
 
 class CurrentStationProviderImpl extends CurrentStationProvider {
@@ -23,7 +23,7 @@ class CurrentStationProviderImpl extends CurrentStationProvider {
    *
    * @return
    */
-  override val stationContext: CurrentStation = CurrentStation()
+  override val currentStation: CurrentStation = CurrentStation()
 }
 
 case class BandMode(band: Band, mode: Mode)

@@ -22,7 +22,7 @@ import java.time.LocalDate
 
 import play.api.libs.json._
 
-case class Contest(event: String, year: Int = {
+case class Contest(event: String = "FD", year: Int = {
   LocalDate.now().getYear
 }) {
   override def toString: String = {

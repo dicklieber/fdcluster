@@ -24,17 +24,14 @@ import org.wa9nnn.fdlog.model.Contact._
 class StoreMapImplSpec extends Specification {
 
   implicit val nodeInfo: NodeInfoImpl = new NodeInfoImpl(contest = Contest("WFD", 2017))
-  private val storeMapImpl = new StoreMapImpl(nodeInfo)
+  private val storeMapImpl = new StoreMapImpl(nodeInfo, new CurrentStationProviderImpl())
   private val worked: CallSign = "K2ORS"
   private val exchange: Exchange = Exchange("2I", "WPA")
-  implicit val stationContext = StationContext(
-    store = storeMapImpl,
-    operator = OurStation("WA9NNN", "IC-7300", "Endfed"),
-    bandMode = BandMode(Band("20m"), Mode.phone))
+  private val bandMode = BandMode(Band("20m"), Mode.phone)
 
   "StoreMapImplSpec" >> {
     "happy path" >> {
-      val maybeAddedContact = storeMapImpl.add(Qso(worked, stationContext.bandMode, exchange))
+      val maybeAddedContact = storeMapImpl.add(Qso(worked, bandMode, exchange))
       maybeAddedContact must beSome[QsoRecord]
 
       val contactIds = storeMapImpl.contactIds

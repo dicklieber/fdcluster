@@ -191,7 +191,7 @@ class FDLogEntryScene @Inject()(@Inject() currentStationProvider: CurrentStation
   def readQso(): Qso = {
     val exchange = Exchange(qsoClassText.get(), qsoSectionText.get())
 
-    Qso(qsoCallsignText.get(), currentStationProvider.stationContext.bandMode, exchange)
+    Qso(qsoCallsignText.get(), currentStationProvider.currentStation.bandMode, exchange)
   }
 
   def nextField(event: KeyEvent, destination: TextField): Unit = {

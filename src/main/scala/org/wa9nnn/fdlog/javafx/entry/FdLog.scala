@@ -5,20 +5,22 @@ import com.google.inject.Guice
 import net.codingwell.scalaguice.InjectorExtensions._
 import org.wa9nnn.fdlog.javafx.data.DataScene
 import org.wa9nnn.fdlog.model.{NodeInfo, NodeInfoImpl}
+import org.wa9nnn.fdlog.store.Store
 import org.wa9nnn.fdlog.{Module, model}
+import scalafx.Includes._
 import scalafx.application.JFXApp
 import scalafx.application.JFXApp.PrimaryStage
-import scalafx.event.{ActionEvent, Event, EventType}
+import scalafx.event.Event
 import scalafx.scene.Scene
-import scalafx.scene.control.{Tab, TabPane}
-import scalafx.Includes._
+import scalafx.scene.control.{Label, Tab, TabPane}
+import scalafx.scene.layout.{BorderPane, HBox}
 
 object FdLog extends JFXApp {
 
   private val injector = Guice.createInjector(new Module())
   private val contest = model.Contest("WFD", 2019)
   implicit val nodeInfo: NodeInfo = new NodeInfoImpl(contest)
-
+  private val store = injector.instance[Store]
   private val dataScene = injector.instance[DataScene]
   private val entryScene = injector.instance[FDLogEntryScene]
 
@@ -27,22 +29,25 @@ object FdLog extends JFXApp {
     content = dataScene.tableView
     closable = false
   }
-
+  private val entryTab: Tab = new Tab {
+    text = "Entry"
+    content = entryScene.pane
+    closable = false
+  }
   val tabPane: TabPane = new TabPane {
-    tabs = Seq(
-      new Tab {
-        text = "Entry"
-        content = entryScene.pane
-        closable = false
-      },
-      dataTab
-    )
+    tabs = Seq(entryTab, dataTab)
   }
 
-  dataTab.onSelectionChanged  = (ev: Event) => {
-    if(dataTab.isSelected){
+  dataTab.onSelectionChanged = (_: Event) => {
+    if (dataTab.isSelected) {
       dataScene.refresh()
     }
+  }
+  dataScene
+  private val statsHeader = new HBox(Label(f"QSOs:  ${store.size}%,d "))
+  private val rootPane = new BorderPane {
+    top = statsHeader
+    center = tabPane
   }
   val ourScene = new Scene()
 
@@ -51,7 +56,7 @@ object FdLog extends JFXApp {
   private val cssUrl: String = getClass.getResource("/fdlog.css").toExternalForm
   ourScene.getStylesheets.add(cssUrl)
 
-  ourScene.root = tabPane
+  ourScene.root = rootPane
 
   stage = new PrimaryStage() {
     title = "FDLog"
