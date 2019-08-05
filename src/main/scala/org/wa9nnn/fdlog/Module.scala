@@ -3,8 +3,8 @@ package org.wa9nnn.fdlog
 
 import com.google.inject.AbstractModule
 import net.codingwell.scalaguice.{ScalaModule, ScalaMultibinder}
-import org.wa9nnn.fdlog.model.{CurrentStationProvider, CurrentStationProviderImpl, NodeInfo, NodeInfoImpl}
-import org.wa9nnn.fdlog.store.{Store, StoreMapImpl}
+import org.wa9nnn.fdlog.model.{CurrentStationProvider, CurrentStationProviderImpl}
+import org.wa9nnn.fdlog.store.{NodeInfo, NodeInfoImpl, Store, StoreMapImpl}
 
 class Module extends AbstractModule with ScalaModule {
   override def configure(): Unit = {

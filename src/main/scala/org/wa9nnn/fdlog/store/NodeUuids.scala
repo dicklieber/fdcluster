@@ -14,25 +14,27 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.wa9nnn.fdlog.model
+package org.wa9nnn.fdlog.store
 
 import java.time.Instant
 import java.util.UUID
+
 import NodeInfo.Node
+import org.wa9nnn.fdlog.model.QsoRecord
 
 /**
-  * Ids on a node.
-  *
-  * @param contactIds ids on the node.
-  * @param node       where this came from.
-  * @param stamp      as of.
-  *
-  */
+ * Ids on a node.
+ *
+ * @param contactIds ids on the node.
+ * @param node       where this came from.
+ * @param stamp      as of.
+ *
+ */
 case class NodeUuids(contactIds: Set[UUID], node: Node, stamp: Instant)
 
 object NodeUuids {
   def apply(uuids: Set[UUID] = Set.empty[UUID])(implicit node: Node): NodeUuids = {
-   new  NodeUuids(uuids, node, Instant.now())
+    new NodeUuids(uuids, node, Instant.now())
   }
 }
 
@@ -46,14 +48,22 @@ object NodeIuids {
 }
 
 /**
-  * Usually this will be in response to a ContactRequest request.
-  *
-  * @param stamp    as of.
-  * @param node     where this came from.
-  * @param records on node.
-  */
+ * Usually this will be in response to a ContactRequest request.
+ * when a new, empty, node joins he cluster
+ *
+ * @param stamp    as of.
+ * @param node     where this came from.
+ * @param records  on node.
+ */
 case class NodeDatabase(records: Seq[QsoRecord], node: Node, stamp: Instant = Instant.now())
 
 object NodeDatabase {
   def apply(contacts: Seq[QsoRecord])(implicit node: Node): NodeDatabase = NodeDatabase(contacts, node)
 }
+
+/**
+ *
+ * @param qsoRecord just added record
+ * @param qsoCount number of QsoRecords in the sending node.
+ */
+case class NewQso(qsoRecord: QsoRecord, qsoCount:Int)

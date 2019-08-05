@@ -4,8 +4,7 @@ package org.wa9nnn.fdlog.javafx.entry
 import com.google.inject.Guice
 import net.codingwell.scalaguice.InjectorExtensions._
 import org.wa9nnn.fdlog.javafx.data.DataScene
-import org.wa9nnn.fdlog.model.{NodeInfo, NodeInfoImpl}
-import org.wa9nnn.fdlog.store.Store
+import org.wa9nnn.fdlog.store.{NodeInfo, NodeInfoImpl, Store}
 import org.wa9nnn.fdlog.{Module, model}
 import scalafx.Includes._
 import scalafx.application.JFXApp
@@ -43,7 +42,6 @@ object FdLog extends JFXApp {
       dataScene.refresh()
     }
   }
-  dataScene
   private val statsHeader = new HBox(Label(f"QSOs:  ${store.size}%,d "))
   private val rootPane = new BorderPane {
     top = statsHeader

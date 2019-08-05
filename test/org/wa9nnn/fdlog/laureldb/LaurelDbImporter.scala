@@ -1,8 +1,8 @@
 
 package org.wa9nnn.fdlog.laureldb
 
-import org.wa9nnn.fdlog.model.{Band, BandMode, Contest, CurrentStationProviderImpl, Exchange, FdLogId, Mode, NodeInfoImpl, OurStation, Qso, QsoRecord}
-import org.wa9nnn.fdlog.store.StoreMapImpl
+import org.wa9nnn.fdlog.model.{Band, BandMode, Contest, CurrentStationProviderImpl, Exchange, FdLogId, Mode, OurStation, Qso, QsoRecord}
+import org.wa9nnn.fdlog.store.{NodeInfoImpl, StoreMapImpl}
 
 import scala.io.Source
 

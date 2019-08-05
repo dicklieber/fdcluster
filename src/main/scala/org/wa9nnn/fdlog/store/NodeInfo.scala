@@ -16,10 +16,12 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.wa9nnn.fdlog.model
+package org.wa9nnn.fdlog.store
 
 import java.net.InetAddress
 import java.util.concurrent.atomic.AtomicInteger
+
+import org.wa9nnn.fdlog.model.{Contest, FdLogId}
 
 
 /**

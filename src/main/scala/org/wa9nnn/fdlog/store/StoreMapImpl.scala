@@ -10,7 +10,7 @@ import java.util.UUID
 
 import com.google.inject.Inject
 import org.wa9nnn.fdlog.model.Contact.{CallSign, _}
-import org.wa9nnn.fdlog.model.NodeInfo.Node
+import NodeInfo.Node
 import org.wa9nnn.fdlog.model._
 import org.wa9nnn.fdlog.util.StructuredLogging
 import play.api.libs.json.{JsValue, Json}
