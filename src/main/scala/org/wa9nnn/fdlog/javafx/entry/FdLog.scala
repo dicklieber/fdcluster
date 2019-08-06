@@ -1,7 +1,9 @@
 
 package org.wa9nnn.fdlog.javafx.entry
 
-import com.google.inject.Guice
+import akka.actor.{ActorRef, ActorSystem}
+import com.google.inject.name.Names
+import com.google.inject.{Guice, Key}
 import net.codingwell.scalaguice.InjectorExtensions._
 import org.wa9nnn.fdlog.javafx.data.DataScene
 import org.wa9nnn.fdlog.store.{NodeInfo, NodeInfoImpl, Store}
@@ -14,14 +16,20 @@ import scalafx.scene.Scene
 import scalafx.scene.control.{Label, Tab, TabPane}
 import scalafx.scene.layout.{BorderPane, HBox}
 
+
 object FdLog extends JFXApp {
+
+  val system: ActorSystem = ActorSystem("FdLogAkka")
 
   private val injector = Guice.createInjector(new Module())
   private val contest = model.Contest("WFD", 2019)
   implicit val nodeInfo: NodeInfo = new NodeInfoImpl(contest)
   private val store = injector.instance[Store]
+  private val storeActorRef: ActorRef = injector.getInstance(Key.get(classOf[ActorRef], Names.named("store")))
   private val dataScene = injector.instance[DataScene]
   private val entryScene = injector.instance[FDLogEntryScene]
+
+
 
   private val dataTab: Tab = new Tab {
     text = "Data"

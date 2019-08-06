@@ -11,15 +11,16 @@ import java.util.UUID
 import com.google.inject.Inject
 import org.wa9nnn.fdlog.model.Contact.{CallSign, _}
 import NodeInfo.Node
+import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdlog.model._
-import org.wa9nnn.fdlog.util.StructuredLogging
 import play.api.libs.json.{JsValue, Json}
 import resource._
 
 import scala.collection.concurrent.TrieMap
 import scala.io.Source
 
-class StoreMapImpl @Inject()(@Inject() nodeInfo: NodeInfo, @Inject() currentStationProvider: CurrentStationProvider) extends Store with StructuredLogging {
+class StoreMapImpl @Inject()(@Inject() nodeInfo: NodeInfo, @Inject() currentStationProvider: CurrentStationProvider)
+  extends Store with LazyLogging{
   implicit val node: Node = nodeInfo.node
   private val contacts = new TrieMap[UUID, QsoRecord]()
   private val byCallsign = new TrieMap[CallSign, Set[QsoRecord]]
@@ -139,18 +140,18 @@ class StoreMapImpl @Inject()(@Inject() nodeInfo: NodeInfo, @Inject() currentStat
 
     contactFromAnotherNode.records.foreach { contact ⇒ {
       val maybeExisting = contacts.putIfAbsent(contact.uuid, contact)
-      if (logger.isDebugEnabled) {
-        (maybeExisting match {
-          case None ⇒
-            logJson("merged")
-          case Some(_) ⇒
-            logJson("exists")
-
-        })
-          .field("uuid", contact.uuid)
-          .field("worked", contact.callsign)
-          .debug()
-      }
+//      if (logger.isDebugEnabled) {
+//        (maybeExisting match {
+//          case None ⇒
+//            logJson("merged")
+//          case Some(_) ⇒
+//            logJson("exists")
+//
+//        })
+//          .field("uuid", contact.uuid)
+//          .field("worked", contact.callsign)
+//          .debug()
+//      }
     }
     }
   }

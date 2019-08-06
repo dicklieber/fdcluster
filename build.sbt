@@ -22,7 +22,11 @@ unmanagedJars in (Compile, run) += Attributed.blank(file(System.getenv("JAVA_HOM
 libraryDependencies ++= Seq(jdbc, ehcache, ws, specs2 % Test, guice,
   "org.scalafx" %% "scalafx" % "8.0.192-R14",
   "com.jsuereth" %% "scala-arm" % "2.0",
-  "net.codingwell" %% "scala-guice" % "4.2.6"
+  "net.codingwell" %% "scala-guice" % "4.2.6",
+//  "com.typesafe.akka" %% "akka-actor" % "2.5.23",
+  "com.typesafe.akka" %% "akka-actor" % "2.6.0-M5",
+  "ch.qos.logback" % "logback-classic" % "1.2.3",
+  "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2"
 )
 
 

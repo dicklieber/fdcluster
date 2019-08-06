@@ -1,12 +1,17 @@
 
 package org.wa9nnn.fdlog.javafx.entry
 
+import java.util.concurrent.TimeUnit
+
+import akka.actor.ActorRef
+import akka.pattern.ask
+import akka.util.Timeout
 import com.google.inject.Inject
+import com.google.inject.name.Named
 import javafx.scene.input.KeyEvent
 import javafx.scene.{control ⇒ jfxsc}
 import org.wa9nnn.fdlog.javafx._
-import org.wa9nnn.fdlog.model.{CurrentStationProvider, Exchange, Qso}
-import org.wa9nnn.fdlog.store.Store
+import org.wa9nnn.fdlog.model.{CurrentStationProvider, Exchange, Qso, QsoRecord}
 import play.api.libs.json.Json
 import scalafx.Includes._
 import scalafx.application.Platform
@@ -17,11 +22,13 @@ import scalafx.scene.Scene
 import scalafx.scene.control._
 import scalafx.scene.layout.{BorderPane, HBox, VBox}
 
+import scala.concurrent.Await
+
 /**
  * Create JavaFX UI for field day entry mode.
  */
-class FDLogEntryScene @Inject()(@Inject() currentStationProvider: CurrentStationProvider, @Inject() store: Store) {
-
+class FDLogEntryScene @Inject()(@Inject() currentStationProvider: CurrentStationProvider, @Inject()@Named("store") store: ActorRef) {
+  implicit val timeout = Timeout(5, TimeUnit.SECONDS)
   val qsoCallsign: TextField = new TextField() {
     styleClass.append("sadQso")
   }
@@ -103,9 +110,9 @@ class FDLogEntryScene @Inject()(@Inject() currentStationProvider: CurrentStation
       if (character.isDefinedAt(0) && character.charAt(0).isDigit && ContestCallsign.valid(current)) {
         nextField(event, qsoClass)
       }
-      if(current.isEmpty){
+      if (current.isEmpty) {
         dupPrompt.clear()
-     }
+      }
 
       Platform.runLater {
         validateQso()
@@ -172,10 +179,13 @@ class FDLogEntryScene @Inject()(@Inject() currentStationProvider: CurrentStation
   }
 
   def save(): Unit = {
+    import org.wa9nnn.fdlog.model.Contact._
     val potentialQso = readQso()
 
-    store.add(potentialQso) foreach { dup ⇒
-      import org.wa9nnn.fdlog.model.Contact._
+    val future = store ? potentialQso
+    val dups: Option[QsoRecord] = Await.result(future, timeout.duration).asInstanceOf[Option[QsoRecord]]
+    dups foreach { dup: QsoRecord ⇒
+
       val pretty = Json.prettyPrint(Json.toJson(dup.qso))
       dupPrompt.setText("Duplicate:\n" + pretty)
     }
