@@ -1,12 +1,11 @@
 
 package org.wa9nnn.fdlog.javafx.entry
 
-import akka.actor.{ActorRef, ActorSystem}
-import com.google.inject.name.Names
-import com.google.inject.{Guice, Key}
+import akka.actor.ActorSystem
+import com.google.inject.Guice
 import net.codingwell.scalaguice.InjectorExtensions._
 import org.wa9nnn.fdlog.javafx.data.DataScene
-import org.wa9nnn.fdlog.store.{NodeInfo, NodeInfoImpl, Store}
+import org.wa9nnn.fdlog.store.{NodeInfo, NodeInfoImpl}
 import org.wa9nnn.fdlog.{Module, model}
 import scalafx.Includes._
 import scalafx.application.JFXApp
@@ -24,8 +23,7 @@ object FdLog extends JFXApp {
   private val injector = Guice.createInjector(new Module())
   private val contest = model.Contest("WFD", 2019)
   implicit val nodeInfo: NodeInfo = new NodeInfoImpl(contest)
-  private val store = injector.instance[Store]
-  private val storeActorRef: ActorRef = injector.getInstance(Key.get(classOf[ActorRef], Names.named("store")))
+//  private val storeActorRef: ActorRef = injector.getInstance(Key.get(classOf[ActorRef], Names.named("store")))
   private val dataScene = injector.instance[DataScene]
   private val entryScene = injector.instance[FDLogEntryScene]
 
@@ -50,7 +48,7 @@ object FdLog extends JFXApp {
       dataScene.refresh()
     }
   }
-  private val statsHeader = new HBox(Label(f"QSOs:  ${store.size}%,d "))
+  private val statsHeader = new HBox(Label(f"QSOs:  todo "))
   private val rootPane = new BorderPane {
     top = statsHeader
     center = tabPane

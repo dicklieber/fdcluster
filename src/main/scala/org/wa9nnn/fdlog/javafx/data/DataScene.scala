@@ -2,24 +2,36 @@
 package org.wa9nnn.fdlog.javafx.data
 
 import java.time.{LocalDateTime, ZoneOffset}
+import java.util.concurrent.TimeUnit
 
+import akka.actor.ActorRef
+import akka.pattern.ask
+import akka.util.Timeout
 import com.google.inject.Inject
+import com.google.inject.name.Named
 import org.wa9nnn.fdlog.javafx.Sections
 import org.wa9nnn.fdlog.model.QsoRecord
-import org.wa9nnn.fdlog.store.Store
+import org.wa9nnn.fdlog.store.StoreActor.Dump
 import scalafx.beans.property.ReadOnlyStringWrapper
 import scalafx.collections.ObservableBuffer
 import scalafx.scene.Scene
 import scalafx.scene.control.TableColumn._
 import scalafx.scene.control.{TableColumn, TableView}
 
+import scala.concurrent.Await
+
 /**
  * Create JavaFX UI to view data base.
  */
-class DataScene @Inject()(@Inject() store: Store) {
+class DataScene @Inject()( @Inject()@Named("store") store: ActorRef) {
+  implicit val timeout = Timeout(5, TimeUnit.SECONDS)
+
   def refresh(): Unit = {
+    val future = store ? Dump
+    val qsos = Await.result(future, timeout.duration).asInstanceOf[Seq[QsoRecord]]
+
     data.clear()
-    data.addAll(ObservableBuffer[QsoRecord](store.dump))
+    data.addAll(ObservableBuffer[QsoRecord](qsos))
   }
 
 
@@ -27,7 +39,7 @@ class DataScene @Inject()(@Inject() store: Store) {
 
   val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
 
-  private var data: ObservableBuffer[QsoRecord] = ObservableBuffer[QsoRecord](store.dump)
+  private val data: ObservableBuffer[QsoRecord] = ObservableBuffer[QsoRecord](Seq.empty)
 
 
   var tableView: TableView[QsoRecord] = new TableView[QsoRecord](data) {
