@@ -17,29 +17,43 @@
 
 package org.wa9nnn.fdlog.store
 
+import java.net.InetAddress
+import java.nio.file.{Files, Path}
+
 import org.specs2.mutable.Specification
+import org.specs2.specification.After
+import org.wa9nnn.fdlog.model.MessageFormats._
 import org.wa9nnn.fdlog.model._
-import org.wa9nnn.fdlog.model.Contact._
 
-class StoreMapImplSpec extends Specification {
+import scala.collection.mutable
 
-  implicit val nodeInfo: NodeInfoImpl = new NodeInfoImpl(contest = Contest("WFD", 2017))
-  private val storeMapImpl = new StoreMapImpl(nodeInfo, new CurrentStationProviderImpl())
+class StoreMapImplSpec extends Specification with After{
+  val expectedNodeAddress: String = InetAddress.getLocalHost.getHostAddress
+
+  implicit val nodeInfo: NodeInfoImpl = new NodeInfoImpl(
+    contest = Contest("WFD", 2017),
+    nodeAddress = expectedNodeAddress)
+
+
+  private val journal: Path = Files.createTempFile("fdlog-journal", ".log")
+  private val storeMapImpl = new StoreMapImpl(nodeInfo, new CurrentStationProviderImpl(), journal)
   private val worked: CallSign = "K2ORS"
   private val exchange: Exchange = Exchange("2I", "WPA")
   private val bandMode = BandMode(Band("20m"), Mode.phone)
 
   "StoreMapImplSpec" >> {
     "happy path" >> {
-      val maybeAddedContact = storeMapImpl.add(Qso(worked, bandMode, exchange))
-      maybeAddedContact must beSome[QsoRecord]
+      val maybeAddedContact: AddResult = storeMapImpl.add(Qso(worked, bandMode, exchange))
+      maybeAddedContact must beAnInstanceOf[Added]
 
       val contactIds = storeMapImpl.contactIds
       contactIds.contactIds must haveSize(1)
-      contactIds.node must beEqualTo("")
-      ok
+      contactIds.node must beEqualTo(expectedNodeAddress)
     }
+  }
+  after
 
-
+  override def after: Any = {
+    Files.delete(journal)
   }
 }

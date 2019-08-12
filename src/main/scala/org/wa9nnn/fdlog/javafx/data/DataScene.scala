@@ -17,11 +17,12 @@ import scalafx.collections.ObservableBuffer
 import scalafx.scene.Scene
 import scalafx.scene.control.TableColumn._
 import scalafx.scene.control.{TableColumn, TableView}
+import java.time.format.DateTimeFormatter
 
 import scala.concurrent.Await
 
 /**
- * Create JavaFX UI to view data base.
+ * Create JavaFX UI to view QSOs.
  */
 class DataScene @Inject()( @Inject()@Named("store") store: ActorRef) {
   implicit val timeout = Timeout(5, TimeUnit.SECONDS)
@@ -34,13 +35,9 @@ class DataScene @Inject()( @Inject()@Named("store") store: ActorRef) {
     data.addAll(ObservableBuffer[QsoRecord](qsos))
   }
 
-
-  import java.time.format.DateTimeFormatter
-
   val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
 
   private val data: ObservableBuffer[QsoRecord] = ObservableBuffer[QsoRecord](Seq.empty)
-
 
   var tableView: TableView[QsoRecord] = new TableView[QsoRecord](data) {
     columns ++= List(

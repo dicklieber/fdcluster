@@ -17,7 +17,7 @@ object Sections {
     sections.filter(_.code.startsWith(partial))
   }
 
-
+//todo Load from a file
   val sections: Seq[Section] = Seq(
     Section("Connecticut", "CT", "1"),
     Section("Eastern Massachusetts", "EMA", "1"),

@@ -27,11 +27,11 @@ import org.wa9nnn.fdlog.model.{Contest, FdLogId}
 /**
  *
  * @param nodeSerialNumbers source of node serialnumbers.
- * @param node              this node.
+ * @param nodeAddress              this node.
  */
 class NodeInfoImpl(val contest: Contest,
                    val nodeSerialNumbers: AtomicInteger = new AtomicInteger(),
-                   val node: String = InetAddress.getLocalHost.getHostAddress
+                   val nodeAddress: String = InetAddress.getLocalHost.getHostAddress
                   ) extends NodeInfo {
   override def nextSn: Int = nodeSerialNumbers.getAndIncrement()
 
@@ -42,12 +42,12 @@ class NodeInfoImpl(val contest: Contest,
 
 trait NodeInfo {
   def fdLogId: FdLogId = {
-    FdLogId(nextSn, node)
+    FdLogId(nextSn, nodeAddress)
   }
 
   def nextSn: Int
 
-  def node: String
+  def nodeAddress: String
 
   def contest: Contest
 

@@ -4,24 +4,29 @@
 package org.wa9nnn.fdlog.store
 
 import java.io.OutputStream
-import java.nio.file.{Files, Path, Paths, StandardOpenOption}
+import java.nio.file.{Files, Path, StandardOpenOption}
 import java.time.{Duration, Instant}
 import java.util.UUID
 
-import com.google.inject.Inject
-import org.wa9nnn.fdlog.model.Contact.{CallSign, _}
-import NodeInfo.Node
 import com.typesafe.scalalogging.LazyLogging
+import org.wa9nnn.fdlog.model.MessageFormats.{CallSign, _}
 import org.wa9nnn.fdlog.model._
+import org.wa9nnn.fdlog.store.NodeInfo.Node
 import play.api.libs.json.{JsValue, Json}
 import resource._
 
 import scala.collection.concurrent.TrieMap
 import scala.io.Source
 
-class StoreMapImpl @Inject()(@Inject() nodeInfo: NodeInfo, @Inject() currentStationProvider: CurrentStationProvider)
-  extends Store with LazyLogging{
-  implicit val node: Node = nodeInfo.node
+/**
+ *
+ * @param nodeInfo                    who we are
+ * @param currentStationProvider      things that may vary with operator.
+ * @param journalFilePath             where journal file lives.
+ */
+class StoreMapImpl(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvider, journalFilePath: Path)
+  extends Store with LazyLogging {
+  implicit val node: Node = nodeInfo.nodeAddress
   private val contacts = new TrieMap[UUID, QsoRecord]()
   private val byCallsign = new TrieMap[CallSign, Set[QsoRecord]]
 
@@ -40,25 +45,23 @@ class StoreMapImpl @Inject()(@Inject() nodeInfo: NodeInfo, @Inject() currentStat
   }
 
 
-  private val homeDir = Paths.get(Option(System.getProperty("user.home")).foldLeft("") { (a, v) ⇒ a + v })
-  val journalDir: Path = homeDir.resolve("fdlog")
+  //  private val homeDir = Paths.get(Option(System.getProperty("user.home")).foldLeft("") { (a, v) ⇒ a + v })
+  val journalDir: Path = journalFilePath.getParent
   Files.createDirectories(journalDir)
-  private val url: Path = journalDir.resolve("journal.log")
-  private val absolutePath: Path = url.toAbsolutePath
-  println(s"absolutePath: ${absolutePath.toString}")
-  private val outputStream: OutputStream = Files.newOutputStream(url, StandardOpenOption.APPEND, StandardOpenOption.CREATE)
+  logger.info(s"journal: ${journalFilePath.toAbsolutePath.toString}")
+  private val outputStream: OutputStream = Files.newOutputStream(journalFilePath, StandardOpenOption.APPEND, StandardOpenOption.CREATE)
 
   def load(): Unit = {
     var count = 0
-    val start =  Instant.now()
-    managed(Source.fromFile(url.toUri)) acquireAndGet { bufferedSource ⇒
+    val start = Instant.now()
+    managed(Source.fromFile(journalFilePath.toUri)) acquireAndGet { bufferedSource ⇒
       bufferedSource.getLines().foreach { line: String ⇒
 
         Json.parse(line).asOpt[QsoRecord].foreach { qsoRecord ⇒
           addRecord(qsoRecord)
           count = count + 1
 
-          if(count % 250 == 0) {
+          if (count % 250 == 0) {
             val seconds = Duration.between(start, Instant.now()).getSeconds
             if (seconds > 0) {
               val qsoPerSecond = count / seconds
@@ -69,8 +72,10 @@ class StoreMapImpl @Inject()(@Inject() nodeInfo: NodeInfo, @Inject() currentStat
         }
       }
       val seconds = Duration.between(start, Instant.now()).getSeconds
-      val qsoPerSecond = count / seconds
-      println(f"loaded $count%,d records. ($qsoPerSecond%,d)/per sec")
+      if (count > 0) {
+        val qsoPerSecond = count / seconds
+        println(f"loaded $count%,d records. ($qsoPerSecond%,d)/per sec")
+      }
     }
   }
 
@@ -88,18 +93,18 @@ class StoreMapImpl @Inject()(@Inject() nodeInfo: NodeInfo, @Inject() currentStat
    * Add this qso if not a dup.
    *
    * @param potentialQso that may be added.
-   * @return None if added, otherwise [[Contact]] that this is a dup of.
+   * @return None if added, otherwise [[MessageFormats]] that this is a dup of.
    */
-  override def add(potentialQso: Qso): Option[QsoRecord] = {
+  override def add(potentialQso: Qso): AddResult = {
     findDup(potentialQso) match {
-      case dup@Some(_) =>
-        dup
+      case Some(duplicateRecord) =>
+        Dup(duplicateRecord)
       case None =>
         val newRecord = QsoRecord(nodeInfo.contest, currentStationProvider.currentStation.ourStation, potentialQso, nodeInfo.fdLogId)
         addRecord(newRecord)
         val jsValue = Json.toJson(newRecord)
         writeJournal(jsValue)
-        None
+        Added(newRecord)
     }
   }
 
@@ -139,19 +144,19 @@ class StoreMapImpl @Inject()(@Inject() nodeInfo: NodeInfo, @Inject() currentStat
   def merge(contactFromAnotherNode: NodeDatabase): Unit = {
 
     contactFromAnotherNode.records.foreach { contact ⇒ {
-      val maybeExisting = contacts.putIfAbsent(contact.uuid, contact)
-//      if (logger.isDebugEnabled) {
-//        (maybeExisting match {
-//          case None ⇒
-//            logJson("merged")
-//          case Some(_) ⇒
-//            logJson("exists")
-//
-//        })
-//          .field("uuid", contact.uuid)
-//          .field("worked", contact.callsign)
-//          .debug()
-//      }
+      //      val maybeExisting = contacts.putIfAbsent(contact.uuid, contact)
+      //      if (logger.isDebugEnabled) {
+      //        (maybeExisting match {
+      //          case None ⇒
+      //            logJson("merged")
+      //          case Some(_) ⇒
+      //            logJson("exists")
+      //
+      //        })
+      //          .field("uuid", contact.uuid)
+      //          .field("worked", contact.callsign)
+      //          .debug()
+      //      }
     }
     }
   }

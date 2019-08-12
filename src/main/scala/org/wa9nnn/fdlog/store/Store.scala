@@ -1,6 +1,6 @@
 package org.wa9nnn.fdlog.store
 
-import org.wa9nnn.fdlog.model.Contact.CallSign
+import org.wa9nnn.fdlog.model.MessageFormats.CallSign
 import org.wa9nnn.fdlog.model._
 
 trait Store {
@@ -9,9 +9,9 @@ trait Store {
    * Add this qso if not a dup.
    *
    * @param potentialQso that may be added.
-   * @return None if added, otherwise [[Contact]] that this is a dup of.
+   * @return Added or Dup
    */
-  def add(potentialQso: Qso): Option[QsoRecord]
+  def add(potentialQso: Qso): AddResult
 
   /**
    * Insert a QsoRecord
@@ -37,3 +37,8 @@ trait Store {
 
   def size:Int
 }
+
+sealed trait AddResult
+
+case class Added(qsoRecord: QsoRecord) extends AddResult
+case class Dup(qsoRecord: QsoRecord) extends AddResult

@@ -1,7 +1,7 @@
 
 package org.wa9nnn.fdlog.model
 
-import org.wa9nnn.fdlog.model.Contact.CallSign
+import org.wa9nnn.fdlog.model.MessageFormats.CallSign
 
 case class CurrentStation(
                            ourStation: OurStation = OurStation("WA9NNN", "IC-7300", "endfed"),

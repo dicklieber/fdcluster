@@ -1,6 +1,8 @@
 
 package org.wa9nnn.fdlog.laureldb
 
+import java.nio.file.Path
+
 import org.wa9nnn.fdlog.model.{Band, BandMode, Contest, CurrentStationProviderImpl, Exchange, FdLogId, Mode, OurStation, Qso, QsoRecord}
 import org.wa9nnn.fdlog.store.{NodeInfoImpl, StoreMapImpl}
 
@@ -10,7 +12,7 @@ object LaurelDbImporter {
   val ourContest = Contest("FD", 2019)
   val nodeInfo = new NodeInfoImpl(ourContest)
   val currentStationProvider = new CurrentStationProviderImpl()
-  val store = new StoreMapImpl(nodeInfo, currentStationProvider)
+  val store = new StoreMapImpl(nodeInfo, currentStationProvider, null) //todo
 
   val exchange = Exchange("3A", "IL")
 

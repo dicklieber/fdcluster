@@ -11,7 +11,8 @@ import com.google.inject.name.Named
 import javafx.scene.input.KeyEvent
 import javafx.scene.{control ⇒ jfxsc}
 import org.wa9nnn.fdlog.javafx._
-import org.wa9nnn.fdlog.model.{CurrentStationProvider, Exchange, Qso, QsoRecord}
+import org.wa9nnn.fdlog.model.{CurrentStationProvider, Exchange, Qso}
+import org.wa9nnn.fdlog.store.{AddResult, Added, Dup}
 import play.api.libs.json.Json
 import scalafx.Includes._
 import scalafx.application.Platform
@@ -28,7 +29,7 @@ import scala.concurrent.Await
  * Create JavaFX UI for field day entry mode.
  */
 class FDLogEntryScene @Inject()(@Inject() currentStationProvider: CurrentStationProvider,
-                                @Inject()@Named("store") store: ActorRef) {
+                                @Inject() @Named("store") store: ActorRef) {
   implicit val timeout = Timeout(5, TimeUnit.SECONDS)
   val qsoCallsign: TextField = new TextField() {
     styleClass.append("sadQso")
@@ -42,9 +43,9 @@ class FDLogEntryScene @Inject()(@Inject() currentStationProvider: CurrentStation
   var sectionPrompt = new TextArea()
   sectionPrompt.getStyleClass.add("sectionPrompt")
   sectionPrompt.disable
-  var dupPrompt = new TextArea()
-  dupPrompt.getStyleClass.add("dupPrompt")
-  dupPrompt.disable
+  var actionResult = new TextArea()
+  actionResult.getStyleClass.add("dupPrompt")
+  actionResult.disable
 
   val qsoSubmit = new Button("Log")
   qsoSubmit.disable = true
@@ -55,7 +56,7 @@ class FDLogEntryScene @Inject()(@Inject() currentStationProvider: CurrentStation
       new VBox(
         new Label("Callsign"),
         qsoCallsign,
-        dupPrompt
+        actionResult
       ),
       new VBox(
         new Label("Class"),
@@ -111,7 +112,7 @@ class FDLogEntryScene @Inject()(@Inject() currentStationProvider: CurrentStation
         nextField(event, qsoClass)
       }
       if (current.isEmpty) {
-        dupPrompt.clear()
+        actionResult.clear()
       }
 
       Platform.runLater {
@@ -178,16 +179,27 @@ class FDLogEntryScene @Inject()(@Inject() currentStationProvider: CurrentStation
     false
   }
 
+  def showSad(destination: TextInputControl, message: String): Unit = {
+    makeSad(destination)
+    destination.setText(message)
+  }
+
+  def showHappy(destination: TextInputControl, message: String): Unit = {
+    makeHappy(destination)
+    destination.setText(message)
+  }
+
   def save(): Unit = {
-    import org.wa9nnn.fdlog.model.Contact._
+    import org.wa9nnn.fdlog.model.MessageFormats._
     val potentialQso = readQso()
 
     val future = store ? potentialQso
-    val dups: Option[QsoRecord] = Await.result(future, timeout.duration).asInstanceOf[Option[QsoRecord]]
-    dups foreach { dup: QsoRecord ⇒
-
-      val pretty = Json.prettyPrint(Json.toJson(dup.qso))
-      dupPrompt.setText("Duplicate:\n" + pretty)
+    Await.result(future, timeout.duration).asInstanceOf[AddResult] match {
+      case Dup(dupQso) ⇒
+        val pretty = Json.prettyPrint(Json.toJson(dupQso.qso))
+        showSad(actionResult, s"Duplicate:\n$pretty")
+      case Added(qsoRecord) ⇒
+        showHappy(actionResult,s"Added:\n${qsoRecord.qso.callsign} ${qsoRecord.qso.exchange}")
     }
 
     qsoCallsign.clear()
@@ -195,7 +207,6 @@ class FDLogEntryScene @Inject()(@Inject() currentStationProvider: CurrentStation
     //    qsoSection.value = ""
     qsoSection.clear()
     qsoCallsign.requestFocus()
-
   }
 
   def readQso(): Qso = {
