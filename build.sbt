@@ -1,6 +1,6 @@
 name := "fdlog"
 
-version := "1.0"
+version := "0.2"
 
 maintainer := "wa9nnn@u505.com"
 
@@ -17,19 +17,36 @@ mainClass in (Compile, run) := Some("org.wa9nnn.fdlog.javafx.entry.FdLog")
 
 unmanagedJars in (Compile, run) += Attributed.blank(file(System.getenv("JAVA_HOME") + "/lib/ext/jfxrt.jar"))
 
-//addCompilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full)
+import scala.util.Properties
+val osType: SettingKey[String] = SettingKey[String]("osType")
 
-libraryDependencies ++= Seq(jdbc, ehcache, ws, specs2 % Test, guice,
+osType := {
+  if (Properties.isLinux)
+    "linux"
+  else if (Properties.isMac)
+    "mac"
+  else if (Properties.isWin)
+    "win"
+  else
+    throw new Exception(s"unknown os: ${Properties.osName}")
+}
+
+val javafxLib = file(sys.env.get("JAVAFX_LIB").getOrElse("Environmental variable JAVAFX_LIB is not set"))
+
+libraryDependencies ++= Seq(
+  "com.typesafe.play" %% "play-json" % "2.8.0-M4",
+  "org.specs2" %% "specs2-core" % "4.6.0" % "test",
+  "com.google.inject" % "guice" % "4.2.2",
   "org.scalafx" %% "scalafx" % "8.0.192-R14",
   "com.jsuereth" %% "scala-arm" % "2.0",
   "net.codingwell" %% "scala-guice" % "4.2.6",
-//  "com.typesafe.akka" %% "akka-actor" % "2.5.23",
   "com.typesafe.akka" %% "akka-actor" % "2.6.0-M5",
   "ch.qos.logback" % "logback-classic" % "1.2.3",
-  "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2"
+  "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
+  // JavaFX 11 jars are distributed for each platform
+  "org.openjfx" % "javafx-controls" % "11.0.1" classifier osType.value,
+  "org.openjfx" % "javafx-graphics" % "11.0.1" classifier osType.value,
+  "org.openjfx" % "javafx-media" % "11.0.1" classifier osType.value,
+  "org.openjfx" % "javafx-base" % "11.0.1" classifier osType.value,
 )
 
-
-//unmanagedResourceDirectories in Test +=  baseDirectory ( _ /"target/web/public/test" )
-
-      
