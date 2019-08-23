@@ -1,6 +1,7 @@
 
 package org.wa9nnn.fdlog.javafx.data
 
+import java.time.format.DateTimeFormatter
 import java.time.{LocalDateTime, ZoneOffset}
 import java.util.concurrent.TimeUnit
 
@@ -12,19 +13,24 @@ import com.google.inject.name.Named
 import org.wa9nnn.fdlog.javafx.Sections
 import org.wa9nnn.fdlog.model.QsoRecord
 import org.wa9nnn.fdlog.store.StoreActor.Dump
+import play.api.libs.json.Json
+import scalafx.Includes._
 import scalafx.beans.property.ReadOnlyStringWrapper
 import scalafx.collections.ObservableBuffer
-import scalafx.scene.Scene
+import scalafx.scene.{Node, Scene}
 import scalafx.scene.control.TableColumn._
-import scalafx.scene.control.{TableColumn, TableView}
-import java.time.format.DateTimeFormatter
+import scalafx.scene.control.{SplitPane, TableColumn, TableView, TextArea}
+
+
+//import javafx.scene.{control ⇒ jfxsc}
 
 import scala.concurrent.Await
 
 /**
  * Create JavaFX UI to view QSOs.
  */
-class DataScene @Inject()( @Inject()@Named("store") store: ActorRef) {
+class DataScene @Inject()(@Inject() @Named("store") store: ActorRef) {
+
   implicit val timeout = Timeout(5, TimeUnit.SECONDS)
 
   def refresh(): Unit = {
@@ -92,10 +98,24 @@ class DataScene @Inject()( @Inject()@Named("store") store: ActorRef) {
         prefWidth = 150
       }
     )
-
   }
 
-  val scene: Scene = new Scene {
-    root = tableView
+  private val selectionModel = tableView.selectionModel
+  selectionModel.apply.selectedItem.onChange { (_, _, selectedQso) ⇒
+    import org.wa9nnn.fdlog.model.MessageFormats._
+    val sJson = Json.prettyPrint(Json.toJson(selectedQso))
+    detailView.setText(sJson)
   }
+  tableView.setPrefWidth(400)
+  val detailView = new TextArea()
+  detailView.prefColumnCount = 30
+  detailView.setMinWidth(250)
+  private val splitPane = new SplitPane
+  splitPane.items.addAll(tableView, detailView)
+  splitPane.setDividerPosition(0, 50.0)
+
+  val pane: Node = splitPane
+
+
+
 }

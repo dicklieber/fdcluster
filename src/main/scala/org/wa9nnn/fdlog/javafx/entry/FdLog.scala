@@ -15,7 +15,9 @@ import scalafx.scene.Scene
 import scalafx.scene.control.{Label, Tab, TabPane}
 import scalafx.scene.layout.{BorderPane, HBox}
 
-
+/**
+ * Main for FDLog
+ */
 object FdLog extends JFXApp {
 
   val system: ActorSystem = ActorSystem("FdLogAkka")
@@ -31,7 +33,7 @@ object FdLog extends JFXApp {
 
   private val dataTab: Tab = new Tab {
     text = "Data"
-    content = dataScene.tableView
+    content = dataScene.pane
     closable = false
   }
   private val entryTab: Tab = new Tab {
@@ -48,9 +50,9 @@ object FdLog extends JFXApp {
       dataScene.refresh()
     }
   }
-  private val statsHeader = new HBox(Label(f"QSOs:  todo "))
+//  private val statsHeader = new HBox(Label(f"QSOs:  todo "))
   private val rootPane = new BorderPane {
-    top = statsHeader
+    top = new FdLogMenu(stage).menuBar
     center = tabPane
   }
   val ourScene = new Scene()

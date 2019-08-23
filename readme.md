@@ -5,10 +5,11 @@ Disgtributed, serverless Field Day Logging system.
 Goals:
 
 * All nodes in sync
-* As long as one node exists, no data loss.
-* Each node can have native or provide Web access to clients
+* Nodes can enter or leave and will resync automatically
+* Each node can have native (or provide Web access to clients Maybe)
 * Free open-source
-
+* Runs on Linux, Mac or Microsoft Windows
+* Raspberry Pi Support (download image, copy to SD card)
 
 sbt:
 stage

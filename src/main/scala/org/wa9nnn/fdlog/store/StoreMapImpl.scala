@@ -61,7 +61,7 @@ class StoreMapImpl(nodeInfo: NodeInfo, currentStationProvider: CurrentStationPro
           addRecord(qsoRecord)
           count = count + 1
 
-          if (count % 250 == 0) {
+          if (count > 0 && count % 250 == 0) {
             val seconds = Duration.between(start, Instant.now()).getSeconds
             if (seconds > 0) {
               val qsoPerSecond = count / seconds
@@ -72,7 +72,7 @@ class StoreMapImpl(nodeInfo: NodeInfo, currentStationProvider: CurrentStationPro
         }
       }
       val seconds = Duration.between(start, Instant.now()).getSeconds
-      if (count > 0) {
+      if (seconds > 0) {
         val qsoPerSecond = count / seconds
         println(f"loaded $count%,d records. ($qsoPerSecond%,d)/per sec")
       }
