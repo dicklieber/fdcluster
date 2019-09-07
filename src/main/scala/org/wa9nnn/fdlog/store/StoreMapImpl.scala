@@ -5,12 +5,13 @@ package org.wa9nnn.fdlog.store
 
 import java.io.OutputStream
 import java.nio.file.{Files, Path, StandardOpenOption}
-import java.time.{Duration, Instant}
-import java.util.UUID
+import java.time.temporal.{ChronoField, ChronoUnit}
+import java.time.{Duration, Instant, LocalDate, LocalDateTime, ZoneId}
 
 import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdlog.model.MessageFormats.{CallSign, _}
 import org.wa9nnn.fdlog.model._
+import org.wa9nnn.fdlog.model.sync.{NodeStatus, QsoHour, QsoHourIds}
 import org.wa9nnn.fdlog.store.NodeInfo.Node
 import play.api.libs.json.{JsValue, Json}
 import resource._
@@ -24,10 +25,10 @@ import scala.io.Source
  * @param currentStationProvider      things that may vary with operator.
  * @param journalFilePath             where journal file lives.
  */
-class StoreMapImpl(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvider, journalFilePath: Path)
+class StoreMapImpl(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvider, journalFilePath: Option[Path] = None)
   extends Store with LazyLogging {
   implicit val node: Node = nodeInfo.nodeAddress
-  private val contacts = new TrieMap[UUID, QsoRecord]()
+  private val contacts = new TrieMap[Uuid, QsoRecord]()
   private val byCallsign = new TrieMap[CallSign, Set[QsoRecord]]
 
   def length: Int = contacts.size
@@ -44,17 +45,11 @@ class StoreMapImpl(nodeInfo: NodeInfo, currentStationProvider: CurrentStationPro
     byCallsign.put(callsign, qsoRecords)
   }
 
+  private val outputStream: Option[OutputStream] = journalFilePath.map { path ⇒
 
-  //  private val homeDir = Paths.get(Option(System.getProperty("user.home")).foldLeft("") { (a, v) ⇒ a + v })
-  val journalDir: Path = journalFilePath.getParent
-  Files.createDirectories(journalDir)
-  logger.info(s"journal: ${journalFilePath.toAbsolutePath.toString}")
-  private val outputStream: OutputStream = Files.newOutputStream(journalFilePath, StandardOpenOption.APPEND, StandardOpenOption.CREATE)
-
-  def load(): Unit = {
     var count = 0
     val start = Instant.now()
-    managed(Source.fromFile(journalFilePath.toUri)) acquireAndGet { bufferedSource ⇒
+    managed(Source.fromFile(path.toUri)) acquireAndGet { bufferedSource ⇒
       bufferedSource.getLines().foreach { line: String ⇒
 
         Json.parse(line).asOpt[QsoRecord].foreach { qsoRecord ⇒
@@ -68,7 +63,6 @@ class StoreMapImpl(nodeInfo: NodeInfo, currentStationProvider: CurrentStationPro
               println(f"loaded $count%,d records. ($qsoPerSecond%,d)/per sec")
             }
           }
-
         }
       }
       val seconds = Duration.between(start, Instant.now()).getSeconds
@@ -77,16 +71,23 @@ class StoreMapImpl(nodeInfo: NodeInfo, currentStationProvider: CurrentStationPro
         println(f"loaded $count%,d records. ($qsoPerSecond%,d)/per sec")
       }
     }
+
+    val journalDir: Path = path.getParent
+    Files.createDirectories(journalDir)
+    logger.info(s"journal: ${path.toAbsolutePath.toString}")
+
+    Files.newOutputStream(path, StandardOpenOption.APPEND, StandardOpenOption.CREATE)
+
   }
 
-  load()
-
   def writeJournal(jsValue: JsValue): Unit = {
-    val lineOfJson = jsValue.toString()
+    outputStream.foreach { os ⇒
+      val lineOfJson = jsValue.toString()
 
-    outputStream.write(lineOfJson.getBytes())
-    outputStream.write("\n".getBytes())
-    outputStream.flush()
+      os.write(lineOfJson.getBytes())
+      os.write("\n".getBytes())
+      os.flush()
+    }
   }
 
   /**
@@ -143,23 +144,39 @@ class StoreMapImpl(nodeInfo: NodeInfo, currentStationProvider: CurrentStationPro
 
   def merge(contactFromAnotherNode: NodeDatabase): Unit = {
 
-    contactFromAnotherNode.records.foreach { contact ⇒ {
-      //      val maybeExisting = contacts.putIfAbsent(contact.uuid, contact)
-      //      if (logger.isDebugEnabled) {
-      //        (maybeExisting match {
-      //          case None ⇒
-      //            logJson("merged")
-      //          case Some(_) ⇒
-      //            logJson("exists")
-      //
-      //        })
-      //          .field("uuid", contact.uuid)
-      //          .field("worked", contact.callsign)
-      //          .debug()
-      //      }
-    }
+    contactFromAnotherNode.records.foreach {
+      contact ⇒ {
+        //      val maybeExisting = contacts.putIfAbsent(contact.uuid, contact)
+        //      if (logger.isDebugEnabled) {
+        //        (maybeExisting match {
+        //          case None ⇒
+        //            logJson("merged")
+        //          case Some(_) ⇒
+        //            logJson("exists")
+        //
+        //        })
+        //          .field("uuid", contact.uuid)
+        //          .field("worked", contact.callsign)
+        //          .debug()
+        //      }
+      }
     }
   }
 
   override def size: Int = contacts.size
+
+  override def nodeStatus: NodeStatus = {
+    val sorted: List[QsoRecord] = contacts.values
+      .toList
+//      .sortWith { (qr1, qr2) ⇒ qr1.qso.stamp.isBefore(qr2.qso.stamp) }
+
+    val grouped = sorted.groupBy(_.fdHour)
+    val v = grouped.values.map(QsoHour(_))
+      .map(_.qsoIds)
+
+    val list = v.toList
+        .sortBy(_.startOfHour)
+    NodeStatus(nodeInfo.nodeAddress, contacts.size, list)
+  }
+
 }

@@ -2,7 +2,6 @@
 package org.wa9nnn.fdlog.javafx.data
 
 import java.time.format.DateTimeFormatter
-import java.time.{LocalDateTime, ZoneOffset}
 import java.util.concurrent.TimeUnit
 
 import akka.actor.ActorRef
@@ -17,7 +16,7 @@ import play.api.libs.json.Json
 import scalafx.Includes._
 import scalafx.beans.property.ReadOnlyStringWrapper
 import scalafx.collections.ObservableBuffer
-import scalafx.scene.{Node, Scene}
+import scalafx.scene.Node
 import scalafx.scene.control.TableColumn._
 import scalafx.scene.control.{SplitPane, TableColumn, TableView, TextArea}
 
@@ -50,7 +49,7 @@ class DataScene @Inject()(@Inject() @Named("store") store: ActorRef) {
       new TableColumn[QsoRecord, String] {
         text = "Stamp"
         cellValueFactory = { q =>
-          val ldt = LocalDateTime.ofInstant(q.value.qso.stamp, ZoneOffset.UTC)
+          val ldt = q.value.qso.stamp
           val s = ldt.format(formatter)
           val wrapper = ReadOnlyStringWrapper(s)
           wrapper

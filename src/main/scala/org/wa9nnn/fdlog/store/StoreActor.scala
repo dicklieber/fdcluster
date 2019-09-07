@@ -12,11 +12,11 @@ import org.wa9nnn.fdlog.store.network.{MultcastSenderActor, MulticastListenerAct
 class StoreActor(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvider) extends Actor with LazyLogging{
 
   private val journal: String = context.system.settings.config.getString("fdlog.journalFile")
-  private val store = new StoreMapImpl(nodeInfo, currentStationProvider, Paths.get(journal))
+  private val store = new StoreMapImpl(nodeInfo, currentStationProvider, Some(Paths.get(journal)))
   private val ourNode = nodeInfo.nodeAddress
 
   private val senderActor: ActorRef = context.actorOf(MultcastSenderActor.props())
-  private val listenerActor: ActorRef = context.actorOf(MulticastListenerActorXX.props(context.self), "MulticastListener")
+  context.actorOf(MulticastListenerActorXX.props(context.self), "MulticastListener")
   println(senderActor)
 
   override def receive: Receive = {

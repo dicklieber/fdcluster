@@ -2,6 +2,7 @@ package org.wa9nnn.fdlog.store
 
 import org.wa9nnn.fdlog.model.MessageFormats.CallSign
 import org.wa9nnn.fdlog.model._
+import org.wa9nnn.fdlog.model.sync.NodeStatus
 
 trait Store {
 
@@ -36,6 +37,9 @@ trait Store {
   def dump: Seq[QsoRecord]
 
   def size:Int
+
+  def nodeStatus:NodeStatus
+
 }
 
 sealed trait AddResult

@@ -1,11 +1,12 @@
 package org.wa9nnn.fdlog.model
 
-import java.time.Instant
+import java.time.LocalDateTime
 import java.util.UUID
 
 import akka.util.ByteString
 import org.wa9nnn.fdlog.model.MessageFormats.{CallSign, _}
-import play.api.libs.json.{Format, Json}
+import org.wa9nnn.fdlog.model.sync.FdHour
+import play.api.libs.json.Json
 
 /**
  * This is what's in the store and journal.log.
@@ -21,7 +22,7 @@ case class QsoRecord(contest: Contest,
                      fdLogId: FdLogId) extends Ordered[QsoRecord] {
   def callsign: CallSign = qso.callsign
 
-  def uuid: UUID = fdLogId.uuid
+  def uuid: String = fdLogId.uuid
 
 
   override def hashCode: Int = fdLogId.uuid.hashCode()
@@ -32,6 +33,9 @@ case class QsoRecord(contest: Contest,
 
   override def compare(that: QsoRecord): Int = this.callsign compareTo that.callsign
 
+  lazy val fdHour:FdHour = {
+    FdHour(qso.stamp)
+  }
   def toByteString: ByteString = {
     ByteString(Json.toBytes(Json.toJson(this)))
   }
@@ -41,7 +45,7 @@ case class QsoRecord(contest: Contest,
  * One contact with another station.
  *
  */
-case class Qso(callsign: CallSign, bandMode: BandMode, exchange: Exchange, stamp: Instant = Instant.now()) {
+case class Qso(callsign: CallSign, bandMode: BandMode, exchange: Exchange, stamp: LocalDateTime = LocalDateTime.now()) {
   def isDup(that: Qso): Boolean = {
     this.callsign == that.callsign &&
       this.bandMode == that.bandMode
@@ -57,7 +61,7 @@ case class Qso(callsign: CallSign, bandMode: BandMode, exchange: Exchange, stamp
  */
 case class FdLogId(nodeSn: Int,
                    nodeAddress: String,
-                   uuid: UUID = UUID.randomUUID) {
+                   uuid: String = UUID.randomUUID.toString) {
   override def equals(obj: Any): Boolean = uuid == this.uuid
 
 }
@@ -81,18 +85,6 @@ object DistributedQsoRecord {
   }
 }
 
-object MessageFormats {
-
-  import org.wa9nnn.fdlog.model.ModeJson.modeFormat
-
-  implicit val transmitterFormat: Format[OurStation] = Json.format[OurStation]
-  implicit val bandModeFormat: Format[BandMode] = Json.format[BandMode]
-  implicit val qsoFormat: Format[Qso] = Json.format[Qso]
-  implicit val fdLogIdFormat: Format[FdLogId] = Json.format[FdLogId]
-  implicit val qsoRecordFormat: Format[QsoRecord] = Json.format[QsoRecord]
-  implicit val distributedQsoRecordFormat: Format[DistributedQsoRecord] = Json.format[DistributedQsoRecord]
-  type CallSign = String
-}
 
 
 

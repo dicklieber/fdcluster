@@ -28,7 +28,7 @@ case class Band(band:String){
 }
 
 object Band {
-  val bands: Set[String] = Set(
+  val bands: Seq[String] = Seq(
     "160m",
     "80m",
     "40m",

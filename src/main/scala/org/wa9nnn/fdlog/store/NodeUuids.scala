@@ -17,10 +17,10 @@
 package org.wa9nnn.fdlog.store
 
 import java.time.Instant
-import java.util.UUID
 
-import NodeInfo.Node
+import org.wa9nnn.fdlog.model.MessageFormats.Uuid
 import org.wa9nnn.fdlog.model.QsoRecord
+import org.wa9nnn.fdlog.store.NodeInfo.Node
 
 /**
  * Ids on a node.
@@ -30,19 +30,19 @@ import org.wa9nnn.fdlog.model.QsoRecord
  * @param stamp      as of.
  *
  */
-case class NodeUuids(contactIds: Set[UUID], node: Node, stamp: Instant)
+case class NodeUuids(contactIds: Set[Uuid], node: Node, stamp: Instant)
 
 object NodeUuids {
-  def apply(uuids: Set[UUID] = Set.empty[UUID])(implicit node: Node): NodeUuids = {
+  def apply(uuids: Set[Uuid] = Set.empty[Uuid])(implicit node: Node): NodeUuids = {
     new NodeUuids(uuids, node, Instant.now())
   }
 }
 
 
-case class ContactRequest(contactIds: Set[UUID], requestingNode: Node)
+case class ContactRequest(contactIds: Set[Uuid], requestingNode: Node)
 
 object NodeIuids {
-  def apply(contactIds: Set[UUID] = Set.empty[UUID])(implicit node: Node): ContactRequest = {
+  def apply(contactIds: Set[Uuid] = Set.empty[Uuid])(implicit node: Node): ContactRequest = {
     ContactRequest(contactIds, node)
   }
 }
