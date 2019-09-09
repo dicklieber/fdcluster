@@ -1,5 +1,6 @@
 package org.wa9nnn.fdlog.model
 
+import java.net.InetAddress
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -33,9 +34,10 @@ case class QsoRecord(contest: Contest,
 
   override def compare(that: QsoRecord): Int = this.callsign compareTo that.callsign
 
-  lazy val fdHour:FdHour = {
+  lazy val fdHour: FdHour = {
     FdHour(qso.stamp)
   }
+
   def toByteString: ByteString = {
     ByteString(Json.toBytes(Json.toJson(this)))
   }
@@ -60,10 +62,16 @@ case class Qso(callsign: CallSign, bandMode: BandMode, exchange: Exchange, stamp
  * @param uuid        unique id in time and space. Two QsoRecords with the same uuid can be considered equal.
  */
 case class FdLogId(nodeSn: Int,
-                   nodeAddress: String,
+                   nodeAddress: NodeAddress,
                    uuid: String = UUID.randomUUID.toString) {
   override def equals(obj: Any): Boolean = uuid == this.uuid
 
+}
+
+case class NodeAddress(instance: Int = 0, nodeAddress: String = InetAddress.getLocalHost.getHostAddress) {
+   def display: String = {
+    s"$nodeAddress:$instance"
+  }
 }
 
 /**

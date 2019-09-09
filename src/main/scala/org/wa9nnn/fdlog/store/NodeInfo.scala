@@ -18,10 +18,12 @@
 
 package org.wa9nnn.fdlog.store
 
-import java.net.InetAddress
 import java.util.concurrent.atomic.AtomicInteger
 
-import org.wa9nnn.fdlog.model.{Contest, FdLogId}
+import org.wa9nnn.fdlog.model.{Contest, FdLogId, NodeAddress}
+import sun.jvmstat.monitor.{MonitoredHost, MonitoredVmUtil}
+
+import scala.collection.JavaConverters._
 
 
 /**
@@ -31,13 +33,33 @@ import org.wa9nnn.fdlog.model.{Contest, FdLogId}
  */
 class NodeInfoImpl(val contest: Contest,
                    val nodeSerialNumbers: AtomicInteger = new AtomicInteger(),
-                   val nodeAddress: String = InetAddress.getLocalHost.getHostAddress
+                   val nodeAddress: NodeAddress = NodeInfoImpl.isUs
                   ) extends NodeInfo {
   override def nextSn: Int = nodeSerialNumbers.getAndIncrement()
 
   def this() {
     this( Contest("FD", 2019))
   }
+
+}
+object NodeInfoImpl{
+  def isUs:NodeAddress = {
+    val mh = MonitoredHost.getMonitoredHost(null.asInstanceOf[String])
+    val ids = mh.activeVms().asScala
+    val  mainClasses = ids.toList.map { vmId ⇒
+      val vmidString = "//" + vmId + "?mode=r"
+      val aVmId = new sun.jvmstat.monitor.VmIdentifier(vmidString)
+      val vm = mh.getMonitoredVm(aVmId)
+      val vmIdentifier = vm.getVmIdentifier
+      val mainClass = MonitoredVmUtil.mainClass(vm, false)
+      println(s"""mainClass: "$mainClass"""")
+      mainClass
+    }
+   val fdLogCount = mainClasses.count(mainClass ⇒
+      mainClass == "FdLog")
+    NodeAddress( fdLogCount)
+  }
+
 }
 
 trait NodeInfo {
@@ -47,7 +69,7 @@ trait NodeInfo {
 
   def nextSn: Int
 
-  def nodeAddress: String
+  def nodeAddress: NodeAddress
 
   def contest: Contest
 

@@ -1,16 +1,14 @@
 
 package org.wa9nnn.fdlog.store
 
-import java.net.InetAddress
-import java.time.temporal.ChronoUnit
 import java.time.{Duration, LocalDateTime}
 
 import org.specs2.mutable.Specification
 import org.wa9nnn.fdlog.model.sync.{NodeStatus, QsoHourIds}
-import org.wa9nnn.fdlog.model.{Contest, CurrentStationProviderImpl}
+import org.wa9nnn.fdlog.model.{Contest, CurrentStationProviderImpl, NodeAddress}
 
 class StoreSyncSpec extends Specification {
-  val expectedNodeAddress: String = InetAddress.getLocalHost.getHostAddress
+  val expectedNodeAddress = NodeAddress(0)
   implicit val nodeInfo: NodeInfoImpl = new NodeInfoImpl(
     contest = Contest("WFD", 2017),
     nodeAddress = expectedNodeAddress)

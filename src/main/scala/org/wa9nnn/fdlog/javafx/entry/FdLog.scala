@@ -65,7 +65,7 @@ object FdLog extends JFXApp {
   ourScene.root = rootPane
 
   stage = new PrimaryStage() {
-    title = "FDLog"
+    title = "FDLog @ " + nodeInfo.nodeAddress.display
     scene = ourScene
   }
 

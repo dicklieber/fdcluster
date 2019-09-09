@@ -12,6 +12,7 @@ object MessageFormats {
   implicit val transmitterFormat: Format[OurStation] = Json.format[OurStation]
   implicit val bandModeFormat: Format[BandMode] = Json.format[BandMode]
   implicit val qsoFormat: Format[Qso] = Json.format[Qso]
+  implicit val nodeAddressFormat: Format[NodeAddress] = Json.format[NodeAddress]
   implicit val fdLogIdFormat: Format[FdLogId] = Json.format[FdLogId]
   implicit val qsoRecordFormat: Format[QsoRecord] = Json.format[QsoRecord]
   implicit val distributedQsoRecordFormat: Format[DistributedQsoRecord] = Json.format[DistributedQsoRecord]

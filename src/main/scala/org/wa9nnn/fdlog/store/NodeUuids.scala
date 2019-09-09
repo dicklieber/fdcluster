@@ -19,7 +19,7 @@ package org.wa9nnn.fdlog.store
 import java.time.Instant
 
 import org.wa9nnn.fdlog.model.MessageFormats.Uuid
-import org.wa9nnn.fdlog.model.QsoRecord
+import org.wa9nnn.fdlog.model.{NodeAddress, QsoRecord}
 import org.wa9nnn.fdlog.store.NodeInfo.Node
 
 /**
@@ -30,10 +30,10 @@ import org.wa9nnn.fdlog.store.NodeInfo.Node
  * @param stamp      as of.
  *
  */
-case class NodeUuids(contactIds: Set[Uuid], node: Node, stamp: Instant)
+case class NodeUuids(contactIds: Set[Uuid], node: NodeAddress, stamp: Instant)
 
 object NodeUuids {
-  def apply(uuids: Set[Uuid] = Set.empty[Uuid])(implicit node: Node): NodeUuids = {
+  def apply(uuids: Set[Uuid] = Set.empty[Uuid])(implicit node: NodeAddress): NodeUuids = {
     new NodeUuids(uuids, node, Instant.now())
   }
 }
@@ -55,10 +55,10 @@ object NodeIuids {
  * @param node     where this came from.
  * @param records  on node.
  */
-case class NodeDatabase(records: Seq[QsoRecord], node: Node, stamp: Instant = Instant.now())
+case class NodeDatabase(records: Seq[QsoRecord], node: NodeAddress, stamp: Instant = Instant.now())
 
 object NodeDatabase {
-  def apply(contacts: Seq[QsoRecord])(implicit node: Node): NodeDatabase = NodeDatabase(contacts, node)
+  def apply(contacts: Seq[QsoRecord])(implicit node: NodeAddress): NodeDatabase = NodeDatabase(contacts, node)
 }
 
 /**

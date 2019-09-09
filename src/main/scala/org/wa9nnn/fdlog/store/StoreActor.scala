@@ -8,12 +8,13 @@ import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdlog.model.{CurrentStationProvider, DistributedQsoRecord, Qso}
 import org.wa9nnn.fdlog.store.StoreActor.Dump
 import org.wa9nnn.fdlog.store.network.{MultcastSenderActor, MulticastListenerActorXX}
+class StoreActor(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvider) extends Actor with LazyLogging {
 
-class StoreActor(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvider) extends Actor with LazyLogging{
-
-  private val journal: String = context.system.settings.config.getString("fdlog.journalFile")
+  private val journal: String = context.system.settings.config.getString("fdlog.journalPath")
   private val store = new StoreMapImpl(nodeInfo, currentStationProvider, Some(Paths.get(journal)))
-  private val ourNode = nodeInfo.nodeAddress
+
+//  private val ourNode = AreWeAlone.isUs(nodeInfo.nodeAddress)
+    private val ourNode = nodeInfo.nodeAddress
 
   private val senderActor: ActorRef = context.actorOf(MultcastSenderActor.props())
   context.actorOf(MulticastListenerActorXX.props(context.self), "MulticastListener")
@@ -36,10 +37,10 @@ class StoreActor(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvi
     case d: DistributedQsoRecord ⇒
       val qsoRecord = d.qsoRecord
       val nodeAddress = qsoRecord.fdLogId.nodeAddress
-      if(nodeAddress != ourNode){
+      if (nodeAddress != ourNode) {
         logger.debug(s"Ingesting ${qsoRecord.qso} from ${nodeAddress}")
         store.addRecord(qsoRecord)
-      }else{
+      } else {
         logger.debug(s"Ignoring our own QsoRecord: ${qsoRecord.qso}")
       }
 

@@ -25,7 +25,7 @@ object QsoGenerator {
       val callsign = s"WA$area$suffix1$suffix2$suffix3"
       val qso = Qso(callsign, bandMode, exchange, startOfContest.plusSeconds(secondsBetween * iteration))
       val fdLOgId = FdLogId(nodeSn = iteration,
-        nodeAddress = "10.10.10.1",
+        nodeAddress = NodeAddress(0, "10.10.10.1"),
         uuid = UUID.randomUUID().toString)
       QsoRecord(contest, ourStation, qso, fdLOgId)
     }

@@ -28,7 +28,7 @@ import org.wa9nnn.fdlog.model._
 import scala.collection.mutable
 
 class StoreMapImplSpec extends Specification with After{
-  val expectedNodeAddress: String = InetAddress.getLocalHost.getHostAddress
+  val expectedNodeAddress: NodeAddress = NodeAddress(0)
 
   implicit val nodeInfo: NodeInfoImpl = new NodeInfoImpl(
     contest = Contest("WFD", 2017),

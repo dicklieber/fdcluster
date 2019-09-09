@@ -27,7 +27,7 @@ import scala.io.Source
  */
 class StoreMapImpl(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvider, journalFilePath: Option[Path] = None)
   extends Store with LazyLogging {
-  implicit val node: Node = nodeInfo.nodeAddress
+  implicit val node: NodeAddress = nodeInfo.nodeAddress
   private val contacts = new TrieMap[Uuid, QsoRecord]()
   private val byCallsign = new TrieMap[CallSign, Set[QsoRecord]]
 
@@ -47,28 +47,30 @@ class StoreMapImpl(nodeInfo: NodeInfo, currentStationProvider: CurrentStationPro
 
   private val outputStream: Option[OutputStream] = journalFilePath.map { path ⇒
 
-    var count = 0
-    val start = Instant.now()
-    managed(Source.fromFile(path.toUri)) acquireAndGet { bufferedSource ⇒
-      bufferedSource.getLines().foreach { line: String ⇒
+    if (Files.exists(path)) {
+      var count = 0
+      val start = Instant.now()
+      managed(Source.fromFile(path.toUri)) acquireAndGet { bufferedSource ⇒
+        bufferedSource.getLines().foreach { line: String ⇒
 
-        Json.parse(line).asOpt[QsoRecord].foreach { qsoRecord ⇒
-          addRecord(qsoRecord)
-          count = count + 1
+          Json.parse(line).asOpt[QsoRecord].foreach { qsoRecord ⇒
+            addRecord(qsoRecord)
+            count = count + 1
 
-          if (count > 0 && count % 250 == 0) {
-            val seconds = Duration.between(start, Instant.now()).getSeconds
-            if (seconds > 0) {
-              val qsoPerSecond = count / seconds
-              println(f"loaded $count%,d records. ($qsoPerSecond%,d)/per sec")
+            if (count > 0 && count % 250 == 0) {
+              val seconds = Duration.between(start, Instant.now()).getSeconds
+              if (seconds > 0) {
+                val qsoPerSecond = count / seconds
+                println(f"loaded $count%,d records. ($qsoPerSecond%,d)/per sec")
+              }
             }
           }
         }
-      }
-      val seconds = Duration.between(start, Instant.now()).getSeconds
-      if (seconds > 0) {
-        val qsoPerSecond = count / seconds
-        println(f"loaded $count%,d records. ($qsoPerSecond%,d)/per sec")
+        val seconds = Duration.between(start, Instant.now()).getSeconds
+        if (seconds > 0) {
+          val qsoPerSecond = count / seconds
+          println(f"loaded $count%,d records. ($qsoPerSecond%,d)/per sec")
+        }
       }
     }
 
