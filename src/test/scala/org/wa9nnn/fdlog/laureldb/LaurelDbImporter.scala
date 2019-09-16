@@ -1,16 +1,16 @@
 
 package org.wa9nnn.fdlog.laureldb
 
-import java.nio.file.Path
+import java.net.InetAddress
 
-import org.wa9nnn.fdlog.model.{Band, BandMode, Contest, CurrentStationProviderImpl, Exchange, FdLogId, Mode, OurStation, Qso, QsoRecord}
+import org.wa9nnn.fdlog.model.{Contest, CurrentStationProviderImpl, Exchange, NodeAddress, Qso}
 import org.wa9nnn.fdlog.store.{NodeInfoImpl, StoreMapImpl}
 
 import scala.io.Source
 
 object LaurelDbImporter {
   val ourContest = Contest("FD", 2019)
-  val nodeInfo = new NodeInfoImpl(ourContest)
+  val nodeInfo = new NodeInfoImpl(ourContest, nodeAddress = NodeAddress(0, InetAddress.getLocalHost.toString ))
   val currentStationProvider = new CurrentStationProviderImpl()
   val store = new StoreMapImpl(nodeInfo, currentStationProvider, null) //todo
 

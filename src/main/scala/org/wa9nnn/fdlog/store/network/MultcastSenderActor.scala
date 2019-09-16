@@ -5,10 +5,11 @@ import java.net.InetSocketAddress
 
 import akka.actor.{ActorRef, Props}
 import akka.io.{IO, Udp}
+import com.typesafe.config.Config
 import org.wa9nnn.fdlog.model.{Codec, DistributedQsoRecord}
 import org.wa9nnn.fdlog.store.JsonContainer
 
-class MultcastSenderActor() extends MulticastActor {
+class MultcastSenderActor(val config: Config) extends MulticastActor {
 
   import context.system
 
@@ -32,7 +33,7 @@ class MultcastSenderActor() extends MulticastActor {
 }
 
 object MultcastSenderActor {
-  def props(): Props = {
-    Props(new MultcastSenderActor())
+  def props(config: Config): Props = {
+    Props(new MultcastSenderActor(config) )
   }
 }

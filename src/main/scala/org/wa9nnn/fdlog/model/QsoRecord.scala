@@ -5,6 +5,7 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 import akka.util.ByteString
+import javax.inject.Inject
 import org.wa9nnn.fdlog.model.MessageFormats.{CallSign, _}
 import org.wa9nnn.fdlog.store.network.FdHour
 import play.api.libs.json.Json
@@ -74,7 +75,7 @@ case class FdLogId(nodeSn: Int,
 
 }
 
-case class NodeAddress(instance: Int = 0, nodeAddress: String = InetAddress.getLocalHost.getHostAddress) extends Ordered[NodeAddress] {
+case class NodeAddress@Inject()(instance: Int = 0, nodeAddress: String = "localhost") extends Ordered[NodeAddress] {
   def display: String = {
     s"$nodeAddress:$instance"
   }

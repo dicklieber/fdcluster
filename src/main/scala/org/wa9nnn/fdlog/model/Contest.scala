@@ -18,13 +18,16 @@
 
 package org.wa9nnn.fdlog.model
 
-import java.time.LocalDate
-
+import com.typesafe.config.Config
+import javax.inject.Inject
 import play.api.libs.json._
 
-case class Contest(event: String = "FD", year: Int = {
-  LocalDate.now().getYear
-}) {
+case class Contest(event: String = "FD", year: Int) {
+
+  @Inject()def this(config: Config) {
+    this(config.getString("fdlog.contest.event"), config.getInt("fdlog.contest.year"))
+  }
+
   override def toString: String = {
     s"$event:$year"
   }
