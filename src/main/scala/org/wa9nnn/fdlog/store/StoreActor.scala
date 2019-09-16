@@ -4,52 +4,107 @@ package org.wa9nnn.fdlog.store
 import java.nio.file.Paths
 
 import akka.actor.{Actor, ActorRef}
+import akka.util.ByteString
 import com.typesafe.scalalogging.LazyLogging
-import org.wa9nnn.fdlog.model.{CurrentStationProvider, DistributedQsoRecord, Qso}
-import org.wa9nnn.fdlog.store.StoreActor.Dump
-import org.wa9nnn.fdlog.store.network.{MultcastSenderActor, MulticastListenerActorXX}
+import org.wa9nnn.fdlog.model.MessageFormats._
+import org.wa9nnn.fdlog.model._
+import org.wa9nnn.fdlog.model.sync.NodeStatus
+import org.wa9nnn.fdlog.store.StoreActor.{DumpCluster, DumpQsos}
+import org.wa9nnn.fdlog.store.network.cluster.ClusterState
+import org.wa9nnn.fdlog.store.network.{MultcastSenderActor, MulticastListenerActor}
+import play.api.libs.json.Json
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration._
+import scala.language.postfixOps
+
 class StoreActor(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvider) extends Actor with LazyLogging {
 
   private val journal: String = context.system.settings.config.getString("fdlog.journalPath")
   private val store = new StoreMapImpl(nodeInfo, currentStationProvider, Some(Paths.get(journal)))
+  private val clusterState = new ClusterState
 
-//  private val ourNode = AreWeAlone.isUs(nodeInfo.nodeAddress)
-    private val ourNode = nodeInfo.nodeAddress
 
-  private val senderActor: ActorRef = context.actorOf(MultcastSenderActor.props())
-  context.actorOf(MulticastListenerActorXX.props(context.self), "MulticastListener")
-  println(senderActor)
+  private val ourNode = nodeInfo.nodeAddress
+
+  logger.info(s"StoreActor: ${self.path}")
+
+  context.actorOf(MulticastListenerActor.props, "MulticastListener")
+  private val senderActor: ActorRef = context.actorOf(MultcastSenderActor.props(), "MulticastSender")
+
+  context.system.scheduler.scheduleAtFixedRate(2 seconds, 17 seconds, self, StatusPing)
 
   override def receive: Receive = {
     case potentialQso: Qso ⇒
-      val addresult = store.add(potentialQso)
-      addresult match {
+      val addResult: AddResult = store.add(potentialQso)
+      addResult match {
         case Added(addedQsoRecord) ⇒
-          senderActor ! DistributedQsoRecord(addedQsoRecord, store.size)
+          val record = DistributedQsoRecord(addedQsoRecord, nodeInfo.nodeAddress, store.size)
+          senderActor ! JsonContainer(record.getClass.getSimpleName, record)
         case unexpected ⇒
-          println(s"Received: ${unexpected}")
+          println(s"Received: $unexpected")
       }
-      sender ! addresult
+      sender ! addResult // send back to caller with all info allows UI to show what was recorded or dup
 
-    case Dump ⇒
+    case DumpQsos ⇒
       sender ! store.dump
 
     case d: DistributedQsoRecord ⇒
       val qsoRecord = d.qsoRecord
       val nodeAddress = qsoRecord.fdLogId.nodeAddress
       if (nodeAddress != ourNode) {
-        logger.debug(s"Ingesting ${qsoRecord.qso} from ${nodeAddress}")
+        logger.debug(s"Ingesting ${qsoRecord.qso} from $nodeAddress")
         store.addRecord(qsoRecord)
       } else {
         logger.debug(s"Ignoring our own QsoRecord: ${qsoRecord.qso}")
       }
 
+    case StatusPing ⇒
+      val nodeStatus = store.nodeStatus
+      senderActor ! JsonContainer(nodeStatus.getClass.getSimpleName, nodeStatus)
+
+    case ns: NodeStatus ⇒
+      logger.debug(s"Got NodeStatus")
+      clusterState.update(ns)
+
+    case DumpCluster ⇒
+      sender ! clusterState.dump
+
+    case x ⇒
+      println(s"Unexpected Message; $x")
+
+  }
+
+  override def postStop(): Unit = {
+    logger.error("postStop: StoreActor")
+    super.postStop()
+  }
+
+  override def postRestart(reason: Throwable): Unit = {
+    logger.error("postRestart: StoreActor", reason)
+    super.postRestart(reason)
   }
 }
 
 object StoreActor {
 
-  case object Dump
+  case object DumpQsos
+  case object DumpCluster
 
 }
 
+case class JsonContainer(className: String, json: String) extends Codec {
+  def toByteString: ByteString = {
+    ByteString(Json.toBytes(Json.toJson(this)))
+  }
+
+}
+
+object JsonContainer {
+  def apply(className: String, codec: Codec): JsonContainer = {
+    val str = codec.toByteString.decodeString("UTF-8")
+    JsonContainer(className, str)
+  }
+}
+
+case object StatusPing

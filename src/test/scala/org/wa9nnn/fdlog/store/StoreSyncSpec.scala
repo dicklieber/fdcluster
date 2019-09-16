@@ -4,11 +4,12 @@ package org.wa9nnn.fdlog.store
 import java.time.{Duration, LocalDateTime}
 
 import org.specs2.mutable.Specification
-import org.wa9nnn.fdlog.model.sync.{NodeStatus, QsoHourIds}
+import org.wa9nnn.fdlog.model.sync.{NodeStatus, QsoHourDigest}
 import org.wa9nnn.fdlog.model.{Contest, CurrentStationProviderImpl, NodeAddress}
+import org.wa9nnn.fdlog.store.network.FdHour
 
 class StoreSyncSpec extends Specification {
-  val expectedNodeAddress = NodeAddress(0)
+  val expectedNodeAddress = NodeAddress()
   implicit val nodeInfo: NodeInfoImpl = new NodeInfoImpl(
     contest = Contest("WFD", 2017),
     nodeAddress = expectedNodeAddress)
@@ -27,10 +28,10 @@ class StoreSyncSpec extends Specification {
       status.nodeAddress must beEqualTo(expectedNodeAddress)
       status.stamp must not beNull
 
-      val startOfContest = status.qsoIds.head.startOfHour
+      val startOfContest: FdHour = status.qsoHourDigests.head.startOfHour
       var currentExpectedHour = startOfContest
 
-      status.qsoIds.foreach { qsoIds: QsoHourIds ⇒
+      status.qsoHourDigests.foreach { qsoIds: QsoHourDigest ⇒
         currentExpectedHour must beEqualTo(qsoIds.startOfHour)
 
 //        println(qsoIds.startOfHour)

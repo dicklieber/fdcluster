@@ -2,10 +2,10 @@
 package org.wa9nnn.fdlog.model.sync
 
 import java.security.MessageDigest
-import java.time.LocalDateTime
 
 import org.wa9nnn.fdlog.model.MessageFormats.Uuid
 import org.wa9nnn.fdlog.model.QsoRecord
+import org.wa9nnn.fdlog.store.network.FdHour
 
 
 /**
@@ -14,10 +14,14 @@ import org.wa9nnn.fdlog.model.QsoRecord
  * @param qsos        QSOs in this hour.
  */
 case class QsoHour(startOfHour: FdHour, qsos: List[QsoRecord]) {
+
   lazy val hourDigest: QsoHourDigest = {
     val messageDigest: MessageDigest = MessageDigest.getInstance("SHA-256")
     qsos.foreach(qr ⇒ messageDigest.update(qr.fdLogId.uuid.getBytes()))
-    val sDigest = java.util.Base64.getEncoder.encode(messageDigest.digest()).toString
+    val bytes = messageDigest.digest()
+    val encoder = java.util.Base64.getEncoder
+    val bytes1 = encoder.encode(bytes)
+    val sDigest = new String(bytes1)
     QsoHourDigest(startOfHour, sDigest, qsos.size)
   }
 
@@ -45,33 +49,3 @@ object QsoHour {
 case class QsoHourDigest(startOfHour: FdHour, digest: String, size: Int)
 
 case class QsoHourIds(startOfHour: FdHour, qsiIds: List[Uuid])
-
-/**
- * This works because a Field Day can't span a year.
- *
- * @param day  of month
- * @param hour of day
- */
-case class FdHour(day: Int, hour: Int) extends Ordered[FdHour] {
-  def plus(i: Int): FdHour = {
-    if (hour == 23) {
-      FdHour(day + 1, 0)
-    } else {
-      copy(hour = hour + 1)
-    }
-  }
-
-  override def compare(that: FdHour): Int = {
-    var ret = this.day compareTo that.day
-    if (ret == 0) {
-      ret = this.hour compareTo that.hour
-    }
-    ret
-  }
-}
-
-object FdHour {
-  def apply(localDateTime: LocalDateTime): FdHour = {
-    FdHour(localDateTime.getDayOfMonth, localDateTime.getHour)
-  }
-}

@@ -11,7 +11,7 @@ import com.google.inject.Inject
 import com.google.inject.name.Named
 import org.wa9nnn.fdlog.javafx.Sections
 import org.wa9nnn.fdlog.model.QsoRecord
-import org.wa9nnn.fdlog.store.StoreActor.Dump
+import org.wa9nnn.fdlog.store.StoreActor.DumpQsos
 import play.api.libs.json.Json
 import scalafx.Includes._
 import scalafx.beans.property.ReadOnlyStringWrapper
@@ -33,7 +33,7 @@ class DataScene @Inject()(@Inject() @Named("store") store: ActorRef) {
   implicit val timeout = Timeout(5, TimeUnit.SECONDS)
 
   def refresh(): Unit = {
-    val future = store ? Dump
+    val future = store ? DumpQsos
     val qsos = Await.result(future, timeout.duration).asInstanceOf[Seq[QsoRecord]]
 
     data.clear()

@@ -15,7 +15,9 @@ scalaVersion := "2.12.8"
 mainClass in (Compile, run) := Some("org.wa9nnn.fdlog.javafx.entry.FdLog")
 
 
-unmanagedJars in (Compile, run) += Attributed.blank(file(System.getenv("JAVA_HOME") + "/lib/ext/jfxrt.jar"))
+scalacOptions in (Compile,doc) ++= Seq("-verbose")
+
+//unmanagedJars in (Compile, run) += Attributed.blank(file(System.getenv("JAVA_HOME") + "/lib/ext/jfxrt.jar"))
 
 import scala.util.Properties
 val osType: SettingKey[String] = SettingKey[String]("osType")
@@ -48,5 +50,7 @@ libraryDependencies ++= Seq(
   "org.openjfx" % "javafx-graphics" % "11.0.1" classifier osType.value,
   "org.openjfx" % "javafx-media" % "11.0.1" classifier osType.value,
   "org.openjfx" % "javafx-base" % "11.0.1" classifier osType.value,
+  "nl.grons" %% "metrics-scala" % "4.0.0",
+
 )
 

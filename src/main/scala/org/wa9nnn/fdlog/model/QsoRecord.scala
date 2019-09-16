@@ -6,8 +6,24 @@ import java.util.UUID
 
 import akka.util.ByteString
 import org.wa9nnn.fdlog.model.MessageFormats.{CallSign, _}
-import org.wa9nnn.fdlog.model.sync.FdHour
+import org.wa9nnn.fdlog.store.network.FdHour
 import play.api.libs.json.Json
+
+/**
+ * * One contact with another station.
+ * * Things that are relevant for the contest.
+ *
+ * @param callsign of the worked station.
+ * @param bandMode that was used.
+ * @param exchange from the worked station.
+ * @param stamp    when QSO occurred.
+ */
+case class Qso(callsign: CallSign, bandMode: BandMode, exchange: Exchange, stamp: LocalDateTime = LocalDateTime.now()) {
+  def isDup(that: Qso): Boolean = {
+    this.callsign == that.callsign &&
+      this.bandMode == that.bandMode
+  }
+}
 
 /**
  * This is what's in the store and journal.log.
@@ -43,16 +59,6 @@ case class QsoRecord(contest: Contest,
   }
 }
 
-/**
- * One contact with another station.
- *
- */
-case class Qso(callsign: CallSign, bandMode: BandMode, exchange: Exchange, stamp: LocalDateTime = LocalDateTime.now()) {
-  def isDup(that: Qso): Boolean = {
-    this.callsign == that.callsign &&
-      this.bandMode == that.bandMode
-  }
-}
 
 /**
  * Info used internally by FDLog.
@@ -68,23 +74,32 @@ case class FdLogId(nodeSn: Int,
 
 }
 
-case class NodeAddress(instance: Int = 0, nodeAddress: String = InetAddress.getLocalHost.getHostAddress) {
-   def display: String = {
+case class NodeAddress(instance: Int = 0, nodeAddress: String = InetAddress.getLocalHost.getHostAddress) extends Ordered[NodeAddress] {
+  def display: String = {
     s"$nodeAddress:$instance"
+  }
+
+  override def compare(that: NodeAddress): Int = {
+    var ret = this.nodeAddress compareTo (that.nodeAddress)
+    if (ret == 0) {
+      ret = this.instance compareTo (that.instance)
+    }
+    ret
   }
 }
 
 /**
- * This is what gets multicasted to cluster.
+ * This is what gets multi-casted to cluster.
  *
- * @param qsoRecord the new QSO
- * @param size      number of QSOs in the database on this node. (Includes the new QSO)
+ * @param qsoRecord   the new QSO
+ * @param nodeAddress where this came from.
+ * @param size        number of QSOs in the database on this node. (Includes the new QSO)
  */
-case class DistributedQsoRecord(qsoRecord: QsoRecord, size: Int) {
+case class DistributedQsoRecord(qsoRecord: QsoRecord, nodeAddress: NodeAddress, size: Int) extends Codec {
   def toByteString: ByteString = {
+    import MessageFormats._
     ByteString(Json.toBytes(Json.toJson(this)))
   }
-
 }
 
 object DistributedQsoRecord {
@@ -93,8 +108,11 @@ object DistributedQsoRecord {
   }
 }
 
-
-
-
+/**
+ * Something that can be rendered as a JSON string.
+ */
+trait Codec {
+  def toByteString: ByteString
+}
 
 

@@ -5,7 +5,8 @@ import java.net.InetSocketAddress
 
 import akka.actor.{ActorRef, Props}
 import akka.io.{IO, Udp}
-import org.wa9nnn.fdlog.model.DistributedQsoRecord
+import org.wa9nnn.fdlog.model.{Codec, DistributedQsoRecord}
+import org.wa9nnn.fdlog.store.JsonContainer
 
 class MultcastSenderActor() extends MulticastActor {
 
@@ -19,11 +20,14 @@ class MultcastSenderActor() extends MulticastActor {
   }
 
   def ready(send: ActorRef): Receive = {
-    case qso: DistributedQsoRecord =>
-      val byteString = qso.toByteString
+    case something: JsonContainer =>
+      logger.debug(s"Sending: ${something.className}")
+      val byteString = something.toByteString
       send ! Udp.Send(byteString, new InetSocketAddress(multicastGroup, port))
+
+
     case x ⇒
-      println(s"Unexpected: $x")
+      println(s"MultcastSenderActor: Unexpected: $x")
   }
 }
 

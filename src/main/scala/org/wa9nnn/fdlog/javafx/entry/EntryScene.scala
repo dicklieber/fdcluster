@@ -28,8 +28,8 @@ import scala.concurrent.Await
 /**
  * Create JavaFX UI for field day entry mode.
  */
-class FDLogEntryScene @Inject()(@Inject() currentStationProvider: CurrentStationProvider,
-                                @Inject() @Named("store") store: ActorRef) {
+class EntryScene @Inject()(@Inject() currentStationProvider: CurrentStationProvider,
+                           @Inject() @Named("store") store: ActorRef) {
   implicit val timeout = Timeout(5, TimeUnit.SECONDS)
   val qsoCallsign: TextField = new TextField() {
     styleClass.append("sadQso")
