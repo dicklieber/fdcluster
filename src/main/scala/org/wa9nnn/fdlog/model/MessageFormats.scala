@@ -1,6 +1,9 @@
 
 package org.wa9nnn.fdlog.model
 
+import java.time.LocalDateTime
+import java.time.format.{DateTimeFormatter, FormatStyle}
+
 import org.wa9nnn.fdlog.model.sync.{NodeStatus, QsoHour, QsoHourDigest, QsoHourIds}
 import org.wa9nnn.fdlog.store.JsonContainer
 import org.wa9nnn.fdlog.store.network.FdHour
@@ -31,4 +34,13 @@ object MessageFormats {
   implicit val jsonContainerFormat: Format[JsonContainer] = Json.format[JsonContainer]
   type CallSign = String
   type Uuid = String
+  type Digest = String
+
+}
+
+object TimeFormat {
+  implicit def formatLocalDateTime(ldt: LocalDateTime): String = {
+    ldt.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT))
+  }
+
 }

@@ -1,6 +1,4 @@
-
 package org.wa9nnn.fdlog.javafx.entry
-
 
 import scalafx.Includes._
 import scalafx.event.ActionEvent
@@ -12,7 +10,7 @@ import scala.collection.JavaConverters._
 class FdLogMenu(stage: Stage) {
   private val environmentMenuItem = new MenuItem {
     text = "Environment"
-    onAction = { ae: ActionEvent =>
+    onAction = { _: ActionEvent =>
       val d: Dialog[Nothing] = new Dialog() {
         title = "Information Dialog"
         private val keys = System.getProperties.keySet().asScala.map(_.toString)
@@ -20,19 +18,10 @@ class FdLogMenu(stage: Stage) {
           keys.toList
             .sorted
             .map(key ⇒
-              s"${key}: \t${System.getProperty(key).take(35)}").mkString("\n")
-
-
+              s"$key: \t${System.getProperty(key).take(35)}").mkString("\n")
       }
       d.dialogPane().buttonTypes = Seq( ButtonType.Close)
       d.showAndWait()
-
-      //      new Alert(AlertType.Information) {
-      //        initOwner(stage)
-      //        title = "Information Dialog"
-      //        headerText = "Look, an Information Dialog."
-      //        contentText = "I have a great message for you!"
-      //      }.showAndWait()
     }
   }
   TextInputDialog

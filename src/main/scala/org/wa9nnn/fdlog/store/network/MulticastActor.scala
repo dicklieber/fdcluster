@@ -1,7 +1,7 @@
 
 package org.wa9nnn.fdlog.store.network
 
-import java.net.{InetAddress, InetSocketAddress}
+import java.net.InetAddress
 
 import akka.actor.Actor
 import com.typesafe.config.Config

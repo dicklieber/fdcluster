@@ -4,15 +4,15 @@ package org.wa9nnn.fdlog.store.network.cluster
 import java.time.LocalDateTime
 
 import org.wa9nnn.fdlog.model.NodeAddress
-import org.wa9nnn.fdlog.model.sync.NodeStatus
+import org.wa9nnn.fdlog.model.sync.{NodeStatus, QsoHourDigest}
 import org.wa9nnn.fdlog.store.network.FdHour
 
 
 class NodeStateContainer(initialNodeStatus: NodeStatus) {
-  def digestForHour(fdHour: FdHour): String  = {
+
+  def digestForHour(fdHour: FdHour): Option[QsoHourDigest]  = {
     nodeStatus.digestForHour(fdHour)
   }
-
 
   def qsoCount: Int = nodeStatus.count
 
@@ -20,7 +20,6 @@ class NodeStateContainer(initialNodeStatus: NodeStatus) {
   var nodeStatus: NodeStatus = initialNodeStatus
 
   def nodeAddress: NodeAddress = nodeStatus.nodeAddress
-
 
   def update(nodeStatus: NodeStatus): Unit = {
     this.nodeStatus = nodeStatus

@@ -1,6 +1,5 @@
 package org.wa9nnn.fdlog.model
 
-import java.net.InetAddress
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -81,9 +80,9 @@ case class NodeAddress@Inject()(instance: Int = 0, nodeAddress: String = "localh
   }
 
   override def compare(that: NodeAddress): Int = {
-    var ret = this.nodeAddress compareTo (that.nodeAddress)
+    var ret = this.nodeAddress compareTo that.nodeAddress
     if (ret == 0) {
-      ret = this.instance compareTo (that.instance)
+      ret = this.instance compareTo that.instance
     }
     ret
   }

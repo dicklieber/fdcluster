@@ -1,7 +1,7 @@
 
 package org.wa9nnn.fdlog.model.sync
 
-import java.time.Instant
+import java.time.LocalDateTime
 
 import akka.util.ByteString
 import org.wa9nnn.fdlog.model.MessageFormats._
@@ -21,9 +21,10 @@ case class NodeStatus(nodeAddress: NodeAddress,
                       count: Int,
                       qsoHourDigests: List[QsoHourDigest],
                       currentStation: CurrentStation,
-                      stamp: Instant = Instant.now()) extends Codec {
-  def digestForHour(fdHour: FdHour): String = {
-    qsoHourDigests.find(_.startOfHour == fdHour).foldLeft("") { (accum, qhd) ⇒ accum + s"${qhd.digest}  ${qhd.size}" }
+                      stamp: LocalDateTime = LocalDateTime.now()) extends Codec {
+
+  def digestForHour(fdHour: FdHour): Option[QsoHourDigest] = {
+    qsoHourDigests.find(_.startOfHour == fdHour)
   }
 
   def toByteString: ByteString = {
@@ -31,4 +32,5 @@ case class NodeStatus(nodeAddress: NodeAddress,
   }
 }
 
+case class DigestAndCount(digest: Digest, count: Int)
 

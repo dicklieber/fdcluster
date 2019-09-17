@@ -3,7 +3,7 @@ package org.wa9nnn.fdlog.model.sync
 
 import java.security.MessageDigest
 
-import org.wa9nnn.fdlog.model.MessageFormats.Uuid
+import org.wa9nnn.fdlog.model.MessageFormats.{Digest, Uuid}
 import org.wa9nnn.fdlog.model.QsoRecord
 import org.wa9nnn.fdlog.store.network.FdHour
 
@@ -46,6 +46,6 @@ object QsoHour {
  * @param digest      of all the QsoIDs in this hour.
  * @param size        number of Qsos in this hour.  //todo Do we actually need this? isn't the digest sufficient?
  */
-case class QsoHourDigest(startOfHour: FdHour, digest: String, size: Int)
+case class QsoHourDigest(startOfHour: FdHour, digest: Digest, size: Int)
 
 case class QsoHourIds(startOfHour: FdHour, qsiIds: List[Uuid])

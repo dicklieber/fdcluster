@@ -9,7 +9,7 @@ import akka.pattern.ask
 import akka.util.Timeout
 import com.google.inject.Inject
 import com.google.inject.name.Named
-import org.wa9nnn.fdlog.javafx.Sections
+import org.wa9nnn.fdlog.javafx.entry.Sections
 import org.wa9nnn.fdlog.model.QsoRecord
 import org.wa9nnn.fdlog.store.StoreActor.DumpQsos
 import play.api.libs.json.Json

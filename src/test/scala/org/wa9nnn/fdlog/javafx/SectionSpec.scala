@@ -1,6 +1,7 @@
 package org.wa9nnn.fdlog.javafx
 
 import org.specs2.mutable.Specification
+import org.wa9nnn.fdlog.javafx.entry.Sections
 
 
 class SectionSpec extends Specification {

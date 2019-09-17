@@ -12,7 +12,6 @@ import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdlog.store.StoreActor.DumpCluster
 import org.wa9nnn.fdlog.store.network.cluster.NodeStateContainer
 import scalafx.scene.Node
-import scalafx.scene.control.TableView
 
 import scala.concurrent.Await
 
@@ -23,7 +22,6 @@ class ClusterScene @Inject()(@Inject() @Named("store") store: ActorRef) extends 
 
   private val clusterTable = new ClusterTable
   implicit val timeout = Timeout(5, TimeUnit.SECONDS)
-  private var tableView: TableView[Row] = _
 
   refresh()
 

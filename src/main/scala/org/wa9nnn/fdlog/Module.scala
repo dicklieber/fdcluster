@@ -76,14 +76,12 @@ class Module extends AbstractModule with ScalaModule {
       val vmidString = "//" + vmId + "?mode=r"
       val aVmId = new sun.jvmstat.monitor.VmIdentifier(vmidString)
       val vm = mh.getMonitoredVm(aVmId)
-      val vmIdentifier = vm.getVmIdentifier
-      val mainClass = MonitoredVmUtil.mainClass(vm, false)
-      println(s"""mainClass: "$mainClass"""")
-      mainClass
+//      val vmIdentifier = vm.getVmIdentifier
+      MonitoredVmUtil.mainClass(vm, false)
     }
     val fdLogCount = mainClasses.count(mainClass ⇒
       mainClass == "FdLog")
-    NodeAddress(fdLogCount, inetAddress.toString)
+    NodeAddress(fdLogCount, inetAddress.getCanonicalHostName)
 
   }
 }

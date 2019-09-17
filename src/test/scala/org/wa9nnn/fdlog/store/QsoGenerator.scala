@@ -4,7 +4,7 @@ package org.wa9nnn.fdlog.store
 import java.time.{Duration, LocalDateTime}
 import java.util.UUID
 
-import org.wa9nnn.fdlog.javafx.Sections
+import org.wa9nnn.fdlog.javafx.entry.Sections
 import org.wa9nnn.fdlog.model._
 
 import scala.util.Random

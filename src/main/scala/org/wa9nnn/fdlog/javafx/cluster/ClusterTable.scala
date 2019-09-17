@@ -5,7 +5,7 @@ import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdlog.model.NodeAddress
 import org.wa9nnn.fdlog.store.network.FdHour
 import org.wa9nnn.fdlog.store.network.cluster.NodeStateContainer
-import scalafx.beans.property.ReadOnlyStringWrapper
+import scalafx.beans.property.{ObjectProperty, ReadOnlyStringWrapper}
 import scalafx.collections.ObservableBuffer
 import scalafx.scene.control.{TableColumn, TableView}
 
@@ -16,7 +16,7 @@ class ClusterTable extends LazyLogging {
   private val data = ObservableBuffer[Row](Seq.empty)
   val tableView = new TableView[Row](data)
 
-  def refresh(nodes: Iterable[NodeStateContainer]):Unit= {
+  def refresh(nodes: Iterable[NodeStateContainer]): Unit = {
     implicit val byAddress = new TrieMap[NodeAddress, NodeStateContainer]()
     val hours: mutable.Set[FdHour] = mutable.Set.empty
     nodes.foreach { nodeStateContainer ⇒
@@ -28,17 +28,13 @@ class ClusterTable extends LazyLogging {
 
     val orderedNodes = byAddress.keySet.toList.sorted
 
-    def buildHeaderRow(orderedNodes: List[NodeAddress]): Row = {
-      Row("", orderedNodes.map(_.display))
-    }
-
     /**
      *
      * @param rowHeader string for 1st column
      * @param callback  how to extract body cell from a NodeStateContainer. Will be called for each [[NodeStateContainer]]
      * @return a row for the table
      */
-    def buildRow(rowHeader: String, callback: NodeStateContainer ⇒ String): Row = {
+    def buildRow(rowHeader: String, callback: NodeStateContainer ⇒ Any): Row = {
       Row(rowHeader, orderedNodes.map(nodeAddress ⇒ {
         val maybeContainer = byAddress.get(nodeAddress)
         callback(maybeContainer.get)
@@ -49,17 +45,16 @@ class ClusterTable extends LazyLogging {
       hours.toList.sorted.map { fdHour ⇒
         Row(fdHour.toString,
           orderedNodes.map {
-            byAddress(_).digestForHour(fdHour)
+            byAddress(_).digestForHour(fdHour).getOrElse("--")
           }
         )
       }
     }
 
     val rows: List[Row] = List(
-//      buildHeaderRow(orderedNodes),
-      buildRow("Started", _.firstContact.toString),
-      buildRow("Last", _.nodeStatus.stamp.toString),
-      buildRow("QSOs", _.nodeStatus.count.toString),
+      buildRow("Started", _.firstContact),
+      buildRow("Last", _.nodeStatus.stamp),
+      buildRow("QSOs", _.nodeStatus.count),
       buildRow("Band", _.nodeStatus.currentStation.bandMode.band.band),
       buildRow("Mode", _.nodeStatus.currentStation.bandMode.mode.name()),
       buildRow("Operator", _.nodeStatus.currentStation.ourStation.operator),
@@ -68,38 +63,35 @@ class ClusterTable extends LazyLogging {
     ) ++ buildHours
 
     data.clear()
-    data.addAll(rows:_*)
+    data.addAll(rows: _*)
 
-    def buildColumns: List[TableColumn[Row, String]] = {
-      val colTexts: List[String] =  orderedNodes.map(_.display)
+
+    def buildColumns = {
+      val colTexts: List[String] = orderedNodes.map(_.display)
 
       colTexts.zipWithIndex.map(e ⇒
-        new TableColumn[Row, String] {
+        new TableColumn[Row, Any] {
+          sortable = false
           val col = e._2
           text = e._1
-          cellValueFactory = { q =>
-            logger.debug(s"cellValueFactory q: $q")
-
-            val s = {
-              try {
-                q.value.cells(col)
-              } catch {
-                case x: Throwable ⇒ ""
-              }
-            }
-            val wrapper = ReadOnlyStringWrapper(s)
-            wrapper
+          cellValueFactory = { x ⇒
+            val r = x.value.cells(col)
+            new ObjectProperty(x.value, "row", r)
           }
-          prefWidth = 150
+
+          cellFactory = { _ =>
+            new FdClusterTableCell[Row, Any]
+          }
         }
       )
     }
 
-    val rowHeaderCol = new TableColumn[Row, String]{
-      text = ""
-      cellValueFactory = {q ⇒
+    val rowHeaderCol = new TableColumn[Row, String] {
+      text = "Node"
+      cellValueFactory = { q ⇒
         ReadOnlyStringWrapper(q.value.rowHeader)
       }
+      sortable = false
     }
 
     tableView.columns.clear()
@@ -110,4 +102,10 @@ class ClusterTable extends LazyLogging {
   }
 }
 
-case class Row(rowHeader: String, cells: Seq[String])
+/**
+ *
+ * @param rowHeader name show in 1st column of row.
+ * @param cells     things that an be rendered.
+ */
+case class Row(rowHeader: String, cells: Seq[Any])
+
