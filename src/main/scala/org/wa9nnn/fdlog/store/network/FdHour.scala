@@ -13,12 +13,27 @@ import java.time.LocalDateTime
  * @param hour of day
  */
 case class FdHour(day: Int, hour: Int) extends Ordered[FdHour] {
+  override def equals(obj: Any): Boolean = {
+    obj match {
+      case fd:FdHour ⇒
+        if (fd.hour == FdHour.allHours.hour && fd.day == FdHour.allHours.day) {
+          true
+        } else {
+          fd.hour == hour && fd.day == day
+        }
+      case _ ⇒
+        false
+    }
+  }
+
   def plus(i: Int): FdHour = {
     if (hour == 23) {
       FdHour(day + 1, 0)
     } else {
       copy(hour = hour + 1)
     }
+
+
   }
 
   override def compare(that: FdHour): Int = {
@@ -35,6 +50,8 @@ case class FdHour(day: Int, hour: Int) extends Ordered[FdHour] {
 }
 
 object FdHour {
+  val allHours = FdHour(0, 0)
+
   def apply(localDateTime: LocalDateTime): FdHour = {
     FdHour(localDateTime.getDayOfMonth, localDateTime.getHour)
   }

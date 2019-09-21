@@ -18,6 +18,7 @@
 
 package org.wa9nnn.fdlog.store
 
+import java.net.URL
 import java.util.concurrent.atomic.AtomicInteger
 
 import javax.inject.Inject
@@ -31,6 +32,7 @@ import org.wa9nnn.fdlog.model.{Contest, FdLogId, NodeAddress}
  */
 class NodeInfoImpl @Inject()(val contest: Contest,
                              val nodeAddress: NodeAddress,
+                             val url: URL = new URL("http://dummy"),
                              val nodeSerialNumbers: AtomicInteger = new AtomicInteger()
                             ) extends NodeInfo {
   override def nextSn: Int = nodeSerialNumbers.getAndIncrement()
@@ -47,6 +49,7 @@ trait NodeInfo {
   def nodeAddress: NodeAddress
 
   def contest: Contest
+  def url:URL
 
 }
 

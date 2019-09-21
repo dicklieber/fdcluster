@@ -12,6 +12,7 @@ import nl.grons.metrics.scala.DefaultInstrumented
 import org.wa9nnn.fdlog.model.MessageFormats._
 import org.wa9nnn.fdlog.model._
 import org.wa9nnn.fdlog.model.sync.{NodeStatus, QsoHour}
+import org.wa9nnn.fdlog.store.network.FdHour
 import play.api.libs.json.{JsValue, Json}
 import resource._
 
@@ -26,6 +27,7 @@ import scala.io.Source
  */
 class StoreMapImpl(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvider, journalFilePath: Option[Path] = None)
   extends Store with LazyLogging  with DefaultInstrumented {
+
   implicit val node: NodeAddress = nodeInfo.nodeAddress
   private val contacts = new TrieMap[Uuid, QsoRecord]()
   private val byCallsign = new TrieMap[CallSign, Set[QsoRecord]]
@@ -176,7 +178,14 @@ class StoreMapImpl(nodeInfo: NodeInfo, currentStationProvider: CurrentStationPro
       .map(_.hourDigest).toList
       .sortBy(_.startOfHour)
     qsoMeter.oneMinuteRate
-    NodeStatus(nodeInfo.nodeAddress, contacts.size, hourDigests, currentStationProvider.currentStation)
+    NodeStatus(nodeInfo.nodeAddress, nodeInfo.url, contacts.size, hourDigests, currentStationProvider.currentStation)
+  }
+  def get(fdHour: FdHour):  List[QsoHour] = {
+    contacts.values
+      .toList
+      .sorted.groupBy(_.fdHour).values.map(QsoHour(_))
+      .filter(_.startOfHour == fdHour)
+      .toList
   }
 
 }

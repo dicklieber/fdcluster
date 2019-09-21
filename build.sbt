@@ -12,14 +12,15 @@ resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
 
 scalaVersion := "2.12.8"
 
-mainClass in (Compile, run) := Some("org.wa9nnn.fdlog.javafx.entry.FdLog")
+mainClass in(Compile, run) := Some("org.wa9nnn.fdlog.javafx.entry.FdLog")
 
 
-scalacOptions in (Compile,doc) ++= Seq("-verbose")
+scalacOptions in(Compile, doc) ++= Seq("-verbose")
 
 //unmanagedJars in (Compile, run) += Attributed.blank(file(System.getenv("JAVA_HOME") + "/lib/ext/jfxrt.jar"))
 
 import scala.util.Properties
+
 val osType: SettingKey[String] = SettingKey[String]("osType")
 
 osType := {
@@ -34,6 +35,8 @@ osType := {
 }
 
 val javafxLib = file(sys.env.get("JAVAFX_LIB").getOrElse("Environmental variable JAVAFX_LIB is not set"))
+lazy val akkaHttpVersion = "10.1.9"
+lazy val akkaVersion    = "2.6.0"
 
 libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-json" % "2.8.0-M4",
@@ -43,6 +46,8 @@ libraryDependencies ++= Seq(
   "com.jsuereth" %% "scala-arm" % "2.0",
   "net.codingwell" %% "scala-guice" % "4.2.6",
   "com.typesafe.akka" %% "akka-actor" % "2.6.0-M5",
+  "com.typesafe.akka" %% "akka-http" % "10.1.9",
+  "com.typesafe.akka" %% "akka-stream"          % akkaVersion,
   "ch.qos.logback" % "logback-classic" % "1.2.3",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
   // JavaFX 11 jars are distributed for each platform

@@ -3,7 +3,7 @@ package org.wa9nnn.fdlog.laureldb
 
 import java.net.InetAddress
 
-import org.wa9nnn.fdlog.model.{Contest, CurrentStationProviderImpl, Exchange, NodeAddress, Qso}
+import org.wa9nnn.fdlog.model._
 import org.wa9nnn.fdlog.store.{NodeInfoImpl, StoreMapImpl}
 
 import scala.io.Source

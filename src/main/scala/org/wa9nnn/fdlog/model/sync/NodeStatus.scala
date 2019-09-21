@@ -1,6 +1,7 @@
 
 package org.wa9nnn.fdlog.model.sync
 
+import java.net.{URI, URL}
 import java.time.LocalDateTime
 
 import akka.util.ByteString
@@ -12,12 +13,14 @@ import play.api.libs.json.Json
 /**
  *
  * @param nodeAddress    our IP and instance.
+ * @param apiUrl         how to talk to this node.
  * @param count          of QSOs in db.
  * @param qsoHourDigests for quickly determining what we have.
  * @param currentStation band, mode, operator etc.
  * @param stamp          when this message was generated.
  */
 case class NodeStatus(nodeAddress: NodeAddress,
+                      apiUrl: URL,
                       count: Int,
                       qsoHourDigests: List[QsoHourDigest],
                       currentStation: CurrentStation,

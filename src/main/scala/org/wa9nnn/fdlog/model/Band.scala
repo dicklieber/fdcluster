@@ -43,7 +43,7 @@ object Band {
 
 
 
-    implicit val  bandFormat: Format[Band] = new Format[Band] {
+     implicit val  bandFormat: Format[Band] = new Format[Band] {
       override def reads(json: JsValue): JsResult[Band] = {
         val ss = json.as[String]
 

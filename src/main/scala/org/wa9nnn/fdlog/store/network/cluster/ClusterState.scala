@@ -2,11 +2,13 @@
 package org.wa9nnn.fdlog.store.network.cluster
 
 import org.wa9nnn.fdlog.model.NodeAddress
-import org.wa9nnn.fdlog.model.sync.NodeStatus
+import org.wa9nnn.fdlog.model.sync.{NodeStatus, QsoHour}
+import org.wa9nnn.fdlog.store.network.FdHour
 
 import scala.collection.concurrent.TrieMap
 
 class ClusterState {
+
 
   private val nodes:TrieMap[NodeAddress, NodeStateContainer] = TrieMap.empty
 

@@ -3,6 +3,7 @@ package org.wa9nnn.fdlog.javafx.entry
 
 import com.google.inject.Guice
 import net.codingwell.scalaguice.InjectorExtensions._
+import org.wa9nnn.fdlog.http.Server
 import org.wa9nnn.fdlog.javafx.cluster.ClusterScene
 import org.wa9nnn.fdlog.javafx.data.DataScene
 import org.wa9nnn.fdlog.store.NodeInfo
@@ -19,7 +20,6 @@ import scalafx.scene.layout.BorderPane
  * Main for FDLog
  */
 object FdLog extends JFXApp {
-
 //  val system: ActorSystem = ActorSystem("FdLogAkka")
 
   private val injector = Guice.createInjector(new Module())
@@ -30,8 +30,12 @@ object FdLog extends JFXApp {
   private val dataScene = injector.instance[DataScene]
   private val clusterScene = injector.instance[ClusterScene]
   private val nodeInfo: NodeInfo = injector.instance[NodeInfo]
-
-
+  try {
+    injector.instance[Server]
+  } catch {
+    case e:Throwable ⇒
+      e.printStackTrace()
+  }
 
   private val dataTab: Tab = new Tab {
     text = "Data"

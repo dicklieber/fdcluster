@@ -13,7 +13,7 @@ import org.wa9nnn.fdlog.model._
 import org.wa9nnn.fdlog.model.sync.NodeStatus
 import org.wa9nnn.fdlog.store.StoreActor.{DumpCluster, DumpQsos}
 import org.wa9nnn.fdlog.store.network.cluster.ClusterState
-import org.wa9nnn.fdlog.store.network.{MultcastSenderActor, MulticastListenerActor}
+import org.wa9nnn.fdlog.store.network.{FdHour, MultcastSenderActor, MulticastListenerActor}
 import play.api.libs.json.Json
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -61,6 +61,9 @@ class StoreActor(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvi
         logger.debug(s"Ignoring our own QsoRecord: ${qsoRecord.qso}")
       }
 
+    case fdHour: FdHour ⇒
+      sender ! store.get(fdHour)
+
     case StatusPing ⇒
       val nodeStatus = store.nodeStatus
       senderActor ! JsonContainer(nodeStatus.getClass.getSimpleName, nodeStatus)
@@ -92,6 +95,7 @@ object StoreActor {
 
   case object DumpQsos
   case object DumpCluster
+
 
   def props(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvider, inetAddress: InetAddress, config: Config): Props = {
      Props(new StoreActor(nodeInfo, currentStationProvider, inetAddress, config))

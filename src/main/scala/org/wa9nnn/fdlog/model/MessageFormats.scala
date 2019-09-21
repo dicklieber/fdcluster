@@ -1,6 +1,7 @@
 
 package org.wa9nnn.fdlog.model
 
+import java.net.URL
 import java.time.LocalDateTime
 import java.time.format.{DateTimeFormatter, FormatStyle}
 
@@ -17,6 +18,7 @@ import play.api.libs.json.{Format, Json}
 object MessageFormats {
 
   import org.wa9nnn.fdlog.model.ModeJson.modeFormat
+  import org.wa9nnn.fdlog.model.UrlFormt.urlFormat
 
   implicit val fdHourFormat: Format[FdHour] = Json.format[FdHour]
   implicit val transmitterFormat: Format[OurStation] = Json.format[OurStation]
