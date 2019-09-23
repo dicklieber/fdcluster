@@ -1,7 +1,7 @@
 
 package org.wa9nnn.fdlog.model
 
-import java.nio.file.{Files, Paths}
+import java.nio.file.{Files, NoSuchFileException, Paths}
 
 import com.typesafe.config.{Config, ConfigFactory}
 import com.typesafe.scalalogging.LazyLogging
@@ -56,6 +56,9 @@ class CurrentStationProviderImpl @Inject()(config: Config = ConfigFactory.load()
           cs
       }
     } catch {
+      case nsf: NoSuchFileException ⇒
+        logger.info(s"No $currentStationPath using default.")
+        CurrentStation()
       case et: Throwable ⇒
         et.printStackTrace()
         CurrentStation()
