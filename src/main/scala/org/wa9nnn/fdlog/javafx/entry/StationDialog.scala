@@ -14,7 +14,7 @@ import scalafx.scene.layout.GridPane
 
 class StationDialog @Inject()(currentStationProvider: CurrentStationProvider, bandModeFactory: BandModeFactory) extends LazyLogging {
   private val saveButton = new ButtonType("Save", ButtonData.OKDone)
-  private val cancelButton =  ButtonType.Cancel
+  private val cancelButton = ButtonType.Cancel
 
   def apply(): Unit = {
     val currentStation: CurrentStation = currentStationProvider.currentStation
@@ -45,14 +45,14 @@ class StationDialog @Inject()(currentStationProvider: CurrentStationProvider, ba
       //      initOwner(stage)
       title = "Station"
       headerText = "Configuration for this station"
-      resultConverter = f ⇒ {
-        val cs = CurrentStation(
-          OurStation(operator.text.value, rig.text.value, antenna.text.value),
-          BandMode(band.value.value, mode.value.value)
-        )
-        if (f == saveButton)
-          currentStationProvider.update(cs)
-        cs
+      resultConverter = { f ⇒
+        if (f == saveButton) {
+          CurrentStation(
+            OurStation(operator.text.value, rig.text.value, antenna.text.value),
+            BandMode(band.value.value, mode.value.value)
+          )
+        } else
+          null
       }
     }
     dialog.dialogPane().getButtonTypes.addAll(saveButton, cancelButton)
@@ -82,9 +82,9 @@ class StationDialog @Inject()(currentStationProvider: CurrentStationProvider, ba
     // Request focus on the username field by default.
     Platform.runLater(operator.requestFocus())
 
-    /*
-    resultConverter function in dialogs will handle collecting result and updating.
-     */
-    dialog.showAndWait()
+    dialog.showAndWait().asInstanceOf[Option[CurrentStation]].foreach { cs ⇒
+      currentStationProvider.update(cs)
+    }
   }
+
 }
