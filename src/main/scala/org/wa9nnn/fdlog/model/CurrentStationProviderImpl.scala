@@ -1,10 +1,17 @@
 
 package org.wa9nnn.fdlog.model
 
-import org.wa9nnn.fdlog.model.MessageFormats.CallSign
+import java.nio.file.{Files, Paths}
+
+import com.typesafe.config.{Config, ConfigFactory}
+import com.typesafe.scalalogging.LazyLogging
+import javax.inject.Inject
+import org.wa9nnn.fdlog.model.MessageFormats._
+import play.api.libs.json.Json
+import resource._
 
 case class CurrentStation(ourStation: OurStation = OurStation("WA9NNN", "IC-7300", "endfed"),
-                           bandMode: BandMode = new BandMode("20m","digital")){
+                          bandMode: BandMode = new BandMode("20m", "digital")) {
 }
 
 trait CurrentStationProvider {
@@ -14,21 +21,56 @@ trait CurrentStationProvider {
    * @return
    */
   def currentStation: CurrentStation
-  def bandMode:BandMode = currentStation.bandMode
-  def ourStation:OurStation = currentStation.ourStation
-  def update(currentStation: CurrentStation):Unit
+
+  def bandMode: BandMode = currentStation.bandMode
+
+  def ourStation: OurStation = currentStation.ourStation
+
+  def update(currentStation: CurrentStation): Unit
 }
 
-class CurrentStationProviderImpl extends CurrentStationProvider {
+/**
+ * Manages CurrentStation
+ * Loads from file as specified in fdlog.currentStationPath on startup.
+ * Saves on update.
+ *
+ * @param config configuration.
+ */
+class CurrentStationProviderImpl @Inject()(config: Config = ConfigFactory.load())
+  extends CurrentStationProvider with LazyLogging {
+
+  private val currentStationPath = Paths.get(config.getString("fdlog.currentStationPath"))
+  Files.createDirectories(currentStationPath.getParent)
+
   /**
    * Currently configured
    *
    * @return
    */
-  private var currentStation_ = CurrentStation()
+  private var currentStation_ = {
+    try {
+      managed(Files.newInputStream(currentStationPath)) acquireAndGet {
+        inputStream =>
+          val cs = Json.parse(inputStream).as[CurrentStation]
+          logger.info(s"Loaded CurrentStation from $currentStationPath")
+          cs
+      }
+    } catch {
+      case et: Throwable ⇒
+        et.printStackTrace()
+        CurrentStation()
+    }
+  }
+  // tt.getOrElse(CurrentStation())
 
   override def update(currentStation: CurrentStation): Unit = {
     currentStation_ = currentStation
+    managed(Files.newOutputStream(currentStationPath)) acquireAndGet {
+      outputStream ⇒
+        outputStream.write(Json.prettyPrint(Json.toJson(currentStation)).getBytes)
+        logger.info(s"Save updated CurrentStation to $currentStationPath")
+    }
+
   }
 
   /**

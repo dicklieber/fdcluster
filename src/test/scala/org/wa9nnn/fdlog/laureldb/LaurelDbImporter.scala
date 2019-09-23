@@ -3,6 +3,7 @@ package org.wa9nnn.fdlog.laureldb
 
 import java.net.InetAddress
 
+import com.typesafe.config.{Config, ConfigFactory}
 import org.wa9nnn.fdlog.model._
 import org.wa9nnn.fdlog.store.{NodeInfoImpl, StoreMapImpl}
 
@@ -11,7 +12,7 @@ import scala.io.Source
 object LaurelDbImporter {
   val ourContest = Contest("FD", 2019)
   val nodeInfo = new NodeInfoImpl(ourContest, nodeAddress = NodeAddress(0, InetAddress.getLocalHost.toString ))
-  val currentStationProvider = new CurrentStationProviderImpl()
+  val currentStationProvider = new CurrentStationProviderImpl(ConfigFactory.load)
   val store = new StoreMapImpl(nodeInfo, currentStationProvider, null) //todo
 
   val exchange = Exchange("3A", "IL")

@@ -19,6 +19,7 @@ package org.wa9nnn.fdlog.store
 
 import java.nio.file.{Files, Path}
 
+import com.typesafe.config.ConfigFactory
 import org.specs2.mutable.Specification
 import org.specs2.specification.After
 import org.wa9nnn.fdlog.model.MessageFormats._
@@ -33,7 +34,7 @@ class StoreMapImplSpec extends Specification with After{
 
 
   private val journal: Path = Files.createTempFile("fdlog-journal", ".log")
-  private val storeMapImpl = new StoreMapImpl(nodeInfo, new CurrentStationProviderImpl(), Some(journal))
+  private val storeMapImpl = new StoreMapImpl(nodeInfo, new CurrentStationProviderImpl(ConfigFactory.load()), Some(journal))
   private val worked: CallSign = "K2ORS"
   private val exchange: Exchange = Exchange("2I", "WPA")
   private val bandMode = BandMode()
