@@ -17,7 +17,6 @@
 
 package org.wa9nnn.fdlog.store
 
-import java.net.InetAddress
 import java.nio.file.{Files, Path}
 
 import org.specs2.mutable.Specification
@@ -25,10 +24,8 @@ import org.specs2.specification.After
 import org.wa9nnn.fdlog.model.MessageFormats._
 import org.wa9nnn.fdlog.model._
 
-import scala.collection.mutable
-
 class StoreMapImplSpec extends Specification with After{
-  val expectedNodeAddress: NodeAddress = NodeAddress(0)
+  val expectedNodeAddress: NodeAddress = NodeAddress()
 
   implicit val nodeInfo: NodeInfoImpl = new NodeInfoImpl(
     contest = Contest("WFD", 2017),
@@ -39,7 +36,7 @@ class StoreMapImplSpec extends Specification with After{
   private val storeMapImpl = new StoreMapImpl(nodeInfo, new CurrentStationProviderImpl(), Some(journal))
   private val worked: CallSign = "K2ORS"
   private val exchange: Exchange = Exchange("2I", "WPA")
-  private val bandMode = BandMode(Band("20m"), Mode.phone)
+  private val bandMode = BandMode()
 
   "StoreMapImplSpec" >> {
     "happy path" >> {

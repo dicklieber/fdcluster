@@ -2,7 +2,7 @@
 package org.wa9nnn.fdlog.store
 
 import java.net.InetAddress
-import java.nio.file.Paths
+import java.nio.file.Path
 
 import akka.actor.{Actor, ActorRef, Props}
 import akka.util.ByteString
@@ -20,10 +20,9 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-class StoreActor(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvider, inetAddress: InetAddress, config: Config) extends Actor with LazyLogging {
+class StoreActor(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvider, inetAddress: InetAddress, config: Config, journalPath: Option[Path]) extends Actor with LazyLogging {
 
-  private val journal: String = context.system.settings.config.getString("fdlog.journalPath")
-  private val store = new StoreMapImpl(nodeInfo, currentStationProvider, Some(Paths.get(journal)))
+  private val store = new StoreMapImpl(nodeInfo, currentStationProvider, journalPath)
   private val clusterState = new ClusterState
 
 
@@ -94,11 +93,12 @@ class StoreActor(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvi
 object StoreActor {
 
   case object DumpQsos
+
   case object DumpCluster
 
 
-  def props(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvider, inetAddress: InetAddress, config: Config): Props = {
-     Props(new StoreActor(nodeInfo, currentStationProvider, inetAddress, config))
+  def props(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvider, inetAddress: InetAddress, config: Config, journalPath: Path): Props = {
+    Props(new StoreActor(nodeInfo, currentStationProvider, inetAddress, config, Some(journalPath)))
   }
 
 }

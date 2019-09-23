@@ -1,6 +1,7 @@
 
 package org.wa9nnn.fdlog.javafx.data
 
+import java.nio.file.Path
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
 
@@ -16,9 +17,11 @@ import play.api.libs.json.Json
 import scalafx.Includes._
 import scalafx.beans.property.ReadOnlyStringWrapper
 import scalafx.collections.ObservableBuffer
+import scalafx.geometry.Pos
 import scalafx.scene.Node
 import scalafx.scene.control.TableColumn._
-import scalafx.scene.control.{SplitPane, TableColumn, TableView, TextArea}
+import scalafx.scene.control.{Label, SplitPane, TableColumn, TableView, TextArea}
+import scalafx.scene.layout.VBox
 
 
 //import javafx.scene.{control ⇒ jfxsc}
@@ -28,7 +31,7 @@ import scala.concurrent.Await
 /**
  * Create JavaFX UI to view QSOs.
  */
-class DataScene @Inject()(@Inject() @Named("store") store: ActorRef) {
+class DataScene @Inject()( @Named("store") store: ActorRef,  @Named("journalPath")journalPath:Path) {
 
   implicit val timeout = Timeout(5, TimeUnit.SECONDS)
 
@@ -67,14 +70,14 @@ class DataScene @Inject()(@Inject() @Named("store") store: ActorRef) {
       new TableColumn[QsoRecord, String] {
         text = "Band"
         cellValueFactory = { q =>
-          ReadOnlyStringWrapper(q.value.qso.bandMode.band.band)
+          ReadOnlyStringWrapper(q.value.qso.bandMode.band)
         }
         prefWidth = 50
       },
       new TableColumn[QsoRecord, String] {
         text = "Mode"
         cellValueFactory = { q =>
-          ReadOnlyStringWrapper(q.value.qso.bandMode.mode.name())
+          ReadOnlyStringWrapper(q.value.qso.bandMode.mode)
         }
         prefWidth = 50
       },
@@ -112,9 +115,11 @@ class DataScene @Inject()(@Inject() @Named("store") store: ActorRef) {
   private val splitPane = new SplitPane
   splitPane.items.addAll(tableView, detailView)
   splitPane.setDividerPosition(0, 50.0)
-
-  val pane: Node = splitPane
-
+  val journalFileLabel = new Label(s"QSO Journal file: ${journalPath.toAbsolutePath}")
+  journalFileLabel.setAlignment(Pos.Center)
+  journalFileLabel.getStyleClass.add("parenthetic");
+  val vbox = new VBox(journalFileLabel, splitPane)
+  val pane: Node = vbox
 
 
 }

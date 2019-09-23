@@ -10,6 +10,7 @@ import org.wa9nnn.fdlog.model._
 import scala.util.Random
 
 object QsoGenerator {
+  val bmf = new BandModeFactory()
   def apply(numberfOfQsos: Int, betweewnQsos: Duration, startOfContest: LocalDateTime): List[QsoRecord] = {
     var iteration = 0
     val secondsBetween = betweewnQsos.toSeconds
@@ -43,8 +44,9 @@ object QsoGenerator {
   }
 
   private def bandMode: BandMode = {
-    val band: Band = Band(Band.bands(random.nextInt(Band.bands.size - 1)))
-    val mode = Mode.values()(random.nextInt(3))
-    BandMode(band, mode)
+    BandMode(
+      bmf.bands(random.nextInt(bmf.bands.size)),
+      bmf.modes(random.nextInt(bmf.modes.size))
+    )
   }
 }

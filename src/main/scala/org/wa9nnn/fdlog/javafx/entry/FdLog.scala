@@ -36,6 +36,7 @@ object FdLog extends JFXApp {
     case e:Throwable ⇒
       e.printStackTrace()
   }
+  val fdlogmenu: FdLogMenu = injector.instance[FdLogMenu]
 
   private val dataTab: Tab = new Tab {
     text = "Data"
@@ -68,7 +69,7 @@ object FdLog extends JFXApp {
   }
 //  private val statsHeader = new HBox(Label(f"QSOs:  todo "))
   private val rootPane = new BorderPane {
-    top = new FdLogMenu(stage).menuBar
+    top = fdlogmenu.menuBar
     center = tabPane
   }
   val ourScene = new Scene()

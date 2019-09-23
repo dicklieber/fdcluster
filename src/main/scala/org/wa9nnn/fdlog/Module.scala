@@ -2,6 +2,7 @@
 package org.wa9nnn.fdlog
 
 import java.net.{Inet4Address, InetAddress, NetworkInterface, URL}
+import java.nio.file.{Path, Paths}
 
 import akka.actor.{ActorRef, ActorSystem}
 import com.google.inject.name.Named
@@ -52,16 +53,18 @@ class Module extends AbstractModule with ScalaModule {
                  nodeInfo: NodeInfo,
                  currentStationProvider: CurrentStationProvider,
                  @Named("ourInetAddresss") inetAddress: InetAddress,
-                 config: Config): ActorRef = {
-    actorSystem.actorOf(StoreActor.props(nodeInfo, currentStationProvider, inetAddress, config))
+                 config: Config,
+                 @Named("journalPath") journalPath: Path): ActorRef = {
+    actorSystem.actorOf(StoreActor.props(nodeInfo, currentStationProvider, inetAddress, config, journalPath))
   }
 
-  //  @Provides
-  //  @Singleton
-  //  @Named("listener")
-  //  def getMuticastListenerActor(actorSystem: ActorSystem, inetAddress: InetAddress, config:Config): ActorRef = {
-  //    actorSystem.actorOf(MulticastListenerActor.props(inetAddress, config))
-  //  }
+  @Provides
+  @Singleton
+  @Named("journalPath")
+  def getJournalPath(config: Config): Path = {
+    Paths.get(config.getString("fdlog.journalPath"))
+  }
+
 
   /**
    *

@@ -17,7 +17,6 @@ import play.api.libs.json.{Format, Json}
  */
 object MessageFormats {
 
-  import org.wa9nnn.fdlog.model.ModeJson.modeFormat
   import org.wa9nnn.fdlog.model.UrlFormt.urlFormat
 
   implicit val fdHourFormat: Format[FdHour] = Json.format[FdHour]

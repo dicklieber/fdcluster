@@ -22,6 +22,12 @@
 .sectionPrompt {
     -fx-text-fill: blue;
 }
+
+.parenthetic {
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+    -fx-text-fill: grey
+}
 TextArea {
     -fx-font-family: monospace;
 }
