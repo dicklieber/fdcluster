@@ -12,18 +12,18 @@ import org.wa9nnn.fdlog.model.MessageFormats._
 import org.wa9nnn.fdlog.model._
 import org.wa9nnn.fdlog.model.sync.NodeStatus
 import org.wa9nnn.fdlog.store.StoreActor.{DumpCluster, DumpQsos}
-import org.wa9nnn.fdlog.store.network.cluster.ClusterState
 import org.wa9nnn.fdlog.store.network.{FdHour, MultcastSenderActor, MulticastListenerActor}
 import play.api.libs.json.Json
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.language.postfixOps
+import org.wa9nnn.fdlog.store.network.cluster.ClusterState
 
 class StoreActor(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvider, inetAddress: InetAddress, config: Config, journalPath: Option[Path]) extends Actor with LazyLogging {
 
   private val store = new StoreMapImpl(nodeInfo, currentStationProvider, journalPath)
-  private val clusterState = new ClusterState
+  private val clusterState = new ClusterState(nodeInfo.nodeAddress)
 
 
   private val ourNode = nodeInfo.nodeAddress
@@ -66,6 +66,8 @@ class StoreActor(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvi
     case StatusPing ⇒
       val nodeStatus = store.nodeStatus
       senderActor ! JsonContainer(nodeStatus.getClass.getSimpleName, nodeStatus)
+
+      val hoursToSync = clusterState.hoursToSync()
 
     case ns: NodeStatus ⇒
       logger.debug(s"Got NodeStatus")

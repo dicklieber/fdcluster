@@ -36,7 +36,6 @@ osType := {
 
 val javafxLib = file(sys.env.get("JAVAFX_LIB").getOrElse("Environmental variable JAVAFX_LIB is not set"))
 lazy val akkaHttpVersion = "10.1.9"
-lazy val akkaVersion    = "2.6.0"
 
 libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-json" % "2.8.0-M4",
@@ -45,9 +44,9 @@ libraryDependencies ++= Seq(
   "org.scalafx" %% "scalafx" % "8.0.192-R14",
   "com.jsuereth" %% "scala-arm" % "2.0",
   "net.codingwell" %% "scala-guice" % "4.2.6",
-  "com.typesafe.akka" %% "akka-actor" % "2.6.0-M5",
+  "com.typesafe.akka" %% "akka-actor" % "2.6.0-M7",
   "com.typesafe.akka" %% "akka-http" % "10.1.9",
-  "com.typesafe.akka" %% "akka-stream"          % akkaVersion,
+  "com.typesafe.akka" %% "akka-stream" % "2.6.0-M7",
   "ch.qos.logback" % "logback-classic" % "1.2.3",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
   // JavaFX 11 jars are distributed for each platform

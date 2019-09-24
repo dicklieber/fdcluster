@@ -180,6 +180,8 @@ class StoreMapImpl(nodeInfo: NodeInfo, currentStationProvider: CurrentStationPro
     qsoMeter.oneMinuteRate
     NodeStatus(nodeInfo.nodeAddress, nodeInfo.url, contacts.size, hourDigests, currentStationProvider.currentStation)
   }
+
+
   def get(fdHour: FdHour):  List[QsoHour] = {
     contacts.values
       .toList

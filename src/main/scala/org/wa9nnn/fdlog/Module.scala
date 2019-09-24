@@ -87,19 +87,8 @@ class Module extends AbstractModule with ScalaModule {
 
   @Provides
   @Singleton
-  def nodeAddress(@Named("ourInetAddresss") inetAddress: InetAddress): NodeAddress = {
-    val mh = MonitoredHost.getMonitoredHost(null.asInstanceOf[String])
-    val ids = mh.activeVms().asScala
-    val mainClasses = ids.toList.map { vmId ⇒
-      val vmidString = "//" + vmId + "?mode=r"
-      val aVmId = new sun.jvmstat.monitor.VmIdentifier(vmidString)
-      val vm = mh.getMonitoredVm(aVmId)
-      //      val vmIdentifier = vm.getVmIdentifier
-      MonitoredVmUtil.mainClass(vm, false)
-    }
-    val fdLogCount = mainClasses.count(mainClass ⇒
-      mainClass == "FdLog")
-    NodeAddress(fdLogCount, inetAddress.getCanonicalHostName)
-
+  def nodeAddress(@Named("ourInetAddresss") inetAddress: InetAddress, config: Config): NodeAddress = {
+    val instance = config.getInt("instance")
+    NodeAddress(instance, inetAddress.getCanonicalHostName)
   }
 }

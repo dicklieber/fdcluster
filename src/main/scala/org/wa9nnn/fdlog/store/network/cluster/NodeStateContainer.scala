@@ -7,10 +7,9 @@ import org.wa9nnn.fdlog.model.NodeAddress
 import org.wa9nnn.fdlog.model.sync.{NodeStatus, QsoHourDigest}
 import org.wa9nnn.fdlog.store.network.FdHour
 
-
 class NodeStateContainer(initialNodeStatus: NodeStatus) {
 
-  def digestForHour(fdHour: FdHour): Option[QsoHourDigest]  = {
+  def digestForHour(fdHour: FdHour): Option[QsoHourDigest] = {
     nodeStatus.digestForHour(fdHour)
   }
 
@@ -25,5 +24,22 @@ class NodeStateContainer(initialNodeStatus: NodeStatus) {
     this.nodeStatus = nodeStatus
   }
 
+  def forHour(fdHour: FdHour): Option[NodeFdHourDigest] = {
+    nodeStatus
+      .qsoHourDigests
+      .find(_.startOfHour == fdHour)
+      .map(qhd ⇒ NodeFdHourDigest(nodeAddress, qhd))
+  }
+
+  /**
+   *
+   * @return [[FdHour]]s in the node
+   */
+  def knownHours: Set[FdHour] = {
+    nodeStatus.qsoHourDigests.map(_.startOfHour).toSet
+  }
+
 
 }
+
+case class NodeFdHourDigest(nodeAddress: NodeAddress, qsoHourDigest: QsoHourDigest)
