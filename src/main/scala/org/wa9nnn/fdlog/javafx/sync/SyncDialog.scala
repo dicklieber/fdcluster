@@ -1,26 +1,45 @@
 
 package org.wa9nnn.fdlog.javafx.sync
 
-import javafx.scene.control.DialogPane
+import java.time.{Instant, ZoneId}
+import java.time.format.DateTimeFormatter
+import java.util.Locale
+
+import com.google.inject.name.Named
+import javafx.scene.control
 import javax.inject.Inject
-import scalafx.beans.property.{ObjectProperty, ReadOnlyStringWrapper}
+import scalafx.beans.property.ReadOnlyStringWrapper
+import scalafx.collections.ObservableBuffer
 import scalafx.scene.control.TableColumn._
 import scalafx.scene.control.{ButtonType, Dialog, TableColumn, TableView}
+import scalafx.stage.Modality
 
-class SyncDialog @Inject()(stepsData: StepsData) extends Dialog {
-  val dp: DialogPane = dialogPane()
+class SyncDialog @Inject()(@Named("stepsData") stepsData: ObservableBuffer[Step]) extends Dialog {
+  title = "Sync Operation"
+  val instantFormatter: DateTimeFormatter =
+    DateTimeFormatter.ofPattern("mm:ss.SSS")
+
+      .withLocale(Locale.US)
+      .withZone(ZoneId.systemDefault());
+
+  implicit def formatInstant(ldt: Instant): String = {
+    instantFormatter.format(ldt)
+  }
+
+  val dp: control.DialogPane = dialogPane()
   dp.getButtonTypes.addAll(ButtonType.Close)
+  initModality(Modality.None)
 
-  val tableView: TableView[Step] = new TableView[Step](stepsData) {
+  private val tableView = new TableView(stepsData) {
     columns ++= List(
       new TableColumn[Step, String] {
         text = "Start"
         cellValueFactory = { q =>
           val step = q.value
-          val wrapper = ReadOnlyStringWrapper(step.start.toString)
+          val wrapper = ReadOnlyStringWrapper(step.start)
           wrapper
         }
-        prefWidth = 150
+        prefWidth = 75
       },
       new TableColumn[Step, String] {
         text = "Step"
@@ -28,14 +47,14 @@ class SyncDialog @Inject()(stepsData: StepsData) extends Dialog {
           val wrapper = ReadOnlyStringWrapper(q.value.name)
           wrapper
         }
-        prefWidth = 75
+        prefWidth = 150
       },
       new TableColumn[Step, String] {
         text = "Result"
         cellValueFactory = { q =>
           ReadOnlyStringWrapper(q.value.result)
         }
-        prefWidth = 50
+        prefWidth = 200
       }
     )
   }

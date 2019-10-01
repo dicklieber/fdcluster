@@ -9,7 +9,8 @@ import akka.util.{ByteString, Timeout}
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdlog.Markers.syncMarker
-import org.wa9nnn.fdlog.javafx.sync.{StepsData, SyncDialog}
+import org.wa9nnn.fdlog.javafx.sync.Step
+import org.wa9nnn.fdlog.javafx.sync.StepsDataMethod.addStep
 import org.wa9nnn.fdlog.model.MessageFormats._
 import org.wa9nnn.fdlog.model._
 import org.wa9nnn.fdlog.model.sync.NodeStatus
@@ -17,6 +18,7 @@ import org.wa9nnn.fdlog.store.StoreActor.{DumpCluster, DumpQsos}
 import org.wa9nnn.fdlog.store.network.cluster.{ClientActor, ClusterState, FetchQsos}
 import org.wa9nnn.fdlog.store.network.{FdHour, MultcastSenderActor, MulticastListenerActor}
 import play.api.libs.json.Json
+import scalafx.collections.ObservableBuffer
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
@@ -24,9 +26,9 @@ import scala.language.postfixOps
 
 class StoreActor(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvider,
                  inetAddress: InetAddress, config: Config, journalPath: Option[Path],
-                 stepsData: StepsData) extends Actor with LazyLogging {
+                 stepsData: ObservableBuffer[Step]) extends Actor with LazyLogging {
 
-  private val store = new StoreMapImpl(nodeInfo, currentStationProvider, journalPath)
+  private val store = new StoreMapImpl(nodeInfo, currentStationProvider, stepsData, journalPath)
   private val clusterState = new ClusterState(nodeInfo.nodeAddress)
   implicit val timeout = Timeout(5 seconds)
 
@@ -37,7 +39,7 @@ class StoreActor(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvi
 
   context.actorOf(MulticastListenerActor.props(inetAddress, config), "MulticastListener")
   private val senderActor: ActorRef = context.actorOf(MultcastSenderActor.props(config), "MulticastSender")
-  private val clientActor = context.actorOf(Props[ClientActor])
+  private val clientActor = context.actorOf(ClientActor.props(stepsData))
 
   context.system.scheduler.scheduleAtFixedRate(2 seconds, 17 seconds, self, StatusPing)
 
@@ -80,9 +82,15 @@ class StoreActor(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvi
     case Sync ⇒
       stepsData.step("Sync Request", "Start")
 
-      clusterState.otherNodeWithMostThanUs().foreach {
-        clientActor ! FetchQsos(_)
+      clusterState.otherNodeWithMostThanUs() match {
+        case Some(bestNode) ⇒
+          stepsData.step("Best Node", bestNode)
+          clientActor ! FetchQsos(bestNode)
+        case None ⇒
+          stepsData.step("No Best Node", "Done")
       }
+
+
     case records: Seq[QsoRecord] ⇒
       stepsData.step("Records", s"Received: ${records.size} qsos")
       logger.debug(syncMarker, s"got ${records.size}")
@@ -124,7 +132,7 @@ object StoreActor {
 
 
   def props(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvider, inetAddress: InetAddress, config: Config, journalPath: Path,
-           stepsData:StepsData): Props = {
+           stepsData:ObservableBuffer[Step]): Props = {
     Props(new StoreActor(nodeInfo, currentStationProvider, inetAddress, config, Some(journalPath), stepsData))
   }
 

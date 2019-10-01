@@ -9,6 +9,7 @@ import java.security.MessageDigest
 import java.time.{Duration, Instant}
 
 import nl.grons.metrics.scala.DefaultInstrumented
+import org.wa9nnn.fdlog.javafx.sync.Step
 import org.wa9nnn.fdlog.model.MessageFormats._
 import org.wa9nnn.fdlog.model._
 import org.wa9nnn.fdlog.model.sync.{NodeStatus, QsoHour}
@@ -16,9 +17,11 @@ import org.wa9nnn.fdlog.store.network.FdHour
 import org.wa9nnn.util.JsonLogging
 import play.api.libs.json.{JsValue, Json}
 import resource._
+import scalafx.collections.ObservableBuffer
 
 import scala.collection.concurrent.TrieMap
 import scala.io.Source
+import org.wa9nnn.fdlog.javafx.sync.StepsDataMethod.addStep
 
 /**
  * This can only be used within the [[StoreActor]]
@@ -27,7 +30,10 @@ import scala.io.Source
  * @param currentStationProvider      things that may vary with operator.
  * @param journalFilePath             where journal file lives.
  */
-class StoreMapImpl(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvider, journalFilePath: Option[Path] = None)
+class StoreMapImpl(nodeInfo: NodeInfo,
+                   currentStationProvider: CurrentStationProvider,
+                   stepsData: ObservableBuffer[Step] = ObservableBuffer[Step](Seq.empty),
+                   journalFilePath: Option[Path] = None)
   extends Store with JsonLogging with DefaultInstrumented {
 
   implicit val node: NodeAddress = nodeInfo.nodeAddress
@@ -158,15 +164,21 @@ class StoreMapImpl(nodeInfo: NodeInfo, currentStationProvider: CurrentStationPro
   }
 
   def merge(qsoRecords: Seq[QsoRecord]): Unit = {
+    stepsData.step("Considering", qsoRecords.size)
 
     try {
       var mergeCount = 0
       var existedCount = 0
       qsoRecords.foreach { qsoRecord ⇒ {
-        addRecord(qsoRecord)
-        val maybeExisting = contacts.putIfAbsent(qsoRecord.uuid, qsoRecord)
+        addRecord(qsoRecord) match {
+          case Added(qsoRecord) ⇒
+            mergeCount = mergeCount + 1
+          case Dup(qsoRecord) ⇒
+            existedCount = existedCount + 1
+        }
       }
       }
+      stepsData.step("Merge Done", s"Merged: $mergeCount Already: $existedCount")
     } catch {
       case eT: Throwable ⇒
         logger.error("merge", eT)

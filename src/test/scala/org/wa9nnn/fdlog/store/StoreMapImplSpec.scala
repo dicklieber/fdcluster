@@ -22,8 +22,10 @@ import java.nio.file.{Files, Path}
 import com.typesafe.config.ConfigFactory
 import org.specs2.mutable.Specification
 import org.specs2.specification.After
+import org.wa9nnn.fdlog.javafx.sync.Step
 import org.wa9nnn.fdlog.model.MessageFormats._
 import org.wa9nnn.fdlog.model._
+import scalafx.collections.ObservableBuffer
 
 class StoreMapImplSpec extends Specification with After{
   val expectedNodeAddress: NodeAddress = NodeAddress()
@@ -34,7 +36,7 @@ class StoreMapImplSpec extends Specification with After{
 
 
   private val journal: Path = Files.createTempFile("fdlog-journal", ".log")
-  private val storeMapImpl = new StoreMapImpl(nodeInfo, new CurrentStationProviderImpl(ConfigFactory.load()), Some(journal))
+  private val storeMapImpl = new StoreMapImpl(nodeInfo, new CurrentStationProviderImpl(ConfigFactory.load()), ObservableBuffer[Step](Seq.empty) ,Some(journal))
   private val worked: CallSign = "K2ORS"
   private val exchange: Exchange = Exchange("2I", "WPA")
   private val bandMode = BandMode()

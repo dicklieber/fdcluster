@@ -41,7 +41,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-json" % "2.8.0-M4",
   "org.specs2" %% "specs2-core" % "4.6.0" % "test",
   "com.google.inject" % "guice" % "4.2.2",
-  "org.scalafx" %% "scalafx" % "8.0.192-R14",
+  "org.scalafx" %% "scalafx" % "12.0.2-R18",
   "com.jsuereth" %% "scala-arm" % "2.0",
   "net.codingwell" %% "scala-guice" % "4.2.6",
   "com.typesafe.akka" %% "akka-actor" % "2.6.0-M7",

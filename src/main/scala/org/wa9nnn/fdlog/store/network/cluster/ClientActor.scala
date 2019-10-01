@@ -3,7 +3,7 @@ package org.wa9nnn.fdlog.store.network.cluster
 
 import java.net.URL
 
-import akka.actor.Actor
+import akka.actor.{Actor, Props}
 import akka.http.scaladsl.model.Uri.Path
 import akka.http.scaladsl.model.{HttpRequest, Uri}
 import akka.http.scaladsl.{Http, model}
@@ -11,14 +11,18 @@ import akka.stream.Materializer
 import akka.util.ByteString
 import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdlog.Markers.syncMarker
+import org.wa9nnn.fdlog.javafx.sync.Step
 import org.wa9nnn.fdlog.model.MessageFormats._
 import org.wa9nnn.fdlog.model.QsoRecord
 import play.api.libs.json.Json
+import scalafx.collections.ObservableBuffer
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success}
+import org.wa9nnn.fdlog.javafx.sync.StepsDataMethod.addStep
 
-class ClientActor() extends Actor with LazyLogging {
+
+class ClientActor(stepsData:ObservableBuffer[Step]) extends Actor with LazyLogging {
 
   private implicit val materializer = Materializer.apply(context)
 
@@ -58,7 +62,9 @@ class ClientActor() extends Actor with LazyLogging {
   }
 }
 
-
+object ClientActor {
+  def props(stepsData:ObservableBuffer[Step]):Props = Props(new ClientActor(stepsData))
+}
 case class FetchQsos(url: URL, path: String = "qsos") {
 
   def request: HttpRequest = {

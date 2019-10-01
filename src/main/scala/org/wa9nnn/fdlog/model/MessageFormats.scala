@@ -2,13 +2,16 @@
 package org.wa9nnn.fdlog.model
 
 import java.net.URL
-import java.time.LocalDateTime
+import java.time.{Instant, LocalDateTime, ZoneId}
 import java.time.format.{DateTimeFormatter, FormatStyle}
+import java.util.Locale
 
 import org.wa9nnn.fdlog.model.sync.{NodeStatus, QsoHour, QsoHourDigest, QsoHourIds}
 import org.wa9nnn.fdlog.store.JsonContainer
 import org.wa9nnn.fdlog.store.network.FdHour
 import play.api.libs.json.{Format, Json}
+
+import scala.language.implicitConversions
 
 /**
  * Creates [[play.api.libs.json.Format]] needed by Play JSon to parse and render JSON for case classes.
@@ -43,5 +46,6 @@ object TimeFormat {
   implicit def formatLocalDateTime(ldt: LocalDateTime): String = {
     ldt.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT))
   }
+
 
 }

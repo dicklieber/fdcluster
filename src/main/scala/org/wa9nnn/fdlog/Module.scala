@@ -9,9 +9,10 @@ import com.google.inject.name.Named
 import com.google.inject.{AbstractModule, Provides, Singleton}
 import com.typesafe.config.Config
 import net.codingwell.scalaguice.ScalaModule
-import org.wa9nnn.fdlog.javafx.sync.{StepsData, SyncDialog}
-import org.wa9nnn.fdlog.model.{Contest, CurrentStationProvider, CurrentStationProviderImpl, NodeAddress}
+import org.wa9nnn.fdlog.javafx.sync.{Step, SyncDialog}
+import org.wa9nnn.fdlog.model.{Contest, CurrentStationProvider, CurrentStationProviderImpl, NodeAddress, QsoRecord}
 import org.wa9nnn.fdlog.store.{NodeInfo, NodeInfoImpl, StoreActor}
+import scalafx.collections.ObservableBuffer
 
 import scala.collection.JavaConverters._
 
@@ -55,7 +56,7 @@ class Module extends AbstractModule with ScalaModule {
                  @Named("ourInetAddresss") inetAddress: InetAddress,
                  config: Config,
                  @Named("journalPath") journalPath: Path,
-                 stepsData:StepsData): ActorRef = {
+                 @Named("stepsData")stepsData:ObservableBuffer[Step]): ActorRef = {
     actorSystem.actorOf(StoreActor.props(nodeInfo, currentStationProvider, inetAddress, config, journalPath, stepsData))
   }
 
@@ -91,5 +92,11 @@ class Module extends AbstractModule with ScalaModule {
   def nodeAddress(@Named("ourInetAddresss") inetAddress: InetAddress, config: Config): NodeAddress = {
     val instance = config.getInt("instance")
     NodeAddress(instance, inetAddress.getCanonicalHostName)
+  }
+  @Provides
+  @Singleton
+  @Named("stepsData")
+  def stepsData(): ObservableBuffer[Step] = {
+    ObservableBuffer[Step](Seq.empty)
   }
 }
