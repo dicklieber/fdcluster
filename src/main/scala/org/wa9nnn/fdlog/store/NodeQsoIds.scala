@@ -25,16 +25,16 @@ import org.wa9nnn.fdlog.store.NodeInfo.Node
 /**
  * Ids on a node.
  *
- * @param contactIds ids on the node.
+ * @param qsoIds ids on the node.
  * @param node       where this came from.
  * @param stamp      as of.
  *
  */
-case class NodeUuids(contactIds: Set[Uuid], node: NodeAddress, stamp: Instant)
+case class NodeQsoIds(qsoIds: Set[Uuid], node: NodeAddress, stamp: Instant)
 
-object NodeUuids {
-  def apply(uuids: Set[Uuid] = Set.empty[Uuid])(implicit node: NodeAddress): NodeUuids = {
-    new NodeUuids(uuids, node, Instant.now())
+object NodeQsoIds {
+  def apply(uuids: Set[Uuid] = Set.empty[Uuid])(implicit node: NodeAddress): NodeQsoIds = {
+    new NodeQsoIds(uuids, node, Instant.now())
   }
 }
 

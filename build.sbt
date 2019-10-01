@@ -45,7 +45,7 @@ libraryDependencies ++= Seq(
   "com.jsuereth" %% "scala-arm" % "2.0",
   "net.codingwell" %% "scala-guice" % "4.2.6",
   "com.typesafe.akka" %% "akka-actor" % "2.6.0-M7",
-  "com.typesafe.akka" %% "akka-http" % "10.1.9",
+  "com.typesafe.akka" %% "akka-http" % "10.1.10",
   "com.typesafe.akka" %% "akka-stream" % "2.6.0-M7",
   "ch.qos.logback" % "logback-classic" % "1.2.3",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",

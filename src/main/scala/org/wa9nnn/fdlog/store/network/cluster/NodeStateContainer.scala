@@ -1,6 +1,7 @@
 
 package org.wa9nnn.fdlog.store.network.cluster
 
+import java.net.URL
 import java.time.LocalDateTime
 
 import org.wa9nnn.fdlog.model.NodeAddress
@@ -13,7 +14,7 @@ class NodeStateContainer(initialNodeStatus: NodeStatus) {
     nodeStatus.digestForHour(fdHour)
   }
 
-  def qsoCount: Int = nodeStatus.count
+  def qsoCount: Int = nodeStatus.qsoCount
 
   val firstContact: LocalDateTime = LocalDateTime.now()
   var nodeStatus: NodeStatus = initialNodeStatus
@@ -22,6 +23,10 @@ class NodeStateContainer(initialNodeStatus: NodeStatus) {
 
   def update(nodeStatus: NodeStatus): Unit = {
     this.nodeStatus = nodeStatus
+  }
+
+  def url:URL = {
+    nodeStatus.apiUrl
   }
 
   def forHour(fdHour: FdHour): Option[NodeFdHourDigest] = {

@@ -24,7 +24,7 @@ class StoreSyncSpec extends Specification {
   "nodeStats" should {
     "do good" in {
       val status: NodeStatus = storeMapImpl.nodeStatus
-      status.count must beEqualTo(nQsos)
+      status.qsoCount must beEqualTo(nQsos)
       status.nodeAddress must beEqualTo(expectedNodeAddress)
       status.stamp must not beNull
 

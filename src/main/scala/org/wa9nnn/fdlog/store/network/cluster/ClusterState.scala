@@ -1,15 +1,22 @@
 
 package org.wa9nnn.fdlog.store.network.cluster
 
+import java.net.URL
+
 import com.typesafe.scalalogging.LazyLogging
-import jdk.jshell.spi.ExecutionControl.NotImplementedException
 import org.wa9nnn.fdlog.model.NodeAddress
-import org.wa9nnn.fdlog.model.sync.{NodeStatus, QsoHourDigest}
+import org.wa9nnn.fdlog.model.sync.NodeStatus
 import org.wa9nnn.fdlog.store.network.FdHour
 
 import scala.collection.concurrent.TrieMap
+import scala.collection.immutable
 
-class ClusterState(ourNodeAddress: NodeAddress) extends LazyLogging{
+/**
+ * State of all nodes in the cluster, including this one.
+ *
+ * @param ourNodeAddress who we are.
+ */
+class ClusterState(ourNodeAddress: NodeAddress) extends LazyLogging {
   private val nodes: TrieMap[NodeAddress, NodeStateContainer] = TrieMap.empty
 
   def update(nodeStatus: NodeStatus): Unit = {
@@ -34,7 +41,7 @@ class ClusterState(ourNodeAddress: NodeAddress) extends LazyLogging{
   }
 
   def hoursToSync(): List[FdHour] = {
-    def getForHour(fdHour: FdHour): (NodeFdHourDigest, List[NodeFdHourDigest]) = {
+    def getForHour(fdHour: FdHour): (Option[NodeFdHourDigest], Seq[NodeFdHourDigest]) = {
       val allForHour: List[NodeFdHourDigest] =
         (for {
           nsc <- nodes.values
@@ -42,23 +49,40 @@ class ClusterState(ourNodeAddress: NodeAddress) extends LazyLogging{
         } yield {
           maybe
         }).toList
-      val ours = allForHour.find(_.nodeAddress == ourNodeAddress).head
-      val others = allForHour.filter(_.nodeAddress != ourNodeAddress)
+      val ours = allForHour.find(_.nodeAddress == ourNodeAddress)
+      val others: immutable.Seq[NodeFdHourDigest] = allForHour.filter(_.nodeAddress != ourNodeAddress)
       ours → others
     }
 
 
-   val todoStuff =  knownHoursInCluster.flatMap { fdHour ⇒
+    val todoStuff = knownHoursInCluster.flatMap { fdHour ⇒
 
       //      val nodesToConsider: List[NodeFdHourDigest] = getForHour(fdHour)
       val (ours, others) = getForHour(fdHour)
-      logger.debug(s"ours: $ours  others: $others")
+      logger.trace(s"ours: $ours  others: $others")
       //todo  nodes with different digest that ours
       //todo  of those pick the one with the most
-     List.empty
+      List.empty
     }
     List.empty
   }
 
+  def otherNodeWithMostThanUs(): Option[URL] = {
+    val us: Option[NodeStatus] = nodes.get(ourNodeAddress).map(_.nodeStatus)
+    us match {
+      case Some(ourStatus: NodeStatus) ⇒
+        val ourDigest = ourStatus.digest
+        val ourCount = ourStatus.qsoCount
+        nodes.values
+          .filter(nsc ⇒ nsc.nodeAddress != ourNodeAddress && (nsc.qsoCount > ourCount | nsc.nodeStatus.digest != ourDigest))
+          .toList
+          .sortBy(_.qsoCount)
+          .lastOption
+          .map(_.url)
+      case None ⇒
+        None
+    }
+  }
 }
+
 

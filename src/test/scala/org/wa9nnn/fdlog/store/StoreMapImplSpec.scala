@@ -45,7 +45,7 @@ class StoreMapImplSpec extends Specification with After{
       maybeAddedContact must beAnInstanceOf[Added]
 
       val contactIds = storeMapImpl.contactIds
-      contactIds.contactIds must haveSize(1)
+      contactIds.qsoIds must haveSize(1)
       contactIds.node must beEqualTo(expectedNodeAddress)
     }
   }

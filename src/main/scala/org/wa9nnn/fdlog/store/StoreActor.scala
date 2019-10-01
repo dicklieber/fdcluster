@@ -5,25 +5,30 @@ import java.net.InetAddress
 import java.nio.file.Path
 
 import akka.actor.{Actor, ActorRef, Props}
-import akka.util.ByteString
+import akka.util.{ByteString, Timeout}
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
+import org.wa9nnn.fdlog.Markers.syncMarker
+import org.wa9nnn.fdlog.javafx.sync.{StepsData, SyncDialog}
 import org.wa9nnn.fdlog.model.MessageFormats._
 import org.wa9nnn.fdlog.model._
 import org.wa9nnn.fdlog.model.sync.NodeStatus
 import org.wa9nnn.fdlog.store.StoreActor.{DumpCluster, DumpQsos}
+import org.wa9nnn.fdlog.store.network.cluster.{ClientActor, ClusterState, FetchQsos}
 import org.wa9nnn.fdlog.store.network.{FdHour, MultcastSenderActor, MulticastListenerActor}
 import play.api.libs.json.Json
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.language.postfixOps
-import org.wa9nnn.fdlog.store.network.cluster.ClusterState
 
-class StoreActor(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvider, inetAddress: InetAddress, config: Config, journalPath: Option[Path]) extends Actor with LazyLogging {
+class StoreActor(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvider,
+                 inetAddress: InetAddress, config: Config, journalPath: Option[Path],
+                 stepsData: StepsData) extends Actor with LazyLogging {
 
   private val store = new StoreMapImpl(nodeInfo, currentStationProvider, journalPath)
   private val clusterState = new ClusterState(nodeInfo.nodeAddress)
+  implicit val timeout = Timeout(5 seconds)
 
 
   private val ourNode = nodeInfo.nodeAddress
@@ -32,6 +37,7 @@ class StoreActor(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvi
 
   context.actorOf(MulticastListenerActor.props(inetAddress, config), "MulticastListener")
   private val senderActor: ActorRef = context.actorOf(MultcastSenderActor.props(config), "MulticastSender")
+  private val clientActor = context.actorOf(Props[ClientActor])
 
   context.system.scheduler.scheduleAtFixedRate(2 seconds, 17 seconds, self, StatusPing)
 
@@ -48,6 +54,7 @@ class StoreActor(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvi
       sender ! addResult // send back to caller with all info allows UI to show what was recorded or dup
 
     case DumpQsos ⇒
+      logger.debug(s"DumpQsos request")
       sender ! store.dump
 
     case d: DistributedQsoRecord ⇒
@@ -69,12 +76,27 @@ class StoreActor(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvi
 
       val hoursToSync = clusterState.hoursToSync()
 
+
+    case Sync ⇒
+      stepsData.step("Sync Request", "Start")
+
+      clusterState.otherNodeWithMostThanUs().foreach {
+        clientActor ! FetchQsos(_)
+      }
+    case records: Seq[QsoRecord] ⇒
+      stepsData.step("Records", s"Received: ${records.size} qsos")
+      logger.debug(syncMarker, s"got ${records.size}")
+      store.merge(records)
+
     case ns: NodeStatus ⇒
-      logger.debug(s"Got NodeStatus")
+      logger.trace(s"Got NodeStatus from ${ns.nodeAddress}")
       clusterState.update(ns)
 
     case DumpCluster ⇒
       sender ! clusterState.dump
+
+    case DebugClearStore ⇒
+      store.debugClear()
 
     case x ⇒
       println(s"Unexpected Message; $x")
@@ -86,7 +108,9 @@ class StoreActor(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvi
     super.postStop()
   }
 
-  override def postRestart(reason: Throwable): Unit = {
+  override def postRestart(reason: Throwable): Unit
+
+  = {
     logger.error("postRestart: StoreActor", reason)
     super.postRestart(reason)
   }
@@ -99,11 +123,14 @@ object StoreActor {
   case object DumpCluster
 
 
-  def props(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvider, inetAddress: InetAddress, config: Config, journalPath: Path): Props = {
-    Props(new StoreActor(nodeInfo, currentStationProvider, inetAddress, config, Some(journalPath)))
+  def props(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvider, inetAddress: InetAddress, config: Config, journalPath: Path,
+           stepsData:StepsData): Props = {
+    Props(new StoreActor(nodeInfo, currentStationProvider, inetAddress, config, Some(journalPath), stepsData))
   }
 
 }
+
+case object Sync
 
 case class JsonContainer(className: String, json: String) extends Codec {
   def toByteString: ByteString = {
@@ -120,3 +147,4 @@ object JsonContainer {
 }
 
 case object StatusPing
+case object DebugClearStore

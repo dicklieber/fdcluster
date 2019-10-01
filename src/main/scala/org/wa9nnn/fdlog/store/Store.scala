@@ -19,7 +19,7 @@ trait Store {
    *
    * @param qsoRecord from another node or for testing.
    */
-  def addRecord(qsoRecord: QsoRecord)
+  def addRecord(qsoRecord: QsoRecord):AddResult
 
   /**
    * find potential matches by callsign
@@ -32,13 +32,15 @@ trait Store {
   /**
    * @return ids of all [[NodeDatabase]] known to this node.
    */
-  def contactIds: NodeUuids
+  def contactIds: NodeQsoIds
 
   def dump: Seq[QsoRecord]
 
   def size:Int
 
   def nodeStatus:NodeStatus
+
+  def debugClear():Unit
 
 }
 

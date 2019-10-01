@@ -4,6 +4,7 @@ package org.wa9nnn.fdlog.javafx.cluster
 import java.time.LocalDateTime
 
 import com.typesafe.scalalogging.LazyLogging
+import org.wa9nnn.fdlog.model.MessageFormats.Digest
 import org.wa9nnn.fdlog.model.TimeFormat.formatLocalDateTime
 import org.wa9nnn.fdlog.model.sync.QsoHourDigest
 import org.wa9nnn.fdlog.store.network.FdHour
@@ -28,6 +29,9 @@ class FdClusterTableCell[S, T] extends TableCell[S, T] with LazyLogging {
             tooltip = s"Day of month: ${fdHour.day} hour: ${fdHour.hour}"
             fdHour.toString
           case stamp: LocalDateTime ⇒ stamp
+          case digest:Digest ⇒
+            val truncated = new String(digest.take(10))
+            s"$truncated..."
           case string: String ⇒ string
           case other ⇒ other.toString
         }

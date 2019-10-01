@@ -54,7 +54,9 @@ class ClusterTable extends LazyLogging {
     val rows: List[Row] = List(
       buildRow("Started", _.firstContact),
       buildRow("Last", _.nodeStatus.stamp),
-      buildRow("QSOs", _.nodeStatus.count),
+      buildRow("QSOs", _.nodeStatus.qsoCount),
+      buildRow("QSO/Minute", _.nodeStatus.qsoRate),
+      buildRow("Digest", _.nodeStatus.digest),
       buildRow("Band", _.nodeStatus.currentStation.bandMode.band),
       buildRow("Mode", _.nodeStatus.currentStation.bandMode.mode),
       buildRow("Operator", _.nodeStatus.currentStation.ourStation.operator),

@@ -5,14 +5,15 @@ package org.wa9nnn.fdlog.store
 
 import java.io.OutputStream
 import java.nio.file.{Files, Path, StandardOpenOption}
+import java.security.MessageDigest
 import java.time.{Duration, Instant}
 
-import com.typesafe.scalalogging.LazyLogging
 import nl.grons.metrics.scala.DefaultInstrumented
 import org.wa9nnn.fdlog.model.MessageFormats._
 import org.wa9nnn.fdlog.model._
 import org.wa9nnn.fdlog.model.sync.{NodeStatus, QsoHour}
 import org.wa9nnn.fdlog.store.network.FdHour
+import org.wa9nnn.util.JsonLogging
 import play.api.libs.json.{JsValue, Json}
 import resource._
 
@@ -21,25 +22,38 @@ import scala.io.Source
 
 /**
  * This can only be used within the [[StoreActor]]
+ *
  * @param nodeInfo                    who we are
  * @param currentStationProvider      things that may vary with operator.
  * @param journalFilePath             where journal file lives.
  */
 class StoreMapImpl(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvider, journalFilePath: Option[Path] = None)
-  extends Store with LazyLogging  with DefaultInstrumented {
+  extends Store with JsonLogging with DefaultInstrumented {
 
   implicit val node: NodeAddress = nodeInfo.nodeAddress
   private val contacts = new TrieMap[Uuid, QsoRecord]()
   private val byCallsign = new TrieMap[CallSign, Set[QsoRecord]]
 
   def length: Int = contacts.size
+
   private val qsoMeter = metrics.meter("qso")
+  private val qsosDigestTimer = metrics.timer("qsos digest")
+  private val hourDigestsTimer = metrics.timer("hours digest")
+
   /**
    * for sync
    *
    * @param qsoRecord from log or another node
    */
-  def addRecord(qsoRecord: QsoRecord): Unit = {
+  def addRecord(qsoRecord: QsoRecord): AddResult = {
+    insertQsoRecord(qsoRecord)
+    val jsValue = Json.toJson(qsoRecord)
+    writeJournal(jsValue)
+    Added(qsoRecord)
+
+  }
+
+  private def insertQsoRecord(qsoRecord: QsoRecord) = {
     contacts.putIfAbsent(qsoRecord.uuid, qsoRecord)
     val callsign = qsoRecord.qso.callsign
     val qsoRecords: Set[QsoRecord] = byCallsign.getOrElse(callsign, Set.empty) + qsoRecord
@@ -55,7 +69,7 @@ class StoreMapImpl(nodeInfo: NodeInfo, currentStationProvider: CurrentStationPro
         bufferedSource.getLines().foreach { line: String ⇒
 
           Json.parse(line).asOpt[QsoRecord].foreach { qsoRecord ⇒
-            addRecord(qsoRecord)
+            insertQsoRecord(qsoRecord)
             count = count + 1
 
             if (count > 0 && count % 250 == 0) {
@@ -105,11 +119,8 @@ class StoreMapImpl(nodeInfo: NodeInfo, currentStationProvider: CurrentStationPro
         Dup(duplicateRecord)
       case None =>
         val newRecord = QsoRecord(nodeInfo.contest, currentStationProvider.currentStation.ourStation, potentialQso, nodeInfo.fdLogId)
-        addRecord(newRecord)
-        val jsValue = Json.toJson(newRecord)
-        writeJournal(jsValue)
         qsoMeter.mark()
-        Added(newRecord)
+        addRecord(newRecord)
     }
   }
 
@@ -132,8 +143,8 @@ class StoreMapImpl(nodeInfo: NodeInfo, currentStationProvider: CurrentStationPro
    *
    * @return ids of all [[NodeDatabase]] known to this node.
    */
-  def contactIds: NodeUuids = {
-    NodeUuids(contacts.keys.toSet)
+  def contactIds: NodeQsoIds = {
+    NodeQsoIds(contacts.keys.toSet)
   }
 
   def requestContacts(contactRequest: ContactRequest): NodeDatabase = {
@@ -146,43 +157,52 @@ class StoreMapImpl(nodeInfo: NodeInfo, currentStationProvider: CurrentStationPro
     NodeDatabase(selectedContacts.toSeq)
   }
 
-  //  def merge(contactFromAnotherNode: NodeDatabase): Unit = {
-  //
-  //    contactFromAnotherNode.records.foreach {
-  //      contact ⇒ {
-  //        //      val maybeExisting = contacts.putIfAbsent(contact.uuid, contact)
-  //        //      if (logger.isDebugEnabled) {
-  //        //        (maybeExisting match {
-  //        //          case None ⇒
-  //        //            logJson("merged")
-  //        //          case Some(_) ⇒
-  //        //            logJson("exists")
-  //        //
-  //        //        })
-  //        //          .field("uuid", contact.uuid)
-  //        //          .field("worked", contact.callsign)
-  //        //          .debug()
-  //        //      }
-  //      }
-  //    }
-  //  }
+  def merge(qsoRecords: Seq[QsoRecord]): Unit = {
+
+    try {
+      var mergeCount = 0
+      var existedCount = 0
+      qsoRecords.foreach { qsoRecord ⇒ {
+        addRecord(qsoRecord)
+        val maybeExisting = contacts.putIfAbsent(qsoRecord.uuid, qsoRecord)
+      }
+      }
+    } catch {
+      case eT: Throwable ⇒
+        logger.error("merge", eT)
+
+    }
+  }
 
   override def size: Int = contacts.size
 
   override def nodeStatus: NodeStatus = {
     //todo Needs some serious caching. Past hours don't usually change (unless syncing)
-    val hourDigests = contacts.values
-      .toList
-      .groupBy(_.fdHour)
-      .values.map(QsoHour(_))
-      .map(_.hourDigest).toList
-      .sortBy(_.startOfHour)
-    qsoMeter.oneMinuteRate
-    NodeStatus(nodeInfo.nodeAddress, nodeInfo.url, contacts.size, hourDigests, currentStationProvider.currentStation)
+
+    val sDigest = qsosDigestTimer.time {
+      val messageDigest: MessageDigest = MessageDigest.getInstance("SHA-256")
+      contacts.values.foreach(qr ⇒ messageDigest.update(qr.fdLogId.uuid.getBytes()))
+      val bytes = messageDigest.digest()
+      val encoder = java.util.Base64.getEncoder
+      val bytes1 = encoder.encode(bytes)
+      new String(bytes1)
+    }
+
+    val hourDigests = hourDigestsTimer.time {
+      contacts
+        .values
+        .toList
+        .groupBy(_.fdHour)
+        .values.map(QsoHour(_))
+        .map(_.hourDigest).toList
+        .sortBy(_.startOfHour)
+    }
+    val rate = qsoMeter.fifteenMinuteRate
+    NodeStatus(nodeInfo.nodeAddress, nodeInfo.url, contacts.size, sDigest, hourDigests, currentStationProvider.currentStation, rate)
   }
 
 
-  def get(fdHour: FdHour):  List[QsoHour] = {
+  def get(fdHour: FdHour): List[QsoHour] = {
     contacts.values
       .toList
       .sorted.groupBy(_.fdHour).values.map(QsoHour(_))
@@ -190,4 +210,9 @@ class StoreMapImpl(nodeInfo: NodeInfo, currentStationProvider: CurrentStationPro
       .toList
   }
 
+  override def debugClear(): Unit = {
+    logger.info(s"Clearing this nodes store for debugging!")
+    contacts.clear()
+    byCallsign.clear()
+  }
 }

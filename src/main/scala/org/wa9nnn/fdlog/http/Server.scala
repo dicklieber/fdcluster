@@ -5,22 +5,31 @@ import java.net.URL
 
 import akka.actor.{ActorRef, ActorSystem}
 import akka.http.scaladsl.Http
+import akka.http.scaladsl.marshalling.ToResponseMarshallable
 import akka.http.scaladsl.server.Route
-import akka.stream.ActorMaterializer
 import com.google.inject.Inject
 import com.google.inject.name.Named
 import com.typesafe.config.Config
 import org.wa9nnn.fdlog.store.NodeInfo
+import play.api.libs.json.{JsValue, Json}
 
-import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.concurrent.{ExecutionContext, Future}
+import scala.language.implicitConversions
 import scala.util.{Failure, Success}
 
-class Server @Inject()(@Inject() @Named("store") val store: ActorRef,  system: ActorSystem, config: Config, nodeInfo: NodeInfo) extends UserRoutes {
-  implicit val s = system
-  implicit val materializer: ActorMaterializer = ActorMaterializer()
+class Server @Inject()(@Inject() @Named("store") val store: ActorRef, system: ActorSystem, config: Config, nodeInfo: NodeInfo) extends UserRoutes {
+  private implicit val s = system
   implicit val executionContext: ExecutionContext = system.dispatcher
 
+  private val prettyPrint = config.getBoolean("fdlog.prettyPrintJson")
+
+  implicit def jsonToString(jsValue: JsValue): ToResponseMarshallable = {
+    if (prettyPrint) {
+      Json.prettyPrint(jsValue)
+    } else {
+      jsValue.toString()
+    }
+  }
 
   //#main-class
   // from the UserRoutes trait
@@ -43,6 +52,7 @@ class Server @Inject()(@Inject() @Named("store") val store: ActorRef,  system: A
       system.terminate()
   }
 
-//  Await.result(system.whenTerminated, Duration.Inf)
+  //  Await.result(system.whenTerminated, Duration.Inf)
 
 }
+
