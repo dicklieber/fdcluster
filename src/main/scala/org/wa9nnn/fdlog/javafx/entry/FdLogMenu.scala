@@ -4,6 +4,7 @@ import akka.actor.ActorRef
 import com.google.inject.name.Named
 import com.typesafe.scalalogging.LazyLogging
 import javax.inject.Inject
+import org.wa9nnn.fdlog.javafx.debug.DebugRemoveDialog
 import org.wa9nnn.fdlog.javafx.sync.{Step, SyncDialog}
 import org.wa9nnn.fdlog.store.{DebugClearStore, Sync}
 import scalafx.Includes._
@@ -17,7 +18,8 @@ import scalafx.collections.ObservableBuffer
 class FdLogMenu @Inject()(stationDialog: StationDialog,
                           @Named("store") store: ActorRef,
                           @Named("stepsData")stepsData: ObservableBuffer[Step],
-                          syncDialog: SyncDialog) extends LazyLogging {
+                          syncDialog: SyncDialog,
+                          debugRemoveDialog: DebugRemoveDialog) extends LazyLogging {
   logger.debug("FdLogMenu")
 
   private val environmentMenuItem = new MenuItem {
@@ -64,13 +66,20 @@ class FdLogMenu @Inject()(stationDialog: StationDialog,
       store ! DebugClearStore
     }
   }
+  private val debugRandomKillerMenuItem = new MenuItem {
+    text = "Remove random QSOs"
+    onAction = { _: ActionEvent =>
+      debugRemoveDialog()
+    }
+  }
   //  TextInputDialog
   val menuBar: MenuBar = new MenuBar {
     menus = List(
       new Menu("_Debug") {
         mnemonicParsing = true
         items = List(
-          debugClearStoreMenuItem
+          debugClearStoreMenuItem,
+          debugRandomKillerMenuItem
         )
       },
       new Menu("_Edit") {

@@ -23,6 +23,9 @@
     -fx-text-fill: blue;
 }
 
+.dateTime {
+    -fx-font-family: monospace;
+}
 .parenthetic {
     -fx-alignment: center;
     -fx-text-alignment: center;

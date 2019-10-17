@@ -5,11 +5,12 @@ package org.wa9nnn.fdlog.store
 
 import java.io.OutputStream
 import java.nio.file.{Files, Path, StandardOpenOption}
-import java.security.MessageDigest
+import java.security.{MessageDigest, SecureRandom}
 import java.time.{Duration, Instant}
 
 import nl.grons.metrics.scala.DefaultInstrumented
 import org.wa9nnn.fdlog.javafx.sync.Step
+import org.wa9nnn.fdlog.javafx.sync.StepsDataMethod.addStep
 import org.wa9nnn.fdlog.model.MessageFormats._
 import org.wa9nnn.fdlog.model._
 import org.wa9nnn.fdlog.model.sync.{NodeStatus, QsoHour}
@@ -21,7 +22,6 @@ import scalafx.collections.ObservableBuffer
 
 import scala.collection.concurrent.TrieMap
 import scala.io.Source
-import org.wa9nnn.fdlog.javafx.sync.StepsDataMethod.addStep
 
 /**
  * This can only be used within the [[StoreActor]]
@@ -32,15 +32,37 @@ import org.wa9nnn.fdlog.javafx.sync.StepsDataMethod.addStep
  */
 class StoreMapImpl(nodeInfo: NodeInfo,
                    currentStationProvider: CurrentStationProvider,
+                   allQsos:ObservableBuffer[QsoRecord],
                    stepsData: ObservableBuffer[Step] = ObservableBuffer[Step](Seq.empty),
-                   journalFilePath: Option[Path] = None)
+                   val journalFilePath: Option[Path] = None)
   extends Store with JsonLogging with DefaultInstrumented {
+  private val random = new SecureRandom()
+
+  def debugKillRandom(nToKill: Int): Unit = {
+    for (_ ← 0 until nToKill) {
+      val targetIndex = random.nextInt(allQsos.size)
+      val targetQsoRecord = allQsos.remove(targetIndex)
+      logger.debug(s"Deleting ${targetQsoRecord.display}")
+      val targetCallsign = targetQsoRecord.callsign
+      byCallsign.remove(targetCallsign).foreach { set ⇒
+        val remainder = set - targetQsoRecord
+        if (remainder.nonEmpty) {
+          byCallsign.put(targetCallsign, remainder)
+        }
+      }
+      byUuid.remove(targetQsoRecord.uuid)
+    }
+  }
+
 
   implicit val node: NodeAddress = nodeInfo.nodeAddress
-  private val contacts = new TrieMap[Uuid, QsoRecord]()
   private val byCallsign = new TrieMap[CallSign, Set[QsoRecord]]
+  /**
+   * This is the canonical set of data. If its not here then we know we have to also add to [[byCallsign]] and [[allQsos]]
+   */
+  private val byUuid = new TrieMap[Uuid, QsoRecord]()
 
-  def length: Int = contacts.size
+  def length: Int = byUuid.size
 
   private val qsoMeter = metrics.meter("qso")
   private val qsosDigestTimer = metrics.timer("qsos digest")
@@ -48,22 +70,31 @@ class StoreMapImpl(nodeInfo: NodeInfo,
 
   /**
    * for sync
+   * This will also add to journal on disk.
    *
    * @param qsoRecord from log or another node
+   * @return [[Dup]] is already in this node. [[Added]] if new to this node.
    */
   def addRecord(qsoRecord: QsoRecord): AddResult = {
-    insertQsoRecord(qsoRecord)
-    val jsValue = Json.toJson(qsoRecord)
-    writeJournal(jsValue)
-    Added(qsoRecord)
-
+    insertQsoRecord(qsoRecord) match {
+      case Some(_) ⇒
+        Dup(qsoRecord)
+      case None ⇒
+        val jsValue = Json.toJson(qsoRecord)
+        writeJournal(jsValue)
+        Added(qsoRecord)
+    }
   }
 
-  private def insertQsoRecord(qsoRecord: QsoRecord) = {
-    contacts.putIfAbsent(qsoRecord.uuid, qsoRecord)
-    val callsign = qsoRecord.qso.callsign
-    val qsoRecords: Set[QsoRecord] = byCallsign.getOrElse(callsign, Set.empty) + qsoRecord
-    byCallsign.put(callsign, qsoRecords)
+  private def insertQsoRecord(qsoRecord: QsoRecord): Option[QsoRecord] = {
+    val maybeExisting = byUuid.putIfAbsent(qsoRecord.uuid, qsoRecord)
+    if (maybeExisting.isEmpty) {
+      allQsos add qsoRecord
+      val callsign = qsoRecord.qso.callsign
+      val qsoRecords: Set[QsoRecord] = byCallsign.getOrElse(callsign, Set.empty) + qsoRecord
+      byCallsign.put(callsign, qsoRecords)
+    }
+    maybeExisting
   }
 
   private val outputStream: Option[OutputStream] = journalFilePath.map { path ⇒
@@ -72,7 +103,9 @@ class StoreMapImpl(nodeInfo: NodeInfo,
       var count = 0
       val start = Instant.now()
       managed(Source.fromFile(path.toUri)) acquireAndGet { bufferedSource ⇒
-        bufferedSource.getLines().foreach { line: String ⇒
+        bufferedSource.getLines()
+          .take(1000) //todo for testing
+          .foreach { line: String ⇒
 
           Json.parse(line).asOpt[QsoRecord].foreach { qsoRecord ⇒
             insertQsoRecord(qsoRecord)
@@ -140,25 +173,25 @@ class StoreMapImpl(nodeInfo: NodeInfo,
   }
 
   override def search(in: String): Seq[QsoRecord] = {
-    contacts.values.find(_.qso.callsign.contains(in))
+    byUuid.values.find(_.qso.callsign.contains(in))
     }.toSeq
 
-  override def dump: Seq[QsoRecord] = contacts.values.toSeq.sorted
+  override def dump: Seq[QsoRecord] = byUuid.values.toSeq.sorted
 
   /**
    *
    * @return ids of all [[NodeDatabase]] known to this node.
    */
   def contactIds: NodeQsoIds = {
-    NodeQsoIds(contacts.keys.toSet)
+    NodeQsoIds(byUuid.keys.toSet)
   }
 
   def requestContacts(contactRequest: ContactRequest): NodeDatabase = {
 
     val selectedContacts = if (contactRequest.contactIds.isEmpty) {
-      contacts.values
+      byUuid.values
     } else {
-      contactRequest.contactIds.flatMap(contacts.get)
+      contactRequest.contactIds.flatMap(byUuid.get)
     }
     NodeDatabase(selectedContacts.toSeq)
   }
@@ -186,14 +219,14 @@ class StoreMapImpl(nodeInfo: NodeInfo,
     }
   }
 
-  override def size: Int = contacts.size
+  override def size: Int = byUuid.size
 
   override def nodeStatus: NodeStatus = {
     //todo Needs some serious caching. Past hours don't usually change (unless syncing)
 
     val sDigest = qsosDigestTimer.time {
       val messageDigest: MessageDigest = MessageDigest.getInstance("SHA-256")
-      contacts.values.foreach(qr ⇒ messageDigest.update(qr.fdLogId.uuid.getBytes()))
+      byUuid.values.foreach(qr ⇒ messageDigest.update(qr.fdLogId.uuid.getBytes()))
       val bytes = messageDigest.digest()
       val encoder = java.util.Base64.getEncoder
       val bytes1 = encoder.encode(bytes)
@@ -201,7 +234,7 @@ class StoreMapImpl(nodeInfo: NodeInfo,
     }
 
     val hourDigests = hourDigestsTimer.time {
-      contacts
+      byUuid
         .values
         .toList
         .groupBy(_.fdHour)
@@ -210,12 +243,12 @@ class StoreMapImpl(nodeInfo: NodeInfo,
         .sortBy(_.startOfHour)
     }
     val rate = qsoMeter.fifteenMinuteRate
-    NodeStatus(nodeInfo.nodeAddress, nodeInfo.url, contacts.size, sDigest, hourDigests, currentStationProvider.currentStation, rate)
+    NodeStatus(nodeInfo.nodeAddress, nodeInfo.url, byUuid.size, sDigest, hourDigests, currentStationProvider.currentStation, rate)
   }
 
 
   def get(fdHour: FdHour): List[QsoHour] = {
-    contacts.values
+    byUuid.values
       .toList
       .sorted.groupBy(_.fdHour).values.map(QsoHour(_))
       .filter(_.startOfHour == fdHour)
@@ -224,7 +257,10 @@ class StoreMapImpl(nodeInfo: NodeInfo,
 
   override def debugClear(): Unit = {
     logger.info(s"Clearing this nodes store for debugging!")
-    contacts.clear()
+    byUuid.clear()
     byCallsign.clear()
+    allQsos.clear()
   }
+
 }
+

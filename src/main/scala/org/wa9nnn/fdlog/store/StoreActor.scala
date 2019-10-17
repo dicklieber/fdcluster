@@ -25,10 +25,13 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 
 class StoreActor(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvider,
-                 inetAddress: InetAddress, config: Config, journalPath: Option[Path],
-                 stepsData: ObservableBuffer[Step]) extends Actor with LazyLogging {
+                 inetAddress: InetAddress, config: Config,
+                 journalPath: Option[Path],
+                 allQsos: ObservableBuffer[QsoRecord],
+                 stepsData: ObservableBuffer[Step]
+                ) extends Actor with LazyLogging {
 
-  private val store = new StoreMapImpl(nodeInfo, currentStationProvider, stepsData, journalPath)
+  private val store = new StoreMapImpl(nodeInfo, currentStationProvider, allQsos, stepsData, journalPath)
   private val clusterState = new ClusterState(nodeInfo.nodeAddress)
   implicit val timeout = Timeout(5 seconds)
 
@@ -106,6 +109,9 @@ class StoreActor(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvi
     case DebugClearStore ⇒
       store.debugClear()
 
+    case DebugKillRandom(nToKill) ⇒
+      store.debugKillRandom(nToKill)
+
     case x ⇒
       println(s"Unexpected Message; $x")
 
@@ -132,8 +138,9 @@ object StoreActor {
 
 
   def props(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvider, inetAddress: InetAddress, config: Config, journalPath: Path,
-           stepsData:ObservableBuffer[Step]): Props = {
-    Props(new StoreActor(nodeInfo, currentStationProvider, inetAddress, config, Some(journalPath), stepsData))
+            allQsos: ObservableBuffer[QsoRecord],
+            stepsData: ObservableBuffer[Step]): Props = {
+    Props(new StoreActor(nodeInfo, currentStationProvider, inetAddress, config, Some(journalPath), allQsos, stepsData))
   }
 
 }
@@ -155,4 +162,7 @@ object JsonContainer {
 }
 
 case object StatusPing
+
 case object DebugClearStore
+
+case class DebugKillRandom(nToKill: Int)

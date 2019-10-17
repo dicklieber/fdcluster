@@ -23,11 +23,11 @@ class ClusterScene @Inject()(@Inject() @Named("store") store: ActorRef) extends 
   private val clusterTable = new ClusterTable
   implicit val timeout = Timeout(5, TimeUnit.SECONDS)
 
-  refresh()
+ // refresh()
 
   def refresh(): Unit = {
     val future = store ? DumpCluster
-    val clusters = Await.result(future, timeout.duration).asInstanceOf[Iterable[NodeStateContainer]]
+    val clusters: Iterable[NodeStateContainer] = Await.result(future, timeout.duration).asInstanceOf[Iterable[NodeStateContainer]]
    clusterTable.refresh(clusters)
   }
 

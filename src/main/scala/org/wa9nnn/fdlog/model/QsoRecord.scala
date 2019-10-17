@@ -41,6 +41,7 @@ case class QsoRecord(contest: Contest,
 
   def uuid: String = fdLogId.uuid
 
+  lazy val display:String = s"$callsign on ${qso.bandMode} at ${fdLogId.nodeAddress.display} in $fdHour"
 
   override def hashCode: Int = fdLogId.uuid.hashCode()
 

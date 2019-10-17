@@ -57,11 +57,11 @@ object FdLog extends JFXApp {
     tabs = Seq(entryTab, dataTab, clusterTab)
   }
 
-  dataTab.onSelectionChanged = (_: Event) => {
-    if (dataTab.isSelected) {
-      dataScene.refresh()
-    }
-  }
+//  dataTab.onSelectionChanged = (_: Event) => {
+//    if (dataTab.isSelected) {
+//      dataScene.refresh()
+//    }
+//  }
   clusterTab.onSelectionChanged = (_: Event) => {
     if (clusterTab.isSelected) {
       clusterScene.refresh()

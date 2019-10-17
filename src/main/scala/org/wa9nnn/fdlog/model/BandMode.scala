@@ -12,7 +12,9 @@ import scala.util.matching.Regex
 /**
  * safer to construct via {{org.wa9nnn.fdlog.model.BandModeFactory#apply(java.lang.String, java.lang.String)}}
  */
-case class BandMode(band: Band = "20m", mode: Mode = "phone")
+case class BandMode(band: Band = "20m", mode: Mode = "phone") {
+  override def toString: Band = s"$band $mode"
+}
 
 
 object BandMode {

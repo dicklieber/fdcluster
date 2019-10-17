@@ -5,7 +5,7 @@ import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdlog.model.NodeAddress
 import org.wa9nnn.fdlog.store.network.FdHour
 import org.wa9nnn.fdlog.store.network.cluster.NodeStateContainer
-import scalafx.beans.property.{ObjectProperty, ReadOnlyStringWrapper}
+import scalafx.beans.property.ObjectProperty
 import scalafx.collections.ObservableBuffer
 import scalafx.scene.control.{TableColumn, TableView}
 
@@ -43,7 +43,7 @@ class ClusterTable extends LazyLogging {
 
     def buildHours: List[Row] = {
       hours.toList.sorted.map { fdHour ⇒
-        Row(fdHour.toString,
+        Row(fdHour,
           orderedNodes.map {
             byAddress(_).digestForHour(fdHour).getOrElse("--")
           }
@@ -67,7 +67,6 @@ class ClusterTable extends LazyLogging {
     data.clear()
     data.addAll(rows: _*)
 
-
     def buildColumns = {
       val colTexts: List[String] = orderedNodes.map(_.display)
 
@@ -76,7 +75,7 @@ class ClusterTable extends LazyLogging {
           sortable = false
           val col = e._2
           text = e._1
-          cellValueFactory = { x ⇒
+          cellValueFactory = { x: TableColumn.CellDataFeatures[Row, Any] ⇒
             val r = x.value.cells(col)
             new ObjectProperty(x.value, "row", r)
           }
@@ -88,10 +87,13 @@ class ClusterTable extends LazyLogging {
       )
     }
 
-    val rowHeaderCol = new TableColumn[Row, String] {
+    val rowHeaderCol = new TableColumn[Row, Any] {
       text = "Node"
+      cellFactory = { _ =>
+        new FdClusterTableCell[Row, Any]
+      }
       cellValueFactory = { q ⇒
-        ReadOnlyStringWrapper(q.value.rowHeader)
+        new ObjectProperty(q.value, name = "rowHeader", q.value.rowHeader)
       }
       sortable = false
     }
@@ -109,5 +111,5 @@ class ClusterTable extends LazyLogging {
  * @param rowHeader name show in 1st column of row.
  * @param cells     things that an be rendered.
  */
-case class Row(rowHeader: String, cells: Seq[Any])
+case class Row(rowHeader: Any, cells: Seq[Any])
 

@@ -36,7 +36,8 @@ class StoreMapImplSpec extends Specification with After{
 
 
   private val journal: Path = Files.createTempFile("fdlog-journal", ".log")
-  private val storeMapImpl = new StoreMapImpl(nodeInfo, new CurrentStationProviderImpl(ConfigFactory.load()), ObservableBuffer[Step](Seq.empty) ,Some(journal))
+  val allQsos = new ObservableBuffer[QsoRecord]()
+  private val storeMapImpl = new StoreMapImpl(nodeInfo, new CurrentStationProviderImpl(ConfigFactory.load()), allQsos, ObservableBuffer[Step](Seq.empty) ,Some(journal))
   private val worked: CallSign = "K2ORS"
   private val exchange: Exchange = Exchange("2I", "WPA")
   private val bandMode = BandMode()

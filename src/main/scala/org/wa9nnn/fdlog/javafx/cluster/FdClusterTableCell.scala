@@ -26,7 +26,7 @@ class FdClusterTableCell[S, T] extends TableCell[S, T] with LazyLogging {
             val truncated = new String(qhd.digest.take(10))
             s"${qhd.size} $truncated..."
           case fdHour:FdHour ⇒
-            tooltip = s"Day of month: ${fdHour.day} hour: ${fdHour.hour}"
+            tooltip = s"Day: ${fdHour.localDate} hour: ${fdHour.hour}"
             fdHour.toString
           case stamp: LocalDateTime ⇒ stamp
           case digest:Digest ⇒

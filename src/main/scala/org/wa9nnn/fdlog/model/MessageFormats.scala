@@ -21,6 +21,7 @@ import scala.language.implicitConversions
 object MessageFormats {
 
   import org.wa9nnn.fdlog.model.UrlFormt.urlFormat
+//  import org.wa9nnn.fdlog.store.network.FdHour.fdHourFormat
 
   implicit val fdHourFormat: Format[FdHour] = Json.format[FdHour]
   implicit val transmitterFormat: Format[OurStation] = Json.format[OurStation]

@@ -9,8 +9,8 @@ import com.google.inject.name.Named
 import com.google.inject.{AbstractModule, Provides, Singleton}
 import com.typesafe.config.Config
 import net.codingwell.scalaguice.ScalaModule
-import org.wa9nnn.fdlog.javafx.sync.{Step, SyncDialog}
-import org.wa9nnn.fdlog.model.{Contest, CurrentStationProvider, CurrentStationProviderImpl, NodeAddress, QsoRecord}
+import org.wa9nnn.fdlog.javafx.sync.Step
+import org.wa9nnn.fdlog.model._
 import org.wa9nnn.fdlog.store.{NodeInfo, NodeInfoImpl, StoreActor}
 import scalafx.collections.ObservableBuffer
 
@@ -56,8 +56,10 @@ class Module extends AbstractModule with ScalaModule {
                  @Named("ourInetAddresss") inetAddress: InetAddress,
                  config: Config,
                  @Named("journalPath") journalPath: Path,
-                 @Named("stepsData")stepsData:ObservableBuffer[Step]): ActorRef = {
-    actorSystem.actorOf(StoreActor.props(nodeInfo, currentStationProvider, inetAddress, config, journalPath, stepsData))
+                 @Named("stepsData") stepsData:ObservableBuffer[Step],
+                 @Named("allQsos") allQsos:ObservableBuffer[QsoRecord]
+                ): ActorRef = {
+    actorSystem.actorOf(StoreActor.props(nodeInfo, currentStationProvider, inetAddress, config, journalPath, allQsos, stepsData))
   }
 
   @Provides
@@ -70,7 +72,7 @@ class Module extends AbstractModule with ScalaModule {
 
   /**
    *
-   * @return this 1st inet V4 address that is not the loopback address.
+   * @return this 1st  V4 address that is not the loopback address.
    */
   @Provides
   @Singleton
@@ -98,5 +100,11 @@ class Module extends AbstractModule with ScalaModule {
   @Named("stepsData")
   def stepsData(): ObservableBuffer[Step] = {
     ObservableBuffer[Step](Seq.empty)
+  }
+  @Provides
+  @Singleton
+  @Named("allQsos")
+  def qsoBufferData(): ObservableBuffer[QsoRecord] = {
+    ObservableBuffer[QsoRecord](Seq.empty)
   }
 }

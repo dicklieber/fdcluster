@@ -2,6 +2,7 @@
 package org.wa9nnn.fdlog.store.network.cluster
 
 import java.net.URL
+import java.time.{Duration, Instant}
 
 import akka.actor.{Actor, Props}
 import akka.http.scaladsl.model.Uri.Path
@@ -34,6 +35,7 @@ class ClientActor(stepsData:ObservableBuffer[Step]) extends Actor with LazyLoggi
 
       val request = fa.request
       logger.debug(syncMarker, s"request:  $request")
+      val start = Instant.now
 
       val responseFuture = Http().singleRequest(request)
       responseFuture
@@ -45,6 +47,8 @@ class ClientActor(stepsData:ObservableBuffer[Step]) extends Actor with LazyLoggi
               val string = body.utf8String
               val js = Json.parse(string)
               val qsoRecords: Seq[QsoRecord] =  js.as[Seq[QsoRecord]]
+              val duration = Duration.between(start, Instant.now())
+              stepsData.step("Fetch", s"${qsoRecords.size} in $duration")
               logger.debug(syncMarker, s"Got ${qsoRecords.size}  qsorecord(s) from ${fa.url}")
               context.parent ! qsoRecords
             }
