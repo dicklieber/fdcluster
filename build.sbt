@@ -55,6 +55,6 @@ libraryDependencies ++= Seq(
   "org.openjfx" % "javafx-media" % "11.0.1" classifier osType.value,
   "org.openjfx" % "javafx-base" % "11.0.1" classifier osType.value,
   "nl.grons" %% "metrics-scala" % "4.0.0",
-
+  "de.heikoseeberger" %% "akka-http-play-json" % "1.29.1"
 )
 

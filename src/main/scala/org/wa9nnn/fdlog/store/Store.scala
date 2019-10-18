@@ -1,8 +1,9 @@
 package org.wa9nnn.fdlog.store
 
-import org.wa9nnn.fdlog.model.MessageFormats.CallSign
+import org.wa9nnn.fdlog.model.MessageFormats.{CallSign, Uuid}
 import org.wa9nnn.fdlog.model._
 import org.wa9nnn.fdlog.model.sync.NodeStatus
+import org.wa9nnn.fdlog.store.network.FdHour
 
 trait Store {
 
@@ -19,7 +20,7 @@ trait Store {
    *
    * @param qsoRecord from another node or for testing.
    */
-  def addRecord(qsoRecord: QsoRecord):AddResult
+  def addRecord(qsoRecord: QsoRecord): AddResult
 
   /**
    * find potential matches by callsign
@@ -36,15 +37,22 @@ trait Store {
 
   def dump: Seq[QsoRecord]
 
-  def size:Int
+  /**
+   *
+   * @param fdHours [[List.empty]] returns all Uuids for all QSPOs.
+   */
+  def uuidForHours(fdHours: Set[FdHour]): Seq[Uuid]
 
-  def nodeStatus:NodeStatus
+  def size: Int
 
-  def debugClear():Unit
+  def nodeStatus: NodeStatus
+
+  def debugClear(): Unit
 
 }
 
 sealed trait AddResult
 
 case class Added(qsoRecord: QsoRecord) extends AddResult
+
 case class Dup(qsoRecord: QsoRecord) extends AddResult

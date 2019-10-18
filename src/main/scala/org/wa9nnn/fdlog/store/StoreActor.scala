@@ -9,7 +9,7 @@ import akka.util.{ByteString, Timeout}
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdlog.Markers.syncMarker
-import org.wa9nnn.fdlog.javafx.sync.Step
+import org.wa9nnn.fdlog.javafx.sync.{Step, UuidRequest, UuidsAtHost}
 import org.wa9nnn.fdlog.javafx.sync.StepsDataMethod.addStep
 import org.wa9nnn.fdlog.model.MessageFormats._
 import org.wa9nnn.fdlog.model._
@@ -59,8 +59,11 @@ class StoreActor(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvi
       sender ! addResult // send back to caller with all info allows UI to show what was recorded or dup
 
     case DumpQsos ⇒
-      logger.debug(s"DumpQsos request")
       sender ! store.dump
+
+    case ur@UuidRequest(fdHours) ⇒
+      val uuids = store.uuidForHours(fdHours.toSet)
+      sender ! UuidsAtHost(nodeInfo.nodeAddress, uuids, ur)
 
     case d: DistributedQsoRecord ⇒
       val qsoRecord = d.qsoRecord
@@ -98,6 +101,7 @@ class StoreActor(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvi
       stepsData.step("Records", s"Received: ${records.size} qsos")
       logger.debug(syncMarker, s"got ${records.size}")
       store.merge(records)
+
 
     case ns: NodeStatus ⇒
       logger.trace(s"Got NodeStatus from ${ns.nodeAddress}")

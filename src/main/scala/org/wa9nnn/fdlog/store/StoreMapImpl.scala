@@ -32,10 +32,11 @@ import scala.io.Source
  */
 class StoreMapImpl(nodeInfo: NodeInfo,
                    currentStationProvider: CurrentStationProvider,
-                   allQsos:ObservableBuffer[QsoRecord],
+                   allQsos: ObservableBuffer[QsoRecord],
                    stepsData: ObservableBuffer[Step] = ObservableBuffer[Step](Seq.empty),
                    val journalFilePath: Option[Path] = None)
   extends Store with JsonLogging with DefaultInstrumented {
+
   private val random = new SecureRandom()
 
   def debugKillRandom(nToKill: Int): Unit = {
@@ -69,8 +70,7 @@ class StoreMapImpl(nodeInfo: NodeInfo,
   private val hourDigestsTimer = metrics.timer("hours digest")
 
   /**
-   * for sync
-   * This will also add to journal on disk.
+   * This will also add to journal on disk; unless duplicate.
    *
    * @param qsoRecord from log or another node
    * @return [[Dup]] is already in this node. [[Added]] if new to this node.
@@ -86,10 +86,15 @@ class StoreMapImpl(nodeInfo: NodeInfo,
     }
   }
 
+  /**
+   * adds a [[QsoRecord]] unless it already is added.
+   * @param qsoRecord to be added
+   * @return [[None]] if this is new, [[Some[QsoRecord]]] if uuid already exists
+   */
   private def insertQsoRecord(qsoRecord: QsoRecord): Option[QsoRecord] = {
     val maybeExisting = byUuid.putIfAbsent(qsoRecord.uuid, qsoRecord)
     if (maybeExisting.isEmpty) {
-      allQsos add qsoRecord
+      allQsos.add (qsoRecord)
       val callsign = qsoRecord.qso.callsign
       val qsoRecords: Set[QsoRecord] = byCallsign.getOrElse(callsign, Set.empty) + qsoRecord
       byCallsign.put(callsign, qsoRecords)
@@ -104,22 +109,21 @@ class StoreMapImpl(nodeInfo: NodeInfo,
       val start = Instant.now()
       managed(Source.fromFile(path.toUri)) acquireAndGet { bufferedSource ⇒
         bufferedSource.getLines()
-          .take(1000) //todo for testing
           .foreach { line: String ⇒
 
-          Json.parse(line).asOpt[QsoRecord].foreach { qsoRecord ⇒
-            insertQsoRecord(qsoRecord)
-            count = count + 1
+            Json.parse(line).asOpt[QsoRecord].foreach { qsoRecord ⇒
+              insertQsoRecord(qsoRecord)
+              count = count + 1
 
-            if (count > 0 && count % 250 == 0) {
-              val seconds = Duration.between(start, Instant.now()).getSeconds
-              if (seconds > 0) {
-                val qsoPerSecond = count / seconds
-                println(f"loaded $count%,d records. ($qsoPerSecond%,d)/per sec")
+              if (count > 0 && count % 250 == 0) {
+                val seconds = Duration.between(start, Instant.now()).getSeconds
+                if (seconds > 0) {
+                  val qsoPerSecond = count / seconds
+                  println(f"loaded $count%,d records. ($qsoPerSecond%,d)/per sec")
+                }
               }
             }
           }
-        }
         val seconds = Duration.between(start, Instant.now()).getSeconds
         if (seconds > 0) {
           val qsoPerSecond = count / seconds
@@ -204,9 +208,9 @@ class StoreMapImpl(nodeInfo: NodeInfo,
       var existedCount = 0
       qsoRecords.foreach { qsoRecord ⇒ {
         addRecord(qsoRecord) match {
-          case Added(qsoRecord) ⇒
+          case Added(_) ⇒
             mergeCount = mergeCount + 1
-          case Dup(qsoRecord) ⇒
+          case Dup(_) ⇒
             existedCount = existedCount + 1
         }
       }
@@ -246,6 +250,25 @@ class StoreMapImpl(nodeInfo: NodeInfo,
     NodeStatus(nodeInfo.nodeAddress, nodeInfo.url, byUuid.size, sDigest, hourDigests, currentStationProvider.currentStation, rate)
   }
 
+  /**
+   *
+   * @param fdHours [[List.empty]] returns all Uuids for all QSPOs.
+   */
+  override def uuidForHours(fdHours: Set[FdHour]): List[Uuid] = {
+    if (fdHours.isEmpty) {
+      byUuid.keys.toList
+    } else {
+      val fdHourSet = fdHours.toSet
+      allQsos.flatMap { qr ⇒
+        if (fdHourSet.contains(qr.fdHour)) {
+          Seq(qr.uuid)
+        } else {
+          Seq.empty
+        }
+      }
+    }.toList
+  }
+
 
   def get(fdHour: FdHour): List[QsoHour] = {
     byUuid.values
@@ -255,7 +278,9 @@ class StoreMapImpl(nodeInfo: NodeInfo,
       .toList
   }
 
-  override def debugClear(): Unit = {
+  override def debugClear(): Unit
+
+  = {
     logger.info(s"Clearing this nodes store for debugging!")
     byUuid.clear()
     byCallsign.clear()

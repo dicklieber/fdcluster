@@ -14,6 +14,7 @@ import scala.collection.concurrent.TrieMap
  *
  */
 case class FdHour(localDate: LocalDate, hour: Int) extends Ordered[FdHour] {
+  assert(hour >= 0 && hour <= 23, "hour must be between 0 and 23!")
 
   lazy val day: Int = localDate.getDayOfMonth
 
@@ -31,16 +32,16 @@ case class FdHour(localDate: LocalDate, hour: Int) extends Ordered[FdHour] {
   }
 
   def plus(i: Int): FdHour = {
-    if (hour == 23) {
+    if (hour == 23)
       FdHour(localDate.plusDays(1), 0)
-    }
-    FdHour(localDate, hour + 1)
+    else
+      FdHour(localDate, hour + 1)
   }
 
   override def compare(that: FdHour): Int = {
     var ret = this.localDate compareTo that.localDate
     if (ret == 0) {
-      ret = this.hour compareTo (that.hour)
+      ret = this.hour compareTo that.hour
     }
     ret
   }
@@ -51,11 +52,11 @@ case class FdHour(localDate: LocalDate, hour: Int) extends Ordered[FdHour] {
 }
 
 object FdHourStuff {
-   val knownFDHours = new TrieMap[FdHour, FdHour]
+  val knownFDHours = new TrieMap[FdHour, FdHour]
 
 }
 
-object FdHour extends LazyLogging{
+object FdHour extends LazyLogging {
   /**
    * Used to match any FdHour in [[FdHour.equals()]]
    */
@@ -64,31 +65,12 @@ object FdHour extends LazyLogging{
   def apply(localDateTime: LocalDateTime): FdHour = {
     val need = new FdHour(localDateTime.toLocalDate, localDateTime.getHour)
     val ret = FdHourStuff.knownFDHours.getOrElseUpdate(need, need)
-    if(ret eq need){
-      logger.debug("New fdhour")
-    }else{
-      logger.debug("reusing fdhour")
+    if (ret eq need) {
+      logger.trace("New fdhour")
+    } else {
+      logger.trace("reusing fdhour")
     }
 
     ret
   }
-
-  //  implicit val fdHourFormat: Format[FdHour] = new Format[FdHour] {
-  //    override def reads(json: JsValue): JsResult[FdHour] = {
-  //      val ss = json.as[String]
-  //
-  //      try {
-  //        val datetime = LocalDateTime.parse(ss)
-  //        JsSuccess(new FdHour(datetime))
-  //      }
-  //      catch {
-  //        case e: IllegalArgumentException ⇒ JsError(e.getMessage)
-  //      }
-  //    }
-  //
-  //    override def writes(fdHour: FdHour): JsValue = {
-  //      JsString(fdHour.localDateTimeStart.toString)
-  //    }
-  //  }
-
 }

@@ -1,17 +1,19 @@
 
 package org.wa9nnn.fdlog.store
 
-import java.time.{Duration, LocalDateTime}
+import java.time.{Duration, LocalDate, LocalDateTime}
 
 import org.specs2.mutable.Specification
 import org.specs2.specification.BeforeEach
 import org.wa9nnn.fdlog.model.sync.{NodeStatus, QsoHourDigest}
 import org.wa9nnn.fdlog.model.{Contest, CurrentStationProviderImpl, NodeAddress, QsoRecord}
 import org.wa9nnn.fdlog.store.network.FdHour
+import org.wa9nnn.util.DebugTimer
 import scalafx.collections.ObservableBuffer
 
 
-class StoreSyncSpec extends Specification with BeforeEach {
+class StoreSyncSpec extends Specification with BeforeEach with DebugTimer {
+  sequential
   private val nQsos = 10000
 
   val expectedNodeAddress = NodeAddress()
@@ -20,6 +22,7 @@ class StoreSyncSpec extends Specification with BeforeEach {
     nodeAddress = expectedNodeAddress)
 
   private var storeMapImpl: StoreMapImpl = _
+  private var records: List[QsoRecord] = _
 
   "nodeStats" should {
     "do good" in {
@@ -46,6 +49,18 @@ class StoreSyncSpec extends Specification with BeforeEach {
       sizeAfter must beEqualTo(sizeB4 - 1)
     }
 
+    "uuidForQsos" >> {
+      "someFdHours" >> {
+        var firstrHour = records.head.fdHour
+        var thirdrHour = firstrHour.plus(2)
+        val uuids = storeMapImpl.uuidForHours(Set(firstrHour, thirdrHour))
+        uuids must haveSize(119)
+      }
+      "allFdHours" >> {
+        val uuids = storeMapImpl.uuidForHours(Set.empty)
+        uuids must haveSize(nQsos)
+      }
+    }
   }
 
   override def before(): Unit = {
@@ -54,10 +69,12 @@ class StoreSyncSpec extends Specification with BeforeEach {
       val allQsos = new ObservableBuffer[QsoRecord]()
       new StoreMapImpl(nodeInfo, new CurrentStationProviderImpl(), allQsos)
     }
-    val records = QsoGenerator(nQsos, Duration.ofMinutes(1), LocalDateTime.of(2019, 6, 23, 12, 0, 0))
-    records.foreach(qr ⇒
-      storeMapImpl.addRecord(qr))
+    val startTime = LocalDateTime.of(2019, 6, 23, 12, 0, 0)
 
-    assert(storeMapImpl.size == nQsos)
+    records = QsoGenerator(nQsos, Duration.ofMinutes(1), startTime)
+    debugTime(s"load ${records.size} in $$dur") {
+      records.foreach(qr ⇒
+        storeMapImpl.addRecord(qr))
+    }
   }
 }

@@ -17,7 +17,17 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.language.implicitConversions
 import scala.util.{Failure, Success}
 
-class Server @Inject()(@Inject() @Named("store") val store: ActorRef, system: ActorSystem, config: Config, nodeInfo: NodeInfo) extends UserRoutes {
+/**
+ * An http server
+ * @param store where qso and other dynamic info lives.
+ * @param system the actor system
+ * @param config from application.conf and command line.
+ * @param nodeInfo who we are.
+ */
+class Server @Inject()(@Inject() @Named("store") val store: ActorRef,
+                       system: ActorSystem,
+                       config: Config,
+                       nodeInfo: NodeInfo) extends UserRoutes {
   private implicit val s = system
   implicit val executionContext: ExecutionContext = system.dispatcher
 

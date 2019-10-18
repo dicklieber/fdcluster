@@ -6,6 +6,7 @@ import java.time.{Instant, LocalDateTime, ZoneId}
 import java.time.format.{DateTimeFormatter, FormatStyle}
 import java.util.Locale
 
+import org.wa9nnn.fdlog.javafx.sync.{UuidRequest, UuidsAtHost}
 import org.wa9nnn.fdlog.model.sync.{NodeStatus, QsoHour, QsoHourDigest, QsoHourIds}
 import org.wa9nnn.fdlog.store.JsonContainer
 import org.wa9nnn.fdlog.store.network.FdHour
@@ -24,11 +25,13 @@ object MessageFormats {
 //  import org.wa9nnn.fdlog.store.network.FdHour.fdHourFormat
 
   implicit val fdHourFormat: Format[FdHour] = Json.format[FdHour]
+  implicit val uuidsRequestFormat: Format[UuidRequest] = Json.format[UuidRequest]
   implicit val transmitterFormat: Format[OurStation] = Json.format[OurStation]
   implicit val bandModeFormat: Format[BandMode] = Json.format[BandMode]
   implicit val currentStationFormat: Format[CurrentStation] = Json.format[CurrentStation]
   implicit val qsoFormat: Format[Qso] = Json.format[Qso]
   implicit val nodeAddressFormat: Format[NodeAddress] = Json.format[NodeAddress]
+  implicit val uuidsFormat: Format[UuidsAtHost] = Json.format[UuidsAtHost]
   implicit val fdLogIdFormat: Format[FdLogId] = Json.format[FdLogId]
   implicit val qsoRecordFormat: Format[QsoRecord] = Json.format[QsoRecord]
   implicit val distributedQsoRecordFormat: Format[DistributedQsoRecord] = Json.format[DistributedQsoRecord]
