@@ -88,13 +88,14 @@ class StoreMapImpl(nodeInfo: NodeInfo,
 
   /**
    * adds a [[QsoRecord]] unless it already is added.
+   *
    * @param qsoRecord to be added
    * @return [[None]] if this is new, [[Some[QsoRecord]]] if uuid already exists
    */
   private def insertQsoRecord(qsoRecord: QsoRecord): Option[QsoRecord] = {
     val maybeExisting = byUuid.putIfAbsent(qsoRecord.uuid, qsoRecord)
     if (maybeExisting.isEmpty) {
-      allQsos.add (qsoRecord)
+      allQsos.add(qsoRecord)
       val callsign = qsoRecord.qso.callsign
       val qsoRecords: Set[QsoRecord] = byCallsign.getOrElse(callsign, Set.empty) + qsoRecord
       byCallsign.put(callsign, qsoRecords)
@@ -180,7 +181,7 @@ class StoreMapImpl(nodeInfo: NodeInfo,
     byUuid.values.find(_.qso.callsign.contains(in))
     }.toSeq
 
-  override def dump: Seq[QsoRecord] = byUuid.values.toSeq.sorted
+  override def dump: QsosFromNode = QsosFromNode(nodeInfo.nodeAddress,  byUuid.values.toList.sorted)
 
   /**
    *
@@ -266,7 +267,7 @@ class StoreMapImpl(nodeInfo: NodeInfo,
           Seq.empty
         }
       }
-    }.toList
+      }.toList
   }
 
 
@@ -287,5 +288,10 @@ class StoreMapImpl(nodeInfo: NodeInfo,
     allQsos.clear()
   }
 
+  override def missingUuids(uuidsAtOtherHost: List[Uuid]): List[Uuid] = {
+    uuidsAtOtherHost.filter(otherUuid ⇒
+      !byUuid.contains(otherUuid)
+    )
+  }
 }
 

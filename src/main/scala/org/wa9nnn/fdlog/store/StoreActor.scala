@@ -9,13 +9,14 @@ import akka.util.{ByteString, Timeout}
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdlog.Markers.syncMarker
-import org.wa9nnn.fdlog.javafx.sync.{Step, UuidRequest, UuidsAtHost}
+import org.wa9nnn.fdlog.http.{ClientActor, FetchQsos}
+import org.wa9nnn.fdlog.javafx.sync.{RequestUuidsForHour, Step, UuidsAtHost}
 import org.wa9nnn.fdlog.javafx.sync.StepsDataMethod.addStep
 import org.wa9nnn.fdlog.model.MessageFormats._
 import org.wa9nnn.fdlog.model._
 import org.wa9nnn.fdlog.model.sync.NodeStatus
 import org.wa9nnn.fdlog.store.StoreActor.{DumpCluster, DumpQsos}
-import org.wa9nnn.fdlog.store.network.cluster.{ClientActor, ClusterState, FetchQsos}
+import org.wa9nnn.fdlog.store.network.cluster.ClusterState
 import org.wa9nnn.fdlog.store.network.{FdHour, MultcastSenderActor, MulticastListenerActor}
 import play.api.libs.json.Json
 import scalafx.collections.ObservableBuffer
@@ -61,9 +62,9 @@ class StoreActor(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvi
     case DumpQsos ⇒
       sender ! store.dump
 
-    case ur@UuidRequest(fdHours) ⇒
+    case RequestUuidsForHour(_, fdHours, _) ⇒
       val uuids = store.uuidForHours(fdHours.toSet)
-      sender ! UuidsAtHost(nodeInfo.nodeAddress, uuids, ur)
+      sender ! UuidsAtHost(nodeInfo.nodeAddress, uuids)
 
     case d: DistributedQsoRecord ⇒
       val qsoRecord = d.qsoRecord
@@ -97,11 +98,10 @@ class StoreActor(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvi
       }
 
 
-    case records: Seq[QsoRecord] ⇒
-      stepsData.step("Records", s"Received: ${records.size} qsos")
-      logger.debug(syncMarker, s"got ${records.size}")
-      store.merge(records)
-
+    case qsosFromNode: QsosFromNode ⇒
+      stepsData.step("Records", s"Received: ${qsosFromNode.size} qsos from ${qsosFromNode.nodeAddress}")
+      logger.debug(syncMarker, s"got ${qsosFromNode.size}")
+      store.merge(qsosFromNode.qsos)
 
     case ns: NodeStatus ⇒
       logger.trace(s"Got NodeStatus from ${ns.nodeAddress}")

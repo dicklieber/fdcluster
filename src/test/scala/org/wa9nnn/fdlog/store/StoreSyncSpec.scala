@@ -61,6 +61,23 @@ class StoreSyncSpec extends Specification with BeforeEach with DebugTimer {
         uuids must haveSize(nQsos)
       }
     }
+
+    "missing Uuids" >> {
+      "all missing" >> {
+        val missing = storeMapImpl.missingUuids(List("other1", "other2"))
+        missing must contain("other1")
+        missing must contain("other2")
+        missing must haveSize(2)
+      }
+      "some already in store" >> {
+        val alredyInNode = records(10).uuid
+        val missing = storeMapImpl.missingUuids(List("other1", alredyInNode, "other2"))
+        missing must contain("other1")
+        missing must contain("other2")
+        missing must not contain (alredyInNode)
+        missing must haveSize(2)
+      }
+    }
   }
 
   override def before(): Unit = {

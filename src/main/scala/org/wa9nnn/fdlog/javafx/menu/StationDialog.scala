@@ -1,5 +1,5 @@
 
-package org.wa9nnn.fdlog.javafx.entry
+package org.wa9nnn.fdlog.javafx.menu
 
 import com.typesafe.scalalogging.LazyLogging
 import javax.inject.Inject

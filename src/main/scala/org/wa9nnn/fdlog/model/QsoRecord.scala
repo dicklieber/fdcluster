@@ -25,6 +25,7 @@ case class Qso(callsign: CallSign, bandMode: BandMode, exchange: Exchange, stamp
   }
 }
 
+
 /**
  * This is what's in the store and journal.log.
  *
@@ -41,7 +42,7 @@ case class QsoRecord(contest: Contest,
 
   def uuid: String = fdLogId.uuid
 
-  lazy val display:String = s"$callsign on ${qso.bandMode} at ${fdLogId.nodeAddress.display} in $fdHour"
+  lazy val display: String = s"$callsign on ${qso.bandMode} at ${fdLogId.nodeAddress.display} in $fdHour"
 
   override def hashCode: Int = fdLogId.uuid.hashCode()
 
@@ -60,6 +61,10 @@ case class QsoRecord(contest: Contest,
   }
 }
 
+case class QsosFromNode(nodeAddress: NodeAddress, qsos: List[QsoRecord]) {
+  def size: Int = qsos.size
+
+}
 
 /**
  * Info used internally by FDLog.
@@ -74,7 +79,6 @@ case class FdLogId(nodeSn: Int,
   override def equals(obj: Any): Boolean = uuid == this.uuid
 
 }
-
 
 
 /**

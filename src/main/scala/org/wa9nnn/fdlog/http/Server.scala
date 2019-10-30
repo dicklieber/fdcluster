@@ -27,7 +27,7 @@ import scala.util.{Failure, Success}
 class Server @Inject()(@Inject() @Named("store") val store: ActorRef,
                        system: ActorSystem,
                        config: Config,
-                       nodeInfo: NodeInfo) extends UserRoutes {
+                       val nodeInfo: NodeInfo) extends UserRoutes {
   private implicit val s = system
   implicit val executionContext: ExecutionContext = system.dispatcher
 

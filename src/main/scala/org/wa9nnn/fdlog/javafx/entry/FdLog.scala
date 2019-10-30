@@ -6,6 +6,7 @@ import net.codingwell.scalaguice.InjectorExtensions._
 import org.wa9nnn.fdlog.http.Server
 import org.wa9nnn.fdlog.javafx.cluster.ClusterScene
 import org.wa9nnn.fdlog.javafx.data.DataScene
+import org.wa9nnn.fdlog.javafx.menu.FdLogMenu
 import org.wa9nnn.fdlog.store.NodeInfo
 import org.wa9nnn.fdlog.{Module, model}
 import scalafx.Includes._

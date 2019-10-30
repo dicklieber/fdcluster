@@ -10,21 +10,21 @@ import akka.http.scaladsl.server.directives.RouteDirectives.complete
 import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
-import org.wa9nnn.fdlog.javafx.sync.{UuidRequest, UuidsAtHost}
+import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport._
+import org.wa9nnn.fdlog.javafx.sync.{RequestUuidsForHour, UuidsAtHost}
 import org.wa9nnn.fdlog.model.MessageFormats._
-import org.wa9nnn.fdlog.model.QsoRecord
+import org.wa9nnn.fdlog.model.QsosFromNode
 import org.wa9nnn.fdlog.model.sync.QsoHour
+import org.wa9nnn.fdlog.store.NodeInfo
 import org.wa9nnn.fdlog.store.StoreActor.DumpQsos
 import org.wa9nnn.fdlog.store.network.FdHour
-import org.wa9nnn.fdlog.store.network.cluster.FetchQsos
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.JsValue
 
 import scala.concurrent.duration._
 import scala.language.postfixOps
-import org.wa9nnn.fdlog.model.MessageFormats._
-import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport._
 
 trait UserRoutes extends LazyLogging {
+  val nodeInfo: NodeInfo
   /**
    * Automatically applied to convert the JsValue, e.g. {{Json.toJson(qsoHours)}} to what complete() needs.
    * complete(Json.toJson(qsoHours))
@@ -54,11 +54,10 @@ trait UserRoutes extends LazyLogging {
                 complete(qsoHours)
               }
             },
-            path(FetchQsos.path) {
+            path("qsos") {
               onSuccess((
                 store ? DumpQsos
-                ).mapTo[Seq[QsoRecord]]) { qsos: Seq[QsoRecord] ⇒
-                logger.debug(s"qsos: ")
+                ).mapTo[QsosFromNode]) { qsos: QsosFromNode ⇒
                 complete(qsos)
               }
             },
@@ -66,9 +65,9 @@ trait UserRoutes extends LazyLogging {
           )
         },
 
-        path("qsoUuids") {
+        path(FetchQsos.path) {
           post {
-            entity(as[UuidRequest]) { uuidRequest ⇒
+            entity(as[RequestUuidsForHour]) { uuidRequest ⇒
               onSuccess((
                 store ? uuidRequest
                 ).mapTo[UuidsAtHost]) { uuids: UuidsAtHost ⇒

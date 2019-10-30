@@ -1,5 +1,6 @@
 package org.wa9nnn.fdlog.store
 
+import org.wa9nnn.fdlog.javafx.sync.{QsoRequest, UuidsAtHost}
 import org.wa9nnn.fdlog.model.MessageFormats.{CallSign, Uuid}
 import org.wa9nnn.fdlog.model._
 import org.wa9nnn.fdlog.model.sync.NodeStatus
@@ -35,13 +36,21 @@ trait Store {
    */
   def contactIds: NodeQsoIds
 
-  def dump: Seq[QsoRecord]
+  def dump: QsosFromNode
 
   /**
    *
    * @param fdHours [[List.empty]] returns all Uuids for all QSPOs.
    */
   def uuidForHours(fdHours: Set[FdHour]): Seq[Uuid]
+
+  /**
+   *
+   * @param uuidsAtOtherHost that are present at another host
+   * @return uuidsAtOtherHost minus those already at this node.
+   */
+  def missingUuids(uuidsAtOtherHost:List[Uuid]): List[Uuid]
+
 
   def size: Int
 

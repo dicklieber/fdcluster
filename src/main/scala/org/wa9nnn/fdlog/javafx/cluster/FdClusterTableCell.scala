@@ -32,7 +32,8 @@ class FdClusterTableCell[S, T] extends TableCell[S, T] with LazyLogging {
           case digest:Digest ⇒
             val truncated = new String(digest.take(10))
             s"$truncated..."
-          case string: String ⇒ string
+          case string: String ⇒
+            string
           case other ⇒ other.toString
         }
         text = rendered

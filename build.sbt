@@ -4,7 +4,19 @@ version := "0.2"
 
 maintainer := "wa9nnn@u505.com"
 
-lazy val `fdlog` = (project in file(".")).enablePlugins(JavaAppPackaging)
+//lazy val `fdlog` = (project in file(".")).enablePlugins(JavaAppPackaging)
+
+lazy val `fdlog` = (project in file("."))
+  .enablePlugins(JavaAppPackaging, GitPlugin, BuildInfoPlugin).settings(
+    buildInfoKeys ++= Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion,
+      git.gitCurrentTags, git.gitCurrentBranch, git.gitHeadCommit, git.gitHeadCommitDate, git.baseVersion,
+      BuildInfoKey.action("buildTime") {
+        System.currentTimeMillis
+      } // re-computed each time at compile)
+    ),
+//    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, git.gitCurrentTags, git.gitCurrentBranch),
+    buildInfoPackage := "org.wa9nnn.fdlog"
+  )
 
 resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
 
@@ -21,6 +33,13 @@ scalacOptions in(Compile, doc) ++= Seq("-verbose")
 
 import scala.util.Properties
 
+
+//lazy val root = (project in file(".")).
+//  enablePlugins(BuildInfoPlugin).
+//  settings(
+//    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
+//    buildInfoPackage := "hello"
+//  )
 val osType: SettingKey[String] = SettingKey[String]("osType")
 
 osType := {
