@@ -84,7 +84,7 @@ object FdCluster extends JFXApp {
   ourScene.root = rootPane
 
   stage = new PrimaryStage() {
-    title = "FDLog @ " + nodeInfo.nodeAddress.display
+    title = "FDCluster @ " + nodeInfo.nodeAddress.display
     scene = ourScene
   }
 
