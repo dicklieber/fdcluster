@@ -1,6 +1,6 @@
 ### Field Day Logging
 
-Disgtributed, serverless Field Day Logging system.
+Distributed, serverless, Field Day Logging system.
 
 Goals:
 
@@ -15,4 +15,4 @@ sbt:
 stage
 universal:packageBin
 
-Creates target/universal/fdlog-1.0.zip
+Creates target/universal/fdcluster-1.0.zip

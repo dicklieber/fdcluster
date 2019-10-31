@@ -1,12 +1,11 @@
-name := "fdlog"
+name := "fdcluster"
 
 version := "0.2"
 
 maintainer := "wa9nnn@u505.com"
 
-//lazy val `fdlog` = (project in file(".")).enablePlugins(JavaAppPackaging)
 
-lazy val `fdlog` = (project in file("."))
+lazy val `fdcluster` = (project in file("."))
   .enablePlugins(JavaAppPackaging, GitPlugin, BuildInfoPlugin).settings(
     buildInfoKeys ++= Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion,
       git.gitCurrentTags, git.gitCurrentBranch, git.gitHeadCommit, git.gitHeadCommitDate, git.baseVersion,
@@ -15,7 +14,7 @@ lazy val `fdlog` = (project in file("."))
       } // re-computed each time at compile)
     ),
 //    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, git.gitCurrentTags, git.gitCurrentBranch),
-    buildInfoPackage := "org.wa9nnn.fdlog"
+    buildInfoPackage := "org.wa9nnn.fdcluster"
   )
 
 resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
@@ -24,7 +23,7 @@ resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
 
 scalaVersion := "2.12.8"
 
-mainClass in(Compile, run) := Some("org.wa9nnn.fdlog.javafx.entry.FdLog")
+mainClass in(Compile, run) := Some("org.wa9nnn.fdcluster.javafx.entry.FdCluster")
 
 
 scalacOptions in(Compile, doc) ++= Seq("-verbose")

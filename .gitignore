@@ -16,6 +16,6 @@ dist
 native
 .DS_Store
 conf/generated.keystore
-/fdlog/
+/fdcluster/
 /src/main/main.iml
 /src/test/test.iml
