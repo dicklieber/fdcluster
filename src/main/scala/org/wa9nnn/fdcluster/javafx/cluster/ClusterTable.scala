@@ -2,7 +2,9 @@
 package org.wa9nnn.fdcluster.javafx.cluster
 
 import com.typesafe.scalalogging.LazyLogging
+import org.wa9nnn.fdcluster.model.MessageFormats.Digest
 import org.wa9nnn.fdcluster.model.NodeAddress
+import org.wa9nnn.fdcluster.model.sync.QsoHourDigest
 import org.wa9nnn.fdcluster.store.network.FdHour
 import org.wa9nnn.fdcluster.store.network.cluster.NodeStateContainer
 import scalafx.beans.property.ObjectProperty
@@ -26,7 +28,7 @@ class ClusterTable extends LazyLogging {
       )
     }
 
-    val orderedNodes = byAddress.keySet.toList.sorted
+    val orderedNodes: List[NodeAddress] = byAddress.keySet.toList.sorted
 
     /**
      *
@@ -35,19 +37,25 @@ class ClusterTable extends LazyLogging {
      * @return a row for the table
      */
     def buildRow(rowHeader: String, callback: NodeStateContainer ⇒ Any): Row = {
-      Row(rowHeader, orderedNodes.map(nodeAddress ⇒ {
+      MetadataRow(rowHeader, orderedNodes.map(nodeAddress ⇒ {
         val maybeContainer = byAddress.get(nodeAddress)
         callback(maybeContainer.get)
       }))
     }
 
     def buildHours: List[Row] = {
-      hours.toList.sorted.map { fdHour ⇒
-        Row(fdHour,
-          orderedNodes.map {
-            byAddress(_).digestForHour(fdHour).getOrElse("--")
+      hours.toList.sorted.map { fdHour: FdHour ⇒
+        val digests: List[QsoHourDigest] = orderedNodes.map { nodeAddress ⇒
+          val maybeDigest: Option[QsoHourDigest] = byAddress(nodeAddress).digestForHour(fdHour)
+          maybeDigest match {
+            case Some(qhd: QsoHourDigest) ⇒
+              qhd
+            case None ⇒
+              QsoHourDigest(fdHour, "--", 0)
           }
-        )
+        }
+
+        HourRow(fdHour, digests)
       }
     }
 
@@ -73,11 +81,12 @@ class ClusterTable extends LazyLogging {
       colTexts.zipWithIndex.map(e ⇒
         new TableColumn[Row, Any] {
           sortable = false
-          val col = e._2
+          val colIndex = e._2
           text = e._1
           cellValueFactory = { x: TableColumn.CellDataFeatures[Row, Any] ⇒
-            val r = x.value.cells(col)
-            new ObjectProperty(x.value, "row", r)
+            val row = x.value
+            val r = row.cells(colIndex)
+            new ObjectProperty(row, "row", r)
           }
 
           cellFactory = { _ =>
@@ -106,10 +115,4 @@ class ClusterTable extends LazyLogging {
   }
 }
 
-/**
- *
- * @param rowHeader name show in 1st column of row.
- * @param cells     things that an be rendered.
- */
-case class Row(rowHeader: Any, cells: Seq[Any])
 

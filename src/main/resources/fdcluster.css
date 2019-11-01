@@ -16,6 +16,35 @@
     -fx-stroke-line-cap: butt;
 }
 
+.sameHour {
+    -fx-background-color: lightgreen;
+}
+
+.differentHour1 {
+    -fx-background-color: lightcoral;
+}
+.differentHour2 {
+    -fx-background-color: moccasin;
+}
+.differentHour3 {
+    -fx-background-color: peachpuff;
+}
+.differentHour4 {
+    -fx-background-color: orchid;
+}
+.differentHour5 {
+    -fx-background-color: hotpink;
+}
+.differentHour6 {
+    -fx-background-color: sandybrown;
+}
+.differentHour7 {
+    -fx-background-color: chocolate;
+}
+.differentHour8 {
+    -fx-background-color: tan;
+}
+
 .dupPrompt {
     -fx-font-weight: bold;
 }
