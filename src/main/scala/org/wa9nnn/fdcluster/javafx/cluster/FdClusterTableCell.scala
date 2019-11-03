@@ -3,17 +3,16 @@ package org.wa9nnn.fdcluster.javafx.cluster
 
 import java.time.LocalDateTime
 
-import org.wa9nnn.fdcluster.model.TimeFormat.formatLocalDateTime
 import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.model.MessageFormats.Digest
+import org.wa9nnn.fdcluster.model.TimeFormat.formatLocalDateTime
 import org.wa9nnn.fdcluster.model.sync.QsoHourDigest
 import org.wa9nnn.fdcluster.store.network.FdHour
-import scalafx.scene.control.TableCell
-import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.util.CssClassProvider
+import scalafx.scene.control.TableCell
 
 class FdClusterTableCell[S, T] extends TableCell[S, T] with LazyLogging {
-  item.onChange { (v, oldValue, newValue) =>
+  item.onChange { (_, _, newValue) =>
     Option(newValue).foreach { v ⇒
       v match {
         case ccp: CssClassProvider ⇒
