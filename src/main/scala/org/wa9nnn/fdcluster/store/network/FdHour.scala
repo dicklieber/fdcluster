@@ -4,6 +4,8 @@ package org.wa9nnn.fdcluster.store.network
 import java.time.{LocalDate, LocalDateTime}
 
 import com.typesafe.scalalogging.LazyLogging
+import org.wa9nnn.fdcluster.javafx.cluster.LabelSource
+import scalafx.scene.control.Labeled
 
 import scala.collection.concurrent.TrieMap
 
@@ -13,7 +15,7 @@ import scala.collection.concurrent.TrieMap
  * Its just a LocalDateTime with only any hour.
  *
  */
-case class FdHour(localDate: LocalDate, hour: Int) extends Ordered[FdHour] {
+case class FdHour(localDate: LocalDate, hour: Int) extends Ordered[FdHour] with LabelSource{
   assert(hour >= 0 && hour <= 23, "hour must be between 0 and 23!")
 
   lazy val day: Int = localDate.getDayOfMonth
@@ -48,6 +50,11 @@ case class FdHour(localDate: LocalDate, hour: Int) extends Ordered[FdHour] {
 
   override def toString: String = {
     f"$day:$hour%02d"
+  }
+
+  override def setLabel(labeled: Labeled): Unit = {
+    labeled.tooltip = s"date: ${localDate} hour: ${hour}"
+    labeled.text = toString
   }
 }
 

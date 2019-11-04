@@ -4,11 +4,30 @@ package org.wa9nnn.fdcluster.store.network.cluster
 import java.net.URL
 import java.time.LocalDateTime
 
+import org.wa9nnn.fdcluster.javafx.cluster.StyledAny
 import org.wa9nnn.fdcluster.model.NodeAddress
 import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHourDigest}
 import org.wa9nnn.fdcluster.store.network.{FdHour, cluster}
 
-class NodeStateContainer(initialNodeStatus: NodeStatus) {
+/**
+ *
+ * @param initialNodeStatus don't allow an empty container.
+ * @param ourNodeAddress    our address
+ */
+class NodeStateContainer(initialNodeStatus: NodeStatus, ourNodeAddress: NodeAddress) {
+   val isUs: Boolean = initialNodeStatus.nodeAddress == ourNodeAddress
+
+  def styleForUs(sa: StyledAny): StyledAny = {
+      sa.withCssClass(cssStyles)
+  }
+  lazy val cssStyles: Seq[String] =   {
+    if (isUs) {
+      Seq("ourNode")
+    } else {
+      Seq.empty
+    }
+  }
+
 
   def digestForHour(fdHour: FdHour): Option[QsoHourDigest] = {
     nodeStatus.digestForHour(fdHour)
@@ -25,7 +44,7 @@ class NodeStateContainer(initialNodeStatus: NodeStatus) {
     this.nodeStatus = nodeStatus
   }
 
-  def url:URL = {
+  def url: URL = {
     nodeStatus.apiUrl
   }
 

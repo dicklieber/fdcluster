@@ -3,9 +3,11 @@ package org.wa9nnn.fdcluster.model.sync
 
 import java.security.MessageDigest
 
+import org.wa9nnn.fdcluster.javafx.cluster.LabelSource
+import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.{QsoRecord, sync}
 import org.wa9nnn.fdcluster.store.network.FdHour
-import org.wa9nnn.fdcluster.model.MessageFormats._
+import scalafx.scene.control.Labeled
 
 /**
  *
@@ -45,6 +47,17 @@ object QsoHour {
  * @param digest      of all the QsoIDs in this hour.
  * @param size        number of Qsos in this hour.  //todo Do we actually need this? isn't the digest sufficient?
  */
-case class QsoHourDigest(startOfHour: FdHour, digest: Digest, size: Int)
+case class QsoHourDigest(startOfHour: FdHour, digest: Digest, size: Int)extends LabelSource {
+  override def setLabel(labeled: Labeled): Unit = {
+    if (size == 0) {
+      labeled.text = "--"
+      labeled.tooltip = "No QSOs for this hour."
+    } else {
+      labeled.tooltip = "Qso Count: ${qsoHourDigest.size}\ndigest: ${qsoHourDigest.digest}\nDigest is based on all the QSO UUIDs in the hour."
+      labeled.text = s"$size: ${digest.take(10)}..."
+    }
+
+  }
+}
 
 case class QsoHourIds(startOfHour: FdHour, qsiIds: List[Uuid])

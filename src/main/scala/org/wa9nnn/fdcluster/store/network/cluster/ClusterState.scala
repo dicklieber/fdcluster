@@ -21,7 +21,7 @@ class ClusterState(ourNodeAddress: NodeAddress) extends LazyLogging {
 
   def update(nodeStatus: NodeStatus): Unit = {
     val nodeAddress = nodeStatus.nodeAddress
-    val nodeState = nodes.getOrElseUpdate(nodeAddress, new NodeStateContainer(nodeStatus))
+    val nodeState = nodes.getOrElseUpdate(nodeAddress, new NodeStateContainer(nodeStatus, ourNodeAddress))
     nodeState.update(nodeStatus)
   }
 

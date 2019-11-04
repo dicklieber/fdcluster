@@ -20,6 +20,10 @@
     -fx-background-color: lightgreen;
 }
 
+.ourNode {
+    -fx-text-fill: gray;
+}
+
 .differentHour1 {
     -fx-background-color: lightcoral;
 }

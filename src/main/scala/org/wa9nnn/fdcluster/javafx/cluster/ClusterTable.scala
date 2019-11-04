@@ -2,7 +2,6 @@
 package org.wa9nnn.fdcluster.javafx.cluster
 
 import com.typesafe.scalalogging.LazyLogging
-import org.wa9nnn.fdcluster.model.MessageFormats.Digest
 import org.wa9nnn.fdcluster.model.NodeAddress
 import org.wa9nnn.fdcluster.model.sync.QsoHourDigest
 import org.wa9nnn.fdcluster.store.network.FdHour
@@ -37,29 +36,45 @@ class ClusterTable extends LazyLogging {
      * @return a row for the table
      */
     def buildRow(rowHeader: String, callback: NodeStateContainer ⇒ Any): Row = {
-      MetadataRow(rowHeader, orderedNodes.map(nodeAddress ⇒ {
-        val maybeContainer = byAddress.get(nodeAddress)
-        callback(maybeContainer.get)
+      MetadataRow(StyledAny(rowHeader), orderedNodes.map(nodeAddress ⇒ {
+        val container = byAddress(nodeAddress)
+        val value = callback(container)
+        val fv = if (value.toString == "usOrOther") {
+          if (container.isUs) {
+            "Us"
+          } else {
+            "Other"
+          }
+        } else {
+          value
+        }
+
+        val sa = StyledAny(fv)
+        val r = container.styleForUs(sa)
+        r
       }))
     }
 
     def buildHours: List[Row] = {
       hours.toList.sorted.map { fdHour: FdHour ⇒
-        val digests: List[QsoHourDigest] = orderedNodes.map { nodeAddress ⇒
-          val maybeDigest: Option[QsoHourDigest] = byAddress(nodeAddress).digestForHour(fdHour)
-          maybeDigest match {
+        val digestAndContainers = orderedNodes.map { nodeAddress ⇒
+          val container = byAddress(nodeAddress)
+          val maybeDigest: Option[QsoHourDigest] = container.digestForHour(fdHour)
+          val qhd = maybeDigest match {
             case Some(qhd: QsoHourDigest) ⇒
               qhd
             case None ⇒
               QsoHourDigest(fdHour, "--", 0)
           }
+          (qhd → container)
         }
 
-        HourRow(fdHour, digests)
+        HourRow(StyledAny(fdHour), digestAndContainers)
       }
     }
 
     val rows: List[Row] = List(
+      buildRow("Location", _ ⇒ "usOrOther"),
       buildRow("Started", _.firstContact),
       buildRow("Last", _.nodeStatus.stamp),
       buildRow("QSOs", _.nodeStatus.qsoCount),
@@ -79,30 +94,31 @@ class ClusterTable extends LazyLogging {
       val colTexts: List[String] = orderedNodes.map(_.display)
 
       colTexts.zipWithIndex.map(e ⇒
-        new TableColumn[Row, Any] {
+        new TableColumn[Row, StyledAny] {
           sortable = false
           val colIndex = e._2
           text = e._1
-          cellValueFactory = { x: TableColumn.CellDataFeatures[Row, Any] ⇒
-            val row = x.value
+          cellValueFactory = { x: TableColumn.CellDataFeatures[Row, StyledAny] ⇒
+            val row: Row = x.value
             val r = row.cells(colIndex)
             new ObjectProperty(row, "row", r)
           }
 
           cellFactory = { _ =>
-            new FdClusterTableCell[Row, Any]
+            new FdClusterTableCell[Row, StyledAny]
           }
         }
       )
     }
 
-    val rowHeaderCol = new TableColumn[Row, Any] {
+    val rowHeaderCol = new TableColumn[Row, StyledAny] {
       text = "Node"
       cellFactory = { _ =>
-        new FdClusterTableCell[Row, Any]
+        new FdClusterTableCell[Row, StyledAny]
       }
       cellValueFactory = { q ⇒
-        new ObjectProperty(q.value, name = "rowHeader", q.value.rowHeader)
+        val r = new ObjectProperty(q.value, name = "rowHeader", StyledAny(q.value.rowHeader.value))
+        r
       }
       sortable = false
     }
