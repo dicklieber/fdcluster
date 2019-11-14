@@ -8,7 +8,7 @@ import java.nio.file.{Files, Path, StandardOpenOption}
 import java.security.{MessageDigest, SecureRandom}
 import java.time.{Duration, Instant}
 
-import nl.grons.metrics.scala.DefaultInstrumented
+import nl.grons.metrics4.scala.DefaultInstrumented
 import org.wa9nnn.fdcluster.javafx.sync.ProgressStep
 import org.wa9nnn.fdcluster.model.{CurrentStationProvider, MessageFormats, NodeAddress, Qso, QsoRecord, QsosFromNode, sync}
 import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHour}
@@ -16,13 +16,14 @@ import org.wa9nnn.fdcluster.store
 import org.wa9nnn.fdcluster.store.network.FdHour
 import org.wa9nnn.util.JsonLogging
 import play.api.libs.json.{JsValue, Json}
-import resource._
 import scalafx.collections.ObservableBuffer
 import org.wa9nnn.fdcluster.javafx.sync.StepsDataMethod.addStep
 
 import scala.collection.concurrent.TrieMap
 import scala.io.Source
 import org.wa9nnn.fdcluster.model.MessageFormats._
+
+import scala.util.Using
 /**
  * This can only be used within the [[StoreActor]]
  *
@@ -108,7 +109,7 @@ class StoreMapImpl(nodeInfo: NodeInfo,
     if (Files.exists(path)) {
       var count = 0
       val start = Instant.now()
-      managed(Source.fromFile(path.toUri)) acquireAndGet { bufferedSource ⇒
+      Using(Source.fromFile(path.toUri)) { bufferedSource ⇒
         bufferedSource.getLines()
           .foreach { line: String ⇒
 

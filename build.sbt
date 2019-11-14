@@ -21,7 +21,7 @@ resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
 
 //resolvers += "Akka Snapshot Repository" at "http://repo.akka.io/snapshots/"
 
-scalaVersion := "2.12.8"
+scalaVersion := "2.13.0"
 
 mainClass in(Compile, run) := Some("org.wa9nnn.fdcluster.javafx.entry.FdCluster")
 
@@ -60,7 +60,6 @@ libraryDependencies ++= Seq(
   "org.specs2" %% "specs2-core" % "4.6.0" % "test",
   "com.google.inject" % "guice" % "4.2.2",
   "org.scalafx" %% "scalafx" % "12.0.2-R18",
-  "com.jsuereth" %% "scala-arm" % "2.0",
   "net.codingwell" %% "scala-guice" % "4.2.6",
   "com.typesafe.akka" %% "akka-actor" % "2.6.0-M7",
   "com.typesafe.akka" %% "akka-http" % "10.1.10",
@@ -72,7 +71,7 @@ libraryDependencies ++= Seq(
   "org.openjfx" % "javafx-graphics" % "11.0.1" classifier osType.value,
   "org.openjfx" % "javafx-media" % "11.0.1" classifier osType.value,
   "org.openjfx" % "javafx-base" % "11.0.1" classifier osType.value,
-  "nl.grons" %% "metrics-scala" % "4.0.0",
+  "nl.grons" %% "metrics4-scala" % "4.1.1",
   "de.heikoseeberger" %% "akka-http-play-json" % "1.29.1"
 )
 

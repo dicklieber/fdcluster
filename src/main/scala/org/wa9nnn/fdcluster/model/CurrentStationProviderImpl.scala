@@ -6,9 +6,10 @@ import java.nio.file.{Files, NoSuchFileException, Paths}
 import com.typesafe.config.{Config, ConfigFactory}
 import com.typesafe.scalalogging.LazyLogging
 import javax.inject.Inject
-import MessageFormats._
+import org.wa9nnn.fdcluster.model.MessageFormats._
 import play.api.libs.json.Json
-import resource._
+
+import scala.util.{Failure, Success, Try, Using}
 
 case class CurrentStation(ourStation: OurStation = OurStation("WA9NNN", "IC-7300", "endfed"),
                           bandMode: BandMode = new BandMode("20m", "digital")) {
@@ -47,44 +48,53 @@ class CurrentStationProviderImpl @Inject()(config: Config = ConfigFactory.load()
    *
    * @return
    */
-  private var currentStation_ = {
-    try {
-      managed(Files.newInputStream(currentStationPath)) acquireAndGet {
-        inputStream =>
-          val cs = Json.parse(inputStream).as[CurrentStation]
-          logger.info(s"Loaded CurrentStation from $currentStationPath")
-          cs
+  private var currentStationVal: CurrentStation = {
+
+
+    val tcs: Try[CurrentStation] =
+      Using(Files.newInputStream(currentStationPath)) { inputStream =>
+        val cs: CurrentStation = Json.parse(inputStream).as[CurrentStation]
+        logger.info(s"Loaded CurrentStation from $currentStationPath")
+        cs
       }
-    } catch {
-      case nsf: NoSuchFileException ⇒
-        logger.info(s"No $currentStationPath using default.")
-        CurrentStation()
-      case et: Throwable ⇒
-        et.printStackTrace()
-        CurrentStation()
-    }
-  }
-  // tt.getOrElse(CurrentStation())
 
-  override def update(currentStation: CurrentStation): Unit = {
-    currentStation_ = currentStation
-    managed(Files.newOutputStream(currentStationPath)) acquireAndGet {
-      outputStream ⇒
-        outputStream.write(Json.prettyPrint(Json.toJson(currentStation)).getBytes)
-        logger.info(s"Save updated CurrentStation to $currentStationPath")
-    }
+        tcs match {
+          case Success(cs) ⇒
+            cs
+          case Failure(eT) ⇒
+            eT match {
+              case _: NoSuchFileException ⇒
+                logger.info(s"No $currentStationPath using default.")
+                CurrentStation()
+              case et: Throwable ⇒
+                et.printStackTrace()
+                CurrentStation()
+            }
 
+        }
   }
 
-  /**
-   * Currently configured
-   *
-   * @return
-   */
-  override def currentStation: CurrentStation = currentStation_
-}
+    override def update(currentStation: CurrentStation): Unit =
+    {
+      currentStationVal = currentStation
+      Using(Files.newOutputStream(currentStationPath)) {
+        outputStream ⇒
+          outputStream.write(Json.prettyPrint(Json.toJson(currentStation)).getBytes)
+          logger.info(s"Save updated CurrentStation to $currentStationPath")
+      }
+
+    }
+
+    /**
+     * Currently configured
+     *
+     * @return
+     */
+    override def currentStation: CurrentStation = currentStationVal
+  }
 
 
-case class OurStation(operator: CallSign, rig: String = "", antenna: String = "")
+
+  case class OurStation(operator: CallSign, rig: String = "", antenna: String = "")
 
 

@@ -4,10 +4,10 @@ package org.wa9nnn.fdcluster.store
 import java.time.{Duration, LocalDateTime}
 import java.util.UUID
 
-import com.typesafe.scalalogging.{LazyLogging, Logger}
-import nl.grons.metrics.scala.DefaultInstrumented
+import com.typesafe.scalalogging.LazyLogging
+import nl.grons.metrics4.scala.DefaultInstrumented
 import org.wa9nnn.fdcluster.javafx.entry.Sections
-import org.wa9nnn.fdcluster.model.{BandMode, BandModeFactory, Contest, Exchange, FdLogId, NodeAddress, OurStation, Qso, QsoRecord}
+import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.util.DebugTimer
 
 import scala.util.Random

@@ -57,7 +57,7 @@ class DataScene @Inject()(@Named("store") store: ActorRef,
     columns ++= List(
       new TableColumn[QsoRecord, LocalDateTime] {
         text = "Stamp"
-        cellFactory = { _ ⇒
+        cellFactory = { _: TableColumn[QsoRecord, LocalDateTime] ⇒
           new TableCell[QsoRecord, LocalDateTime]() {
             styleClass += "dateTime"
             item.onChange { (ov, oldValue, newValue) => {
@@ -78,7 +78,7 @@ class DataScene @Inject()(@Named("store") store: ActorRef,
       },
       new TableColumn[QsoRecord, String] {
         text = "Callsign"
-        cellFactory = { _ ⇒
+        cellFactory = { _: TableColumn[QsoRecord, String] ⇒
           new TableCell[QsoRecord, String]() {
             styleClass += "dateTime"
             item.onChange { (ov, oldValue, newValue) => {

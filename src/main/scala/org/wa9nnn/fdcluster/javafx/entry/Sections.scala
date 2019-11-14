@@ -1,7 +1,6 @@
 package org.wa9nnn.fdcluster.javafx.entry
-
+import scala.language.postfixOps
 import org.wa9nnn.fdcluster.javafx.Section
-
 object Sections {
 
   def find(partial:String):Seq[Section] = {

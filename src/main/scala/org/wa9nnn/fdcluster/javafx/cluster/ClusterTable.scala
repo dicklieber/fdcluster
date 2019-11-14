@@ -104,7 +104,7 @@ class ClusterTable extends LazyLogging {
             new ObjectProperty(row, "row", r)
           }
 
-          cellFactory = { _ =>
+          cellFactory = { _: TableColumn[Row, StyledAny] =>
             new FdClusterTableCell[Row, StyledAny]
           }
         }
@@ -113,7 +113,7 @@ class ClusterTable extends LazyLogging {
 
     val rowHeaderCol = new TableColumn[Row, StyledAny] {
       text = "Node"
-      cellFactory = { _ =>
+      cellFactory = { _: TableColumn[Row, StyledAny] =>
         new FdClusterTableCell[Row, StyledAny]
       }
       cellValueFactory = { q ⇒
