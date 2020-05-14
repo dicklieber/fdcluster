@@ -33,7 +33,7 @@ object QsoGenerator extends DefaultInstrumented  with DebugTimer with LazyLoggin
         val fdLOgId = FdLogId(nodeSn = iteration,
           nodeAddress = NodeAddress(0, "10.10.10.1"),
           uuid = UUID.randomUUID().toString)
-        QsoRecord(contest, ourStation, qso, fdLOgId)
+        QsoRecord(qso, contest, ourStation, fdLOgId)
       }
     }
   }

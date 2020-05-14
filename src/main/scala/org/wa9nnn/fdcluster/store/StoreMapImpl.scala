@@ -8,21 +8,19 @@ import java.nio.file.{Files, Path, StandardOpenOption}
 import java.security.{MessageDigest, SecureRandom}
 import java.time.{Duration, Instant}
 
-import nl.grons.metrics4.scala.DefaultInstrumented
-import org.wa9nnn.fdcluster.javafx.sync.ProgressStep
-import org.wa9nnn.fdcluster.model.{CurrentStationProvider, MessageFormats, NodeAddress, Qso, QsoRecord, QsosFromNode, sync}
+import nl.grons.metrics4.scala.{DefaultInstrumented, MetricName}
+import org.wa9nnn.fdcluster.javafx.sync.SyncSteps
+import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHour}
+import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.store
 import org.wa9nnn.fdcluster.store.network.FdHour
 import org.wa9nnn.util.JsonLogging
 import play.api.libs.json.{JsValue, Json}
 import scalafx.collections.ObservableBuffer
-import org.wa9nnn.fdcluster.javafx.sync.StepsDataMethod.addStep
 
 import scala.collection.concurrent.TrieMap
 import scala.io.Source
-import org.wa9nnn.fdcluster.model.MessageFormats._
-
 import scala.util.Using
 /**
  * This can only be used within the [[StoreActor]]
@@ -34,11 +32,14 @@ import scala.util.Using
 class StoreMapImpl(nodeInfo: NodeInfo,
                    currentStationProvider: CurrentStationProvider,
                    allQsos: ObservableBuffer[QsoRecord],
-                   stepsData: ObservableBuffer[ProgressStep] = ObservableBuffer[ProgressStep](Seq.empty),
+                   syncSteps: SyncSteps = new SyncSteps,
                    val journalFilePath: Option[Path] = None)
   extends Store with JsonLogging with DefaultInstrumented {
-
+  override lazy val metricBaseName = MetricName("Store")
   private val random = new SecureRandom()
+  val qsoCountGauge = metrics.gauge("qsoCount"){
+    allQsos.size
+  }
 
   def debugKillRandom(nToKill: Int): Unit = {
     for (_ ← 0 until nToKill) {
@@ -163,7 +164,7 @@ class StoreMapImpl(nodeInfo: NodeInfo,
       case Some(duplicateRecord) =>
         Dup(duplicateRecord)
       case None =>
-        val newRecord = QsoRecord(nodeInfo.contest, currentStationProvider.currentStation.ourStation, potentialQso, nodeInfo.fdLogId)
+        val newRecord = QsoRecord(potentialQso, nodeInfo.contest, currentStationProvider.currentStation.ourStation, nodeInfo.fdLogId)
         qsoMeter.mark()
         addRecord(newRecord)
     }
@@ -203,7 +204,7 @@ class StoreMapImpl(nodeInfo: NodeInfo,
   }
 
   def merge(qsoRecords: Seq[QsoRecord]): Unit = {
-    stepsData.step("Considering", qsoRecords.size)
+    syncSteps.step("Considering", qsoRecords.size)
 
     try {
       var mergeCount = 0
@@ -217,7 +218,7 @@ class StoreMapImpl(nodeInfo: NodeInfo,
         }
       }
       }
-      stepsData.step("Merge Done", s"Merged: $mergeCount Already: $existedCount")
+      syncSteps.finish("Merge Done", s"Merged: $mergeCount Already: $existedCount")
     } catch {
       case eT: Throwable ⇒
         logger.error("merge", eT)

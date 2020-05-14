@@ -32,10 +32,7 @@ case class Qso(callsign: CallSign, bandMode: BandMode, exchange: Exchange, stamp
  * @param qso           who we worked.
  * @param fdLogId       housekeeping info for replication.
  */
-case class QsoRecord(contest: Contest,
-                     ourStation: OurStation,
-                     qso: Qso,
-                     fdLogId: FdLogId) extends Ordered[QsoRecord] {
+case class QsoRecord(qso: Qso, contest: Contest, ourStation: OurStation, fdLogId: FdLogId) extends Ordered[QsoRecord] {
   def callsign: CallSign = qso.callsign
 
   def uuid: String = fdLogId.uuid

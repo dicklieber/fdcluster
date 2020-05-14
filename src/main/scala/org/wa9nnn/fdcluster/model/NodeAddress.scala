@@ -7,6 +7,9 @@ case class NodeAddress @Inject()(instance: Int = 0, nodeAddress: String = "local
   def display: String = {
     s"$nodeAddress:$instance"
   }
+  def graphiteName:String = {
+    s"${nodeAddress.replace('.', '_')}:$instance"
+  }
 
   override def compare(that: NodeAddress): Int = {
     var ret = this.nodeAddress compareTo that.nodeAddress

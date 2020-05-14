@@ -71,7 +71,10 @@ libraryDependencies ++= Seq(
   "org.openjfx" % "javafx-graphics" % "11.0.1" classifier osType.value,
   "org.openjfx" % "javafx-media" % "11.0.1" classifier osType.value,
   "org.openjfx" % "javafx-base" % "11.0.1" classifier osType.value,
-  "nl.grons" %% "metrics4-scala" % "4.1.1",
-  "de.heikoseeberger" %% "akka-http-play-json" % "1.29.1"
+  "nl.grons" %% "metrics4-scala" % "4.1.5",
+  "de.heikoseeberger" %% "akka-http-play-json" % "1.29.1",
+  "io.dropwizard.metrics" % "metrics-core" % "4.1.2",
+  "io.dropwizard.metrics" % "metrics-graphite" % "4.1.2",
+  "com.github.jvican" %% "xmlrpc" % "1.2.1"
 )
 

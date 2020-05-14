@@ -7,10 +7,7 @@ class QsoRecordSpec extends Specification {
 
   "Binary" should {
     "round trip" in {
-      val qsoRecord = QsoRecord(Contest("FD", 2019),
-        OurStation("WM9W"),
-        Qso("WA9NNN", BandMode(), Exchange("1A", "IL")),
-        FdLogId(1, NodeAddress()))
+      val qsoRecord = QsoRecord(Qso("WA9NNN", BandMode(), Exchange("1A", "IL")), Contest("FD", 2019), OurStation("WM9W"), FdLogId(1, NodeAddress()))
       val dso = DistributedQsoRecord(qsoRecord, NodeAddress(), 42)
       val byteString = dso.toByteString
       val backAgain = DistributedQsoRecord(byteString)

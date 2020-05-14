@@ -8,33 +8,34 @@ import akka.actor.{Actor, ActorRef, Props}
 import akka.util.{ByteString, Timeout}
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
-import org.wa9nnn.fdcluster.http.{ClientActor, FetchQsos}
-import org.wa9nnn.fdcluster.javafx.sync.{RequestUuidsForHour, ProgressStep, UuidsAtHost}
-import org.wa9nnn.fdcluster.model.{Codec, CurrentStationProvider, DistributedQsoRecord, Qso, QsoRecord, QsosFromNode}
-import org.wa9nnn.fdcluster.model.sync.NodeStatus
-import org.wa9nnn.fdcluster.store.network.cluster.ClusterState
-import org.wa9nnn.fdcluster.store.network.{FdHour, MultcastSenderActor, MulticastListenerActor}
+import nl.grons.metrics4.scala.{DefaultInstrumented, MetricName}
 import org.wa9nnn.fdcluster.Markers.syncMarker
 import org.wa9nnn.fdcluster.http.{ClientActor, FetchQsos}
+import org.wa9nnn.fdcluster.javafx.sync.{RequestUuidsForHour, SyncSteps, UuidsAtHost}
+import org.wa9nnn.fdcluster.model.MessageFormats._
+import org.wa9nnn.fdcluster.model._
+import org.wa9nnn.fdcluster.model.sync.NodeStatus
 import org.wa9nnn.fdcluster.store.StoreActor.{DumpCluster, DumpQsos}
+import org.wa9nnn.fdcluster.store.network.cluster.ClusterState
+import org.wa9nnn.fdcluster.store.network.{FdHour, MultcastSenderActor, MulticastListenerActor}
 import play.api.libs.json.Json
 import scalafx.collections.ObservableBuffer
-import org.wa9nnn.fdcluster.model.MessageFormats._
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.language.postfixOps
-import org.wa9nnn.fdcluster.javafx.sync.StepsDataMethod.addStep
 
 class StoreActor(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvider,
                  inetAddress: InetAddress, config: Config,
                  journalPath: Option[Path],
                  allQsos: ObservableBuffer[QsoRecord],
-                 stepsData: ObservableBuffer[ProgressStep]
-                ) extends Actor with LazyLogging {
+                 syncSteps: SyncSteps
+                ) extends Actor with LazyLogging with DefaultInstrumented {
 
-  private val store = new StoreMapImpl(nodeInfo, currentStationProvider, allQsos, stepsData, journalPath)
+  private val store = new StoreMapImpl(nodeInfo, currentStationProvider, allQsos, syncSteps, journalPath)
   private val clusterState = new ClusterState(nodeInfo.nodeAddress)
-  implicit val timeout = Timeout(5 seconds)
+  private implicit val timeout: Timeout = Timeout(5 seconds)
+  override lazy val metricBaseName = MetricName("StoreActor")
 
 
   private val ourNode = nodeInfo.nodeAddress
@@ -43,7 +44,8 @@ class StoreActor(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvi
 
   context.actorOf(MulticastListenerActor.props(inetAddress, config), "MulticastListener")
   private val senderActor: ActorRef = context.actorOf(MultcastSenderActor.props(config), "MulticastSender")
-  private val clientActor = context.actorOf(ClientActor.props(stepsData))
+  private val clientActor = context.actorOf(ClientActor.props(syncSteps))
+  private val syncTimer: nl.grons.metrics4.scala.Timer = metrics.timer("SyncTimer")
 
   context.system.scheduler.scheduleAtFixedRate(2 seconds, 17 seconds, self, StatusPing)
 
@@ -85,21 +87,25 @@ class StoreActor(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvi
 
       val hoursToSync = clusterState.hoursToSync()
 
-
+    /**
+     * Start a sync operation
+     */
     case Sync ⇒
-      stepsData.step("Sync Request", "Start")
+      syncSteps.step("Sync Request", "Start")
 
       clusterState.otherNodeWithMostThanUs() match {
         case Some(bestNode) ⇒
-          stepsData.step("Best Node", bestNode)
+          syncSteps.step("Best Node", bestNode)
           clientActor ! FetchQsos(bestNode)
         case None ⇒
-          stepsData.step("No Best Node", "Done")
+          syncSteps.step("No Best Node", "Done")
       }
 
-
+    /**
+     * Finish up sync with data from another node
+     */
     case qsosFromNode: QsosFromNode ⇒
-      stepsData.step("Records", s"Received: ${qsosFromNode.size} qsos from ${qsosFromNode.nodeAddress}")
+      syncSteps.step("Records", s"Received: ${qsosFromNode.size} qsos from ${qsosFromNode.nodeAddress}")
       logger.debug(syncMarker, s"got ${qsosFromNode.size}")
       store.merge(qsosFromNode.qsos)
 
@@ -143,8 +149,8 @@ object StoreActor {
 
   def props(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvider, inetAddress: InetAddress, config: Config, journalPath: Path,
             allQsos: ObservableBuffer[QsoRecord],
-            stepsData: ObservableBuffer[ProgressStep]): Props = {
-    Props(new StoreActor(nodeInfo, currentStationProvider, inetAddress, config, Some(journalPath), allQsos, stepsData))
+            syncSteps: SyncSteps): Props = {
+    Props(new StoreActor(nodeInfo, currentStationProvider, inetAddress, config, Some(journalPath), allQsos, syncSteps))
   }
 
 }

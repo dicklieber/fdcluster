@@ -1,26 +1,23 @@
 
 package org.wa9nnn.fdcluster.javafx.sync
 
-import java.time.{Instant, ZoneId}
 import java.time.format.DateTimeFormatter
+import java.time.{Instant, ZoneId}
 import java.util.Locale
 
-import com.google.inject.name.Named
 import javafx.scene.control
 import javax.inject.Inject
 import scalafx.beans.property.ReadOnlyStringWrapper
-import scalafx.collections.ObservableBuffer
 import scalafx.scene.control.TableColumn._
 import scalafx.scene.control.{ButtonType, Dialog, TableColumn, TableView}
 import scalafx.stage.Modality
 
-class SyncDialog @Inject()(@Named("stepsData") stepsData: ObservableBuffer[ProgressStep]) extends Dialog {
+class SyncDialog @Inject()(syncSteps: SyncSteps) extends Dialog {
   title = "Sync Operation"
   val instantFormatter: DateTimeFormatter =
     DateTimeFormatter.ofPattern("mm:ss.SSS")
-
       .withLocale(Locale.US)
-      .withZone(ZoneId.systemDefault());
+      .withZone(ZoneId.systemDefault())
 
   implicit def formatInstant(ldt: Instant): String = {
     instantFormatter.format(ldt)
@@ -30,7 +27,7 @@ class SyncDialog @Inject()(@Named("stepsData") stepsData: ObservableBuffer[Progr
   dp.getButtonTypes.addAll(ButtonType.Close)
   initModality(Modality.None)
 
-  private val tableView = new TableView(stepsData) {
+  private val tableView = new TableView(syncSteps.observableBuffer) {
     columns ++= List(
       new TableColumn[ProgressStep, String] {
         text = "Start"

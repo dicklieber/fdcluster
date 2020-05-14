@@ -5,20 +5,19 @@ import com.google.inject.name.Named
 import com.typesafe.scalalogging.LazyLogging
 import javax.inject.Inject
 import org.wa9nnn.fdcluster.javafx.debug.DebugRemoveDialog
-import org.wa9nnn.fdcluster.javafx.sync.{ProgressStep, SyncDialog}
+import org.wa9nnn.fdcluster.javafx.sync.{SyncDialog, SyncSteps}
 import org.wa9nnn.fdcluster.store.{DebugClearStore, Sync}
 import scalafx.Includes._
-import scalafx.collections.ObservableBuffer
 import scalafx.event.ActionEvent
 import scalafx.scene.control._
-import org.wa9nnn.fdcluster.javafx.sync.StepsDataMethod.addStep
+
 import scala.collection.JavaConverters._
 
-class FdLogMenu @Inject()(stationDialog: StationDialog,
-                          @Named("store") store: ActorRef,
-                          @Named("stepsData")stepsData: ObservableBuffer[ProgressStep],
-                          syncDialog: SyncDialog,
-                          debugRemoveDialog: DebugRemoveDialog) extends LazyLogging {
+class FdClusterMenu @Inject()(stationDialog: StationDialog,
+                              @Named("store") store: ActorRef,
+                              syncSteps: SyncSteps,
+                              syncDialog: SyncDialog,
+                              debugRemoveDialog: DebugRemoveDialog) extends LazyLogging {
 
   private val environmentMenuItem = new MenuItem {
     text = "Environment"
@@ -50,8 +49,8 @@ class FdLogMenu @Inject()(stationDialog: StationDialog,
   private val syncNowMenuItem = new MenuItem {
     text = "Sync with other nodes"
     onAction = { _: ActionEvent =>
-      stepsData.clear()
-      stepsData.step("Start", "Request")
+      syncSteps.start()
+      syncSteps.step("Start", "Request")
       scalafx.application.Platform.runLater {
         syncDialog.showAndWait()
       }

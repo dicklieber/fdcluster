@@ -9,12 +9,13 @@ import com.google.inject.name.Named
 import com.google.inject.{AbstractModule, Provides, Singleton}
 import com.typesafe.config.Config
 import net.codingwell.scalaguice.ScalaModule
-import org.wa9nnn.fdcluster.javafx.sync.ProgressStep
-import org.wa9nnn.fdcluster.model.{Contest, CurrentStationProvider, CurrentStationProviderImpl, NodeAddress, QsoRecord}
+import org.wa9nnn.fdcluster.javafx.sync.{ProgressStep, SyncSteps}
+import org.wa9nnn.fdcluster.metrics.Reporter
+import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.store.{NodeInfo, NodeInfoImpl, StoreActor}
 import scalafx.collections.ObservableBuffer
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 class Module extends AbstractModule with ScalaModule {
   override def configure(): Unit = {
@@ -23,6 +24,7 @@ class Module extends AbstractModule with ScalaModule {
       bind[ActorSystem].toInstance(actorSystem)
       bind[Config].toInstance(actorSystem.settings.config)
       bind[CurrentStationProvider].to[CurrentStationProviderImpl].asEagerSingleton()
+      bind[Reporter].asEagerSingleton()
 
     } catch {
       case e: Throwable ⇒
@@ -56,10 +58,10 @@ class Module extends AbstractModule with ScalaModule {
                  @Named("ourInetAddresss") inetAddress: InetAddress,
                  config: Config,
                  @Named("journalPath") journalPath: Path,
-                 @Named("stepsData") stepsData:ObservableBuffer[ProgressStep],
+                 syncSteps: SyncSteps,
                  @Named("allQsos") allQsos:ObservableBuffer[QsoRecord]
                 ): ActorRef = {
-    actorSystem.actorOf(StoreActor.props(nodeInfo, currentStationProvider, inetAddress, config, journalPath, allQsos, stepsData))
+    actorSystem.actorOf(StoreActor.props(nodeInfo, currentStationProvider, inetAddress, config, journalPath, allQsos, syncSteps))
   }
 
   @Provides

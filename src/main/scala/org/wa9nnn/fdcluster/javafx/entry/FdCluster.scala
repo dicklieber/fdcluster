@@ -7,7 +7,7 @@ import org.wa9nnn.fdcluster.Module
 import org.wa9nnn.fdcluster.http.Server
 import org.wa9nnn.fdcluster.javafx.cluster.ClusterScene
 import org.wa9nnn.fdcluster.javafx.data.DataScene
-import org.wa9nnn.fdcluster.javafx.menu.FdLogMenu
+import org.wa9nnn.fdcluster.javafx.menu.FdClusterMenu
 import org.wa9nnn.fdcluster.model.Contest
 import org.wa9nnn.fdcluster.store.NodeInfo
 import scalafx.Includes._
@@ -38,7 +38,7 @@ object FdCluster extends JFXApp {
     case e:Throwable ⇒
       e.printStackTrace()
   }
-  val fdlogmenu: FdLogMenu = injector.instance[FdLogMenu]
+  val fdlogmenu: FdClusterMenu = injector.instance[FdClusterMenu]
 
   private val dataTab: Tab = new Tab {
     text = "Data"
