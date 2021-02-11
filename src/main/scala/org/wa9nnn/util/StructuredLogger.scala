@@ -3,8 +3,8 @@ package org.wa9nnn.util
 
 
 import java.time.{Instant, LocalDateTime, ZonedDateTime}
-
 import com.typesafe.scalalogging.LoggerMacro
+import org.slf4j.event.Level
 import org.slf4j.{Logger, LoggerFactory}
 import play.api.libs.json._
 
@@ -15,12 +15,13 @@ import play.api.libs.json._
  */
 trait JsonLogging {
 
-    def whenDebugEnabled(body: Unit): Unit  = {
-      body
-    }
-    def whenTraceEnabled(body: Unit): Unit  = {
-      body
-    }
+  def whenDebugEnabled(body: Unit): Unit = {
+    body
+  }
+
+  def whenTraceEnabled(body: Unit): Unit = {
+    body
+  }
 
   /**
    * Change logger name from default package/class name to something better.
@@ -50,6 +51,9 @@ trait JsonLogging {
     LoggerFactory.getLogger(_loggerName.get)
   }
 
+  def setLevel(level: ch.qos.logback.classic.Level): Unit = {
+    logger.asInstanceOf[ch.qos.logback.classic.Logger].setLevel(level)
+  }
 
   /**
    * @param reason value for the reason field.

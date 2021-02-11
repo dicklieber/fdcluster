@@ -17,7 +17,9 @@ lazy val `fdcluster` = (project in file("."))
     buildInfoPackage := "org.wa9nnn.fdcluster"
   )
 
-resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
+//resolvers += ("example-releases" at "http://repo.example.com/releases/")
+
+//resolvers += ("scalaz-bintray" at "http://dl.bintray.com/scalaz/releases").withAllowInsecureProtocol(true)
 
 //resolvers += "Akka Snapshot Repository" at "http://repo.akka.io/snapshots/"
 
@@ -58,6 +60,7 @@ lazy val akkaHttpVersion = "10.1.9"
 libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-json" % "2.8.0-M4",
   "org.specs2" %% "specs2-core" % "4.6.0" % "test",
+  "org.specs2" %% "specs2-mock" % "4.6.0" % "test",
   "com.google.inject" % "guice" % "4.2.2",
   "org.scalafx" %% "scalafx" % "12.0.2-R18",
   "net.codingwell" %% "scala-guice" % "4.2.6",
@@ -75,6 +78,7 @@ libraryDependencies ++= Seq(
   "de.heikoseeberger" %% "akka-http-play-json" % "1.29.1",
   "io.dropwizard.metrics" % "metrics-core" % "4.1.2",
   "io.dropwizard.metrics" % "metrics-graphite" % "4.1.2",
-  "com.github.jvican" %% "xmlrpc" % "1.2.1"
+  "com.fazecast" % "jSerialComm" % "2.6.2",
+//  "com.github.jvican" %% "xmlrpc" % "1.2.1"
 )
 
