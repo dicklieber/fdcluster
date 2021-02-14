@@ -28,7 +28,7 @@ class SocketAdapterSocket(socket: Socket) extends SocketAdapter {
       lines += in.readLine()
     }
     val rr = lines.result()
-rr.foreach(l => println(s""""$l","""))
+//rr.foreach(l => println(s""""$l","""))
     rr
   }
 

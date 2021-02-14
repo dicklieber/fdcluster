@@ -5,9 +5,9 @@ import java.net.URL
 import java.time.{Instant, LocalDateTime, ZoneId}
 import java.time.format.{DateTimeFormatter, FormatStyle}
 import java.util.Locale
-
 import org.wa9nnn.fdcluster.javafx.sync.{RequestUuidsForHour, UuidsAtHost}
 import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHour, QsoHourDigest, QsoHourIds}
+import org.wa9nnn.fdcluster.rig.{RigModel, RigSettings, SerialPortSettings}
 import org.wa9nnn.fdcluster.store.JsonContainer
 import org.wa9nnn.fdcluster.store.network.FdHour
 import play.api.libs.json.{Format, Json}
@@ -40,6 +40,11 @@ object MessageFormats {
   implicit val qsoPeriodFormat: Format[QsoHour] = Json.format[QsoHour]
   implicit val nodeStatsFormat: Format[NodeStatus] = Json.format[NodeStatus]
   implicit val jsonContainerFormat: Format[JsonContainer] = Json.format[JsonContainer]
+
+  implicit val rigPortSettingsFormat: Format[SerialPortSettings] = Json.format[SerialPortSettings]
+  implicit val rigModelFormat: Format[RigModel] = Json.format[RigModel]
+  implicit val rigSettingsFormat: Format[RigSettings] = Json.format[RigSettings]
+
   type CallSign = String
   type Uuid = String
   type Digest = String

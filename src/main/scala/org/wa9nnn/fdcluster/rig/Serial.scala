@@ -5,14 +5,11 @@ import com.fazecast.jSerialComm.SerialPort
 import org.wa9nnn.util.JsonLogging
 
 object Serial extends App {
-  println("all ports:")
-  ports.foreach(p => println(s"\t$p"))
-  println("Usefull:")
-  ports.filter(_.useful)foreach(p => println(s"\t$p"))
 
   def ports: Seq[SerialPortWrapper] = {
     SerialPort.getCommPorts
       .map(SerialPortWrapper)
+      .filter(_.useful)
       .sorted
   }
 }
@@ -43,7 +40,7 @@ trait NamedSerialPort[T <: NamedSerialPort[T]] extends Ordered[T] with JsonLoggi
     val linuxBad = """ttyp.+""".r
     val microsoftWidows = """COM\d+""".r
     val macOS = """tty\.usb.*""".r
-    val macOSBT = """.*Bluetooth.*""".r
+//    val macOSBT = """.*Bluetooth.*""".r
     val raspberryPi = """ttyUSB.*""".r
 
     name match {

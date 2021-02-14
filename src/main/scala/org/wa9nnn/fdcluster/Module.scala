@@ -3,7 +3,6 @@ package org.wa9nnn.fdcluster
 
 import java.net.{Inet4Address, InetAddress, NetworkInterface, URL}
 import java.nio.file.{Path, Paths}
-
 import akka.actor.{ActorRef, ActorSystem}
 import com.google.inject.name.Named
 import com.google.inject.{AbstractModule, Provides, Singleton}
@@ -15,6 +14,7 @@ import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.store.{NodeInfo, NodeInfoImpl, StoreActor}
 import scalafx.collections.ObservableBuffer
 
+import java.util.prefs.Preferences
 import scala.jdk.CollectionConverters._
 
 class Module extends AbstractModule with ScalaModule {
@@ -25,6 +25,7 @@ class Module extends AbstractModule with ScalaModule {
       bind[Config].toInstance(actorSystem.settings.config)
       bind[CurrentStationProvider].to[CurrentStationProviderImpl].asEagerSingleton()
       bind[Reporter].asEagerSingleton()
+      bind[Preferences].toInstance(Preferences.userRoot.node("org/wa9nnn/fdcluster"))
 
     } catch {
       case e: Throwable ⇒
@@ -38,13 +39,12 @@ class Module extends AbstractModule with ScalaModule {
   @Singleton
   def getNodeInfo(contest: Contest,
                   nodeAddress: NodeAddress,
-                  currentStationProvider: CurrentStationProvider,
                   @Named("ourInetAddresss") inetAddress: InetAddress,
                   config: Config): NodeInfo = {
     val chttp = config.getConfig("fdcluster.http")
     val hostName = inetAddress.getCanonicalHostName
     val port = chttp.getInt("port")
-    val url = new URL(s"http://$hostName:${port}")
+    val url = new URL(s"https://$hostName:$port")
     val ret = new NodeInfoImpl(contest, nodeAddress, url)
     ret
   }
@@ -59,7 +59,7 @@ class Module extends AbstractModule with ScalaModule {
                  config: Config,
                  @Named("journalPath") journalPath: Path,
                  syncSteps: SyncSteps,
-                 @Named("allQsos") allQsos:ObservableBuffer[QsoRecord]
+                 @Named("allQsos") allQsos: ObservableBuffer[QsoRecord]
                 ): ActorRef = {
     actorSystem.actorOf(StoreActor.props(nodeInfo, currentStationProvider, inetAddress, config, journalPath, allQsos, syncSteps))
   }
@@ -97,12 +97,14 @@ class Module extends AbstractModule with ScalaModule {
     val instance = config.getInt("instance")
     NodeAddress(instance, inetAddress.getCanonicalHostName)
   }
+
   @Provides
   @Singleton
   @Named("stepsData")
   def stepsData(): ObservableBuffer[ProgressStep] = {
     ObservableBuffer[ProgressStep](Seq.empty)
   }
+
   @Provides
   @Singleton
   @Named("allQsos")

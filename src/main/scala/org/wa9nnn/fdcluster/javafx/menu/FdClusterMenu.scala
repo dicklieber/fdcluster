@@ -1,23 +1,31 @@
 package org.wa9nnn.fdcluster.javafx.menu
 
 import akka.actor.ActorRef
+import akka.util.Timeout
+import com.google.inject.Injector
 import com.google.inject.name.Named
 import com.typesafe.scalalogging.LazyLogging
-import javax.inject.Inject
+import nl.grons.metrics4.scala.ByName.apply
 import org.wa9nnn.fdcluster.javafx.debug.DebugRemoveDialog
 import org.wa9nnn.fdcluster.javafx.sync.{SyncDialog, SyncSteps}
+import org.wa9nnn.fdcluster.rig.{RigDialog, RigSettings}
 import org.wa9nnn.fdcluster.store.{DebugClearStore, Sync}
 import scalafx.Includes._
 import scalafx.event.ActionEvent
 import scalafx.scene.control._
 
-import scala.collection.JavaConverters._
+import javax.inject.Inject
+import scala.concurrent.duration.DurationInt
+import scala.jdk.CollectionConverters._
+import scala.language.postfixOps
 
 class FdClusterMenu @Inject()(stationDialog: StationDialog,
+                              injector: Injector,
                               @Named("store") store: ActorRef,
                               syncSteps: SyncSteps,
                               syncDialog: SyncDialog,
                               debugRemoveDialog: DebugRemoveDialog) extends LazyLogging {
+  private implicit val timeout = Timeout(5 seconds)
 
   private val environmentMenuItem = new MenuItem {
     text = "Environment"
@@ -70,16 +78,30 @@ class FdClusterMenu @Inject()(stationDialog: StationDialog,
       debugRemoveDialog()
     }
   }
-  private val aboutMenuItem = new MenuItem{
+  private val aboutMenuItem = new MenuItem {
     text = "About"
     onAction = { _: ActionEvent =>
       AboutDialog()
     }
   }
+  private val rigMenuItem = new MenuItem {
+    text = "Rig"
+    onAction = { _: ActionEvent =>
+      import net.codingwell.scalaguice.InjectorExtensions._
+
+        injector.instance[RigDialog].showAndWait()
+    }
+  }
   //  TextInputDialog
   val menuBar: MenuBar = new MenuBar {
     menus = List(
-      new Menu("_Debug") {
+      new Menu("_File") {
+        mnemonicParsing = true
+        items = List(
+          aboutMenuItem,
+          rigMenuItem,
+        )
+      }, new Menu("_Debug") {
         mnemonicParsing = true
         items = List(
           debugClearStoreMenuItem,
@@ -91,7 +113,7 @@ class FdClusterMenu @Inject()(stationDialog: StationDialog,
         items = List(
           currentStationMenuItem,
         )
-      } ,
+      },
       new Menu("_Sync") {
         mnemonicParsing = true
         items = List(
@@ -102,7 +124,7 @@ class FdClusterMenu @Inject()(stationDialog: StationDialog,
         mnemonicParsing = true
         items = List(
           environmentMenuItem,
-          aboutMenuItem,
+          //          aboutMenuItem,
         )
       }
     )
