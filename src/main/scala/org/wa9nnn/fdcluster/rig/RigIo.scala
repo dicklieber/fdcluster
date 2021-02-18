@@ -27,7 +27,7 @@ class RigIo(socketAdapter: SocketAdapter) extends Rig {
     (for {
       cap <- get("1")
     } yield {
-      val strings: Array[String] = cap.split(",").map(_.trim)
+      val strings: Array[String] = cap.split(":").map(_.trim)
       val length = strings.length
       val rValue = if(length > 1) strings(1) else ""
       (strings.head, rValue)
@@ -43,7 +43,8 @@ object RigIo {
   }
 
   def main(args: Array[String]): Unit = {
-    val rigIo = RigIo("192.168.0.177")
+    val rigIo = RigIo("127.0.0.1")
+//    val rigIo = RigIo("192.168.0.177")
     println(rigIo.frequency)
     println(rigIo.modeAndBandWidth)
 

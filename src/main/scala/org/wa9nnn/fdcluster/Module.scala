@@ -23,7 +23,7 @@ class Module extends AbstractModule with ScalaModule {
       val actorSystem = ActorSystem()
       bind[ActorSystem].toInstance(actorSystem)
       bind[Config].toInstance(actorSystem.settings.config)
-      bind[CurrentStationProvider].to[CurrentStationProviderImpl].asEagerSingleton()
+      bind[OurStationStore].asEagerSingleton()
       bind[Reporter].asEagerSingleton()
       bind[Preferences].toInstance(Preferences.userRoot.node("org/wa9nnn/fdcluster"))
 
@@ -54,14 +54,15 @@ class Module extends AbstractModule with ScalaModule {
   @Named("store")
   def getMyActor(actorSystem: ActorSystem,
                  nodeInfo: NodeInfo,
-                 currentStationProvider: CurrentStationProvider,
+                 currentStationProvider: OurStationStore,
+                 bandModeStore: BandModeStore,
                  @Named("ourInetAddresss") inetAddress: InetAddress,
                  config: Config,
                  @Named("journalPath") journalPath: Path,
                  syncSteps: SyncSteps,
                  @Named("allQsos") allQsos: ObservableBuffer[QsoRecord]
                 ): ActorRef = {
-    actorSystem.actorOf(StoreActor.props(nodeInfo, currentStationProvider, inetAddress, config, journalPath, allQsos, syncSteps))
+    actorSystem.actorOf(StoreActor.props(nodeInfo, currentStationProvider, bandModeStore, inetAddress, config, journalPath, allQsos, syncSteps))
   }
 
   @Provides

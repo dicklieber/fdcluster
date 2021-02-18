@@ -97,21 +97,21 @@ class DataScene @Inject()(@Named("store") store: ActorRef,
       new TableColumn[QsoRecord, String] {
         text = "Band"
         cellValueFactory = { q =>
-          ReadOnlyStringWrapper(q.value.qso.bandMode.band)
+          ReadOnlyStringWrapper(q.value.qso.bandMode.bandName)
         }
         prefWidth = 50
       },
       new TableColumn[QsoRecord, String] {
         text = "Mode"
         cellValueFactory = { q =>
-          ReadOnlyStringWrapper(q.value.qso.bandMode.mode)
+          ReadOnlyStringWrapper(q.value.qso.bandMode.modeName)
         }
         prefWidth = 50
       },
       new TableColumn[QsoRecord, String] {
         text = "Class"
         cellValueFactory = { q =>
-          ReadOnlyStringWrapper(q.value.qso.exchange.category)
+          ReadOnlyStringWrapper(q.value.qso.exchange.entryClass)
         }
         prefWidth = 50
       },

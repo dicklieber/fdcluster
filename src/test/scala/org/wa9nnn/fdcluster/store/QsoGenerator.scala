@@ -41,7 +41,8 @@ object QsoGenerator extends DefaultInstrumented  with DebugTimer with LazyLoggin
   private val random = new Random(42)
 
   private val contest = Contest("UT", 2019)
-  private val ourStation = OurStation("N9VTB", "IC-7300", "vdipole")
+
+  private val ourStation = OurStation("N9VTB", Exchange("5O", "IL"), "IC-7300", "vdipole")
 
   private def exchange: Exchange = {
     val section = Sections.sections(random.nextInt(Sections.sections.size - 1)).code
@@ -50,9 +51,11 @@ object QsoGenerator extends DefaultInstrumented  with DebugTimer with LazyLoggin
   }
 
   private def bandMode: BandMode = {
+
+
     BandMode(
-      bmf.bands(random.nextInt(bmf.bands.size)),
-      bmf.modes(random.nextInt(bmf.modes.size))
+      bmf.avalableBands(random.nextInt(bmf.avalableBands.size)).band,
+      bmf.modes(random.nextInt(bmf.modes.size)).mode
     )
   }
 }

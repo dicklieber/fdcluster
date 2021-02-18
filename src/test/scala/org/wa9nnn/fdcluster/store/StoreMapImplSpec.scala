@@ -18,7 +18,6 @@
 package org.wa9nnn.fdcluster.store
 
 import java.nio.file.{Files, Path}
-
 import com.typesafe.config.ConfigFactory
 import org.specs2.mutable.Specification
 import org.specs2.specification.After
@@ -26,6 +25,8 @@ import org.wa9nnn.fdcluster.javafx.sync.SyncSteps
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
 import scalafx.collections.ObservableBuffer
+
+import java.util.prefs.Preferences
 
 class StoreMapImplSpec extends Specification with After{
   val expectedNodeAddress: NodeAddress = NodeAddress()
@@ -37,7 +38,10 @@ class StoreMapImplSpec extends Specification with After{
 
   private val journal: Path = Files.createTempFile("fdcluster-journal", ".log")
   val allQsos = new ObservableBuffer[QsoRecord]()
-  private val storeMapImpl = new StoreMapImpl(nodeInfo, new CurrentStationProviderImpl(ConfigFactory.load()), allQsos, new SyncSteps ,Some(journal))
+
+  private val storeMapImpl = new StoreMapImpl(nodeInfo,
+    new OurStationStore(org.wa9nnn.fdcluster.PreferencesTest.preferences),
+    new BandModeStore(org.wa9nnn.fdcluster.PreferencesTest.preferences), allQsos, new SyncSteps ,Some(journal))
   private val worked: CallSign = "K2ORS"
   private val exchange: Exchange = Exchange("2I", "WPA")
   private val bandMode = BandMode()

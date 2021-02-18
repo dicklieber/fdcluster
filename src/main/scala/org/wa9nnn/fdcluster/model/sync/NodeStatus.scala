@@ -1,15 +1,14 @@
 
 package org.wa9nnn.fdcluster.model.sync
 
-import java.net.{URI, URL}
-import java.time.LocalDateTime
-
 import akka.util.ByteString
-import org.wa9nnn.fdcluster.model.MessageFormats.Digest
-import org.wa9nnn.fdcluster.model.{Codec, CurrentStation, NodeAddress}
+import org.wa9nnn.fdcluster.model.MessageFormats.{Digest, _}
+import org.wa9nnn.fdcluster.model.{BandMode, Codec, NodeAddress, OurStation}
 import org.wa9nnn.fdcluster.store.network.FdHour
 import play.api.libs.json.Json
-import org.wa9nnn.fdcluster.model.MessageFormats._
+
+import java.net.URL
+import java.time.LocalDateTime
 /**
  *
  * @param nodeAddress    our IP and instance.
@@ -17,7 +16,7 @@ import org.wa9nnn.fdcluster.model.MessageFormats._
  * @param qsoCount          of QSOs in db.
  * @param digest         of all QSO UUIDs
  * @param qsoHourDigests for quickly determining what we have.
- * @param currentStation band, mode, operator etc.
+ * @param ourStation band, mode, operator etc.
  * @param qsoRate        qsos per minute
  * @param stamp          when this message was generated.
  */
@@ -26,7 +25,8 @@ case class NodeStatus(nodeAddress: NodeAddress,
                       qsoCount: Int,
                       digest: Digest,
                       qsoHourDigests: List[QsoHourDigest],
-                      currentStation: CurrentStation,
+                      ourStation: OurStation,
+                      bandMode: BandMode,
                       qsoRate: Double,
                       stamp: LocalDateTime = LocalDateTime.now()) extends Codec {
 

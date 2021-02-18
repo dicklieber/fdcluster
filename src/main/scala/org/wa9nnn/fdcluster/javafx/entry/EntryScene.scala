@@ -1,18 +1,16 @@
 
 package org.wa9nnn.fdcluster.javafx.entry
 
-import java.util.concurrent.TimeUnit
-
 import akka.actor.ActorRef
 import akka.pattern.ask
 import akka.util.Timeout
 import com.google.inject.Inject
 import com.google.inject.name.Named
 import javafx.scene.input.KeyEvent
-import javafx.scene.{control ⇒ jfxsc}
+import javafx.scene.{control => jfxsc}
 import org.wa9nnn.fdcluster.javafx.{ContestCallsign, Section}
 import org.wa9nnn.fdcluster.model
-import org.wa9nnn.fdcluster.model.{CurrentStationProvider, Exchange, Qso}
+import org.wa9nnn.fdcluster.model.{BandModeStore, Exchange, OurStationStore, Qso}
 import org.wa9nnn.fdcluster.store.{AddResult, Added, Dup}
 import play.api.libs.json.Json
 import scalafx.Includes._
@@ -23,15 +21,17 @@ import scalafx.geometry.Insets
 import scalafx.scene.Scene
 import scalafx.scene.control._
 import scalafx.scene.layout.{BorderPane, HBox, VBox}
-
+import org.wa9nnn.util.InputHelper._
+import java.util.concurrent.TimeUnit
 import scala.concurrent.Await
 
 /**
  * Create JavaFX UI for field day entry mode.
  */
-class EntryScene @Inject()(@Inject() currentStationProvider: CurrentStationProvider,
+class EntryScene @Inject()(@Inject() ourStationStore: OurStationStore,
+                           bandModeStore: BandModeStore,
                            @Inject() @Named("store") store: ActorRef) {
-  implicit val timeout = Timeout(5, TimeUnit.SECONDS)
+  private implicit val timeout = Timeout(5, TimeUnit.SECONDS)
   val qsoCallsign: TextField = new TextField() {
     styleClass.append("sadQso")
   }
@@ -47,6 +47,8 @@ class EntryScene @Inject()(@Inject() currentStationProvider: CurrentStationProvi
   var actionResult = new TextArea()
   actionResult.getStyleClass.add("dupPrompt")
   actionResult.disable
+
+//  val bandComboox = new ComboBox[String](BandMode)
 
   val qsoSubmit = new Button("Log")
   qsoSubmit.disable = true
@@ -109,7 +111,7 @@ class EntryScene @Inject()(@Inject() currentStationProvider: CurrentStationProvi
     (event: KeyEvent) => {
       val current = event.getSource.asInstanceOf[jfxsc.TextField].getText
       val character = event.getCharacter
-      if (character.isDefinedAt(0) && character.charAt(0).isDigit && ContestCallsign.valid(current)) {
+      if (character.isDefinedAt(0) && character.charAt(0).isDigit && ContestCallsign.valid(current).isEmpty) {
         nextField(event, qsoClass)
       }
       if (current.isEmpty) {
@@ -124,7 +126,7 @@ class EntryScene @Inject()(@Inject() currentStationProvider: CurrentStationProvi
   qsoClass.addEventFilter(KeyEvent.KEY_TYPED,
     (event: KeyEvent) => {
       val current = event.getSource.asInstanceOf[jfxsc.TextField].getText
-      if (ContestClass.valid(current)) {
+      if (ContestClass.valid(current).isEmpty) {
         nextField(event, qsoSection)
       }
       Platform.runLater {
@@ -151,7 +153,7 @@ class EntryScene @Inject()(@Inject() currentStationProvider: CurrentStationProvi
   def validateQso(): Unit = {
 
     def validateField(destination: TextField, validField: FieldValidator): Boolean = {
-      if (validField.valid(destination)) {
+      if (validField.valid(destination).isEmpty) {
         makeHappy(destination)
       } else {
         makeSad(destination)
@@ -170,15 +172,6 @@ class EntryScene @Inject()(@Inject() currentStationProvider: CurrentStationProvi
     }
   }
 
-  def makeHappy(destination: Styleable): Boolean = {
-    destination.styleClass.replaceAll("sadQso", "happyQso")
-    true
-  }
-
-  def makeSad(destination: Styleable): Boolean = {
-    destination.styleClass.replaceAll("happyQso", "sadQso")
-    false
-  }
 
   def showSad(destination: TextInputControl, message: String): Unit = {
     makeSad(destination)
@@ -213,7 +206,7 @@ class EntryScene @Inject()(@Inject() currentStationProvider: CurrentStationProvi
   def readQso(): Qso = {
     val exchange = Exchange(qsoClassText.get(), qsoSectionText.get())
 
-    model.Qso(qsoCallsignText.get(), currentStationProvider.currentStation.bandMode, exchange)
+    model.Qso(qsoCallsignText.get(), bandModeStore.value, exchange)
   }
 
   def nextField(event: KeyEvent, destination: TextField): Unit = {
@@ -223,18 +216,5 @@ class EntryScene @Inject()(@Inject() currentStationProvider: CurrentStationProvi
     destination.positionCaret(1)
 
   }
-
-  def forceCaps(textField: TextField): Unit = {
-    textField.setTextFormatter(new TextFormatter[AnyRef]((change: TextFormatter.Change) => {
-      def foo(change: TextFormatter.Change) = {
-        change.setText(change.getText.toUpperCase)
-        change
-      }
-
-      foo(change)
-    }))
-  }
-
-
 }
 

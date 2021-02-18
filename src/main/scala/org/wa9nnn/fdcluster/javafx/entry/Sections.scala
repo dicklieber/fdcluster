@@ -1,13 +1,15 @@
 package org.wa9nnn.fdcluster.javafx.entry
+
 import scala.language.postfixOps
 import org.wa9nnn.fdcluster.javafx.Section
+
 object Sections {
 
-  def find(partial:String):Seq[Section] = {
+  def find(partial: String): Seq[Section] = {
     sections.filter(_.code.startsWith(partial))
   }
 
-//todo Load from a file
+  //todo Load from a file
   val sections: Seq[Section] = Seq(
     Section("Connecticut", "CT", "1"),
     Section("Eastern Massachusetts", "EMA", "1"),
@@ -97,4 +99,5 @@ object Sections {
 
 
   val byCode: Map[String, Section] = sections.map(s ⇒ s.code → s) toMap
+  val sortedByCode: Seq[Section] = sections.sortBy(_.code)
 }

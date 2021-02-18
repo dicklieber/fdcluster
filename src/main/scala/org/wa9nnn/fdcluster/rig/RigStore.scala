@@ -14,9 +14,10 @@ import javax.inject.Inject
  *
  * @param preferences default or runtime, override with a mock Preferences for unit testing
  */
-class RigStore @Inject()(preferences: Preferences = Preferences.userRoot.node("org/wa9nnn/fdcluster")) extends JsonLogging {
+class RigStore @Inject()(preferences: Preferences) extends JsonLogging {
 
   val rigFrequencyDisplay: StringProperty = new StringProperty()
+  val band:StringProperty = new StringProperty()
   val rigFrequency = new IntegerProperty()
 
   rigFrequency.onChange { (ov, was, tobo) =>

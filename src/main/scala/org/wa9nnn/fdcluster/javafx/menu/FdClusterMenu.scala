@@ -5,6 +5,7 @@ import akka.util.Timeout
 import com.google.inject.Injector
 import com.google.inject.name.Named
 import com.typesafe.scalalogging.LazyLogging
+import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import nl.grons.metrics4.scala.ByName.apply
 import org.wa9nnn.fdcluster.javafx.debug.DebugRemoveDialog
 import org.wa9nnn.fdcluster.javafx.sync.{SyncDialog, SyncSteps}
@@ -18,13 +19,14 @@ import javax.inject.Inject
 import scala.concurrent.duration.DurationInt
 import scala.jdk.CollectionConverters._
 import scala.language.postfixOps
+import net.codingwell.scalaguice.InjectorExtensions._
 
-class FdClusterMenu @Inject()(stationDialog: StationDialog,
-                              injector: Injector,
-                              @Named("store") store: ActorRef,
-                              syncSteps: SyncSteps,
-                              syncDialog: SyncDialog,
-                              debugRemoveDialog: DebugRemoveDialog) extends LazyLogging {
+class FdClusterMenu @Inject()(
+                               injector: Injector,
+                               @Named("store") store: ActorRef,
+                               syncSteps: SyncSteps,
+                               syncDialog: SyncDialog,
+                               debugRemoveDialog: DebugRemoveDialog) extends LazyLogging {
   private implicit val timeout = Timeout(5 seconds)
 
   private val environmentMenuItem = new MenuItem {
@@ -46,12 +48,7 @@ class FdClusterMenu @Inject()(stationDialog: StationDialog,
   private val currentStationMenuItem = new MenuItem {
     text = "Current Station"
     onAction = { _: ActionEvent =>
-      try {
-        stationDialog.apply()
-      } catch {
-        case eT: Throwable ⇒
-          logger.error("Current Station", eT)
-      }
+      injector.instance[StationDialog].showAndWait()
     }
   }
   private val syncNowMenuItem = new MenuItem {
@@ -87,12 +84,9 @@ class FdClusterMenu @Inject()(stationDialog: StationDialog,
   private val rigMenuItem = new MenuItem {
     text = "Rig"
     onAction = { _: ActionEvent =>
-      import net.codingwell.scalaguice.InjectorExtensions._
-
-        injector.instance[RigDialog].showAndWait()
+      injector.instance[RigDialog].showAndWait()
     }
   }
-  //  TextInputDialog
   val menuBar: MenuBar = new MenuBar {
     menus = List(
       new Menu("_File") {

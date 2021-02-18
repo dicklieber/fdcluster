@@ -1,55 +1,29 @@
 
 package org.wa9nnn.fdcluster.model
 
-import com.typesafe.config.{Config, ConfigFactory, ConfigValueFactory}
-import com.typesafe.scalalogging.LazyLogging
-import javax.inject.Inject
-import BandMode._
+import org.wa9nnn.fdcluster.model.BandMode.{Band, Mode}
 
-import scala.collection.JavaConverters._
 import scala.util.matching.Regex
 
+
+case class AvailableBand(band: String, freqStart: Int = 0, freqEnd: Int = 0) extends Ordered[AvailableBand] {
+  def containsFfreq(frequency: Int): Boolean = frequency >= freqStart && frequency <= freqEnd
+
+  override def compare(that: AvailableBand): Int = this.freqStart.compareTo(that.freqStart)
+}
+
+object AvailableBand {
+  val availaBandRegx: Regex = """(\d+(?:\.\d+)?c?m)\s*:\s(\d+)\s*to\s*(\d+)""".r
+
+  def apply(): AvailableBand = {
+    throw new NotImplementedError() //todo
+  }
+}
+
 /**
- * safer to construct via {{org.wa9nnn.fdlog.model.BandModeFactory#apply(java.lang.String, java.lang.String)}}
+ *
+ * @param mode context mode
+ * @param rigModes modes that map to [[mode]]
  */
-case class BandMode(band: Band = "20m", mode: Mode = "phone") {
-  override def toString: Band = s"$band $mode"
-}
+case class AvailableMode(mode:Mode, rigModes:List[Mode])
 
-
-object BandMode {
-
-  type Band = String
-  type Mode = String
-
-  val regex: Regex = """(.*);(.*)""".r
-}
-
-class BandModeFactory @Inject()(config: Config = ConfigFactory.load()) extends LazyLogging{
-  private val bandModeConfig: Config = config.getConfig("fdcluster.bandMode")
-
-  val bands: List[String] = bandModeConfig.getStringList("bands").asScala.toList
-
-  val bandSet: Set[String] = bands.toSet
-
-  val modes: List[String] = bandModeConfig.getStringList("modes").asScala.toList.sorted
-  val modeSet: Set[String] = bands.toSet
-
-  def ckeckBand(band: Band): Band = {
-    if (bandSet.contains(band))
-      band
-    else
-      bands.head
-  }
-
-  def checkMode(band: Mode): Mode = {
-    if (modeSet.contains(band))
-      band
-    else
-      bands.head
-  }
-
-  def apply(band: Band, mode: Mode): BandMode = {
-    new BandMode(ckeckBand(band), checkMode(mode))
-  }
-}

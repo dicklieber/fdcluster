@@ -1,16 +1,15 @@
 
 package org.wa9nnn.fdcluster.store
 
-import java.time.{Duration, LocalDate, LocalDateTime}
-
 import org.specs2.mutable.Specification
 import org.specs2.specification.BeforeEach
-import org.wa9nnn.fdcluster.model.{Contest, CurrentStationProviderImpl, NodeAddress, QsoRecord}
 import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHourDigest}
-import org.wa9nnn.fdcluster.store.{NodeInfoImpl, StoreMapImpl}
+import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.store.network.FdHour
 import org.wa9nnn.util.DebugTimer
 import scalafx.collections.ObservableBuffer
+
+import java.time.{Duration, LocalDateTime}
 
 
 class StoreSyncSpec extends Specification with BeforeEach with DebugTimer {
@@ -85,7 +84,10 @@ class StoreSyncSpec extends Specification with BeforeEach with DebugTimer {
     storeMapImpl = {
       println("Creating store")
       val allQsos = new ObservableBuffer[QsoRecord]()
-      new StoreMapImpl(nodeInfo, new CurrentStationProviderImpl(), allQsos)
+      new StoreMapImpl(nodeInfo,
+        new OurStationStore(org.wa9nnn.fdcluster.PreferencesTest.preferences),
+        new BandModeStore(org.wa9nnn.fdcluster.PreferencesTest.preferences),
+        allQsos)
     }
     val startTime = LocalDateTime.of(2019, 6, 23, 12, 0, 0)
 

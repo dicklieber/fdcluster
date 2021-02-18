@@ -23,22 +23,20 @@ class RigIoSpec extends Specification with DataTables with Mockito {
     }
 
     "socketTests" >> {
-      //      val rig = new RigIo(MockSocketAdapter)
-      val rig = new RigIo(SocketAdapter("192.168.0.177", defaultPort))
+      /// todo: tied to an IC-705 with specific settings; hopelessly fragile!
+      val rig = new RigIo(SocketAdapter("127.0.0.1", defaultPort))
 
 
       "caps" >> {
         val caps: Map[String, String] = rig.caps
         val str = caps("Model name")
-        caps must contain("Model name")
-
-
+        str must beEqualTo ("IC-705")
       }
 
       "modeAndBandWidth" >> {
         val (mode, bandwidth) = rig.modeAndBandWidth
-        mode must beEqualTo("PKTUSB")
-        bandwidth must beEqualTo(3600)
+        mode must beEqualTo("LSB")
+        bandwidth must beEqualTo(2400)
       }
 
       "frequency" >> {

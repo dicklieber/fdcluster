@@ -25,17 +25,17 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-class StoreActor(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvider,
+class StoreActor(nodeInfo: NodeInfo, currentStationProvider: OurStationStore, bandModeStore: BandModeStore,
                  inetAddress: InetAddress, config: Config,
                  journalPath: Option[Path],
                  allQsos: ObservableBuffer[QsoRecord],
                  syncSteps: SyncSteps
                 ) extends Actor with LazyLogging with DefaultInstrumented {
 
-  private val store = new StoreMapImpl(nodeInfo, currentStationProvider, allQsos, syncSteps, journalPath)
+  private val store = new StoreMapImpl(nodeInfo, currentStationProvider, bandModeStore, allQsos, syncSteps, journalPath)
   private val clusterState = new ClusterState(nodeInfo.nodeAddress)
   private implicit val timeout: Timeout = Timeout(5 seconds)
-  override lazy val metricBaseName = MetricName("StoreActor")
+   override lazy val metricBaseName = MetricName("StoreActor")
 
 
   private val ourNode = nodeInfo.nodeAddress
@@ -45,7 +45,7 @@ class StoreActor(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvi
   context.actorOf(MulticastListenerActor.props(inetAddress, config), "MulticastListener")
   private val senderActor: ActorRef = context.actorOf(MultcastSenderActor.props(config), "MulticastSender")
   private val clientActor = context.actorOf(ClientActor.props(syncSteps))
-  private val syncTimer: nl.grons.metrics4.scala.Timer = metrics.timer("SyncTimer")
+//  private val syncTimer: nl.grons.metrics4.scala.Timer = metrics.timer("SyncTimer")
 
   context.system.scheduler.scheduleAtFixedRate(2 seconds, 17 seconds, self, StatusPing)
 
@@ -83,9 +83,10 @@ class StoreActor(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvi
 
     case StatusPing ⇒
       val nodeStatus = store.nodeStatus
+
       senderActor ! JsonContainer(nodeStatus.getClass.getSimpleName, nodeStatus)
 
-      val hoursToSync = clusterState.hoursToSync()
+//      val hoursToSync = clusterState.hoursToSync()
 
     /**
      * Start a sync operation
@@ -147,10 +148,10 @@ object StoreActor {
   case object DumpCluster
 
 
-  def props(nodeInfo: NodeInfo, currentStationProvider: CurrentStationProvider, inetAddress: InetAddress, config: Config, journalPath: Path,
+  def props(nodeInfo: NodeInfo, ourStationStore: OurStationStore, bandModeStore: BandModeStore, inetAddress: InetAddress, config: Config, journalPath: Path,
             allQsos: ObservableBuffer[QsoRecord],
             syncSteps: SyncSteps): Props = {
-    Props(new StoreActor(nodeInfo, currentStationProvider, inetAddress, config, Some(journalPath), allQsos, syncSteps))
+    Props(new StoreActor(nodeInfo, ourStationStore, bandModeStore, inetAddress, config, Some(journalPath), allQsos, syncSteps))
   }
 
 }

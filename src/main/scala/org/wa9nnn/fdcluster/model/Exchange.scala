@@ -18,32 +18,48 @@
 
 package org.wa9nnn.fdcluster.model
 
+import org.wa9nnn.fdcluster.javafx.entry.EntryCategory
 import play.api.libs.json._
 
-class Exchange(val category: String, val section: String) {
+import scala.util.matching.Regex
+import org.wa9nnn.fdcluster.model.Exchange.classParser
+
+class Exchange(val entryClass: String, val section: String) {
+  def transmitters: String = {
+    val classParser(nTtransmitters, _) = entryClass
+    nTtransmitters
+  }
+def maybeEntryCategory:Option[EntryCategory] = {
+  val classParser(_, cat) = entryClass
+  EntryCategory.forDesignator(cat.head)
+}
+
   /**
-    *
-    * @return compact form
-    */
-  override def toString: String = s"""$category;$section"""
+   *
+   * @return compact form
+   */
+  override def toString: String = s"""$entryClass;$section"""
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[Exchange]
 
   override def equals(other: Any): Boolean = other match {
     case that: Exchange ⇒
       (that canEqual this) &&
-        category == that.category &&
+        entryClass == that.entryClass &&
         section == that.section
     case _ ⇒ false
   }
 
   override def hashCode(): Int = {
-    val state = Seq(category, section)
+    val state = Seq(entryClass, section)
     state.map(_.hashCode()).foldLeft(0)((a, b) ⇒ 31 * a + b)
   }
 }
 
 object Exchange {
+  val classParser: Regex = """(\d+)([HIO])""".r
+
+
   def apply(category: String, section: String): Exchange = {
     new Exchange(category.toUpperCase, section.toUpperCase)
   }
@@ -59,8 +75,8 @@ object Exchange {
 
   private val Parse = """(\d*\p{Upper});(.*)""".r
   /**
-    * to make JSON a bit more compact
-    */
+   * to make JSON a bit more compact
+   */
   implicit val sessionKeyFormat: Format[Exchange] = new Format[Exchange] {
     override def reads(json: JsValue): JsResult[Exchange] = {
       val ss = json.as[String]
@@ -69,7 +85,7 @@ object Exchange {
           case Parse(category, section) ⇒
             JsSuccess(Exchange(category, section))
           case _ ⇒
-            JsError("Exchange: $ss could not be parsed!")
+            JsError(s"Exchange: $ss could not be parsed!")
         }
       }
       catch {

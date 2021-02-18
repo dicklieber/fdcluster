@@ -26,18 +26,20 @@ import scala.util.Using
  * This can only be used within the [[StoreActor]]
  *
  * @param nodeInfo                    who we are
- * @param currentStationProvider      things that may vary with operator.
+ * @param ourStationStore      things that may vary with operator.
  * @param journalFilePath             where journal file lives.
  */
 class StoreMapImpl(nodeInfo: NodeInfo,
-                   currentStationProvider: CurrentStationProvider,
+                   ourStationStore: OurStationStore,
+                   bandModeStore: BandModeStore,
                    allQsos: ObservableBuffer[QsoRecord],
                    syncSteps: SyncSteps = new SyncSteps,
                    val journalFilePath: Option[Path] = None)
   extends Store with JsonLogging with DefaultInstrumented {
-  override lazy val metricBaseName = MetricName("Store")
+//   override lazy val metricBaseName = MetricName("Store")
   private val random = new SecureRandom()
-  val qsoCountGauge = metrics.gauge("qsoCount"){
+  private val qsoCountGauge = metrics.gauge("qsoCount"){
+
     allQsos.size
   }
 
@@ -164,7 +166,7 @@ class StoreMapImpl(nodeInfo: NodeInfo,
       case Some(duplicateRecord) =>
         Dup(duplicateRecord)
       case None =>
-        val newRecord = QsoRecord(potentialQso, nodeInfo.contest, currentStationProvider.currentStation.ourStation, nodeInfo.fdLogId)
+        val newRecord = QsoRecord(potentialQso, nodeInfo.contest, ourStationStore.value, nodeInfo.fdLogId)
         qsoMeter.mark()
         addRecord(newRecord)
     }
@@ -250,7 +252,7 @@ class StoreMapImpl(nodeInfo: NodeInfo,
         .sortBy(_.startOfHour)
     }
     val rate = qsoMeter.fifteenMinuteRate
-    sync.NodeStatus(nodeInfo.nodeAddress, nodeInfo.url, byUuid.size, sDigest, hourDigests, currentStationProvider.currentStation, rate)
+    sync.NodeStatus(nodeInfo.nodeAddress, nodeInfo.url, byUuid.size, sDigest, hourDigests, ourStationStore.value, bandModeStore.value, rate)
   }
 
   /**

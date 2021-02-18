@@ -66,7 +66,7 @@ class ClusterTable extends LazyLogging {
             case None ⇒
               QsoHourDigest(fdHour, "--", 0)
           }
-          (qhd → container)
+          qhd → container
         }
 
         HourRow(StyledAny(fdHour), digestAndContainers)
@@ -80,11 +80,11 @@ class ClusterTable extends LazyLogging {
       buildRow("QSOs", _.nodeStatus.qsoCount),
       buildRow("QSO/Minute", _.nodeStatus.qsoRate),
       buildRow("Digest", _.nodeStatus.digest),
-      buildRow("Band", _.nodeStatus.currentStation.bandMode.band),
-      buildRow("Mode", _.nodeStatus.currentStation.bandMode.mode),
-      buildRow("Operator", _.nodeStatus.currentStation.ourStation.operator),
-      buildRow("Rig", _.nodeStatus.currentStation.ourStation.rig),
-      buildRow("Antenna", _.nodeStatus.currentStation.ourStation.antenna),
+      buildRow("Band", _.nodeStatus.bandMode.bandName),
+      buildRow("Mode", _.nodeStatus.bandMode.modeName),
+      buildRow("Operator", _.nodeStatus.ourStation.ourCallsign),
+      buildRow("Rig", _.nodeStatus.ourStation.rig),
+      buildRow("Antenna", _.nodeStatus.ourStation.antenna),
     ) ++ buildHours
 
     data.clear()
