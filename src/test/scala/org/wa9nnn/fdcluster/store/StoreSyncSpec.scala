@@ -1,22 +1,24 @@
 
 package org.wa9nnn.fdcluster.store
 
+import org.apache.commons.io.FileUtils
 import org.specs2.mutable.Specification
-import org.specs2.specification.BeforeEach
-import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHourDigest}
+import org.specs2.specification.BeforeAfterEach
 import org.wa9nnn.fdcluster.model._
+import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHourDigest}
 import org.wa9nnn.fdcluster.store.network.FdHour
-import org.wa9nnn.util.DebugTimer
+import org.wa9nnn.util.{DebugTimer, Persistence}
 import scalafx.collections.ObservableBuffer
 
+import java.nio.file.{Files, Path}
 import java.time.{Duration, LocalDateTime}
 
 
-class StoreSyncSpec extends Specification with BeforeEach with DebugTimer {
+class StoreSyncSpec extends Specification with BeforeAfterEach with DebugTimer {
   sequential
   private val nQsos = 10000
 
-  val expectedNodeAddress = NodeAddress()
+  val expectedNodeAddress: NodeAddress = NodeAddress()
   implicit val nodeInfo: NodeInfoImpl = new NodeInfoImpl(
     contest = Contest("WFD", 2017),
     nodeAddress = expectedNodeAddress)
@@ -29,7 +31,6 @@ class StoreSyncSpec extends Specification with BeforeEach with DebugTimer {
       val status: NodeStatus = storeMapImpl.nodeStatus
       status.qsoCount must beEqualTo(nQsos)
       status.nodeAddress must beEqualTo(expectedNodeAddress)
-      status.stamp must not beNull
 
       val startOfContest: FdHour = status.qsoHourDigests.head.startOfHour
       var currentExpectedHour = startOfContest
@@ -79,14 +80,18 @@ class StoreSyncSpec extends Specification with BeforeEach with DebugTimer {
       }
     }
   }
+  val directory: Path = Files.createTempDirectory("StoreMapImplSpec")
+  var persistence:Persistence  = new Persistence(directory.toString
+  )
 
   override def before(): Unit = {
+
     storeMapImpl = {
       println("Creating store")
       val allQsos = new ObservableBuffer[QsoRecord]()
       new StoreMapImpl(nodeInfo,
-        new OurStationStore(org.wa9nnn.fdcluster.PreferencesTest.preferences),
-        new BandModeStore(org.wa9nnn.fdcluster.PreferencesTest.preferences),
+        new OurStationStore(persistence),
+        new BandModeStore(persistence),
         allQsos)
     }
     val startTime = LocalDateTime.of(2019, 6, 23, 12, 0, 0)
@@ -96,5 +101,9 @@ class StoreSyncSpec extends Specification with BeforeEach with DebugTimer {
       records.foreach(qr ⇒
         storeMapImpl.addRecord(qr))
     }
+  }
+
+  override def after = {
+FileUtils.deleteDirectory(directory.toFile)
   }
 }

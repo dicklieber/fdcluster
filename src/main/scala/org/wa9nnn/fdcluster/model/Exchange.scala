@@ -18,21 +18,27 @@
 
 package org.wa9nnn.fdcluster.model
 
-import org.wa9nnn.fdcluster.javafx.entry.EntryCategory
+import org.wa9nnn.fdcluster.javafx.Section
+import org.wa9nnn.fdcluster.javafx.entry.{EntryCategory, Sections}
+import org.wa9nnn.fdcluster.model.Exchange.classParser
 import play.api.libs.json._
 
 import scala.util.matching.Regex
-import org.wa9nnn.fdcluster.model.Exchange.classParser
 
-class Exchange(val entryClass: String, val section: String) {
-  def transmitters: String = {
-    val classParser(nTtransmitters, _) = entryClass
-    nTtransmitters
+class Exchange(val entryClass: String = EntryCategory.defaultCategory.category, val section: String = Sections.sortedByCode.head.code) {
+  def display: String = s"$entryClass $section"
+
+
+  //todo init with contest legal stuff
+  def transmitters: Int = {
+    try {
+      val classParser(nTtransmitters, _) = entryClass
+      nTtransmitters.toInt
+    } catch {
+      case _: Exception =>
+        1
+    }
   }
-def maybeEntryCategory:Option[EntryCategory] = {
-  val classParser(_, cat) = entryClass
-  EntryCategory.forDesignator(cat.head)
-}
 
   /**
    *
@@ -51,17 +57,19 @@ def maybeEntryCategory:Option[EntryCategory] = {
   }
 
   override def hashCode(): Int = {
-    val state = Seq(entryClass, section)
-    state.map(_.hashCode()).foldLeft(0)((a, b) ⇒ 31 * a + b)
+    Seq(entryClass, section).map(_.hashCode()).foldLeft(0)((a, b) ⇒ 31 * a + b)
   }
 }
 
 object Exchange {
   val classParser: Regex = """(\d+)([HIO])""".r
 
-
   def apply(category: String, section: String): Exchange = {
     new Exchange(category.toUpperCase, section.toUpperCase)
+  }
+
+  def apply(transmitters:Int, category: EntryCategory, section:Section):Exchange = {
+    new Exchange()
   }
 
   def apply(in: String): Exchange = {
@@ -98,3 +106,4 @@ object Exchange {
     }
   }
 }
+

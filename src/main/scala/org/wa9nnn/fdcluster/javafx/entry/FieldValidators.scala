@@ -51,26 +51,34 @@ trait FieldValidator {
 
   /**
    *
-   * @param textField dto be validated.
+   * @param textField to be validated.
    * @return one if valid otherwise the error message.
    */
   def valid(textField: TextField): Option[String] = {
     valid(textField.getText)
   }
 }
-case class EntryCategory(category:String) {
-  val designator:Char = category.head
+
+case class EntryCategory(category: String) {
+  val designator: Char = category.head
+
+  def buildClass(transmitters: Int): String = s"$transmitters$designator"
 }
 
 object EntryCategory {
+  def fromEntryClass(entryClass: String): EntryCategory = {
+    forDesignator(entryClass.head)
+  }
+
   val catagories = Seq(
     EntryCategory("Home"),
     EntryCategory("Indoor"),
     EntryCategory("Outdoor"),
   )
+  val defaultCategory: EntryCategory = catagories(2)
 
-  def forDesignator(designator:Char): Option[EntryCategory] = {
-    catagories.find(_.designator == designator)
+  def forDesignator(designator: Char): EntryCategory = {
+    catagories.find(_.designator == designator).getOrElse(defaultCategory)
   }
 }
 

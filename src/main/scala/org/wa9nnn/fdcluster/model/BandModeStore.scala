@@ -2,14 +2,19 @@
 package org.wa9nnn.fdcluster.model
 
 import org.wa9nnn.fdcluster.model.BandMode.{Band, Mode}
+import org.wa9nnn.fdcluster.model.MessageFormats._
+import org.wa9nnn.util.Persistence
 import scalafx.beans.property.ObjectProperty
 
-import java.util.prefs.Preferences
 import javax.inject.Inject
 import scala.util.matching.Regex
 
-class BandModeStore @Inject()(preferences: Preferences)  extends ObjectProperty[BandMode]{
-
+class BandModeStore @Inject()(persistence: Persistence) extends ObjectProperty[BandMode] {
+  value = persistence.loadFromFile[BandMode]().getOrElse(BandMode())
+  onChange { (_, _, newValue) => {
+    persistence.saveToFile(newValue)
+  }
+  }
 }
 
 /**

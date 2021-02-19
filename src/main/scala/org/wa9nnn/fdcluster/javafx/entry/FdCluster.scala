@@ -16,12 +16,14 @@ import scalafx.application.JFXApp.PrimaryStage
 import scalafx.event.Event
 import scalafx.scene.Scene
 import scalafx.scene.control.{Tab, TabPane}
+import scalafx.scene.image.Image
 import scalafx.scene.layout.BorderPane
 
 /**
  * Main for FDLog
  */
 object FdCluster extends JFXApp {
+
 //  val system: ActorSystem = ActorSystem("FdLogAkka")
 
   private val injector = Guice.createInjector(new Module())
@@ -86,6 +88,7 @@ object FdCluster extends JFXApp {
   stage = new PrimaryStage() {
     title = "FDCluster @ " + nodeInfo.nodeAddress.display
     scene = ourScene
+    private val externalForm: String = getClass.getResource("/images/wfdlogo.png").toExternalForm
+    icons += new Image(externalForm)
   }
-
 }

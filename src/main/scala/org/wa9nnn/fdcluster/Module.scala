@@ -1,9 +1,8 @@
 
 package org.wa9nnn.fdcluster
 
-import java.net.{Inet4Address, InetAddress, NetworkInterface, URL}
-import java.nio.file.{Path, Paths}
 import akka.actor.{ActorRef, ActorSystem}
+import com.github.racc.tscg.TypesafeConfigModule
 import com.google.inject.name.Named
 import com.google.inject.{AbstractModule, Provides, Singleton}
 import com.typesafe.config.Config
@@ -14,18 +13,20 @@ import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.store.{NodeInfo, NodeInfoImpl, StoreActor}
 import scalafx.collections.ObservableBuffer
 
-import java.util.prefs.Preferences
+import java.net.{Inet4Address, InetAddress, NetworkInterface, URL}
+import java.nio.file.{Path, Paths}
 import scala.jdk.CollectionConverters._
 
 class Module extends AbstractModule with ScalaModule {
+
   override def configure(): Unit = {
     try {
       val actorSystem = ActorSystem()
       bind[ActorSystem].toInstance(actorSystem)
       bind[Config].toInstance(actorSystem.settings.config)
+      install(TypesafeConfigModule.fromConfigWithPackage(actorSystem.settings.config, "org.wa9nnn"))
       bind[OurStationStore].asEagerSingleton()
       bind[Reporter].asEagerSingleton()
-      bind[Preferences].toInstance(Preferences.userRoot.node("org/wa9nnn/fdcluster"))
 
     } catch {
       case e: Throwable ⇒
@@ -71,7 +72,6 @@ class Module extends AbstractModule with ScalaModule {
   def getJournalPath(config: Config): Path = {
     Paths.get(config.getString("fdcluster.journalPath"))
   }
-
 
   /**
    *

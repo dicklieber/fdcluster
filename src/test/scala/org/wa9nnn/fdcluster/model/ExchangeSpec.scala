@@ -20,6 +20,7 @@ package org.wa9nnn.fdcluster.model
 import com.fasterxml.jackson.core.JsonParseException
 import org.wa9nnn.fdcluster.model.Exchange
 import play.api.libs.json.Json
+import org.wa9nnn.fdcluster.javafx.entry.EntryCategory
 
 class ExchangeSpec extends org.specs2.mutable.Specification {
   "Exchange" >> {
@@ -40,10 +41,28 @@ class ExchangeSpec extends org.specs2.mutable.Specification {
       val backAgain = Json.parse(json).as[Exchange]
       backAgain must beEqualTo(exchange)
     }
+    "round trip default" >> {
+      val d = new Exchange()
+      val json = Json.prettyPrint(Json.toJson(d))
+//      json must beEqualTo("1O;-")
+      val backAgain = Json.parse(json).as[Exchange]
+      backAgain must beEqualTo(d)
+    }
     "parse json bad" >> {
       Json.parse("crap").as[Exchange] must throwAn[JsonParseException]
     }
 
+    "hashcode" >> {
+      val hash = exchange.hashCode()
+      hash must beEqualTo (1594488)//not much of a test
+    }
+
+    "defaultApply" >> {
+      val e = new Exchange()
+      e.transmitters must beEqualTo (1)
+      e.section must beEqualTo ("-")
+      e.toString must beEqualTo ("1O;-")
+    }
   }
 
 }

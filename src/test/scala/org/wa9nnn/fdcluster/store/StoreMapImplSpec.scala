@@ -27,6 +27,8 @@ import org.wa9nnn.fdcluster.model._
 import scalafx.collections.ObservableBuffer
 
 import java.util.prefs.Preferences
+import org.apache.commons.io.FileUtils._
+import org.wa9nnn.util.Persistence
 
 class StoreMapImplSpec extends Specification with After{
   val expectedNodeAddress: NodeAddress = NodeAddress()
@@ -35,13 +37,15 @@ class StoreMapImplSpec extends Specification with After{
     contest = Contest("WFD", 2017),
     nodeAddress = expectedNodeAddress)
 
-
+  private val directory: Path = Files.createTempDirectory("StoreMapImplSpec")
+  val persistence = new Persistence(directory.toAbsolutePath.toString)
   private val journal: Path = Files.createTempFile("fdcluster-journal", ".log")
   val allQsos = new ObservableBuffer[QsoRecord]()
 
+
   private val storeMapImpl = new StoreMapImpl(nodeInfo,
-    new OurStationStore(org.wa9nnn.fdcluster.PreferencesTest.preferences),
-    new BandModeStore(org.wa9nnn.fdcluster.PreferencesTest.preferences), allQsos, new SyncSteps ,Some(journal))
+    new OurStationStore(persistence),
+    new BandModeStore(persistence), allQsos, new SyncSteps ,Some(journal))
   private val worked: CallSign = "K2ORS"
   private val exchange: Exchange = Exchange("2I", "WPA")
   private val bandMode = BandMode()
@@ -59,6 +63,7 @@ class StoreMapImplSpec extends Specification with After{
   after
 
   override def after: Any = {
-    Files.delete(journal)
+//    Files.delete(journal)
+    deleteDirectory(directory.toFile)
   }
 }

@@ -67,7 +67,9 @@ libraryDependencies ++= Seq(
   "com.google.inject" % "guice" % "4.2.2",
   "org.scalafx" %% "scalafxml-core-sfx8" % "0.5",
   "org.scalafx" %% "scalafx" % "15.0.1-R21",
+  "org.scalafx" %% "scalafx-extras" % "0.3.6",
   "net.codingwell" %% "scala-guice" % "4.2.6",
+  "com.github.racc" % "typesafeconfig-guice" % "0.1.0",
   "com.typesafe.akka" %% "akka-actor" % "2.6.0-M7",
   "com.typesafe.akka" %% "akka-http" % "10.1.10",
   "com.typesafe.akka" %% "akka-stream" % "2.6.0-M7",
@@ -84,6 +86,7 @@ libraryDependencies ++= Seq(
   "io.dropwizard.metrics" % "metrics-core" % "4.1.2",
   "io.dropwizard.metrics" % "metrics-graphite" % "4.1.2",
   "com.fazecast" % "jSerialComm" % "2.6.2",
-//  "com.github.jvican" %% "xmlrpc" % "1.2.1"
+  "commons-io" % "commons-io" % "2.8.0",
+  //  "com.github.jvican" %% "xmlrpc" % "1.2.1"
 )
 

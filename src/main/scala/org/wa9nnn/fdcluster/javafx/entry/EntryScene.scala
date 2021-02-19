@@ -8,7 +8,7 @@ import com.google.inject.Inject
 import com.google.inject.name.Named
 import javafx.scene.input.KeyEvent
 import javafx.scene.{control => jfxsc}
-import org.wa9nnn.fdcluster.javafx.{ContestCallsign, Section}
+import org.wa9nnn.fdcluster.javafx.{ContestCallsignValidator, Section}
 import org.wa9nnn.fdcluster.model
 import org.wa9nnn.fdcluster.model.{BandModeStore, Exchange, OurStationStore, Qso}
 import org.wa9nnn.fdcluster.store.{AddResult, Added, Dup}
@@ -111,7 +111,7 @@ class EntryScene @Inject()(@Inject() ourStationStore: OurStationStore,
     (event: KeyEvent) => {
       val current = event.getSource.asInstanceOf[jfxsc.TextField].getText
       val character = event.getCharacter
-      if (character.isDefinedAt(0) && character.charAt(0).isDigit && ContestCallsign.valid(current).isEmpty) {
+      if (character.isDefinedAt(0) && character.charAt(0).isDigit && ContestCallsignValidator.valid(current).isEmpty) {
         nextField(event, qsoClass)
       }
       if (current.isEmpty) {
@@ -160,7 +160,7 @@ class EntryScene @Inject()(@Inject() ourStationStore: OurStationStore,
       }
     }
 
-    if (validateField(qsoCallsign, ContestCallsign) &&
+    if (validateField(qsoCallsign, ContestCallsignValidator) &&
       validateField(qsoClass, ContestClass) &&
       validateField(qsoSection, ContestSection)) {
       qsoSubmit.disable = false

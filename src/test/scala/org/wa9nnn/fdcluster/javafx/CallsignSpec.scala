@@ -1,22 +1,22 @@
 package org.wa9nnn.fdcluster.javafx
 
 import org.specs2.mutable.Specification
-import org.wa9nnn.fdcluster.javafx.ContestCallsign
+import org.wa9nnn.fdcluster.javafx.ContestCallsignValidator
 
 class CallsignSpec extends Specification {
 
   "CallsignSpec" should {
     "Full callsign" in {
-     ContestCallsign.valid("WA9NNN") must beNone
+     ContestCallsignValidator.valid("WA9NNN") must beNone
     }
     "No Suffix" in {
-     ContestCallsign.valid("WA9") must beNone
+     ContestCallsignValidator.valid("WA9") must beNone
     }
    "empty" in {
-     ContestCallsign.valid("") must beNone
+     ContestCallsignValidator.valid("") must beNone
     }
    "no area" in {
-     ContestCallsign.valid("KD") must beNone
+     ContestCallsignValidator.valid("KD") must beNone
     }
 
   }
