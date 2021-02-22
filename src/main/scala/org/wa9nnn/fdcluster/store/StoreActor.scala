@@ -25,7 +25,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-class StoreActor(nodeInfo: NodeInfo, currentStationProvider: OurStationStore, bandModeStore: BandModeStore,
+class StoreActor(nodeInfo: NodeInfo, currentStationProvider: OurStationStore, bandModeStore: BandModeOperatorStore,
                  inetAddress: InetAddress, config: Config,
                  journalPath: Option[Path],
                  allQsos: ObservableBuffer[QsoRecord],
@@ -148,7 +148,7 @@ object StoreActor {
   case object DumpCluster
 
 
-  def props(nodeInfo: NodeInfo, ourStationStore: OurStationStore, bandModeStore: BandModeStore, inetAddress: InetAddress, config: Config, journalPath: Path,
+  def props(nodeInfo: NodeInfo, ourStationStore: OurStationStore, bandModeStore: BandModeOperatorStore, inetAddress: InetAddress, config: Config, journalPath: Path,
             allQsos: ObservableBuffer[QsoRecord],
             syncSteps: SyncSteps): Props = {
     Props(new StoreActor(nodeInfo, ourStationStore, bandModeStore, inetAddress, config, Some(journalPath), allQsos, syncSteps))

@@ -50,10 +50,10 @@ object QsoGenerator extends DefaultInstrumented  with DebugTimer with LazyLoggin
 
   }
 
-  private def bandMode: BandMode = {
+  private def bandMode: BandModeOperator = {
 
 
-    BandMode(
+    BandModeOperator(
       bmf.avalableBands(random.nextInt(bmf.avalableBands.size)).band,
       bmf.modes(random.nextInt(bmf.modes.size)).mode
     )

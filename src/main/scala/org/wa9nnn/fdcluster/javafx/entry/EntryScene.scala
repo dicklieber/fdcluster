@@ -6,30 +6,34 @@ import akka.pattern.ask
 import akka.util.Timeout
 import com.google.inject.Inject
 import com.google.inject.name.Named
+import javafx.collections.ObservableList
 import javafx.scene.input.KeyEvent
 import javafx.scene.{control => jfxsc}
 import org.wa9nnn.fdcluster.javafx.{ContestCallsignValidator, Section}
 import org.wa9nnn.fdcluster.model
-import org.wa9nnn.fdcluster.model.{BandModeStore, Exchange, OurStationStore, Qso}
+import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.store.{AddResult, Added, Dup}
+import org.wa9nnn.util.InputHelper._
 import play.api.libs.json.Json
 import scalafx.Includes._
 import scalafx.application.Platform
-import scalafx.css.Styleable
+import scalafx.beans.property.ObjectProperty
 import scalafx.event.ActionEvent
 import scalafx.geometry.Insets
 import scalafx.scene.Scene
 import scalafx.scene.control._
-import scalafx.scene.layout.{BorderPane, HBox, VBox}
-import org.wa9nnn.util.InputHelper._
+import scalafx.scene.layout.{BorderPane, GridPane, HBox, VBox}
+
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicInteger
 import scala.concurrent.Await
 
 /**
  * Create JavaFX UI for field day entry mode.
  */
 class EntryScene @Inject()(@Inject() ourStationStore: OurStationStore,
-                           bandModeStore: BandModeStore,
+                           bandModeStore: BandModeOperatorStore,
+                           bandModeFactory: BandModeFactory,
                            @Inject() @Named("store") store: ActorRef) {
   private implicit val timeout = Timeout(5, TimeUnit.SECONDS)
   val qsoCallsign: TextField = new TextField() {
@@ -48,7 +52,41 @@ class EntryScene @Inject()(@Inject() ourStationStore: OurStationStore,
   actionResult.getStyleClass.add("dupPrompt")
   actionResult.disable
 
-//  val bandComboox = new ComboBox[String](BandMode)
+  val rigFreq = new Label()
+  val band = new ComboBox[String](bandModeFactory.avalableBands.map(_.band))
+  val mode = new ComboBox[String](bandModeFactory.modes.map(_.mode))
+  val operator = new ComboBox[String](Seq("N9VTB", "W9BBQ", "WA9NNN")) {
+    editable.value = true
+
+  }
+  operator.onAction = (event: ActionEvent) => {
+    println(event)
+
+    val currentEditText = operator.editor.value.text.value
+
+    println(s"currentEditText: ${currentEditText}")
+    val items: ObservableList[String] = operator.items.value
+    if(! items.contains(currentEditText)){
+       items.add(currentEditText)
+
+    }
+  }
+
+
+  val bmoPane = new GridPane() {
+    val row = new AtomicInteger()
+
+    def add(label: String, control: Control): Unit = {
+      val nrow = row.getAndIncrement()
+      add(new Label(label + ":"), 0, nrow)
+      add(control, 1, nrow)
+    }
+
+    add("Rig", rigFreq)
+    add("Band", band)
+    add("Mode", mode)
+    add("Op", operator)
+  }
 
   val qsoSubmit = new Button("Log")
   qsoSubmit.disable = true
@@ -64,7 +102,11 @@ class EntryScene @Inject()(@Inject() ourStationStore: OurStationStore,
       new VBox(
         new Label("Class"),
         qsoClass,
-        qsoSubmit
+        new VBox(
+          qsoSubmit,
+          rigFreq,
+          bmoPane
+        )
       ),
       new VBox(
         new Label("Section"),
@@ -84,7 +126,7 @@ class EntryScene @Inject()(@Inject() ourStationStore: OurStationStore,
 
 
   private val allSections = Sections.sections.map { section: Section ⇒ f"${section.code}%-3s" }
-    .grouped(10)
+    .grouped(7)
     .map(_.mkString(" "))
     .mkString("\n")
 
@@ -185,7 +227,7 @@ class EntryScene @Inject()(@Inject() ourStationStore: OurStationStore,
 
   def save(): Unit = {
     import org.wa9nnn.fdcluster.model.MessageFormats._
-    val potentialQso = readQso()
+    val potentialQso: Qso = readQso()
 
     val future = store ? potentialQso
     Await.result(future, timeout.duration).asInstanceOf[AddResult] match {
@@ -193,7 +235,7 @@ class EntryScene @Inject()(@Inject() ourStationStore: OurStationStore,
         val pretty = Json.prettyPrint(Json.toJson(dupQso.qso))
         showSad(actionResult, s"Duplicate:\n$pretty")
       case Added(qsoRecord) ⇒
-        showHappy(actionResult,s"Added:\n${qsoRecord.qso.callsign} ${qsoRecord.qso.exchange}")
+        showHappy(actionResult, s"Added:\n${qsoRecord.qso.callsign} ${qsoRecord.qso.exchange}")
     }
 
     qsoCallsign.clear()
@@ -214,7 +256,8 @@ class EntryScene @Inject()(@Inject() ourStationStore: OurStationStore,
     destination.requestFocus()
     destination.setText(event.getCharacter)
     destination.positionCaret(1)
-
   }
+
+
 }
 

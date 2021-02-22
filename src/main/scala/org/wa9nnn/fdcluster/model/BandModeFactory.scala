@@ -4,7 +4,7 @@ package org.wa9nnn.fdcluster.model
 import com.typesafe.config.{Config, ConfigFactory}
 import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.model.AvailableBand.availaBandRegx
-import org.wa9nnn.fdcluster.model.BandMode._
+import org.wa9nnn.fdcluster.model.BandModeOperator._
 
 import javax.inject.Inject
 import scala.jdk.CollectionConverters._

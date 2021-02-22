@@ -25,7 +25,8 @@ import play.api.libs.json._
 
 import scala.util.matching.Regex
 
-class Exchange(val entryClass: String = EntryCategory.defaultCategory.category, val section: String = Sections.sortedByCode.head.code) {
+class Exchange(val entryClass: String = EntryCategory.defaultCategory.buildClass(1), val section: String = Sections.defaultCode) {
+
   def display: String = s"$entryClass $section"
 
 
@@ -69,7 +70,7 @@ object Exchange {
   }
 
   def apply(transmitters:Int, category: EntryCategory, section:Section):Exchange = {
-    new Exchange()
+    new Exchange(category.buildClass(transmitters), section.code)
   }
 
   def apply(in: String): Exchange = {

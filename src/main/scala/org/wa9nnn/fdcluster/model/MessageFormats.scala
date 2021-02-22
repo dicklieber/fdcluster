@@ -27,7 +27,7 @@ object MessageFormats {
   implicit val uuidsRequestFormat: Format[RequestUuidsForHour] = Json.format[RequestUuidsForHour]
   implicit val transmitterFormat: Format[OurStation] = Json.format[OurStation]
   implicit val bandFormat: Format[AvailableBand] = Json.format[AvailableBand]
-  implicit val bandModeFormat: Format[BandMode] = Json.format[BandMode]
+  implicit val bandModeFormat: Format[BandModeOperator] = Json.format[BandModeOperator]
   implicit val qsoFormat: Format[Qso] = Json.format[Qso]
   implicit val nodeAddressFormat: Format[NodeAddress] = Json.format[NodeAddress]
   implicit val uuidsFormat: Format[UuidsAtHost] = Json.format[UuidsAtHost]

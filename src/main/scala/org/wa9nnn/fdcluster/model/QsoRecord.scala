@@ -16,7 +16,7 @@ import play.api.libs.json.Json
  * @param exchange from the worked station.
  * @param stamp    when QSO occurred.
  */
-case class Qso(callsign: CallSign, bandMode: BandMode, exchange: Exchange, stamp: LocalDateTime = LocalDateTime.now()) {
+case class Qso(callsign: CallSign, bandMode: BandModeOperator, exchange: Exchange, stamp: LocalDateTime = LocalDateTime.now()) {
   def isDup(that: Qso): Boolean = {
     this.callsign == that.callsign &&
       this.bandMode == that.bandMode
@@ -91,8 +91,17 @@ case class DistributedQsoRecord(qsoRecord: QsoRecord, nodeAddress: NodeAddress, 
 }
 
 object DistributedQsoRecord {
+  val qsoVersion = "1:"
   def apply(byteString: ByteString): DistributedQsoRecord = {
-    Json.parse(byteString.decodeString("UTF-8")).as[DistributedQsoRecord]
+    val sJson = byteString.decodeString("UTF-8")
+    val jsValue = Json.parse(sJson)
+    try {
+      jsValue.as[DistributedQsoRecord]
+    } catch {
+      case e:Exception =>
+        e.printStackTrace()
+        throw e
+    }
   }
 }
 

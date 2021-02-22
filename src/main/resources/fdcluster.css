@@ -78,7 +78,7 @@
 .exchangeBlock {
     -fx-background-color: rgba(17, 255, 0, 0.22);
     -fx-font-size: large;
-    -fx-font-weight: 700;
+    -fx-font-weight: bold;
     -fx-font: monospace;
 }
 TextArea {

@@ -56,7 +56,7 @@ class Module extends AbstractModule with ScalaModule {
   def getMyActor(actorSystem: ActorSystem,
                  nodeInfo: NodeInfo,
                  currentStationProvider: OurStationStore,
-                 bandModeStore: BandModeStore,
+                 bandModeStore: BandModeOperatorStore,
                  @Named("ourInetAddresss") inetAddress: InetAddress,
                  config: Config,
                  @Named("journalPath") journalPath: Path,

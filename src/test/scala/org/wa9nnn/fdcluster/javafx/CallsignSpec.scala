@@ -9,14 +9,15 @@ class CallsignSpec extends Specification {
     "Full callsign" in {
      ContestCallsignValidator.valid("WA9NNN") must beNone
     }
+    val notCallsignError = beSome("Not callsign!")
     "No Suffix" in {
-     ContestCallsignValidator.valid("WA9") must beNone
+     ContestCallsignValidator.valid("WA9") must notCallsignError
     }
    "empty" in {
-     ContestCallsignValidator.valid("") must beNone
+     ContestCallsignValidator.valid("") must notCallsignError
     }
    "no area" in {
-     ContestCallsignValidator.valid("KD") must beNone
+     ContestCallsignValidator.valid("KD") must notCallsignError
     }
 
   }

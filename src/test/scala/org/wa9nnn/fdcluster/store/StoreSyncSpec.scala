@@ -91,7 +91,7 @@ class StoreSyncSpec extends Specification with BeforeAfterEach with DebugTimer {
       val allQsos = new ObservableBuffer[QsoRecord]()
       new StoreMapImpl(nodeInfo,
         new OurStationStore(persistence),
-        new BandModeStore(persistence),
+        new BandModeOperatorStore(persistence),
         allQsos)
     }
     val startTime = LocalDateTime.of(2019, 6, 23, 12, 0, 0)

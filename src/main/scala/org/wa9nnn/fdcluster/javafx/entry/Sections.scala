@@ -5,6 +5,7 @@ import org.wa9nnn.fdcluster.javafx.Section
 
 object Sections {
 
+
   def find(partial: String): Seq[Section] = {
     sections.filter(_.code.startsWith(partial))
   }
@@ -100,4 +101,8 @@ object Sections {
 
   val byCode: Map[String, Section] = sections.map(s ⇒ s.code → s) toMap
   val sortedByCode: Seq[Section] = sections.sortBy(_.code)
+  val defaultSection: Section = sortedByCode.head
+  val defaultCode: String = {
+    defaultSection.code
+  }
 }

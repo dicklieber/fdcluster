@@ -20,13 +20,18 @@ package org.wa9nnn.fdcluster.model
 import com.fasterxml.jackson.core.JsonParseException
 import org.wa9nnn.fdcluster.model.Exchange
 import play.api.libs.json.Json
-import org.wa9nnn.fdcluster.javafx.entry.EntryCategory
+import org.wa9nnn.fdcluster.javafx.entry.{EntryCategory, Sections}
 
 class ExchangeSpec extends org.specs2.mutable.Specification {
   "Exchange" >> {
     val exchange = Exchange("10O", "WPA")
     "toString" >> {
       exchange.toString must beEqualTo("10O;WPA")
+    }
+
+    "apply" >> {
+      val e = Exchange(1, EntryCategory.defaultCategory, Sections.defaultSection)
+      e.display must beEqualTo ("1O AB")
     }
     "round trip toString" >> {
       val backAgain = Exchange(exchange.toString)
@@ -60,8 +65,9 @@ class ExchangeSpec extends org.specs2.mutable.Specification {
     "defaultApply" >> {
       val e = new Exchange()
       e.transmitters must beEqualTo (1)
-      e.section must beEqualTo ("-")
-      e.toString must beEqualTo ("1O;-")
+      e.section must beEqualTo ("AB")
+      e.toString must beEqualTo ("1O;AB")
+      e.display must beEqualTo ("1O AB")
     }
   }
 

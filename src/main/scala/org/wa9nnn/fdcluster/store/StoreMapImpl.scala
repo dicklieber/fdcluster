@@ -3,45 +3,42 @@
  */
 package org.wa9nnn.fdcluster.store
 
-import java.io.OutputStream
-import java.nio.file.{Files, Path, StandardOpenOption}
-import java.security.{MessageDigest, SecureRandom}
-import java.time.{Duration, Instant}
-
-import nl.grons.metrics4.scala.{DefaultInstrumented, MetricName}
+import nl.grons.metrics4.scala.DefaultInstrumented
 import org.wa9nnn.fdcluster.javafx.sync.SyncSteps
 import org.wa9nnn.fdcluster.model.MessageFormats._
-import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHour}
 import org.wa9nnn.fdcluster.model._
+import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHour}
 import org.wa9nnn.fdcluster.store
 import org.wa9nnn.fdcluster.store.network.FdHour
 import org.wa9nnn.util.JsonLogging
 import play.api.libs.json.{JsValue, Json}
 import scalafx.collections.ObservableBuffer
 
+import java.io.OutputStream
+import java.nio.file.{Files, Path, StandardOpenOption}
+import java.security.{MessageDigest, SecureRandom}
+import java.time.{Duration, Instant}
+import java.util.concurrent.atomic.AtomicInteger
 import scala.collection.concurrent.TrieMap
 import scala.io.Source
 import scala.util.Using
+
 /**
  * This can only be used within the [[StoreActor]]
  *
  * @param nodeInfo                    who we are
- * @param ourStationStore      things that may vary with operator.
+ * @param ourStationStore             things that may vary with operator.
  * @param journalFilePath             where journal file lives.
  */
 class StoreMapImpl(nodeInfo: NodeInfo,
                    ourStationStore: OurStationStore,
-                   bandModeStore: BandModeStore,
+                   bandModeStore: BandModeOperatorStore,
                    allQsos: ObservableBuffer[QsoRecord],
                    syncSteps: SyncSteps = new SyncSteps,
                    val journalFilePath: Option[Path] = None)
   extends Store with JsonLogging with DefaultInstrumented {
-//   override lazy val metricBaseName = MetricName("Store")
+  //   override lazy val metricBaseName = MetricName("Store")
   private val random = new SecureRandom()
-  private val qsoCountGauge = metrics.gauge("qsoCount"){
-
-    allQsos.size
-  }
 
   def debugKillRandom(nToKill: Int): Unit = {
     for (_ ← 0 until nToKill) {
@@ -107,34 +104,50 @@ class StoreMapImpl(nodeInfo: NodeInfo,
     maybeExisting
   }
 
-  private val outputStream: Option[OutputStream] = journalFilePath.map { path ⇒
+  private def displayProgress(count: Int)(implicit start: Instant): Unit = {
+    if (count > 0 && count % 250 == 0) {
+      val seconds = Duration.between(start, Instant.now()).getSeconds
+      if (seconds > 0) {
+        val qsoPerSecond = count / seconds
+        logger.info(f"loaded $count%,d records. ($qsoPerSecond%,d)/per sec")
+      }
+    }
+  }
 
+  private val outputStream: Option[OutputStream] = journalFilePath.map { path ⇒
     if (Files.exists(path)) {
-      var count = 0
-      val start = Instant.now()
+      val count = new AtomicInteger()
+      val lineNumber = new AtomicInteger()
+      val errorCount = new AtomicInteger()
+      implicit val start = Instant.now()
       Using(Source.fromFile(path.toUri)) { bufferedSource ⇒
         bufferedSource.getLines()
           .foreach { line: String ⇒
-
-            Json.parse(line).asOpt[QsoRecord].foreach { qsoRecord ⇒
+            lineNumber.incrementAndGet()
+            try {
+              val qsoRecord = Json.parse(line).as[QsoRecord]
               insertQsoRecord(qsoRecord)
-              count = count + 1
+              displayProgress(count.incrementAndGet())
 
-              if (count > 0 && count % 250 == 0) {
-                val seconds = Duration.between(start, Instant.now()).getSeconds
-                if (seconds > 0) {
-                  val qsoPerSecond = count / seconds
-                  println(f"loaded $count%,d records. ($qsoPerSecond%,d)/per sec")
+            } catch {
+              case e: Exception =>
+                val err = errorCount.incrementAndGet()
+                err match {
+                  case 25 =>
+                    logger.error("More than 25 errors, stopping logging!")
+                  case x if x < 25 =>
+                    logger.error(f"loading QSO from line ${lineNumber.get()}%,d")
                 }
-              }
             }
           }
-        val seconds = Duration.between(start, Instant.now()).getSeconds
-        if (seconds > 0) {
-          val qsoPerSecond = count / seconds
-          println(f"loaded $count%,d records. ($qsoPerSecond%,d)/per sec")
-        }
       }
+      if (errorCount.get > 0) {
+        logger.info(f"${errorCount.get}%,d lines with errors in $path")
+      }
+      val seconds = Duration.between(start, Instant.now()).toMillis * 1000.0
+      val c: Int = count.get()
+      val qsoPerSecond: Double = c / seconds
+      logger.info(f"loaded $c%,d records. ($qsoPerSecond%.2f/per sec)")
     }
 
     val journalDir: Path = path.getParent
@@ -183,9 +196,9 @@ class StoreMapImpl(nodeInfo: NodeInfo,
 
   override def search(in: String): Seq[QsoRecord] = {
     byUuid.values.find(_.qso.callsign.contains(in))
-    }.toSeq
+  }.toSeq
 
-  override def dump: QsosFromNode = QsosFromNode(nodeInfo.nodeAddress,  byUuid.values.toList.sorted)
+  override def dump: QsosFromNode = QsosFromNode(nodeInfo.nodeAddress, byUuid.values.toList.sorted)
 
   /**
    *
@@ -270,7 +283,7 @@ class StoreMapImpl(nodeInfo: NodeInfo,
           Seq.empty
         }
       }
-      }.toList
+    }.toList
   }
 
 

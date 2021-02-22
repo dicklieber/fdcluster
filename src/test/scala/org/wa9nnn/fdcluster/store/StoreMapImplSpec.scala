@@ -45,10 +45,10 @@ class StoreMapImplSpec extends Specification with After{
 
   private val storeMapImpl = new StoreMapImpl(nodeInfo,
     new OurStationStore(persistence),
-    new BandModeStore(persistence), allQsos, new SyncSteps ,Some(journal))
+    new BandModeOperatorStore(persistence), allQsos, new SyncSteps ,Some(journal))
   private val worked: CallSign = "K2ORS"
   private val exchange: Exchange = Exchange("2I", "WPA")
-  private val bandMode = BandMode()
+  private val bandMode = BandModeOperator()
 
   "StoreMapImplSpec" >> {
     "happy path" >> {
