@@ -2,30 +2,29 @@
 package org.wa9nnn.util
 
 
-import java.time.{Instant, LocalDateTime, ZonedDateTime}
-import com.typesafe.scalalogging.LoggerMacro
-import org.slf4j.event.Level
 import org.slf4j.{Logger, LoggerFactory}
 import play.api.libs.json._
+
+import java.time.{Instant, LocalDateTime, ZonedDateTime}
+import scala.reflect.ClassTag
 
 /**
  * Provides an slf4j [[org.slf4j.Logger]]
  * By default uses the java class name as the LoggerName. Can be changed by invoking [[.loggerName]] before using any logger.
- * Can produce a [[LogJson]] that eaisly generates JSON log messages that are very friendly to [[https://www.elastic.co LogStash and the ELK stack.]]
+ * Can produce a [[LogJson]] that easily generates JSON log messages that are very friendly to [[https://www.elastic.co LogStash and the ELK stack.]]
  */
 trait JsonLogging {
 
   def whenDebugEnabled(body: Unit): Unit = {
-    body
+
   }
 
   def whenTraceEnabled(body: Unit): Unit = {
-    body
+
   }
 
   /**
    * Change logger name from default package/class name to something better.
-   * For example "AreaActor" can be more stable than "com.here.hdradio.servicearea.AreaActor" that might change with a refactoring.
    *
    * @param loggerName to be used instead of getclass.getname.
    * @throws IllegalStateException if invoked after access to [[Logger]] or if invoked more than once.
@@ -62,6 +61,23 @@ trait JsonLogging {
   def logJson(reason: String): LogJson = {
     LogJson(logger)
       .field("reason", reason)
+  }
+
+  def logJson(): LogJson = {
+    LogJson(logger)
+  }
+
+  /**
+   * Logs a case class as [[name]]: json
+   * @param name lable for json
+   * @param caseClass will be converted to single line json
+   * @param writes how to convert to Json..
+   * @tparam T usually inferred.
+   */
+  def logJson[T <: Product : ClassTag](name: String, caseClass: T)(implicit writes: Writes[T]): Unit = {
+    val sJson = name + ": " + Json.toJson(caseClass).toString()
+    logger.info(sJson)
+
   }
 }
 
@@ -104,15 +120,16 @@ class LogJson(logger: Logger, val fields: Seq[(String, JsValue)]) {
     new LogJson(logger, fields :+ LogJson.proc(label, value))
   }
 
+
   /**
    * Allows adding bulk fields.
    *
    * @param newFields to be added to the [[LogJson]]
    * @return
    */
-  def ++(newFields: Seq[(String, Any)]): LogJson = {
-    val finalFields = newFields.foldLeft(fields) { case (assum, (label, value)) ⇒
-      assum :+ LogJson.proc(label, value)
+  def ++(newFields: (String, Any)*): LogJson = {
+    val finalFields = newFields.foldLeft(fields) { case (accum, (label, value)) ⇒
+      accum :+ LogJson.proc(label, value)
     }
     new LogJson(logger, finalFields)
   }
