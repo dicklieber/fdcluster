@@ -265,7 +265,7 @@ class StoreMapImpl(nodeInfo: NodeInfo,
         .sortBy(_.startOfHour)
     }
     val rate = qsoMeter.fifteenMinuteRate
-    sync.NodeStatus(nodeInfo.nodeAddress, nodeInfo.url, byUuid.size, sDigest, hourDigests, ourStationStore.value, bandModeStore.value, rate)
+    sync.NodeStatus(nodeInfo.nodeAddress, nodeInfo.url, byUuid.size, sDigest, hourDigests, ourStationStore.value, bandModeStore.bandModeOperator, rate)
   }
 
   /**

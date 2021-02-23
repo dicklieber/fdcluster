@@ -1,12 +1,6 @@
 
 package org.wa9nnn.fdcluster.javafx.data
 
-import java.nio.file.Path
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.concurrent.TimeUnit
-
-import akka.actor.ActorRef
 import akka.util.Timeout
 import com.google.inject.Inject
 import com.google.inject.name.Named
@@ -23,14 +17,18 @@ import scalafx.scene.control.TableColumn._
 import scalafx.scene.control._
 import scalafx.scene.layout.{HBox, VBox}
 
+import java.nio.file.Path
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.concurrent.TimeUnit
+
 /**
  * Create JavaFX UI to view QSOs.
  */
-class DataScene @Inject()(@Named("store") store: ActorRef,
-                          @Named("journalPath") journalPath: Path,
+class DataScene @Inject()(@Named("journalPath") journalPath: Path,
                           @Named("allQsos") allQsoBuffer: ObservableBuffer[QsoRecord]) {
 
-  implicit val timeout = Timeout(5, TimeUnit.SECONDS)
+  implicit val timeout: Timeout = Timeout(5, TimeUnit.SECONDS)
 
   //  def refresh(): Unit = {
   //    //todo  should not need, use [[org.wa9nnn.fdlog.store.StoreMapImpl.allQsos]]
@@ -44,7 +42,7 @@ class DataScene @Inject()(@Named("store") store: ActorRef,
   val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
 
 
-//  private val allQsoBuffer: ObservableBuffer[QsoRecord] = StoreMapImpl.allQsos
+  //  private val allQsoBuffer: ObservableBuffer[QsoRecord] = StoreMapImpl.allQsos
   private val sizeLabel = new Label("--")
 
   allQsoBuffer.onChange((ob, _) ⇒
@@ -60,7 +58,7 @@ class DataScene @Inject()(@Named("store") store: ActorRef,
         cellFactory = { _: TableColumn[QsoRecord, LocalDateTime] ⇒
           new TableCell[QsoRecord, LocalDateTime]() {
             styleClass += "dateTime"
-            item.onChange { (ov, oldValue, newValue) => {
+            item.onChange { (_, oldValue, newValue) => {
 
               val maybeTime = Option(newValue).orElse(Some(oldValue))
               text = formatter.format(maybeTime.get)
@@ -70,7 +68,6 @@ class DataScene @Inject()(@Named("store") store: ActorRef,
         }
         cellValueFactory = { q =>
           val ldt = q.value.qso.stamp
-          val s = ldt.format(formatter)
           val wrapper = ReadOnlyObjectWrapper(ldt)
           wrapper
         }
@@ -81,7 +78,7 @@ class DataScene @Inject()(@Named("store") store: ActorRef,
         cellFactory = { _: TableColumn[QsoRecord, String] ⇒
           new TableCell[QsoRecord, String]() {
             styleClass += "dateTime"
-            item.onChange { (ov, oldValue, newValue) => {
+            item.onChange { (_, _, newValue) => {
               text = newValue
             }
             }
@@ -118,10 +115,14 @@ class DataScene @Inject()(@Named("store") store: ActorRef,
       new TableColumn[QsoRecord, String] {
         text = "Section"
         cellValueFactory = { q =>
-          val section: String = q.value.qso.exchange.section
-          val name = Sections.find(section).foldLeft("") { (accum, section) ⇒ accum + section.name }
-
-          val display: String = section + " " + name
+          val sectionCode: String = q.value.qso.exchange.section
+          val name = {
+            try {
+              Sections.byCode(sectionCode).name
+            } finally
+              "?"
+          }
+          val display: String = sectionCode + " " + name
           ReadOnlyStringWrapper(display)
         }
         prefWidth = 150
@@ -142,9 +143,6 @@ class DataScene @Inject()(@Named("store") store: ActorRef,
   private val splitPane = new SplitPane
   splitPane.items.addAll(tableView, detailView)
   splitPane.setDividerPosition(0, 50.0)
-  //  val journalFileLabel = new Label(s"QSO Journal file: ${journalPath.toAbsolutePath}")
-  //  journalFileLabel.setAlignment(Pos.Center)
-  //  journalFileLabel.getStyleClass.add("parenthetic");
   val hbox: HBox = new HBox(
     new Label("QSO Journal file"),
     new Label(journalPath.toAbsolutePath.toString),

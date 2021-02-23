@@ -11,7 +11,7 @@ import org.wa9nnn.fdcluster.javafx.menu.FdClusterMenu
 import org.wa9nnn.fdcluster.model.Contest
 import org.wa9nnn.fdcluster.store.NodeInfo
 import scalafx.Includes._
-import scalafx.application.JFXApp
+import scalafx.application.{JFXApp, Platform}
 import scalafx.application.JFXApp.PrimaryStage
 import scalafx.event.Event
 import scalafx.scene.Scene
@@ -90,5 +90,10 @@ object FdCluster extends JFXApp {
     scene = ourScene
     private val externalForm: String = getClass.getResource("/images/wfdlogo.png").toExternalForm
     icons += new Image(externalForm)
+    onCloseRequest =  {event =>
+      Platform.exit()
+      System.exit(0)
+
+    }
   }
 }

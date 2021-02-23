@@ -44,6 +44,7 @@ object MessageFormats {
   implicit val rigPortSettingsFormat: Format[SerialPortSettings] = Json.format[SerialPortSettings]
   implicit val rigModelFormat: Format[RigModel] = Json.format[RigModel]
   implicit val rigSettingsFormat: Format[RigSettings] = Json.format[RigSettings]
+  implicit val knownOperatorsFormat: Format[KnownOperators] = Json.format[KnownOperators]
 
   type CallSign = String
   type Uuid = String
