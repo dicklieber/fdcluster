@@ -105,7 +105,7 @@ class StoreMapImpl(nodeInfo: NodeInfo,
   }
 
   private def displayProgress(count: Int)(implicit start: Instant): Unit = {
-    if (count > 0 && count % 250 == 0) {
+    if (count > 0 && count % 23790 == 0) {
       val seconds = Duration.between(start, Instant.now()).getSeconds
       if (seconds > 0) {
         val qsoPerSecond = count / seconds
@@ -115,11 +115,13 @@ class StoreMapImpl(nodeInfo: NodeInfo,
   }
 
   private val outputStream: Option[OutputStream] = journalFilePath.map { path ⇒
+    implicit val start = Instant.now()
     if (Files.exists(path)) {
+      val typicalQsoLength = 515
+      val guessedNumberOfLines = Files.size(path) / typicalQsoLength
       val count = new AtomicInteger()
       val lineNumber = new AtomicInteger()
       val errorCount = new AtomicInteger()
-      implicit val start = Instant.now()
       Using(Source.fromFile(path.toUri)) { bufferedSource ⇒
         bufferedSource.getLines()
           .foreach { line: String ⇒
@@ -144,14 +146,16 @@ class StoreMapImpl(nodeInfo: NodeInfo,
       if (errorCount.get > 0) {
         logger.info(f"${errorCount.get}%,d lines with errors in $path")
       }
-      val seconds = Duration.between(start, Instant.now()).toMillis * 1000.0
+      val duration = Duration.between(start, Instant.now())
+      val d: String = org.wa9nnn.util.TimeConverters.durationToString(duration)
       val c: Int = count.get()
-      val qsoPerSecond: Double = c / seconds
-      logger.info(f"loaded $c%,d records. ($qsoPerSecond%.2f/per sec)")
+      val qsoPerSecond: Double = c.toDouble / duration.getSeconds.toDouble
+      logger.info(f"loaded $c%,d records in $d ($qsoPerSecond%.2f/per sec)")
     }
 
     val journalDir: Path = path.getParent
     Files.createDirectories(journalDir)
+
     logger.info(s"journal: ${path.toAbsolutePath.toString}")
 
     Files.newOutputStream(path, StandardOpenOption.APPEND, StandardOpenOption.CREATE)

@@ -9,8 +9,8 @@ import org.wa9nnn.util.{JsonLogging, Persistence}
 import scalafx.beans.property.StringProperty
 import scalafx.collections.ObservableBuffer
 
-import javax.inject.Inject
-
+import javax.inject.{Inject, Singleton}
+@Singleton
 class BandModeOperatorStore @Inject()(persistence: Persistence) extends JsonLogging {
   private val bmo: BandModeOperator = persistence.loadFromFile[BandModeOperator]().getOrElse(BandModeOperator())
 

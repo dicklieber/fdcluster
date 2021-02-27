@@ -28,7 +28,7 @@ import scala.concurrent.Await
 /**
  * Create ScalaFX UI for field day entry mode.
  */
-class EntryScene @Inject()(@Inject() ourStationStore: OurStationStore,
+class EntryScene @Inject()(@Inject()
                            bandModeStore: BandModeOperatorStore,
                            bandModeOpPanel:BandModeOpPanel,
                            @Inject() @Named("store") store: ActorRef) {

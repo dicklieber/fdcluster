@@ -87,6 +87,7 @@ libraryDependencies ++= Seq(
   "io.dropwizard.metrics" % "metrics-graphite" % "4.1.2",
   "com.fazecast" % "jSerialComm" % "2.6.2",
   "commons-io" % "commons-io" % "2.8.0",
+  "org.apache.commons" % "commons-math3" % "3.6.1",
   //  "com.github.jvican" %% "xmlrpc" % "1.2.1"
 )
 

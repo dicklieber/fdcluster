@@ -116,11 +116,13 @@ class DataScene @Inject()(@Named("journalPath") journalPath: Path,
         text = "Section"
         cellValueFactory = { q =>
           val sectionCode: String = q.value.qso.exchange.section
-          val name = {
-            try {
-              Sections.byCode(sectionCode).name
-            } finally
-              "?"
+          val name: String = {
+              try {
+                Sections.byCode(sectionCode).name
+              } catch {
+                case _:Exception =>
+                  "?"
+              }
           }
           val display: String = sectionCode + " " + name
           ReadOnlyStringWrapper(display)

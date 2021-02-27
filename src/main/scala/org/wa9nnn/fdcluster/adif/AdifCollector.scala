@@ -21,10 +21,10 @@ object AdifCollector {
     )
 
     val r: Seq[AdifResult] = entries.result()
-    val (heads: Seq[AdifEntry], qsos) = r.span(_ != AdifResult.eoh)
+    val (heads, qsos) = r.span(_ != AdifResult.eoh)
 
     val q: Seq[Qso] = qsos
-      .tail // pats EOH
+      .tail // past EOH
       .foldLeft(Seq(Seq.empty[AdifEntry])) {
         ((acc, i) =>
           if (i == AdifResult.eor) acc :+ Seq.empty
@@ -34,7 +34,8 @@ object AdifCollector {
       .filterNot(_.isEmpty) // get rid of nothing after lasst EOR
       .map(Qso) // put into Qsos
 
-    AdifFile(url.map(_.toExternalForm).getOrElse(""), heads, q, Duration.between(start, Instant.now()))
+    AdifFile(url.map(_.toExternalForm).getOrElse(""),
+      heads.asInstanceOf[Seq[AdifEntry]], q, Duration.between(start, Instant.now()))
 
   }
 }

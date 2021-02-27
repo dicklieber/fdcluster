@@ -23,6 +23,11 @@
 .ourNode {
     -fx-text-fill: gray;
 }
+.infoPane {
+    -fx-background-color: #d2e8da;
+    -fx-border-color: red;
+    -fx-border-width: 2;
+}
 
 .sad {
     -fx-text-fill: red;
@@ -62,7 +67,13 @@
 .sectionPrompt {
     -fx-text-fill: blue;
 }
-
+.progress {
+    -fx-pref-width: 3000
+}
+.title {
+    -fx-font-weight: bold;
+    -fx-font-size: 24;
+}
 .dateTime {
     -fx-font-family: monospace;
 }
@@ -79,7 +90,7 @@
     -fx-background-color: rgba(17, 255, 0, 0.22);
     -fx-font-size: large;
     -fx-font-weight: bold;
-    -fx-font: monospace;
+    /*-fx-font: monospace;*/
 }
 TextArea {
     -fx-font-family: monospace;

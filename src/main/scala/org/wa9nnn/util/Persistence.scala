@@ -8,7 +8,7 @@ import java.nio.file.StandardOpenOption._
 import java.nio.file.{Files, Path, Paths}
 import javax.inject.Inject
 import scala.reflect.ClassTag
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
 
 
 /**
@@ -18,7 +18,7 @@ import scala.util.Try
  *
  * @param basePath where to write files
  */
-class Persistence @Inject()( @TypesafeConfig("fdcluster.configPath") configPath: String) extends JsonLogging {
+class Persistence @Inject()(@TypesafeConfig("fdcluster.configPath") configPath: String) extends JsonLogging {
   val path: Path = Paths.get(configPath)
   Files.createDirectories(path)
   if (!Files.isDirectory(path)) {
@@ -53,7 +53,18 @@ class Persistence @Inject()( @TypesafeConfig("fdcluster.configPath") configPath:
    * @tparam T of case class saved via [[saveToFile()]]
    */
   def loadFromFile[T: ClassTag]()(implicit writes: Reads[T]): Try[T] = {
-    Try(Json.parse(Files.readString(pathForClass[T])).as[T])
+    val path1 = pathForClass[T]
+    logger.debug(s"Trying $path1")
+    val r = Try {
+       Json.parse(Files.readString(path1)).as[T]
+    }
+    r match {
+      case Failure(exception) =>
+        logger.error(s"$path1", exception)
+      case Success(value) =>
+        logger.debug(s"Loaded: $value")
+    }
+    r
   }
 
   /**

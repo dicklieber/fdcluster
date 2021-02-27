@@ -6,12 +6,12 @@ import com.google.inject.Injector
 import com.google.inject.name.Named
 import com.typesafe.scalalogging.LazyLogging
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
-import nl.grons.metrics4.scala.ByName.apply
 import org.wa9nnn.fdcluster.javafx.debug.DebugRemoveDialog
 import org.wa9nnn.fdcluster.javafx.sync.{SyncDialog, SyncSteps}
-import org.wa9nnn.fdcluster.rig.{RigDialog, RigSettings}
+import org.wa9nnn.fdcluster.rig.RigDialog
 import org.wa9nnn.fdcluster.store.{DebugClearStore, Sync}
 import scalafx.Includes._
+import scalafx.application.Platform
 import scalafx.event.ActionEvent
 import scalafx.scene.control._
 
@@ -19,7 +19,6 @@ import javax.inject.Inject
 import scala.concurrent.duration.DurationInt
 import scala.jdk.CollectionConverters._
 import scala.language.postfixOps
-import net.codingwell.scalaguice.InjectorExtensions._
 
 class FdClusterMenu @Inject()(
                                injector: Injector,
@@ -69,6 +68,18 @@ class FdClusterMenu @Inject()(
       store ! DebugClearStore
     }
   }
+  private val debugDemoBulkMenuItem = new MenuItem {
+    text = "Add fake QSOs."
+    onAction = { _: ActionEvent =>
+      val dialog = injector.instance[BuildLoadDialog]
+      dialog.showAndWait() match {
+        case Some(blr) =>
+          store ! blr
+        case None =>
+      }
+
+    }
+  }
   private val debugRandomKillerMenuItem = new MenuItem {
     text = "Remove random QSOs"
     onAction = { _: ActionEvent =>
@@ -87,6 +98,15 @@ class FdClusterMenu @Inject()(
       injector.instance[RigDialog].showAndWait()
     }
   }
+
+  private val exitMenuItem = new MenuItem {
+    text = "Exit"
+    onAction = { _ =>
+      Platform.exit()
+      System.exit(0)
+    }
+  }
+
   val menuBar: MenuBar = new MenuBar {
     menus = List(
       new Menu("_File") {
@@ -94,12 +114,14 @@ class FdClusterMenu @Inject()(
         items = List(
           aboutMenuItem,
           rigMenuItem,
+          exitMenuItem,
         )
       }, new Menu("_Debug") {
         mnemonicParsing = true
         items = List(
           debugClearStoreMenuItem,
-          debugRandomKillerMenuItem
+          debugRandomKillerMenuItem,
+          debugDemoBulkMenuItem
         )
       },
       new Menu("_Edit") {

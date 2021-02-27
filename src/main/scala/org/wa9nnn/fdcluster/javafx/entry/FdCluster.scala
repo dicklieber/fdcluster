@@ -75,6 +75,7 @@ object FdCluster extends JFXApp {
   private val rootPane = new BorderPane {
     top = fdlogmenu.menuBar
     center = tabPane
+    bottom =  RunningTaskPane.pane
   }
   val ourScene = new Scene()
 
