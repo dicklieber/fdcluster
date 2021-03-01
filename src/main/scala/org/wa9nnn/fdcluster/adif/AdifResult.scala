@@ -15,6 +15,15 @@ object AdifResult {
 
 case class AdifEntry(predef: String, tag: String, value: String) extends AdifResult
 
-case class AdifSeperator(name: String) extends AdifResult
+case class AdifSeperator(name: String) extends AdifResult {
+  override def equals(obj: Any): Boolean = {
+    obj match {
+      case AdifSeperator(n) =>
+        name equalsIgnoreCase (n)
+      case _ => false
+    }
+
+  }
+}
 
 case class AdifError(exception: Exception) extends AdifResult

@@ -87,15 +87,25 @@ class FdClusterMenu @Inject()(
     }
   }
   private val aboutMenuItem = new MenuItem {
-    text = "About"
+    text = "_About"
     onAction = { _: ActionEvent =>
       AboutDialog()
     }
   }
   private val rigMenuItem = new MenuItem {
-    text = "Rig"
+    text = "_Rig"
     onAction = { _: ActionEvent =>
       injector.instance[RigDialog].showAndWait()
+    }
+  }
+  private val importMenuItem = new MenuItem {
+    text = "_Import"
+    onAction = { _: ActionEvent =>
+      injector.instance[ImportDialog].showAndWait() match {
+        case Some(importRequest) =>
+          store ! importRequest
+        case None =>
+      }
     }
   }
 
@@ -114,6 +124,7 @@ class FdClusterMenu @Inject()(
         items = List(
           aboutMenuItem,
           rigMenuItem,
+          importMenuItem,
           exitMenuItem,
         )
       }, new Menu("_Debug") {

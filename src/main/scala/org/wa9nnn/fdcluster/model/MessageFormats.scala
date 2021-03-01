@@ -1,7 +1,7 @@
 
 package org.wa9nnn.fdcluster.model
 
-import org.wa9nnn.fdcluster.javafx.menu.BuildLoadRequest
+import org.wa9nnn.fdcluster.javafx.menu.{BuildLoadRequest, ImportRequest}
 
 import java.net.URL
 import java.time.{Instant, LocalDateTime, ZoneId}
@@ -48,6 +48,7 @@ object MessageFormats {
   implicit val rigSettingsFormat: Format[RigSettings] = Json.format[RigSettings]
   implicit val knownOperatorsFormat: Format[KnownOperators] = Json.format[KnownOperators]
   implicit val buildLoadRequestFormat: Format[BuildLoadRequest] = Json.format[BuildLoadRequest]
+  implicit val importRequestFormat: Format[ImportRequest] = Json.format[ImportRequest]
 
   type CallSign = String
   type Uuid = String

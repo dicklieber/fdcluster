@@ -54,6 +54,7 @@ case class BandModeOperator(bandName: Band = "20m", modeName: Mode = "PH", opera
 object BandModeOperator {
   type Band = String
   type Mode = String
+
 }
 
 case class KnownOperators(callSigns: List[CallSign] = List.empty)

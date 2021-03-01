@@ -7,7 +7,7 @@ import org.specs2.mutable.Specification
 import java.io.{StringBufferInputStream, StringReader}
 import scala.io.{BufferedSource, Source}
 
-class FieldCollectorSpec extends Specification with DataTables {
+class AdifParserSpec extends Specification with DataTables {
 
   "FiedCollector" >> {
     "input" || "predef" | "value" |

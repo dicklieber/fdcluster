@@ -3,7 +3,7 @@ package org.wa9nnn.fdcluster.adif
 
 import java.net.URL
 import java.time.{Duration, Instant}
-import scala.io.BufferedSource
+import scala.io.{BufferedSource, Source}
 
 
 object AdifCollector {
@@ -13,7 +13,7 @@ object AdifCollector {
    * @param url    where this came from
    * @return raw records
    */
-  def read(source: BufferedSource, url: Option[URL] = None): AdifFile = {
+  def read(source: Source, url: Option[URL] = None): AdifFile = {
     val start = Instant.now()
     val entries = List.newBuilder[AdifResult]
     new AdifParser(source)((t: AdifResult) =>

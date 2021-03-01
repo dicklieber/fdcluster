@@ -8,10 +8,10 @@ import com.google.inject.Injector
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
-import nl.grons.metrics4.scala.{DefaultInstrumented, MetricName}
+import nl.grons.metrics4.scala.DefaultInstrumented
 import org.wa9nnn.fdcluster.Markers.syncMarker
 import org.wa9nnn.fdcluster.http.{ClientActor, FetchQsos}
-import org.wa9nnn.fdcluster.javafx.menu.BuildLoadRequest
+import org.wa9nnn.fdcluster.javafx.menu.{BuildLoadRequest, ImportRequest}
 import org.wa9nnn.fdcluster.javafx.sync.{RequestUuidsForHour, SyncSteps, UuidsAtHost}
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
@@ -20,10 +20,9 @@ import org.wa9nnn.fdcluster.store.network.cluster.ClusterState
 import org.wa9nnn.fdcluster.store.network.{FdHour, MultcastSenderActor, MulticastListenerActor}
 import org.wa9nnn.util.LaurelDbImporterTask
 import play.api.libs.json.Json
-
+import org.wa9nnn.util.ImportTask
 import java.net.InetAddress
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
@@ -50,6 +49,7 @@ class StoreActor(injector: Injector,
   context.system.scheduler.scheduleAtFixedRate(2 seconds, 17 seconds, self, StatusPing)
 
   journalLoader.run().pipeTo(self)
+
   override def receive: Receive = {
     case BufferReady =>
       //todo load local indices
@@ -129,6 +129,10 @@ class StoreActor(injector: Injector,
       val laurelDbImporterTask = injector.instance[LaurelDbImporterTask]
       laurelDbImporterTask(blr)
 
+    case ImportRequest(path) =>
+      val importTask = injector.instance[ImportTask]
+      importTask(path)
+
     case x ⇒
       println(s"Unexpected Message; $x")
 
@@ -170,4 +174,5 @@ case object StatusPing
 case object DebugClearStore
 
 case class DebugKillRandom(nToKill: Int)
+
 case object BufferReady

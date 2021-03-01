@@ -1,7 +1,6 @@
 
 package org.wa9nnn.util
 
-import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
 import org.wa9nnn.fdcluster.javafx.entry.RunningTaskInfoConsumer
 import org.wa9nnn.fdcluster.javafx.menu.BuildLoadRequest
 import org.wa9nnn.fdcluster.javafx.runningtask.RunningTask
@@ -24,7 +23,6 @@ class LaurelDbImporterTask @Inject()(store: Store, val runningTaskInfoConsumer: 
 
   def apply(blr: BuildLoadRequest) {
     val exchange = Exchange("3A", "IL")
-    val stats = new DescriptiveStatistics()
     val path = Paths.get(blr.path)
     var dupCount = 0
 
@@ -42,7 +40,6 @@ class LaurelDbImporterTask @Inject()(store: Store, val runningTaskInfoConsumer: 
       val lines = source.getLines
       lines.next()
       for (line <- lines) {
-        stats.addValue(line.length)
         addOne()
 
         val cols = line.split(",").map(_.trim)

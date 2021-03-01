@@ -5,6 +5,7 @@ import com.typesafe.config.{Config, ConfigFactory}
 import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.model.AvailableBand.availaBandRegx
 import org.wa9nnn.fdcluster.model.BandModeOperator._
+import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
 
 import javax.inject.Inject
 import scala.jdk.CollectionConverters._
@@ -53,5 +54,17 @@ class BandModeFactory @Inject()(config: Config = ConfigFactory.load()) extends L
             .split("""\s+""").toList
         )
       }
+  }
+  val modeMapping: Map[String, String] = {
+    (for {
+      am <- modes
+      rigMode <- am.rigModes
+    } yield {
+      rigMode -> am.mode
+    }).toMap
+  }
+  def bandModeOperator(bandName: Band = "20m", modeName: Mode = "PH", operator: CallSign = ""):BandModeOperator = {
+    //todo handle band validation.
+    new BandModeOperator(bandName, modeMapping(modeName), operator)
   }
 }
