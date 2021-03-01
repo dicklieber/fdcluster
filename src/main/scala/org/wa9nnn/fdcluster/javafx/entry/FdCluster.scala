@@ -10,6 +10,7 @@ import org.wa9nnn.fdcluster.javafx.data.DataScene
 import org.wa9nnn.fdcluster.javafx.menu.FdClusterMenu
 import org.wa9nnn.fdcluster.model.Contest
 import org.wa9nnn.fdcluster.store.NodeInfo
+import org.wa9nnn.util.{JsonLogging, LogJson}
 import scalafx.Includes._
 import scalafx.application.{JFXApp, Platform}
 import scalafx.application.JFXApp.PrimaryStage
@@ -22,11 +23,10 @@ import scalafx.scene.layout.BorderPane
 /**
  * Main for FDLog
  */
-object FdCluster extends JFXApp {
+object FdCluster extends JFXApp  with JsonLogging {
 
-//  val system: ActorSystem = ActorSystem("FdLogAkka")
 
-  private val injector = Guice.createInjector(new Module())
+  private val injector = Guice.createInjector(new Module(parameters))
   private val contest = Contest("WFD", 2019)
 //  implicit val nodeInfo: NodeInfo = new NodeInfoImpl(contest)
 //  private val storeActorRef: ActorRef = injector.getInstance(Key.get(classOf[ActorRef], Names.named("store")))
@@ -34,6 +34,7 @@ object FdCluster extends JFXApp {
   private val dataScene = injector.instance[DataScene]
   private val clusterScene = injector.instance[ClusterScene]
   private val nodeInfo: NodeInfo = injector.instance[NodeInfo]
+  private val runningTaskPane: RunningTaskPane = injector.instance[RunningTaskPane]
   try {
     injector.instance[Server]
   } catch {
@@ -75,7 +76,7 @@ object FdCluster extends JFXApp {
   private val rootPane = new BorderPane {
     top = fdlogmenu.menuBar
     center = tabPane
-    bottom =  RunningTaskPane.pane
+    bottom =  runningTaskPane.pane
   }
   val ourScene = new Scene()
 

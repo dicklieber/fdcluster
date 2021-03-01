@@ -23,11 +23,11 @@ class LaurelDbImporterSpec extends Specification {
 
         }
       }
-      LaurelDbImporterTask(blr, rtc)({ (qso) =>
-        println(qso)
-        true
-      })
-      ok
+//      LaurelDbImporterTask(blr, rtc)({ (qso) =>
+//        println(qso)
+//        true
+//      })
+      failure
     }
   }
 }

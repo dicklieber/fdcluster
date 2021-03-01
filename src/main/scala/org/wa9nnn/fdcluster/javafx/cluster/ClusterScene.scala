@@ -1,18 +1,17 @@
 
 package org.wa9nnn.fdcluster.javafx.cluster
 
-import java.util.concurrent.TimeUnit
-
 import akka.actor.ActorRef
 import akka.pattern.ask
 import akka.util.Timeout
 import com.google.inject.Inject
 import com.google.inject.name.Named
 import com.typesafe.scalalogging.LazyLogging
-import org.wa9nnn.fdcluster.store.StoreActor.DumpCluster
+import org.wa9nnn.fdcluster.store.DumpCluster
 import org.wa9nnn.fdcluster.store.network.cluster.NodeStateContainer
 import scalafx.scene.Node
 
+import java.util.concurrent.TimeUnit
 import scala.concurrent.Await
 
 /**

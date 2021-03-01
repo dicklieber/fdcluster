@@ -2,22 +2,25 @@
 package org.wa9nnn.fdcluster.store
 
 import org.apache.commons.io.FileUtils
+import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
+import org.specs2.runner.sbtRun.env.commandLine
 import org.specs2.specification.BeforeAfterEach
+import org.wa9nnn.fdcluster.javafx.sync.SyncSteps
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHourDigest}
 import org.wa9nnn.fdcluster.store.network.FdHour
-import org.wa9nnn.util.{DebugTimer, Persistence}
+import org.wa9nnn.util.{CommandLine, DebugTimer, Persistence}
 import scalafx.collections.ObservableBuffer
 
 import java.nio.file.{Files, Path}
 import java.time.{Duration, LocalDateTime}
 
 
-class StoreSyncSpec extends Specification with BeforeAfterEach with DebugTimer {
+class StoreSyncSpec extends Specification with BeforeAfterEach with DebugTimer with Mockito {
   sequential
   private val nQsos = 10000
-
+  val mockSyncSteps: SyncSteps = mock[SyncSteps]
   val expectedNodeAddress: NodeAddress = NodeAddress()
   implicit val nodeInfo: NodeInfoImpl = new NodeInfoImpl(
     contest = Contest("WFD", 2017),
@@ -81,10 +84,12 @@ class StoreSyncSpec extends Specification with BeforeAfterEach with DebugTimer {
     }
   }
   val directory: Path = Files.createTempDirectory("StoreMapImplSpec")
-  var persistence:Persistence  = new Persistence(directory.toString
-  )
+  var persistence: Persistence = new Persistence(directory.toString)
+  val journalPath = directory.resolve("journal.json")
+
 
   override def before(): Unit = {
+    val commandLine:CommandLine= mock[CommandLine].is("skipJournal") returns(false)
 
     storeMapImpl = {
       println("Creating store")
@@ -92,7 +97,10 @@ class StoreSyncSpec extends Specification with BeforeAfterEach with DebugTimer {
       new StoreMapImpl(nodeInfo,
         new OurStationStore(persistence),
         new BandModeOperatorStore(persistence),
-        allQsos)
+        allQsos,
+        mockSyncSteps, journalPath,
+        commandLine
+      )
     }
     val startTime = LocalDateTime.of(2019, 6, 23, 12, 0, 0)
 
@@ -104,6 +112,6 @@ class StoreSyncSpec extends Specification with BeforeAfterEach with DebugTimer {
   }
 
   override def after = {
-FileUtils.deleteDirectory(directory.toFile)
+    FileUtils.deleteDirectory(directory.toFile)
   }
 }

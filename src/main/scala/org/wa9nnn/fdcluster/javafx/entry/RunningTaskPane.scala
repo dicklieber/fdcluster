@@ -4,6 +4,7 @@ package org.wa9nnn.fdcluster.javafx.entry
 import scalafx.application.Platform
 import scalafx.scene.control.{Label, ProgressBar}
 import scalafx.scene.layout.{BorderPane, VBox}
+import javax.inject.{Inject, Singleton}
 
 import java.time.Instant
 
@@ -11,7 +12,7 @@ import java.time.Instant
  * Show running process status
  * e.g. progress bar status messages
  */
-object RunningTaskPane extends RunningTaskInfoConsumer {
+class RunningTaskPane extends RunningTaskInfoConsumer {
   private val taskName = new Label() {
     styleClass += "title"
   }

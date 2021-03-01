@@ -1,42 +1,42 @@
 
 package org.wa9nnn.fdcluster.store
 
-import akka.actor.{Actor, ActorRef, Props}
+import akka.actor.{Actor, ActorRef}
+import akka.pattern.pipe
 import akka.util.{ByteString, Timeout}
+import com.google.inject.Injector
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
+import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import nl.grons.metrics4.scala.{DefaultInstrumented, MetricName}
 import org.wa9nnn.fdcluster.Markers.syncMarker
 import org.wa9nnn.fdcluster.http.{ClientActor, FetchQsos}
-import org.wa9nnn.fdcluster.javafx.entry.RunningTaskPane
 import org.wa9nnn.fdcluster.javafx.menu.BuildLoadRequest
 import org.wa9nnn.fdcluster.javafx.sync.{RequestUuidsForHour, SyncSteps, UuidsAtHost}
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.model.sync.NodeStatus
-import org.wa9nnn.fdcluster.store.StoreActor.{DumpCluster, DumpQsos}
 import org.wa9nnn.fdcluster.store.network.cluster.ClusterState
 import org.wa9nnn.fdcluster.store.network.{FdHour, MultcastSenderActor, MulticastListenerActor}
 import org.wa9nnn.util.LaurelDbImporterTask
 import play.api.libs.json.Json
-import scalafx.collections.ObservableBuffer
 
 import java.net.InetAddress
-import java.nio.file.Path
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
 import scala.language.postfixOps
-class StoreActor(nodeInfo: NodeInfo, currentStationProvider: OurStationStore, bandModeStore: BandModeOperatorStore,
-                 inetAddress: InetAddress, config: Config,
-                 journalPath: Option[Path],
-                 allQsos: ObservableBuffer[QsoRecord],
-                 syncSteps: SyncSteps
-                ) extends Actor with LazyLogging with DefaultInstrumented {
 
-  private val store = new StoreMapImpl(nodeInfo, currentStationProvider, bandModeStore, allQsos, syncSteps, journalPath)
+class StoreActor(injector: Injector,
+                 nodeInfo: NodeInfo,
+                 inetAddress: InetAddress, config: Config,
+                 syncSteps: SyncSteps,
+                 store: StoreMapImpl,
+                 journalLoader: JournalLoader
+                ) extends Actor with LazyLogging with DefaultInstrumented {
+  //  private val store = new StoreMapImpl(nodeInfo, currentStationProvider, bandModeStore, allQsos, syncSteps, journalPath)
   private val clusterState = new ClusterState(nodeInfo.nodeAddress)
   private implicit val timeout: Timeout = Timeout(5 seconds)
-  override lazy val metricBaseName = MetricName("StoreActor")
 
 
   private val ourNode = nodeInfo.nodeAddress
@@ -46,11 +46,14 @@ class StoreActor(nodeInfo: NodeInfo, currentStationProvider: OurStationStore, ba
   context.actorOf(MulticastListenerActor.props(inetAddress, config), "MulticastListener")
   private val senderActor: ActorRef = context.actorOf(MultcastSenderActor.props(config), "MulticastSender")
   private val clientActor = context.actorOf(ClientActor.props(syncSteps))
-  //  private val syncTimer: nl.grons.metrics4.scala.Timer = metrics.timer("SyncTimer")
 
   context.system.scheduler.scheduleAtFixedRate(2 seconds, 17 seconds, self, StatusPing)
 
+  journalLoader.run().pipeTo(self)
   override def receive: Receive = {
+    case BufferReady =>
+      //todo load local indices
+      store.loadLocalIndicies()
     case potentialQso: Qso ⇒
       val addResult: AddResult = store.add(potentialQso)
       addResult match {
@@ -86,8 +89,6 @@ class StoreActor(nodeInfo: NodeInfo, currentStationProvider: OurStationStore, ba
       val nodeStatus = store.nodeStatus
 
       senderActor ! JsonContainer(nodeStatus.getClass.getSimpleName, nodeStatus)
-
-    //      val hoursToSync = clusterState.hoursToSync()
 
     /**
      * Start a sync operation
@@ -125,25 +126,8 @@ class StoreActor(nodeInfo: NodeInfo, currentStationProvider: OurStationStore, ba
       store.debugKillRandom(nToKill)
 
     case blr: BuildLoadRequest =>
-      var dupCount = 0
-      var lineCount = 0
-
-      try {
-       LaurelDbImporterTask(blr, RunningTaskPane){ qso: Qso =>
-          lineCount += 1
-          store.add(qso) match {
-            case Added(_) =>
-            case Dup(qsoRecord) =>
-              dupCount += 1
-          }
-          true
-        }
-        logger.error(s"Bulk added $lineCount mock QSOs!")
-
-      } catch {
-        case e: Exception =>
-          logger.error("Bulk loading", e)
-      }
+      val laurelDbImporterTask = injector.instance[LaurelDbImporterTask]
+      laurelDbImporterTask(blr)
 
     case x ⇒
       println(s"Unexpected Message; $x")
@@ -161,20 +145,9 @@ class StoreActor(nodeInfo: NodeInfo, currentStationProvider: OurStationStore, ba
   }
 }
 
-object StoreActor {
+case object DumpQsos
 
-  case object DumpQsos
-
-  case object DumpCluster
-
-
-  def props(nodeInfo: NodeInfo, ourStationStore: OurStationStore, bandModeStore: BandModeOperatorStore, inetAddress: InetAddress, config: Config, journalPath: Path,
-            allQsos: ObservableBuffer[QsoRecord],
-            syncSteps: SyncSteps): Props = {
-    Props(new StoreActor(nodeInfo, ourStationStore, bandModeStore, inetAddress, config, Some(journalPath), allQsos, syncSteps))
-  }
-
-}
+case object DumpCluster
 
 case object Sync
 
@@ -197,5 +170,4 @@ case object StatusPing
 case object DebugClearStore
 
 case class DebugKillRandom(nToKill: Int)
-
-case object BulkLoadTestData
+case object BufferReady

@@ -14,11 +14,11 @@ import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport._
 import org.wa9nnn.fdcluster.javafx.sync.{RequestUuidsForHour, UuidsAtHost}
 import org.wa9nnn.fdcluster.model.QsosFromNode
 import org.wa9nnn.fdcluster.model.sync.QsoHour
-import org.wa9nnn.fdcluster.store.NodeInfo
-import org.wa9nnn.fdcluster.store.StoreActor.DumpQsos
+import org.wa9nnn.fdcluster.store.{DumpQsos, NodeInfo}
 import org.wa9nnn.fdcluster.store.network.FdHour
 import play.api.libs.json.JsValue
 import org.wa9nnn.fdcluster.model.MessageFormats._
+
 import scala.concurrent.duration._
 import scala.language.postfixOps
 

@@ -17,20 +17,20 @@
 
 package org.wa9nnn.fdcluster.store
 
-import java.nio.file.{Files, Path}
-import com.typesafe.config.ConfigFactory
+import org.apache.commons.io.FileUtils._
+import org.specs2.mock.Mockito
+import org.specs2.mock.Mockito.mock
 import org.specs2.mutable.Specification
 import org.specs2.specification.After
 import org.wa9nnn.fdcluster.javafx.sync.SyncSteps
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
+import org.wa9nnn.util.{CommandLine, Persistence}
 import scalafx.collections.ObservableBuffer
 
-import java.util.prefs.Preferences
-import org.apache.commons.io.FileUtils._
-import org.wa9nnn.util.Persistence
+import java.nio.file.{Files, Path}
 
-class StoreMapImplSpec extends Specification with After{
+class StoreMapImplSpec extends Specification with After with Mockito{
   val expectedNodeAddress: NodeAddress = NodeAddress()
 
   implicit val nodeInfo: NodeInfoImpl = new NodeInfoImpl(
@@ -42,10 +42,11 @@ class StoreMapImplSpec extends Specification with After{
   private val journal: Path = Files.createTempFile("fdcluster-journal", ".log")
   val allQsos = new ObservableBuffer[QsoRecord]()
 
+  val commandLine:CommandLine= mock[CommandLine].is("skipJournal") returns(false)
 
   private val storeMapImpl = new StoreMapImpl(nodeInfo,
     new OurStationStore(persistence),
-    new BandModeOperatorStore(persistence), allQsos, new SyncSteps ,Some(journal))
+    new BandModeOperatorStore(persistence), allQsos, new SyncSteps, journal, commandLine)
   private val worked: CallSign = "K2ORS"
   private val exchange: Exchange = Exchange("2I", "WPA")
   private val bandMode = BandModeOperator()
@@ -63,7 +64,7 @@ class StoreMapImplSpec extends Specification with After{
   after
 
   override def after: Any = {
-//    Files.delete(journal)
+    //    Files.delete(journal)
     deleteDirectory(directory.toFile)
   }
 }

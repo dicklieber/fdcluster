@@ -3,6 +3,7 @@
  */
 package org.wa9nnn.fdcluster.store
 
+import com.google.inject.name.Named
 import nl.grons.metrics4.scala.DefaultInstrumented
 import org.wa9nnn.fdcluster.javafx.sync.SyncSteps
 import org.wa9nnn.fdcluster.model.MessageFormats._
@@ -10,18 +11,14 @@ import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHour}
 import org.wa9nnn.fdcluster.store
 import org.wa9nnn.fdcluster.store.network.FdHour
-import org.wa9nnn.util.JsonLogging
+import org.wa9nnn.util.{CommandLine, JsonLogging}
 import play.api.libs.json.{JsValue, Json}
 import scalafx.collections.ObservableBuffer
 
-import java.io.OutputStream
 import java.nio.file.{Files, Path, StandardOpenOption}
 import java.security.{MessageDigest, SecureRandom}
-import java.time.{Duration, Instant}
-import java.util.concurrent.atomic.AtomicInteger
+import javax.inject.{Inject, Singleton}
 import scala.collection.concurrent.TrieMap
-import scala.io.Source
-import scala.util.Using
 
 /**
  * This can only be used within the [[StoreActor]]
@@ -30,13 +27,26 @@ import scala.util.Using
  * @param ourStationStore             things that may vary with operator.
  * @param journalFilePath             where journal file lives.
  */
-class StoreMapImpl(nodeInfo: NodeInfo,
-                   ourStationStore: OurStationStore,
-                   bandModeStore: BandModeOperatorStore,
-                   allQsos: ObservableBuffer[QsoRecord],
-                   syncSteps: SyncSteps = new SyncSteps,
-                   val journalFilePath: Option[Path] = None)
+@Singleton
+class StoreMapImpl @Inject()(nodeInfo: NodeInfo,
+                             ourStationStore: OurStationStore,
+                             bandModeStore: BandModeOperatorStore,
+                             @Named("allQsos") allQsos: ObservableBuffer[QsoRecord],
+                             syncSteps: SyncSteps = new SyncSteps,
+                             @Named("journalPath") journalFilePath: Path,
+                             commandLine: CommandLine
+                            )
   extends Store with JsonLogging with DefaultInstrumented {
+  /**
+   * This is the canonical set of data. If its not here then we know we have to also add to [[byCallsign]] and [[allQsos]]
+   */
+  private val byUuid = new TrieMap[Uuid, QsoRecord]()
+  private val byCallsign = new TrieMap[CallSign, Set[QsoRecord]]
+
+
+
+  logger.info(s"skipJournal: ${commandLine.is("skipJournal")}")
+
   //   override lazy val metricBaseName = MetricName("Store")
   private val random = new SecureRandom()
 
@@ -58,18 +68,12 @@ class StoreMapImpl(nodeInfo: NodeInfo,
 
 
   implicit val node: NodeAddress = nodeInfo.nodeAddress
-  private val byCallsign = new TrieMap[CallSign, Set[QsoRecord]]
-  /**
-   * This is the canonical set of data. If its not here then we know we have to also add to [[byCallsign]] and [[allQsos]]
-   */
-  private val byUuid = new TrieMap[Uuid, QsoRecord]()
 
-  def length: Int = byUuid.size
 
   private val qsoMeter = metrics.meter("qso")
   private val qsosDigestTimer = metrics.timer("qsos digest")
   private val hourDigestsTimer = metrics.timer("hours digest")
-
+private var loadingIndicesFlag = false
   /**
    * This will also add to journal on disk; unless duplicate.
    *
@@ -77,6 +81,9 @@ class StoreMapImpl(nodeInfo: NodeInfo,
    * @return [[Dup]] is already in this node. [[Added]] if new to this node.
    */
   def addRecord(qsoRecord: QsoRecord): AddResult = {
+    if(loadingIndicesFlag){
+      throw new IllegalStateException("Busy loading indices")
+    }
     insertQsoRecord(qsoRecord) match {
       case Some(_) ⇒
         Dup(qsoRecord)
@@ -94,6 +101,9 @@ class StoreMapImpl(nodeInfo: NodeInfo,
    * @return [[None]] if this is new, [[Some[QsoRecord]]] if uuid already exists
    */
   private def insertQsoRecord(qsoRecord: QsoRecord): Option[QsoRecord] = {
+    if(loadingIndicesFlag){
+      throw new IllegalStateException("Busy loading indices")
+    }
     val maybeExisting = byUuid.putIfAbsent(qsoRecord.uuid, qsoRecord)
     if (maybeExisting.isEmpty) {
       allQsos.add(qsoRecord)
@@ -104,72 +114,45 @@ class StoreMapImpl(nodeInfo: NodeInfo,
     maybeExisting
   }
 
-  private def displayProgress(count: Int)(implicit start: Instant): Unit = {
-    if (count > 0 && count % 23790 == 0) {
-      val seconds = Duration.between(start, Instant.now()).getSeconds
-      if (seconds > 0) {
-        val qsoPerSecond = count / seconds
-        logger.info(f"loaded $count%,d records. ($qsoPerSecond%,d)/per sec")
-      }
+  /**
+   * Ony for loadLocalIndicies
+   * @param qsoRecord not already in indices!
+   */
+  private def localInsert(qsoRecord: QsoRecord): Unit = {
+    val maybeExisting = byUuid.putIfAbsent(qsoRecord.uuid, qsoRecord)
+    maybeExisting match {
+      case Some(value) =>
+        logger.error(s"Already have uuid of $qsoRecord")
+      case None =>
+        val callsign = qsoRecord.qso.callsign
+        val qsoRecords: Set[QsoRecord] = byCallsign.getOrElse(callsign, Set.empty) + qsoRecord
+        byCallsign.put(callsign, qsoRecords)
     }
   }
-
-  private val outputStream: Option[OutputStream] = journalFilePath.map { path ⇒
-    implicit val start = Instant.now()
-    if (Files.exists(path)) {
-      val typicalQsoLength = 515
-      val guessedNumberOfLines = Files.size(path) / typicalQsoLength
-      val count = new AtomicInteger()
-      val lineNumber = new AtomicInteger()
-      val errorCount = new AtomicInteger()
-      Using(Source.fromFile(path.toUri)) { bufferedSource ⇒
-        bufferedSource.getLines()
-          .foreach { line: String ⇒
-            lineNumber.incrementAndGet()
-            try {
-              val qsoRecord = Json.parse(line).as[QsoRecord]
-              insertQsoRecord(qsoRecord)
-              displayProgress(count.incrementAndGet())
-
-            } catch {
-              case e: Exception =>
-                val err = errorCount.incrementAndGet()
-                err match {
-                  case 25 =>
-                    logger.error("More than 25 errors, stopping logging!")
-                  case x if x < 25 =>
-                    logger.error(f"loading QSO from line ${lineNumber.get()}%,d")
-                }
-            }
-          }
-      }
-      if (errorCount.get > 0) {
-        logger.info(f"${errorCount.get}%,d lines with errors in $path")
-      }
-      val duration = Duration.between(start, Instant.now())
-      val d: String = org.wa9nnn.util.TimeConverters.durationToString(duration)
-      val c: Int = count.get()
-      val qsoPerSecond: Double = c.toDouble / duration.getSeconds.toDouble
-      logger.info(f"loaded $c%,d records in $d ($qsoPerSecond%.2f/per sec)")
+  /**
+   * Invoked when we have loaded the journal, if any.
+   */
+  def loadLocalIndicies(): Unit = {
+    loadingIndicesFlag = true
+    allQsos.foreach{qso =>
+      localInsert(qso)
     }
-
-    val journalDir: Path = path.getParent
-    Files.createDirectories(journalDir)
-
-    logger.info(s"journal: ${path.toAbsolutePath.toString}")
-
-    Files.newOutputStream(path, StandardOpenOption.APPEND, StandardOpenOption.CREATE)
-
+    loadingIndicesFlag = false
   }
+
+  val journalDir: Path = journalFilePath.getParent
+  Files.createDirectories(journalDir)
+
+  logger.info(s"journal: ${journalFilePath.toAbsolutePath.toString}")
+
+  private val outputStream = Files.newOutputStream(journalFilePath, StandardOpenOption.APPEND, StandardOpenOption.CREATE)
 
   def writeJournal(jsValue: JsValue): Unit = {
-    outputStream.foreach { os ⇒
-      val lineOfJson = jsValue.toString()
+    val lineOfJson = jsValue.toString()
 
-      os.write(lineOfJson.getBytes())
-      os.write("\n".getBytes())
-      os.flush()
-    }
+    outputStream.write(lineOfJson.getBytes())
+    outputStream.write("\n".getBytes())
+    outputStream.flush()
   }
 
   /**

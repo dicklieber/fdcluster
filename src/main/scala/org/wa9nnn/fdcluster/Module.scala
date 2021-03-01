@@ -1,39 +1,54 @@
 
 package org.wa9nnn.fdcluster
 
-import akka.actor.{ActorRef, ActorSystem}
+import akka.actor.{ActorRef, ActorSystem, Props}
 import com.github.racc.tscg.TypesafeConfigModule
-import com.google.inject.name.Named
-import com.google.inject.{AbstractModule, Provides, Singleton}
+import com.google.inject.{AbstractModule, Injector, Provides}
 import com.typesafe.config.Config
 import net.codingwell.scalaguice.ScalaModule
+import org.wa9nnn.fdcluster.javafx.entry.{RunningTaskInfoConsumer, RunningTaskPane}
 import org.wa9nnn.fdcluster.javafx.sync.{ProgressStep, SyncSteps}
 import org.wa9nnn.fdcluster.metrics.Reporter
 import org.wa9nnn.fdcluster.model._
-import org.wa9nnn.fdcluster.store.{NodeInfo, NodeInfoImpl, StoreActor}
+import org.wa9nnn.fdcluster.store._
+import org.wa9nnn.util.{CommandLine, CommandLineScalaFxImpl}
+import scalafx.application.JFXApp.Parameters
+import scalafx.beans.property.ObjectProperty
 import scalafx.collections.ObservableBuffer
 
 import java.net.{Inet4Address, InetAddress, NetworkInterface, URL}
 import java.nio.file.{Path, Paths}
+import javax.inject.{Named, Singleton}
 import scala.jdk.CollectionConverters._
 
-class Module extends AbstractModule with ScalaModule {
+/**
+ *
+ * @param args command line arg
+ */
+class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
 
   override def configure(): Unit = {
     try {
+      bind[CommandLine].toInstance(new CommandLineScalaFxImpl(parameters))
+
       val actorSystem = ActorSystem()
+      val runningTaskPane = new RunningTaskPane
+      bind[RunningTaskPane].toInstance(runningTaskPane)
+      bind[RunningTaskInfoConsumer].toInstance(runningTaskPane)
       bind[ActorSystem].toInstance(actorSystem)
       bind[Config].toInstance(actorSystem.settings.config)
       install(TypesafeConfigModule.fromConfigWithPackage(actorSystem.settings.config, "org.wa9nnn"))
       bind[OurStationStore].asEagerSingleton()
       bind[Reporter].asEagerSingleton()
+      bind[Store].to[StoreMapImpl]
+      bind[JournalLoader].to[JournalLoaderImpl].in[Singleton]
+    }
 
-    } catch {
+    catch {
       case e: Throwable ⇒
         e.printStackTrace()
     }
 
-    println("Done")
   }
 
   @Provides
@@ -54,16 +69,15 @@ class Module extends AbstractModule with ScalaModule {
   @Singleton
   @Named("store")
   def getMyActor(actorSystem: ActorSystem,
+                 injector: Injector,
                  nodeInfo: NodeInfo,
-                 currentStationProvider: OurStationStore,
-                 bandModeStore: BandModeOperatorStore,
                  @Named("ourInetAddresss") inetAddress: InetAddress,
                  config: Config,
-                 @Named("journalPath") journalPath: Path,
                  syncSteps: SyncSteps,
-                 @Named("allQsos") allQsos: ObservableBuffer[QsoRecord]
+                 storeMapImpl: StoreMapImpl,
+                 journalLoader: JournalLoader
                 ): ActorRef = {
-    actorSystem.actorOf(StoreActor.props(nodeInfo, currentStationProvider, bandModeStore, inetAddress, config, journalPath, allQsos, syncSteps))
+    actorSystem.actorOf(Props(new StoreActor(injector, nodeInfo, inetAddress, config, syncSteps, storeMapImpl, journalLoader)))
   }
 
   @Provides
@@ -112,4 +126,5 @@ class Module extends AbstractModule with ScalaModule {
   def qsoBufferData(): ObservableBuffer[QsoRecord] = {
     ObservableBuffer[QsoRecord](Seq.empty)
   }
+
 }

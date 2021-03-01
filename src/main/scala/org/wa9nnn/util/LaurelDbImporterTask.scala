@@ -2,42 +2,48 @@
 package org.wa9nnn.util
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
-import org.wa9nnn.fdcluster.javafx.entry.{RunningTaskInfo, RunningTaskInfoConsumer, StyledText}
+import org.wa9nnn.fdcluster.javafx.entry.RunningTaskInfoConsumer
 import org.wa9nnn.fdcluster.javafx.menu.BuildLoadRequest
+import org.wa9nnn.fdcluster.javafx.runningtask.RunningTask
 import org.wa9nnn.fdcluster.model.{BandModeOperator, Exchange, Qso}
+import org.wa9nnn.fdcluster.store.{Added, Dup, Store}
 
 import java.nio.file.{Files, Paths}
-import java.util.TimerTask
+import javax.inject.Inject
 import scala.io.Source
 import scala.util.control.Breaks._
 
-object LaurelDbImporterTask {
-  def apply(blr: BuildLoadRequest, runningTaskInfoConsumer: RunningTaskInfoConsumer)(f: Qso => Boolean): Unit = {
-    var info = RunningTaskInfo("Loading Demo Laurel Data")
+/**
+ * Onu invoke from[[org.wa9nnn.fdcluster.store.StoreActor]]
+ *
+ * @param store
+ * @param runningTaskInfoConsumer
+ */
+class LaurelDbImporterTask @Inject()(store: Store, val runningTaskInfoConsumer: RunningTaskInfoConsumer) extends RunningTask {
+  override val taskName: String = "Loading Demo Laurel Data"
 
+  def apply(blr: BuildLoadRequest) {
     val exchange = Exchange("3A", "IL")
     val stats = new DescriptiveStatistics()
     val path = Paths.get(blr.path)
-    val filelength = Files.size(path)
-
-    val t = new java.util.Timer()
-    val task: TimerTask = new java.util.TimerTask {
-
-      def run(): Unit = {
-        runningTaskInfoConsumer.update(info)
-      }
-    }
-    t.schedule(task, 250, 1000)
-    var lineCount = 0
+    var dupCount = 0
 
     val source = Source.fromFile(path.toFile)
+    val typicalRowLength = 28L
+
+    totalIterations =
+      if (blr.max > 0)
+        blr.max
+      else
+        Files.size(path) / typicalRowLength
+
 
     breakable {
       val lines = source.getLines
       lines.next()
       for (line <- lines) {
         stats.addValue(line.length)
-        updateInfo()
+        addOne()
 
         val cols = line.split(",").map(_.trim)
         val callsign = cols(1)
@@ -45,66 +51,19 @@ object LaurelDbImporterTask {
           callsign = callsign,
           bandMode = BandModeOperator(),
           exchange = exchange)
-        if (!f(qso))
-          break
-        lineCount += 1
-        if (lineCount == 1) {
-          // 1st time, get display going.
-          runningTaskInfoConsumer.update(info)
+        store.add(qso) match {
+          case Added(_) =>
+          case Dup(_) =>
+            dupCount += 1
+            bottomLine(f"Dups: $dupCount%,d")
         }
-        if (lineCount >= blr.max) {
+        if (n >= blr.max) {
           break
         }
       }
     }
-    runningTaskInfoConsumer.done()
-    task.cancel()
-
-    def updateInfo(): Unit = {
-      val qsoCountGuess = if (blr.max == 0)
-        (filelength / stats.getMean).toLong
-      else
-        blr.max
-      val n: Long = stats.getN
-      val progressValue = n.toDouble / qsoCountGuess.toDouble
-      val topLine = f"$n%,d of $qsoCountGuess%,d"
-      info = info(progressValue, StyledText(topLine))
-    }
+    done()
   }
-
 }
 
 
-//object LaurelDbImporter extends JsonLogging {
-//
-//
-//  private val exchange = Exchange("3A", "IL")
-//
-//  /**
-//   * @param blr     specs for operation.
-//   * @param f       function to do something with each [[Qso]]
-//   */
-//  def apply(blr: BuildLoadRequest)(f: Qso => Boolean): Unit = {
-//    var lineCount = 0
-//    val source = Source.fromURL(blr.url)
-//    breakable {
-//      val lines = source.getLines
-//      lines.next()
-//      for (line <- lines) {
-//        val cols = line.split(",").map(_.trim)
-//        val callsign = cols(1)
-//        val qso = Qso(
-//          callsign = callsign,
-//          bandMode = BandModeOperator(),
-//          exchange = exchange)
-//        if (!f(qso))
-//          break
-//        lineCount += 1
-//        if (lineCount >= blr.max) {
-//          break
-//        }
-//      }
-//    }
-//  }
-//
-//}
