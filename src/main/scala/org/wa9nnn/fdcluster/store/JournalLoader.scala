@@ -17,19 +17,21 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.io.Source
 import scala.util.Using
+
 /**
  * Fills the "allQsos" ObsesrverabeBuffer from the journal.
  *
- * @param allQsos where to store.
- * @param journalFilePath file.
+ * @param allQsos                 where to store.
+ * @param journalFilePath         file.
  * @param runningTaskInfoConsumer progress UI
  */
 class JournalLoaderImpl @Inject()(@Named("allQsos") allQsos: ObservableBuffer[QsoRecord],
-                              @Named("journalPath") journalFilePath: Path,
-                              val runningTaskInfoConsumer: RunningTaskInfoConsumer) extends RunningTask  with JournalLoader{
+                                  @Named("journalPath") journalFilePath: Path,
+                                  val runningTaskInfoConsumer: RunningTaskInfoConsumer) extends RunningTask with JournalLoader {
   override def taskName: String = "Journal Loader"
+
   def run(): Future[BufferReady.type] = {
-    Future{
+    Future {
       val typicalQsoLength = 413 // imperially determined by loading journal then divided file size by number of QSOs
       totalIterations = Files.size(journalFilePath) / typicalQsoLength
       val lineNumber = new AtomicInteger()
@@ -44,13 +46,18 @@ class JournalLoaderImpl @Inject()(@Named("allQsos") allQsos: ObservableBuffer[Qs
               allQsos.addOne(qsoRecord) // todo consider batching up and using addAll instead of addOne
 
             } catch {
-              case _: Exception =>
+              case e: Exception =>
                 val err = errorCount.incrementAndGet()
                 err match {
                   case 25 =>
                     logger.error("More than 25 errors, stopping logging!")
                   case x if x < 25 =>
-                    logger.error(f"loading QSO from line ${lineNumber.get()}%,d")
+                    logJson("Journal Error")
+                      .++("line" -> lineNumber.get,
+                        "error" -> e.getClass.getName,
+                        "qso" -> line
+                      )
+                      .error()
                 }
             }
           }
@@ -59,16 +66,17 @@ class JournalLoaderImpl @Inject()(@Named("allQsos") allQsos: ObservableBuffer[Qs
         logger.info(f"${errorCount.get}%,d lines with errors in $journalFilePath")
       }
       val duration = Duration.between(start, Instant.now())
-      val d: String = org.wa9nnn.util.TimeConverters.durationToString(duration)
+      val d: String = org.wa9nnn.util.TimeHelpers.durationToString(duration)
       val c: Int = lineNumber.get()
       val qsoPerSecond: Double = c.toDouble / duration.getSeconds.toDouble
-//      logger.info(f"loaded $c%,d records in $d ($qsoPerSecond%.2f/per sec)")
+      //      logger.info(f"loaded $c%,d records in $d ($qsoPerSecond%.2f/per sec)")
       done()
       BufferReady
     }
   }
 
 }
+
 trait JournalLoader {
-  def run():Future[BufferReady.type]
+  def run(): Future[BufferReady.type]
 }

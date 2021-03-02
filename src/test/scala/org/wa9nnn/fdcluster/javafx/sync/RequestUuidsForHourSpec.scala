@@ -20,8 +20,8 @@ class RequestUuidsForHourSpec extends Specification {
       val str = jsValue.toString()
 
       val date = LocalDateTime.now().toLocalDate
-      val fdh1 = FdHour(date, 4)
-      val fdh2 = FdHour(date, 23)
+      val fdh1 = FdHour( 4)
+      val fdh2 = FdHour( 23)
       val fdhours = List(fdh1, fdh2)
       val uuidRequest1 = RequestUuidsForHour(url, fdhours)
       val jsValue1 = Json.toJson(uuidRequest1)

@@ -6,6 +6,7 @@ import com.google.inject.Inject
 import com.google.inject.name.Named
 import org.wa9nnn.fdcluster.javafx.entry.Sections
 import org.wa9nnn.fdcluster.model.QsoRecord
+import org.wa9nnn.util.TimeHelpers
 import play.api.libs.json.Json
 import scalafx.Includes._
 import scalafx.application.Platform
@@ -18,8 +19,8 @@ import scalafx.scene.control._
 import scalafx.scene.layout.{HBox, VBox}
 
 import java.nio.file.Path
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.time.{Instant, ZonedDateTime}
 import java.util.concurrent.TimeUnit
 
 /**
@@ -30,17 +31,11 @@ class DataScene @Inject()(@Named("journalPath") journalPath: Path,
 
   implicit val timeout: Timeout = Timeout(5, TimeUnit.SECONDS)
 
-  //  def refresh(): Unit = {
-  //    //todo  should not need, use [[org.wa9nnn.fdlog.store.StoreMapImpl.allQsos]]
-  ////    val future = store ? DumpQsos
-  ////    val qsos = Await.result(future, timeout.duration).asInstanceOf[Seq[QsoRecord]]
-  ////
-  ////    data.clear()
-  ////    data.addAll(ObservableBuffer[QsoRecord](qsos))
-  //  }
-
   val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
 
+  def format(instant: Instant): String = {
+    formatter.format(ZonedDateTime.ofInstant(instant, TimeHelpers.utcZoneId))
+  }
 
   //  private val allQsoBuffer: ObservableBuffer[QsoRecord] = StoreMapImpl.allQsos
   private val sizeLabel = new Label("--")
@@ -53,21 +48,22 @@ class DataScene @Inject()(@Named("journalPath") journalPath: Path,
 
   var tableView: TableView[QsoRecord] = new TableView[QsoRecord](allQsoBuffer) {
     columns ++= List(
-      new TableColumn[QsoRecord, LocalDateTime] {
+      new TableColumn[QsoRecord, Instant] {
         text = "Stamp"
-        cellFactory = { _: TableColumn[QsoRecord, LocalDateTime] ⇒
-          new TableCell[QsoRecord, LocalDateTime]() {
+        tooltip = "Times in UTC"
+        cellFactory = { _: TableColumn[QsoRecord, Instant] ⇒
+          new TableCell[QsoRecord, Instant]() {
             styleClass += "dateTime"
             item.onChange { (_, oldValue, newValue) => {
 
-              val maybeTime = Option(newValue).orElse(Some(oldValue))
-              text = formatter.format(maybeTime.get)
+              val maybeTime: Option[Instant] = Option(newValue).orElse(Some(oldValue))
+              text = format(maybeTime.get)
             }
             }
           }
         }
         cellValueFactory = { q =>
-          val ldt = q.value.qso.stamp
+          val ldt: Instant = q.value.qso.stamp
           val wrapper = ReadOnlyObjectWrapper(ldt)
           wrapper
         }
@@ -117,12 +113,12 @@ class DataScene @Inject()(@Named("journalPath") journalPath: Path,
         cellValueFactory = { q =>
           val sectionCode: String = q.value.qso.exchange.section
           val name: String = {
-              try {
-                Sections.byCode(sectionCode).name
-              } catch {
-                case _:Exception =>
-                  "?"
-              }
+            try {
+              Sections.byCode(sectionCode).name
+            } catch {
+              case _: Exception =>
+                "?"
+            }
           }
           val display: String = sectionCode + " " + name
           ReadOnlyStringWrapper(display)
@@ -138,7 +134,7 @@ class DataScene @Inject()(@Named("journalPath") journalPath: Path,
     if (selectedQso != null) {
       val sJson = Json.prettyPrint(Json.toJson(selectedQso))
       detailView.setText(sJson)
-    }else{
+    } else {
       detailView.setText("")
     }
   }

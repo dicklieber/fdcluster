@@ -63,6 +63,7 @@ object StyledAny {
 case class OurNode(is: Boolean = false)
 
 trait LabelSource {
+  def toolTip:String = ""
   def setLabel(labeled: Labeled)
 }
 

@@ -42,7 +42,7 @@ class NodeInfoImpl @Inject()(val contest: Contest,
 
 trait NodeInfo {
   def fdLogId: FdLogId = {
-    model.FdLogId(nextSn, nodeAddress)
+    model.FdLogId(nodeAddress)
   }
 
   def nextSn: Int

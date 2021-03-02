@@ -1,9 +1,8 @@
 
 package org.wa9nnn.fdcluster.store
 
-import java.time.{Duration, LocalDateTime}
+import java.time.{Duration, Instant, LocalDateTime}
 import java.util.UUID
-
 import com.typesafe.scalalogging.LazyLogging
 import nl.grons.metrics4.scala.DefaultInstrumented
 import org.wa9nnn.fdcluster.javafx.entry.Sections
@@ -15,7 +14,7 @@ import scala.util.Random
 object QsoGenerator extends DefaultInstrumented  with DebugTimer with LazyLogging{
   val bmf = new BandModeFactory()
 
-  def apply(numberfOfQsos: Int, betweewnQsos: Duration, startOfContest: LocalDateTime): List[QsoRecord] = {
+  def apply(numberfOfQsos: Int, betweewnQsos: Duration, startOfContest: Instant): List[QsoRecord] = {
      debugTime[List[QsoRecord]]("QsoGenerator") {
       var iteration = 0
       val secondsBetween = betweewnQsos.toSeconds
@@ -30,9 +29,7 @@ object QsoGenerator extends DefaultInstrumented  with DebugTimer with LazyLoggin
         iteration = iteration + 1
         val callsign = s"WA$area$suffix1$suffix2$suffix3"
         val qso = Qso(callsign, bandMode, exchange, startOfContest.plusSeconds(secondsBetween * iteration))
-        val fdLOgId = FdLogId(nodeSn = iteration,
-          nodeAddress = NodeAddress(0, "10.10.10.1"),
-          uuid = UUID.randomUUID().toString)
+        val fdLOgId = FdLogId(nodeAddress = NodeAddress(0, "10.10.10.1"), uuid = UUID.randomUUID().toString)
         QsoRecord(qso, contest, ourStation, fdLOgId)
       }
     }

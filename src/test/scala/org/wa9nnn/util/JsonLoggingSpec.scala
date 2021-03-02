@@ -22,9 +22,7 @@ class JsonLoggingSpec extends Specification with JsonLogging {
       ok
     }
     "logJson nested" in {
-      val fdLOgId = FdLogId(nodeSn = 1,
-        nodeAddress = NodeAddress(0, "10.10.10.1"),
-        uuid = UUID.randomUUID().toString)
+      val fdLOgId = FdLogId(nodeAddress = NodeAddress(0, "10.10.10.1"), uuid = UUID.randomUUID().toString)
 
       val ourStation = new QsoRecord(Qso("WA9NNN", BandModeOperator(), new Exchange()), Contest(year = 2021), OurStation(), fdLOgId)
       logJson("ourStation", ourStation)

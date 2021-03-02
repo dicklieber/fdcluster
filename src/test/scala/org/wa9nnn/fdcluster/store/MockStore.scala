@@ -18,7 +18,7 @@ class MockStore extends Store {
    * @return Added or Dup
    */
   override def add(potentialQso: Qso): AddResult = {
-    val fdLogId = new FdLogId(1, NodeAddress())
+    val fdLogId = new FdLogId(NodeAddress())
     val ourStation = OurStation("WM9W")
     val contest = Contest(year = 19)
     val qsoRecord = QsoRecord(potentialQso, contest, ourStation, fdLogId)

@@ -2,7 +2,7 @@
 package org.wa9nnn.util
 
 import java.time.{Duration, Instant}
-import org.wa9nnn.util.TimeConverters._
+import org.wa9nnn.util.TimeHelpers._
 
 import com.typesafe.scalalogging.{LazyLogging, Logger}
 

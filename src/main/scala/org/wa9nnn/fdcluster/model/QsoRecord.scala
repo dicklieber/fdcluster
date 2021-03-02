@@ -1,12 +1,13 @@
 package org.wa9nnn.fdcluster.model
 
-import java.time.LocalDateTime
-import java.util.UUID
-
 import akka.util.ByteString
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.store.network.FdHour
 import play.api.libs.json.Json
+
+import java.time.Instant
+import java.util.UUID
+
 /**
  * * One contact with another station.
  * * Things that are relevant for the contest.
@@ -16,7 +17,7 @@ import play.api.libs.json.Json
  * @param exchange from the worked station.
  * @param stamp    when QSO occurred.
  */
-case class Qso(callsign: CallSign, bandMode: BandModeOperator, exchange: Exchange, stamp: LocalDateTime = LocalDateTime.now()) {
+case class Qso(callsign: CallSign, bandMode: BandModeOperator, exchange: Exchange, stamp: Instant = Instant.now()) {
   def isDup(that: Qso): Boolean = {
     this.callsign == that.callsign &&
       this.bandMode == that.bandMode
@@ -64,13 +65,10 @@ case class QsosFromNode(nodeAddress: NodeAddress, qsos: List[QsoRecord]) {
 /**
  * Info used internally by FDLog.
  *
- * @param nodeSn      sequential number from this network node. (probably not useful)
  * @param nodeAddress ip address of the network node.
  * @param uuid        unique id in time and space. Two QsoRecords with the same uuid can be considered equal.
  */
-case class FdLogId(nodeSn: Int,
-                   nodeAddress: NodeAddress,
-                   uuid: String = UUID.randomUUID.toString) {
+case class FdLogId(nodeAddress: NodeAddress, uuid: String = UUID.randomUUID.toString) {
   override def equals(obj: Any): Boolean = uuid == this.uuid
 
 }

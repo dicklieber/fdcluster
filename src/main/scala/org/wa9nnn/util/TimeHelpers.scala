@@ -6,7 +6,7 @@ import java.time.{Duration, Instant, ZoneId, ZonedDateTime}
 
 import scala.language.implicitConversions
 
-object TimeConverters {
+object TimeHelpers {
 
   def nano2Second(nanoseconds: Double): Double = nanoseconds / 1000000000.0
 
@@ -28,4 +28,8 @@ object TimeConverters {
   }
   
   def parseInstant(in: String): Instant = Instant.parse(in)
+
+  val msHour = 1000 * 60 * 60
+  val utcZoneId: ZoneId = ZoneId.of("UTC")
+
 }

@@ -10,11 +10,11 @@ import org.wa9nnn.fdcluster.javafx.sync.SyncSteps
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHourDigest}
 import org.wa9nnn.fdcluster.store.network.FdHour
-import org.wa9nnn.util.{CommandLine, DebugTimer, Persistence}
+import org.wa9nnn.util.{CommandLine, DebugTimer, Persistence, TimeHelpers}
 import scalafx.collections.ObservableBuffer
 
 import java.nio.file.{Files, Path}
-import java.time.{Duration, LocalDateTime}
+import java.time.{Duration, LocalDateTime, ZonedDateTime}
 
 
 class StoreSyncSpec extends Specification with BeforeAfterEach with DebugTimer with Mockito {
@@ -102,7 +102,7 @@ class StoreSyncSpec extends Specification with BeforeAfterEach with DebugTimer w
         commandLine
       )
     }
-    val startTime = LocalDateTime.of(2019, 6, 23, 12, 0, 0)
+    val startTime = ZonedDateTime.of(2019, 6, 23, 12, 0, 0, 0, TimeHelpers.utcZoneId).toInstant
 
     records = QsoGenerator(nQsos, Duration.ofMinutes(1), startTime)
     debugTime(s"load ${records.size} in $$dur") {

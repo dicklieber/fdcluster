@@ -58,6 +58,7 @@ case class QsoHourDigest(startOfHour: FdHour, digest: Digest, size: Int)extends 
     }
 
   }
+
 }
 
 case class QsoHourIds(startOfHour: FdHour, qsiIds: List[Uuid])
