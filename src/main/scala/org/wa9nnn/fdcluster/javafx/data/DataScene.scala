@@ -135,8 +135,12 @@ class DataScene @Inject()(@Named("journalPath") journalPath: Path,
   private val selectionModel = tableView.selectionModel
   selectionModel.apply.selectedItem.onChange { (_, _, selectedQso) ⇒
     import org.wa9nnn.fdcluster.model.MessageFormats._
-    val sJson = Json.prettyPrint(Json.toJson(selectedQso))
-    detailView.setText(sJson)
+    if (selectedQso != null) {
+      val sJson = Json.prettyPrint(Json.toJson(selectedQso))
+      detailView.setText(sJson)
+    }else{
+      detailView.setText("")
+    }
   }
   tableView.setPrefWidth(400)
   val detailView = new TextArea()
