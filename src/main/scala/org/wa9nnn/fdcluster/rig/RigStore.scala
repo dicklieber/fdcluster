@@ -1,12 +1,10 @@
 
 package org.wa9nnn.fdcluster.rig
 
-import com.fasterxml.jackson.core.JsonParseException
-import com.fasterxml.jackson.databind.exc.MismatchedInputException
-import org.wa9nnn.util.JsonLogging
+import org.wa9nnn.fdcluster.model.MessageFormats._
+import org.wa9nnn.util.{JsonLogging, Persistence}
 import scalafx.beans.property.{IntegerProperty, ObjectProperty, StringProperty}
 
-import java.util.prefs.Preferences
 import javax.inject.Inject
 
 /**
@@ -14,7 +12,7 @@ import javax.inject.Inject
  *
  * @param preferences default or runtime, override with a mock Preferences for unit testing
  */
-class RigStore @Inject()(preferences: Preferences) extends JsonLogging {
+class RigStore @Inject()(persistence: Persistence) extends JsonLogging {
 
   val rigFrequencyDisplay: StringProperty = new StringProperty()
   val band:StringProperty = new StringProperty()
@@ -30,16 +28,10 @@ class RigStore @Inject()(preferences: Preferences) extends JsonLogging {
 
   private val prefsKey = "rigSettings"
   rigSettings.value = {
-    val str = preferences.get(prefsKey, "")
-    try {
-      RigSettings.decodeJson(str)
-    } catch {
-      case e:MismatchedInputException =>
-        RigSettings()
-    }
+    persistence.loadFromFile[RigSettings].getOrElse(RigSettings())
   }
   rigSettings.onChange { (_, _, newSettings) =>
-    preferences.put(prefsKey, newSettings.encodeJson)
+    persistence.saveToFile(rigSettings.value)
   }
 
 }
