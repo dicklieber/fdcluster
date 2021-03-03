@@ -24,7 +24,7 @@ class ImportTask @Inject()(store: Store, val runningTaskInfoConsumer: RunningTas
   def apply(sPath: String) {
     //todo cabrillo starts with: START-OF-LOG
     val adifFile: AdifFile = AdifCollector.read(Source.fromFile(sPath))
-    val adifQsos: Seq[adif.Qso] = adifFile.records
+    val adifQsos: Seq[adif.AdifQso] = adifFile.records
 
     totalIterations = adifQsos.size
 

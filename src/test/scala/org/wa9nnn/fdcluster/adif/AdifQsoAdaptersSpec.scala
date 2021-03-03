@@ -1,7 +1,7 @@
 package org.wa9nnn.fdcluster.adif
 
 import org.specs2.mutable.Specification
-import org.wa9nnn.fdcluster.model
+import org.wa9nnn.fdcluster.model.Qso
 
 import scala.io.Source
 
@@ -47,17 +47,23 @@ class AdifQsoAdaptersSpec extends Specification {
       |""".stripMargin
 
   val adifFile: AdifFile = AdifCollector.read(Source.fromString(sAdif))
-  private val adifQso: Qso = adifFile.records.head
+  private val adifQso: AdifQso = adifFile.records.head
 
   "AdifQsoAdaptersSpec" should {
     "happy" in {
-      val qso: model.Qso = AdifQsoAdapter(adifQso)
-      qso.callsign must beEqualTo ("K0USA")
+      val qso: Qso = AdifQsoAdapter(adifQso)
+      qso.callsign must beEqualTo("K0USA")
     }
     "no ARRL_Sect" in {
-      val toRemove = AdifEntry("", "ARRL_Sect", "ENY")
-      val missingSection = adifQso.copy(entries = adifQso.entries.filterNot(e => e.tag == "ARRL_Sect"))
-       AdifQsoAdapter(missingSection) must throwAn(new MissingRequiredTag("ARRL_SECT"))
+      val toRemove = AdifEntry("ARRL_SECT", "ENY")
+      val missingSection = adifQso.copy(entries = adifQso.entries.filterNot(e => e.tag == "ARRL_SECT"))
+      AdifQsoAdapter(missingSection) must throwAn(new MissingRequiredTag("ARRL_SECT"))
+    }
+
+    "model to adif" >> {
+      val model: Qso = AdifQsoAdapter(adifQso)
+      val backAgain = AdifQsoAdapter(model)
+      adifQso.contains(backAgain)
     }
   }
 }

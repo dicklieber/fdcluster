@@ -1,8 +1,8 @@
 
 package org.wa9nnn.fdcluster.adif
 
-import org.wa9nnn.fdcluster._
-import org.wa9nnn.fdcluster.model.{BandModeOperator, Exchange}
+import org.wa9nnn.fdcluster.model.{BandModeOperator, Exchange, Qso}
+import org.wa9nnn.fdcluster.{model, _}
 import org.wa9nnn.util.TimeHelpers.utcZoneId
 
 import java.time.format.DateTimeFormatter
@@ -20,7 +20,7 @@ object AdifQsoAdapter {
    * @return model Qso
    * @throws MissingRequiredTag if required tag not found
    */
-  def apply(adif: Qso): model.Qso = {
+  def apply(adif: AdifQso): model.Qso = {
     val map = adif.toMap
     /**
      * Allows a 'm' string, e.g. m"BAND" to lookup the key in the map and throw appropriate exception for missing tag.
@@ -56,6 +56,24 @@ object AdifQsoAdapter {
       exchange = exchange,
       stamp = stamp
     )
+  }
+
+  def apply(model: Qso): adif.AdifQso = {
+    implicit def e(t2: (String, String)): AdifEntry = {
+      AdifEntry(t2._1, t2._2)
+    }
+
+    val zdt = ZonedDateTime.ofInstant(model.stamp, utcZoneId)
+    val entries = Set.newBuilder[AdifEntry]
+    entries += "QSO_DATE" -> zdt.toLocalDate.format(BASIC_ISO_DATE)
+    entries += "TIME_ON" -> zdt.toLocalTime.format(timeFormat)
+    entries += "CALL" -> model.callsign
+    entries += "BAND" -> model.bandMode.bandName
+    entries += "MODE" -> model.bandMode.modeName
+    entries += "CLASS" -> model.exchange.entryClass
+    entries += "ARRL_SECT" -> model.exchange.section
+
+    adif.AdifQso(entries.result())
   }
 }
 

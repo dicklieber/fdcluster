@@ -10,8 +10,9 @@ import com.typesafe.scalalogging.LazyLogging
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import nl.grons.metrics4.scala.DefaultInstrumented
 import org.wa9nnn.fdcluster.Markers.syncMarker
+import org.wa9nnn.fdcluster.adif.AdiExporter
 import org.wa9nnn.fdcluster.http.{ClientActor, FetchQsos}
-import org.wa9nnn.fdcluster.javafx.menu.{BuildLoadRequest, ImportRequest}
+import org.wa9nnn.fdcluster.javafx.menu.{BuildLoadRequest, ExportRequest, ImportRequest}
 import org.wa9nnn.fdcluster.javafx.sync.{RequestUuidsForHour, SyncSteps, UuidsAtHost}
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
@@ -21,6 +22,7 @@ import org.wa9nnn.fdcluster.store.network.{FdHour, MultcastSenderActor, Multicas
 import org.wa9nnn.util.LaurelDbImporterTask
 import play.api.libs.json.Json
 import org.wa9nnn.util.ImportTask
+
 import java.net.InetAddress
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
@@ -128,6 +130,10 @@ class StoreActor(injector: Injector,
     case blr: BuildLoadRequest =>
       val laurelDbImporterTask = injector.instance[LaurelDbImporterTask]
       laurelDbImporterTask(blr)
+
+    case exportRequest: ExportRequest =>
+      val exporter: AdiExporter = injector.instance[AdiExporter]
+      exporter(exportRequest)
 
     case ImportRequest(path) =>
       val importTask = injector.instance[ImportTask]

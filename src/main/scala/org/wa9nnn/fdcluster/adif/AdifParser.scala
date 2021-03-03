@@ -30,7 +30,7 @@ class AdifParser(source: Source)(f: AdifResult => Unit) {
           val length = l.toInt
           val v: String = new String(source.take(length).toArray)
             .replace("\r\n", "\n")
-          f(AdifEntry(logic.consumePredef, name, v))
+          f(AdifEntry(name.toUpperCase, v))
         }
         logic = new Collector
 
@@ -60,7 +60,6 @@ class Collector() {
 
   def startTag(): Unit = currentCollector = tagBuilder
 
-  def consumePredef: String = predefBuilder.result().replace("\r\n", "\n")
 
   def consumeTag: String = tagBuilder.result()
 

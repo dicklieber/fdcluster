@@ -108,6 +108,16 @@ class FdClusterMenu @Inject()(
       }
     }
   }
+  private val exportMenuItem = new MenuItem {
+    text = "Export"
+    onAction = { _: ActionEvent =>
+      injector.instance[ExportDialog].showAndWait() match {
+        case Some(exportRequest) =>
+          store ! exportRequest
+        case None =>
+      }
+    }
+  }
 
   private val exitMenuItem = new MenuItem {
     text = "Exit"
@@ -125,6 +135,7 @@ class FdClusterMenu @Inject()(
           aboutMenuItem,
           rigMenuItem,
           importMenuItem,
+          exportMenuItem,
           exitMenuItem,
         )
       }, new Menu("_Debug") {

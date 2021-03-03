@@ -10,23 +10,24 @@ import scalafx.event.ActionEvent
 import scalafx.geometry.Insets
 import scalafx.scene.control._
 import scalafx.scene.layout.GridPane
-import scalafx.stage.FileChooser
+import scalafx.stage.{DirectoryChooser, FileChooser}
 import scalafx.stage.FileChooser.ExtensionFilter
 
 import java.io.File
 import javax.inject.Inject
 
-case class ImportRequest(directory: String = System.getProperty("user.home"))
+case class ExportRequest(directory: String = System.getProperty("user.home"), fileName: String = "fd.adif")
 
-class ImportDialog @Inject()(persistence: Persistence) extends Dialog[ImportRequest] {
-  val blrIn: ImportRequest = persistence.loadFromFile[ImportRequest].getOrElse(ImportRequest())
-  title = "Import"
-  headerText = "Load ADIF or Cabrillo file"
-  val path: StringProperty = new StringProperty(blrIn.directory)
-
+class ExportDialog @Inject()(persistence: Persistence) extends Dialog[ExportRequest] {
+  val exportRequest: ExportRequest = persistence.loadFromFile[ExportRequest].getOrElse(ExportRequest())
+  title = "Export"
+  headerText = "Save as ADIF (adi)"
+  val path: StringProperty = new StringProperty(exportRequest.directory)
+  val fileName = new StringProperty(exportRequest.fileName)
   resultConverter = dialogButton => {
     val r = if (dialogButton == ButtonType.OK) {
-      val rr = ImportRequest(path.value)
+
+      val rr = ExportRequest(path.value, fileName.value)
       persistence.saveToFile(rr)
       rr
     }
@@ -38,11 +39,14 @@ class ImportDialog @Inject()(persistence: Persistence) extends Dialog[ImportRequ
   val pathDisplay: TextField = new TextField() {
     text <==> path
   }
+  val fileNameField: TextField = new TextField() {
+    text <==> fileName
+  }
 
 
   val chooseFileButton: Button = new Button("choose file") {
     onAction = { e: ActionEvent =>
-      val file: File = fileChooser.showOpenDialog(dp.getScene.getWindow)
+      val file: File = directoryChooser.showDialog(dp.getScene.getWindow)
       path.value = file.getAbsoluteFile.toString
     }
   }
@@ -53,23 +57,20 @@ class ImportDialog @Inject()(persistence: Persistence) extends Dialog[ImportRequ
       vgap = 10
       padding = Insets(20, 100, 10, 10)
 
-      add(new Label("File:"), 0, 0)
+      add(new Label("Directory:"), 0, 0)
       add(pathDisplay, 1, 0)
       add(chooseFileButton, 2, 0)
+      add(new Label("File Name:"), 0, 1)
+      add(fileNameField, 1, 1)
+
     }
   }
   val dp: DialogPane = dialogPane()
 
   dp.getButtonTypes.addAll(ButtonType.OK, ButtonType.Cancel)
 
-  val fileChooser: FileChooser = new FileChooser {
-    title = "Open Resource File"
-    extensionFilters ++= Seq(
-      new ExtensionFilter("ADIF", Seq("*.adif", "*.adi")),
-      new ExtensionFilter("Cabrillo", Seq("*.cab")),
-      new ExtensionFilter("Text Files", "*.txt"),
-      new ExtensionFilter("Any", "*.*")
-    )
+  val directoryChooser: DirectoryChooser = new DirectoryChooser {
+    title = "Directory"
   }
 }
 
