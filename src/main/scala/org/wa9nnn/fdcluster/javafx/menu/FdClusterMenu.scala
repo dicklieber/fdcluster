@@ -6,6 +6,7 @@ import com.google.inject.Injector
 import com.google.inject.name.Named
 import com.typesafe.scalalogging.LazyLogging
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
+import org.wa9nnn.fdcluster.caabrillo.{CabrilloDialog, CabrilloGenerator}
 import org.wa9nnn.fdcluster.javafx.debug.DebugRemoveDialog
 import org.wa9nnn.fdcluster.javafx.sync.{SyncDialog, SyncSteps}
 import org.wa9nnn.fdcluster.rig.RigDialog
@@ -118,6 +119,13 @@ class FdClusterMenu @Inject()(
       }
     }
   }
+  private val exportCabrillo = new MenuItem {
+    text = "export Cabrillo"
+    onAction = { _: ActionEvent =>
+      val cg = injector.instance[CabrilloDialog]
+      cg.showAndWait()
+    }
+  }
 
   private val exitMenuItem = new MenuItem {
     text = "Exit"
@@ -136,6 +144,7 @@ class FdClusterMenu @Inject()(
           rigMenuItem,
           importMenuItem,
           exportMenuItem,
+          exportCabrillo,
           exitMenuItem,
         )
       }, new Menu("_Debug") {

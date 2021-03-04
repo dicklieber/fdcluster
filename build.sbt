@@ -1,7 +1,5 @@
 name := "fdcluster"
 
-version := "0.2"
-
 maintainer := "wa9nnn@u505.com"
 
 
@@ -28,9 +26,7 @@ scalaVersion := "2.13.0"
 mainClass in(Compile, run) := Some("org.wa9nnn.fdcluster.javafx.entry.FdCluster")
 
 
-scalacOptions in(Compile, doc) ++= Seq("-verbose")
-
-scalacOptions += "-Ymacro-annotations"
+scalacOptions in(Compile, doc) ++= Seq("-verbose", "-Ymacro-annotations")
 
 //unmanagedJars in (Compile, run) += Attributed.blank(file(System.getenv("JAVA_HOME") + "/lib/ext/jfxrt.jar"))
 
@@ -61,6 +57,7 @@ lazy val akkaHttpVersion = "10.1.9"
 val logbackVersion = "1.2.3"
 
 libraryDependencies ++= Seq(
+  "com.wa9nnn" %% "cabrillo-lib" % "1.0.2-SNAPSHOT",
   "com.typesafe.play" %% "play-json" % "2.8.0-M4",
   "org.specs2" %% "specs2-core" % "4.6.0" % "test",
   "org.specs2" %% "specs2-mock" % "4.6.0" % "test",
@@ -68,6 +65,7 @@ libraryDependencies ++= Seq(
   "org.scalafx" %% "scalafxml-core-sfx8" % "0.5",
   "org.scalafx" %% "scalafx" % "15.0.1-R21",
   "org.scalafx" %% "scalafx-extras" % "0.3.6",
+  "org.openjfx" % "javafx-fxml" % "11.0.1",
   "net.codingwell" %% "scala-guice" % "4.2.6",
   "com.github.racc" % "typesafeconfig-guice" % "0.1.0",
   "com.typesafe.akka" %% "akka-actor" % "2.6.0-M7",
