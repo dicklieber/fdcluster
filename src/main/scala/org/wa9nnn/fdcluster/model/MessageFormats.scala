@@ -1,6 +1,7 @@
 
 package org.wa9nnn.fdcluster.model
 
+import org.wa9nnn.fdcluster.cabrillo.{CabrilloExportRequest, CabrilloValue, CabrilloValues}
 import org.wa9nnn.fdcluster.javafx.menu.{BuildLoadRequest, ExportRequest, ImportRequest}
 
 import java.net.URL
@@ -50,6 +51,9 @@ object MessageFormats {
   implicit val buildLoadRequestFormat: Format[BuildLoadRequest] = Json.format[BuildLoadRequest]
   implicit val importRequestFormat: Format[ImportRequest] = Json.format[ImportRequest]
   implicit val exportRequestFormat: Format[ExportRequest] = Json.format[ExportRequest]
+  implicit val cabriloFormat: Format[CabrilloValue] = Json.format[CabrilloValue]
+  implicit val cabrilosFormat: Format[CabrilloValues] = Json.format[CabrilloValues]
+  implicit val CabrilloExportRequestFormat: Format[CabrilloExportRequest] = Json.format[CabrilloExportRequest]
 
   type CallSign = String
   type Uuid = String

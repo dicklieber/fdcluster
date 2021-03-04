@@ -21,7 +21,7 @@ case class ImportRequest(directory: String = System.getProperty("user.home"))
 class ImportDialog @Inject()(persistence: Persistence) extends Dialog[ImportRequest] {
   val blrIn: ImportRequest = persistence.loadFromFile[ImportRequest].getOrElse(ImportRequest())
   title = "Import"
-  headerText = "Load ADIF or Cabrillo file"
+  headerText = "Load ADIF"
   val path: StringProperty = new StringProperty(blrIn.directory)
 
   resultConverter = dialogButton => {
@@ -38,7 +38,6 @@ class ImportDialog @Inject()(persistence: Persistence) extends Dialog[ImportRequ
   val pathDisplay: TextField = new TextField() {
     text <==> path
   }
-
 
   val chooseFileButton: Button = new Button("choose file") {
     onAction = { e: ActionEvent =>
