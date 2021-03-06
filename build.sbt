@@ -73,6 +73,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-stream" % "2.6.0-M7",
   "ch.qos.logback" % "logback-classic" % logbackVersion,
   "ch.qos.logback" % "logback-core" % logbackVersion,
+  "com.github.andyglow" %% "typesafe-config-scala" % "1.1.0" % Compile,
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
   // JavaFX 11 jars are distributed for each platform
   "org.openjfx" % "javafx-controls" % "11.0.1" classifier osType.value,

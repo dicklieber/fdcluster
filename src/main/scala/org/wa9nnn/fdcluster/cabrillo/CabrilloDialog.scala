@@ -14,30 +14,18 @@ import java.io.File
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 
-class CabrilloDialog @Inject()(cabrilloValuesStore: CabrilloValuesStore) extends Dialog[CabrilloExportRequest] {
+class CabrilloDialog @Inject()(cabrilloValuesStore: CabrilloValuesStore,
+                               cabrilloFieldsSource: CabrilloFieldsSource,
+                              ) extends Dialog[CabrilloExportRequest] {
   private val cer: CabrilloExportRequest = cabrilloValuesStore.value
   implicit val savedValues: CabrilloValues = cer.cabrilloValues
 
   title = "Cabrillo Export"
   headerText = "Cabrillo Header and Export"
 
-  val fields: Seq[Field] = Seq(
-    Combo("Operator", "CATEGORY-OPERATOR", "+SINGLE-OP", "MULTI-OP", "CHECKLOG"),
-    Combo("Station", "CATEGORY-STATION", "DISTRIBUTED", "+FIXED", "MOBILE", "PORTABLE", "ROVER", "ROVER-LIMITED", "ROVER-UNLIMITED", "EXPEDITION", "HQ", "SCHOOL"),
-    Combo("Transmitter", "CATEGORY-TRANSMITTER", "ONE", "TWO", "LIMITED", "+UNLIMITED", "SWL"),
-    Combo("Power", "CATEGORY-POWER", "HIGH", "+LOW", "QRP"),
-    Text("Club", "CLUB"),
-    Combo("Assisted", "CATEGORY-ASSISTED", "ASSISTED", "+NON-ASSISTED"),
-    //    LabeledCombo("Band", "CATEGORY-BAND", "All" +: bandModeFactory.avalableBands.map(_.band):_*),
-    //    LabeledCombo("Mode", "CATEGORY-MODE", "MIXED",// wfd/fd
-    Text("Operators", "OPERATORS"),
-    Text("Name", "NAME"),
-    TextArea("Address", "ADDRESS"),
-    Text("City", "ADDRESS-CITY"),
-    Text("State/Prov", "ADDRESS-STATE-PROVINCE"),
-    Text("Zip/Post Code", "ADDRESS-POSTALCODE"),
-    Text("Country", "ADDRESS-COUNTRY"),
-  )
+  val fields: Seq[Field] = cabrilloFieldsSource.cabrilloFields
+
+
   val path: StringProperty = new StringProperty(cer.directory)
   val fileName = new StringProperty(cer.fileName)
 

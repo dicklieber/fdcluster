@@ -54,6 +54,7 @@ class CabrilloGenerator @Inject()(@Named("allQsos") allQsos: ObservableBuffer[Qs
 //    builder + ("ADDRESS-COUNTRY", "USA") //todo
 //    builder + ("OPERATORS", "WA9NNN NEA9A KD9BYW") //todo
 
+
     cabrilloExportRequest.cabrilloValues.fieldValues.foreach{cv =>
       builder.+(cv.tagValue)
     }

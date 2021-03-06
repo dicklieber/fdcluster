@@ -8,6 +8,10 @@ import scalafx.beans.property.ObjectProperty
 
 import javax.inject.Inject
 
+/**
+ * User provided values.
+ * @param preferences
+ */
 class CabrilloValuesStore @Inject()(preferences: Persistence) extends ObjectProperty[CabrilloExportRequest] with JsonLogging {
   value = preferences.loadFromFile[CabrilloExportRequest].getOrElse(CabrilloExportRequest())
 
