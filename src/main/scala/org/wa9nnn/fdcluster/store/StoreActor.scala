@@ -13,7 +13,7 @@ import org.wa9nnn.fdcluster.Markers.syncMarker
 import org.wa9nnn.fdcluster.adif.AdiExporter
 import org.wa9nnn.fdcluster.cabrillo.{CabrilloExportRequest, CabrilloGenerator}
 import org.wa9nnn.fdcluster.http.{ClientActor, FetchQsos}
-import org.wa9nnn.fdcluster.javafx.menu.{BuildLoadRequest, ExportRequest, ImportRequest}
+import org.wa9nnn.fdcluster.javafx.menu.{BuildLoadRequest, ImportRequest}
 import org.wa9nnn.fdcluster.javafx.sync.{RequestUuidsForHour, SyncSteps, UuidsAtHost}
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
@@ -136,7 +136,7 @@ class StoreActor(injector: Injector,
       val cabrilloGenerator: CabrilloGenerator = injector.instance[CabrilloGenerator]
       cabrilloGenerator(cer)
 
-    case exportRequest: ExportRequest =>
+    case exportRequest: AdifExportRequest =>
       val exporter: AdiExporter = injector.instance[AdiExporter]
       exporter(exportRequest)
 

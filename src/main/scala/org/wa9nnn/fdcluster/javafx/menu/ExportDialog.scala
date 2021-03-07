@@ -1,72 +1,39 @@
 
 package org.wa9nnn.fdcluster.javafx.menu
 
-import javafx.scene.control.DialogPane
+import javafx.stage.Window
+import org.wa9nnn.fdcluster.javafx.FileSavePanel
+import org.wa9nnn.fdcluster.model.AdifExportRequest
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.util.Persistence
 import scalafx.Includes._
-import scalafx.beans.property.StringProperty
-import scalafx.event.ActionEvent
-import scalafx.geometry.Insets
 import scalafx.scene.control._
-import scalafx.scene.layout.GridPane
-import scalafx.stage.{DirectoryChooser, FileChooser}
-import scalafx.stage.FileChooser.ExtensionFilter
+import scalafx.stage.DirectoryChooser
 
-import java.io.File
 import javax.inject.Inject
 
-case class ExportRequest(directory: String = System.getProperty("user.home"), fileName: String = "fd.adif")
+class ExportDialog @Inject()(persistence: Persistence) extends Dialog[AdifExportRequest] {
+  val exportRequest: AdifExportRequest = persistence.loadFromFile[AdifExportRequest].getOrElse(AdifExportRequest())
+  private val dp: DialogPane = dialogPane()
+  implicit val win: Window = dp.getScene.getWindow
 
-class ExportDialog @Inject()(persistence: Persistence) extends Dialog[ExportRequest] {
-  val exportRequest: ExportRequest = persistence.loadFromFile[ExportRequest].getOrElse(ExportRequest())
+  private val fileSavePanel = new FileSavePanel(exportRequest.exportFile)(win)
+
   title = "Export"
   headerText = "Save as ADIF (adi)"
-  val path: StringProperty = new StringProperty(exportRequest.directory)
-  val fileName = new StringProperty(exportRequest.fileName)
   resultConverter = dialogButton => {
-    val r = if (dialogButton == ButtonType.OK) {
+     if (dialogButton == ButtonType.OK) {
 
-      val rr = ExportRequest(path.value, fileName.value)
-      persistence.saveToFile(rr)
-      rr
+       val exportRequest = AdifExportRequest(fileSavePanel.result)
+       persistence.saveToFile(exportRequest)
+       exportRequest
+
     }
     else
       null
-    r
   }
 
-  val pathDisplay: TextField = new TextField() {
-    text <==> path
-  }
-  val fileNameField: TextField = new TextField() {
-    text <==> fileName
-  }
-
-
-  val chooseFileButton: Button = new Button("choose file") {
-    onAction = { e: ActionEvent =>
-      val file: File = directoryChooser.showDialog(dp.getScene.getWindow)
-      path.value = file.getAbsoluteFile.toString
-    }
-  }
-
-  dialogPane().setContent {
-    new GridPane() {
-      hgap = 10
-      vgap = 10
-      padding = Insets(20, 100, 10, 10)
-
-      add(new Label("Directory:"), 0, 0)
-      add(pathDisplay, 1, 0)
-      add(chooseFileButton, 2, 0)
-      add(new Label("File Name:"), 0, 1)
-      add(fileNameField, 1, 1)
-
-
-    }
-  }
-  val dp: DialogPane = dialogPane()
+  dialogPane().setContent(fileSavePanel)
 
   dp.getButtonTypes.addAll(ButtonType.OK, ButtonType.Cancel)
 

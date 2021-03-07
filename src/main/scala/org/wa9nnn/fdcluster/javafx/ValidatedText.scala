@@ -2,10 +2,10 @@
 package org.wa9nnn.fdcluster.javafx
 
 import org.wa9nnn.fdcluster.javafx.entry.{AlwaysValid, FieldValidator}
-import org.wa9nnn.util.HappySad
+import org.wa9nnn.util.{Disposition, WithDisposition}
 import scalafx.scene.control.{Label, TextField}
 
-class ValidatedText(validator: FieldValidator = AlwaysValid) extends TextField with HappySad with Validatable {
+class ValidatedText(validator: FieldValidator = AlwaysValid) extends TextField with WithDisposition with Validatable {
   var errLabel: Label = new Label("")
 //  errLabel.setPrefWidth(150)
   errLabel.styleClass += "sad"

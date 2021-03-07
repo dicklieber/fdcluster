@@ -2,7 +2,7 @@
 package org.wa9nnn.fdcluster.javafx.runningtask
 
 import org.wa9nnn.fdcluster.javafx.entry.{RunningTaskInfo, RunningTaskInfoConsumer, StyledText}
-import org.wa9nnn.util.JsonLogging
+import org.wa9nnn.util.StructuredLogging
 import java.time.{Duration, Instant}
 
 /**
@@ -12,7 +12,7 @@ import java.time.{Duration, Instant}
  * Implementations need to provide taskName and runningTaskInfoConsumer
  * call done when finished.
  */
-trait RunningTask extends JsonLogging{
+trait RunningTask extends StructuredLogging{
   def taskName: String
   val runningTaskInfoConsumer:RunningTaskInfoConsumer
   val start: Instant =  Instant.now()

@@ -13,7 +13,7 @@ import scala.reflect.ClassTag
  * By default uses the java class name as the LoggerName. Can be changed by invoking [[.loggerName]] before using any logger.
  * Can produce a [[LogJson]] that easily generates JSON log messages that are very friendly to [[https://www.elastic.co LogStash and the ELK stack.]]
  */
-trait JsonLogging {
+trait StructuredLogging {
 
   def whenDebugEnabled(body: Unit): Unit = {
 
@@ -84,7 +84,7 @@ trait JsonLogging {
 /**
  * Convenience class to build structured, json, log messages.
  *
- * Instances of [[LogJson]] are usually created by invoking [[JsonLogging.logJson]]
+ * Instances of [[LogJson]] are usually created by invoking [[StructuredLogging.logJson]]
  * {{{
  *     logJson("statusChange")
  * .field("ServiceArea", serviceAreaKey)

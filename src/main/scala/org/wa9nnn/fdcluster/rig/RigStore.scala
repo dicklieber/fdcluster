@@ -2,7 +2,7 @@
 package org.wa9nnn.fdcluster.rig
 
 import org.wa9nnn.fdcluster.model.MessageFormats._
-import org.wa9nnn.util.{JsonLogging, Persistence}
+import org.wa9nnn.util.{StructuredLogging, Persistence}
 import scalafx.beans.property.{IntegerProperty, ObjectProperty, StringProperty}
 
 import javax.inject.Inject
@@ -12,7 +12,7 @@ import javax.inject.Inject
  *
  * @param preferences default or runtime, override with a mock Preferences for unit testing
  */
-class RigStore @Inject()(persistence: Persistence) extends JsonLogging {
+class RigStore @Inject()(persistence: Persistence) extends StructuredLogging {
 
   val rigFrequencyDisplay: StringProperty = new StringProperty()
   val band:StringProperty = new StringProperty()

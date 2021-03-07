@@ -4,7 +4,7 @@ package org.wa9nnn.fdcluster.rig
 import javafx.collections.ObservableList
 import javafx.event.EventHandler
 import javafx.scene.{Node, control}
-import org.wa9nnn.util.JsonLogging
+import org.wa9nnn.util.StructuredLogging
 import scalafx.Includes._
 import scalafx.collections.ObservableBuffer
 import scalafx.event.ActionEvent
@@ -15,7 +15,7 @@ import scalafx.util.StringConverter
 
 import javax.inject.Inject
 
-class RigDialog @Inject()(rigStore: RigStore) extends Dialog[RigSettings] with JsonLogging{
+class RigDialog @Inject()(rigStore: RigStore) extends Dialog[RigSettings] with StructuredLogging{
   println("org.wa9nnn.fdcluster.rig.RigDialog")
   private val riglist = new RigList()
 

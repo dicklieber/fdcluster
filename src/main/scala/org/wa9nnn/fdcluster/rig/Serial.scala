@@ -2,7 +2,7 @@
 package org.wa9nnn.fdcluster.rig
 
 import com.fazecast.jSerialComm.SerialPort
-import org.wa9nnn.util.JsonLogging
+import org.wa9nnn.util.StructuredLogging
 
 object Serial extends App {
 
@@ -20,7 +20,7 @@ case class SerialPortWrapper(serialPort: SerialPort) extends NamedSerialPort[Ser
   override def description: String = serialPort.getPortDescription
 }
 
-trait NamedSerialPort[T <: NamedSerialPort[T]] extends Ordered[T] with JsonLogging {
+trait NamedSerialPort[T <: NamedSerialPort[T]] extends Ordered[T] with StructuredLogging {
   implicit def name: String
 
   def description: String

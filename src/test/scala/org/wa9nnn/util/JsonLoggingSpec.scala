@@ -10,7 +10,7 @@ import java.util.UUID
 /**
  * Crappy Guru tests, a guru should look at log output
  */
-class JsonLoggingSpec extends Specification with JsonLogging {
+class JsonLoggingSpec extends Specification with StructuredLogging {
   case class SomeClass(hello: String = "World", goodbye: String = "covid")
 
   implicit val f: Format[SomeClass] = Json.format[SomeClass]

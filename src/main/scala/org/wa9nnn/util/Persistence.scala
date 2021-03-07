@@ -18,7 +18,7 @@ import scala.util.{Failure, Success, Try}
  *
  * @param basePath where to write files
  */
-class Persistence @Inject()(@TypesafeConfig("fdcluster.configPath") configPath: String) extends JsonLogging {
+class Persistence @Inject()(@TypesafeConfig("fdcluster.configPath") configPath: String) extends StructuredLogging {
   val path: Path = Paths.get(configPath)
   Files.createDirectories(path)
   if (!Files.isDirectory(path)) {

@@ -4,10 +4,9 @@ package org.wa9nnn.fdcluster.adif
 import com.google.inject.name.Named
 import org.wa9nnn.fdcluster.BuildInfo
 import org.wa9nnn.fdcluster.javafx.entry.RunningTaskInfoConsumer
-import org.wa9nnn.fdcluster.javafx.menu.ExportRequest
 import org.wa9nnn.fdcluster.javafx.runningtask.RunningTask
-import org.wa9nnn.fdcluster.model.QsoRecord
-import org.wa9nnn.util.{JsonLogging, TimeHelpers}
+import org.wa9nnn.fdcluster.model.{AdifExportRequest, QsoRecord}
+import org.wa9nnn.util.{StructuredLogging, TimeHelpers}
 import scalafx.collections.ObservableBuffer
 
 import java.io.PrintWriter
@@ -17,7 +16,7 @@ import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import scala.util.{Try, Using}
 
-class AdiExporter @Inject()(@Named("allQsos") allQsos: ObservableBuffer[QsoRecord], val runningTaskInfoConsumer: RunningTaskInfoConsumer) extends JsonLogging with RunningTask {
+class AdiExporter @Inject()(@Named("allQsos") allQsos: ObservableBuffer[QsoRecord], val runningTaskInfoConsumer: RunningTaskInfoConsumer) extends StructuredLogging with RunningTask {
   val taskName = "Export ADIF"
 
   private def print(s: String = "")(implicit writer: PrintWriter): Unit = {
@@ -32,12 +31,10 @@ class AdiExporter @Inject()(@Named("allQsos") allQsos: ObservableBuffer[QsoRecor
     writer.print(adif.toLine)
   }
 
-  def apply(exportRequest: ExportRequest): Unit = {
+  def apply(exportRequest: AdifExportRequest): Unit = {
 
     val r: Try[Unit] = Using {
-      val directory = Paths.get(exportRequest.directory)
-      Files.createDirectories(directory)
-      val path = directory.resolve(exportRequest.fileName)
+      val path = exportRequest.exportFile.path
       new PrintWriter(Files.newBufferedWriter(path))
     } { implicit writer =>
 
@@ -62,7 +59,6 @@ class AdiExporter @Inject()(@Named("allQsos") allQsos: ObservableBuffer[QsoRecor
         print()
       }
     }
-    println(r)
     done()
   }
 

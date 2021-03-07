@@ -4,9 +4,9 @@ import com.typesafe.scalalogging.LazyLogging
 import ch.qos.logback.classic.{Level, Logger}
 import org.specs2.matcher.DataTables
 import org.specs2.mutable.Specification
-import org.wa9nnn.util.JsonLogging
+import org.wa9nnn.util.StructuredLogging
 
-class SerialPortWrapperSpec extends Specification with DataTables with JsonLogging {
+class SerialPortWrapperSpec extends Specification with DataTables with StructuredLogging {
   setLevel(Level.TRACE)
 
   "SerialPortWrapper" >> {

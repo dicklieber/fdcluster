@@ -11,7 +11,7 @@ import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHour}
 import org.wa9nnn.fdcluster.store
 import org.wa9nnn.fdcluster.store.network.FdHour
-import org.wa9nnn.util.{CommandLine, JsonLogging}
+import org.wa9nnn.util.{CommandLine, StructuredLogging}
 import play.api.libs.json.{JsValue, Json}
 import scalafx.collections.ObservableBuffer
 
@@ -36,7 +36,7 @@ class StoreMapImpl @Inject()(nodeInfo: NodeInfo,
                              @Named("journalPath") journalFilePath: Path,
                              commandLine: CommandLine
                             )
-  extends Store with JsonLogging with DefaultInstrumented {
+  extends Store with StructuredLogging with DefaultInstrumented {
   /**
    * This is the canonical set of data. If its not here then we know we have to also add to [[byCallsign]] and [[allQsos]]
    */

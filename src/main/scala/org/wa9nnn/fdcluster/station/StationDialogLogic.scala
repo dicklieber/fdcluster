@@ -1,7 +1,7 @@
 
 package org.wa9nnn.fdcluster.station
 
-import org.wa9nnn.fdcluster.javafx.{ContestCallsignValidator, Section}
+import org.wa9nnn.fdcluster.javafx.{CallsignValidator, Section}
 import org.wa9nnn.fdcluster.javafx.entry.EntryCategory
 import org.wa9nnn.fdcluster.model.Exchange
 import scalafx.beans.property._
@@ -51,7 +51,7 @@ class StationDialogLogic(
     exchange.foreach { exchange =>
       exchangeLabel.value = exchange.display
     }
-    saveButtonDisable.value = exchange.isFailure ||  ContestCallsignValidator.valid(callsign.value).isDefined
+    saveButtonDisable.value = exchange.isFailure ||  CallsignValidator.valid(callsign.value).isDefined
 
   }
 

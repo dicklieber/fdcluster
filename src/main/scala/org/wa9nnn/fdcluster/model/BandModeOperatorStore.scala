@@ -5,13 +5,13 @@ package org.wa9nnn.fdcluster.model
 
 import org.wa9nnn.fdcluster.model.BandModeOperator.{Band, Mode}
 import org.wa9nnn.fdcluster.model.MessageFormats._
-import org.wa9nnn.util.{JsonLogging, Persistence}
+import org.wa9nnn.util.{StructuredLogging, Persistence}
 import scalafx.beans.property.StringProperty
 import scalafx.collections.ObservableBuffer
 
 import javax.inject.{Inject, Singleton}
 @Singleton
-class BandModeOperatorStore @Inject()(persistence: Persistence) extends JsonLogging {
+class BandModeOperatorStore @Inject()(persistence: Persistence) extends StructuredLogging {
   private val bmo: BandModeOperator = persistence.loadFromFile[BandModeOperator]().getOrElse(BandModeOperator())
 
   val band: StringProperty = new StringProperty(bmo.bandName) {
@@ -49,6 +49,7 @@ class BandModeOperatorStore @Inject()(persistence: Persistence) extends JsonLogg
  */
 case class BandModeOperator(bandName: Band = "20m", modeName: Mode = "PH", operator: CallSign = "") {
   override def toString: String = s"$bandName"
+  def bandMode:BandMode = BandMode(bandName, modeName)
 }
 
 object BandModeOperator {
@@ -58,3 +59,7 @@ object BandModeOperator {
 }
 
 case class KnownOperators(callSigns: List[CallSign] = List.empty)
+
+case class BandMode(bandName: Band = "20m", modeName: Mode = "PH"){
+  override def toString: CallSign = s"$bandName, $modeName"
+}

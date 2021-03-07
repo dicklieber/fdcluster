@@ -3,7 +3,7 @@ package org.wa9nnn.fdcluster.cabrillo
 
 import com.wa9nnn.cabrillo.model.{SimpleTagValue, TagValue}
 import org.wa9nnn.fdcluster.model.MessageFormats._
-import org.wa9nnn.util.{JsonLogging, Persistence}
+import org.wa9nnn.util.{StructuredLogging, Persistence}
 import scalafx.beans.property.ObjectProperty
 
 import javax.inject.Inject
@@ -12,7 +12,7 @@ import javax.inject.Inject
  * User provided values.
  * @param preferences
  */
-class CabrilloValuesStore @Inject()(preferences: Persistence) extends ObjectProperty[CabrilloExportRequest] with JsonLogging {
+class CabrilloValuesStore @Inject()(preferences: Persistence) extends ObjectProperty[CabrilloExportRequest] with StructuredLogging {
   value = preferences.loadFromFile[CabrilloExportRequest].getOrElse(CabrilloExportRequest())
 
   onChange { (_, _, newValue) =>

@@ -6,7 +6,7 @@ import org.wa9nnn.fdcluster.javafx.{CallSignField, Section}
 import org.wa9nnn.fdcluster.model.{OurStation, OurStationStore}
 import org.wa9nnn.fdcluster.station.StationDialogLogic
 import org.wa9nnn.util.InputHelper.forceCaps
-import org.wa9nnn.util.JsonLogging
+import org.wa9nnn.util.StructuredLogging
 import scalafx.Includes._
 import scalafx.application.Platform
 import scalafx.geometry.{Insets, Pos}
@@ -24,7 +24,7 @@ import javax.inject.Inject
  *
  * @param ourStationStore where the data lives.
  */
-class StationDialog @Inject()(ourStationStore: OurStationStore) extends Dialog[OurStation] with JsonLogging {
+class StationDialog @Inject()(ourStationStore: OurStationStore) extends Dialog[OurStation] with StructuredLogging {
   val dp: DialogPane = dialogPane()
 
   private val saveButton = new ButtonType("Save", ButtonData.OKDone)
