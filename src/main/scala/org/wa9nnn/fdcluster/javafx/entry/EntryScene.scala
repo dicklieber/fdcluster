@@ -6,11 +6,11 @@ import akka.pattern.ask
 import akka.util.Timeout
 import com.google.inject.Inject
 import com.google.inject.name.Named
-import org.wa9nnn.fdcluster.javafx.{CallSignField, Section}
+import org.wa9nnn.fdcluster.javafx.{CallSignField, ClassField, Section, SectionField}
 import org.wa9nnn.fdcluster.model
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.store.{AddResult, Added, Dup}
-import org.wa9nnn.util.InputHelper._
+import org.wa9nnn.util.WithDisposition
 import play.api.libs.json.Json
 import scalafx.Includes._
 import scalafx.event.ActionEvent
@@ -30,25 +30,19 @@ class EntryScene @Inject()(@Inject()
                            bandModeOpPanel: BandModeOpPanel,
                            @Inject() @Named("store") store: ActorRef) {
   private implicit val timeout = Timeout(5, TimeUnit.SECONDS)
-  val qsoCallsign = new CallSignField() {
-    styleClass.append("sadQso")
-  }
-  val qsoClass: TextField = new TextField() {
-    styleClass.append("sadQso")
-  }
-  val qsoSection: TextField = new TextField()
-  qsoSection.getStyleClass.add("sadQso")
+  val qsoCallsign = new CallSignField()
+  val qsoClass = new ClassField()
 
-  var sectionPrompt = new TextArea()
-  sectionPrompt.getStyleClass.add("sectionPrompt")
-  sectionPrompt.disable
+  val sectionPrompt = new TextArea()
+  val qsoSection = new SectionField(sectionPrompt)
+
   var actionResult = new TextArea()
   actionResult.getStyleClass.add("dupPrompt")
   actionResult.disable
 
-  val qsoSubmit = new Button("Log")
+  val qsoSubmit = new Button("Log") with WithDisposition
   qsoSubmit.disable = true
-  qsoSubmit.getStyleClass.add("sadQso")
+  qsoSubmit.sad()
   val pane: BorderPane = new BorderPane {
     padding = Insets(25)
     center = new HBox(
@@ -100,121 +94,76 @@ class EntryScene @Inject()(@Inject()
     sectionPrompt.setText(choices)
   }
 
-  forceCaps(qsoClass)
-  forceCaps(qsoSection)
-
   qsoCallsign.onDone(nextChar =>
     nextField(nextChar, qsoClass)
   )
-  //  qsoCallsign.addEventFilter(KeyEvent.KEY_TYPED,
-  //    (event: KeyEvent) => {
-  //      val current = event.getSource.asInstanceOf[jfxsc.TextField].getText
-  //      val character = event.getCharacter
-  //      if (character.isDefinedAt(0) && character.charAt(0).isDigit && CallsignValidator.valid(current).isEmpty) {
-  //        nextField(event, qsoClass)
-  //      }
-  //      if (current.isEmpty) {
-  //        actionResult.clear()
-  //      }
-  //
-  //      Platform.runLater {
-  //        validateQso()
-  //      }
-  //    }
-  //  )
-
-  //  qsoClass.addEventFilter(KeyEvent.KEY_TYPED,
-  //    (event: KeyEvent) => {
-  //      val current = event.getSource.asInstanceOf[jfxsc.TextField].getText
-  //      if (ContestClass.valid(current).isEmpty) {
-  //        nextField(event, qsoSection)
-  //      }
-  //      Platform.runLater {
-  //        validateQso()
-  //      }
-  //    }
-  //  )
-
-  //  qsoSection.addEventFilter(KeyEvent.KEY_TYPED,
-  //    (event: KeyEvent) ⇒ {
-  //      if (event.getCharacter == "\r" && !qsoSubmit.isDisabled) {
-  //        save()
-  //      }
-  //      Platform.runLater {
-  //        validateQso()
-  //      }
-  //    }
-  //  )
-
+  qsoClass.onDone(nextChar =>
+    nextField(nextChar, qsoSection)
+  )
+  qsoSection.onDone { _ =>
+    qsoSubmit.disable = false
+    qsoSubmit.happy()
+  }
   qsoSubmit.onAction = (_: ActionEvent) => {
     save()
   }
 
-//  def validateQso(): Unit = {
-
-    //    def validateField(destination: WithDisposition, validField: FieldValidator): Boolean = {
-    //      if (validField.valid(destination).isEmpty) {
-    //        destination.happy()
-    //      } else {
-    //        destination.sad()
-    //      }
-    //    }
-    //
-    //    if (validateField(qsoCallsign, ContestCallsignValidator) &&
-    //      validateField(qsoClass, ContestClass) &&
-    //      validateField(qsoSection, ContestSection)) {
-    //      qsoSubmit.disable = false
-    //      makeHappy(qsoSubmit)
-    //    }
-    //    else {
-    //      qsoSubmit.disable = true
-    //      makeSad(qsoSubmit)
-    //    }
-    //  }
-
-
-    //  def showSad(destination: TextInputControl, message: String): Unit = {
-    //    makeSad(destination)
-    //    destination.setText(message)
-    //  }
-    //
-    //  def showHappy(destination: TextInputControl, message: String): Unit = {
-    //    makeHappy(destination)
-    //    destination.setText(message)
-    //  }
-
-    def save(): Unit = {
-      import org.wa9nnn.fdcluster.model.MessageFormats._
-      val potentialQso: Qso = readQso()
-
-      val future = store ? potentialQso
-      Await.result(future, timeout.duration).asInstanceOf[AddResult] match {
-        case Dup(dupQso) ⇒
-          val pretty = Json.prettyPrint(Json.toJson(dupQso.qso))
-        //        showSad(actionResult, s"Duplicate:\n$pretty")
-        case Added(qsoRecord) ⇒
-        //        showHappy(actionResult, s"Added:\n${qsoRecord.qso.callsign} ${qsoRecord.qso.exchange}")
-      }
-
-      qsoCallsign.clear()
-      qsoClass.clear()
-      //    qsoSection.value = ""
-      qsoSection.clear()
-      qsoCallsign.requestFocus()
+  val allFields = new Compositor(qsoCallsign.validProperty, qsoClass.validProperty, qsoSection.validProperty)
+  allFields.onChange { (_, _, state) =>
+    if (state) {
+      qsoSubmit.disable = false
+      qsoSubmit.happy()
+      qsoSubmit.requestFocus()
+    } else {
+      qsoSubmit.disable = true
+      qsoSubmit.sad()
     }
-
-    def readQso(): Qso = {
-      val exchange = Exchange(qsoClassText.get(), qsoSectionText.get())
-
-      model.Qso(qsoCallsignText.get(), bandModeStore.bandModeOperator, exchange)
-    }
-
-    def nextField(nextChar: Char, destination: TextField): Unit = {
-      destination.requestFocus()
-      destination.setText(nextChar.toString())
-      destination.positionCaret(1)
-    }
-
 
   }
+
+
+  //  def showSad(destination: TextInputControl, message: String): Unit = {
+  //    makeSad(destination)
+  //    destination.setText(message)
+  //  }
+  //
+  //  def showHappy(destination: TextInputControl, message: String): Unit = {
+  //    makeHappy(destination)
+  //    destination.setText(message)
+  //  }
+
+  def save(): Unit = {
+    import org.wa9nnn.fdcluster.model.MessageFormats._
+    val potentialQso: Qso = readQso()
+
+    val future = store ? potentialQso
+    Await.result(future, timeout.duration).asInstanceOf[AddResult] match {
+      case Dup(dupQso) ⇒
+        val pretty = Json.prettyPrint(Json.toJson(dupQso.qso))
+      //        showSad(actionResult, s"Duplicate:\n$pretty")
+      case Added(qsoRecord) ⇒
+      //        showHappy(actionResult, s"Added:\n${qsoRecord.qso.callsign} ${qsoRecord.qso.exchange}")
+    }
+
+    qsoCallsign.clear()
+    qsoClass.clear()
+    //    qsoSection.value = ""
+    qsoSection.clear()
+    qsoCallsign.requestFocus()
+  }
+
+  def readQso(): Qso = {
+    val exchange = Exchange(qsoClassText.get(), qsoSectionText.get())
+
+    model.Qso(qsoCallsignText.get(), bandModeStore.bandModeOperator, exchange)
+  }
+
+  def nextField(nextChar: Char, destination: TextField): Unit = {
+    destination.requestFocus()
+    destination.setText(nextChar.toString())
+    destination.positionCaret(1)
+  }
+
+
+}
 

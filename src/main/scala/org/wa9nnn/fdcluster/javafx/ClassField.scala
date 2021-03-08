@@ -1,6 +1,7 @@
 
 package org.wa9nnn.fdcluster.javafx
 
+
 import org.wa9nnn.fdcluster.javafx.entry.ContestClass
 import org.wa9nnn.util.InputHelper.forceCaps
 import org.wa9nnn.util.WithDisposition
@@ -14,30 +15,21 @@ import scalafx.scene.input.KeyEvent
  * sad or happy as validated while typing.
  *
  */
-class CallSignField extends TextField with WithDisposition with NextField {
+class ClassField extends TextField with WithDisposition with NextField {
   forceCaps(this)
-
+  var previousWasValid = false
   onKeyTyped = { event: KeyEvent =>
-    event.character.headOption match {
-      case Some(char) =>
-        // If we're a valid call sign and the next char is digit we want move to the next field.
-        if (char.isDigit && CallsignValidator.valid(text.value).isEmpty)
-          onDoneFunction(char)
-      case None =>
-        // Not a Char.
+    if (previousWasValid) {
+      onDoneFunction(event.character.head)
+      text = text.value.dropRight(1)
     }
-    // this validates twice if char was a digit, but not much of an inefficiency.
-    CallsignValidator.valid(text.value) match {
-      case Some(_: String) =>
-        sad()
-      case None =>
-        happy()
-    }
+    previousWasValid = validProperty.value
   }
+
   val b: BooleanBinding = Bindings.createBooleanBinding(
     () => {
       val str = Option(text.value).getOrElse("")
-      CallsignValidator.valid(str).isEmpty
+      ContestClass.valid(str).isEmpty
     }
     ,
     text

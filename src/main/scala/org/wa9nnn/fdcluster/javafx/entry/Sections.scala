@@ -1,7 +1,8 @@
 package org.wa9nnn.fdcluster.javafx.entry
 
-import scala.language.postfixOps
 import org.wa9nnn.fdcluster.javafx.Section
+
+import scala.language.postfixOps
 
 object Sections {
 
@@ -100,6 +101,9 @@ object Sections {
 
 
   val byCode: Map[String, Section] = sections.map(s ⇒ s.code → s) toMap
+
+  def isValid(candidate: String): Boolean = byCode.contains(candidate)
+
   val sortedByCode: Seq[Section] = sections.sortBy(_.code)
   val defaultSection: Section = sortedByCode.head
   val defaultCode: String = {

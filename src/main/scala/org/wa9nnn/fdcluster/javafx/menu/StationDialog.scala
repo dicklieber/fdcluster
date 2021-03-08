@@ -2,7 +2,7 @@
 package org.wa9nnn.fdcluster.javafx.menu
 
 import org.wa9nnn.fdcluster.javafx.entry.{EntryCategory, Sections}
-import org.wa9nnn.fdcluster.javafx.{CallSignField, Section}
+import org.wa9nnn.fdcluster.javafx.{ClassField, Section}
 import org.wa9nnn.fdcluster.model.{OurStation, OurStationStore}
 import org.wa9nnn.fdcluster.station.StationDialogLogic
 import org.wa9nnn.util.InputHelper.forceCaps
@@ -31,7 +31,7 @@ class StationDialog @Inject()(ourStationStore: OurStationStore) extends Dialog[O
   private val cancelButton = ButtonType.Cancel
 
   private val current: OurStation = ourStationStore.apply()
-  private val callSign = new CallSignField() {
+  private val callSign = new ClassField() {
     text = current.ourCallsign
     tooltip = """Used in the "Info Sent" field in QSO."""
   }

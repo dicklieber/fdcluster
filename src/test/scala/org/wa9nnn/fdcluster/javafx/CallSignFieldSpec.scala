@@ -9,7 +9,7 @@ class CallSignFieldSpec extends Specification with ScalafxFixture{
   val robot = new Robot()
   "CallSignField" should {
     "happy" in {
-      val callSignField = new CallSignField()
+      val callSignField = new ClassField()
       robot.keyType(KeyCode.getKeyCode("1"))
       pending
     }
