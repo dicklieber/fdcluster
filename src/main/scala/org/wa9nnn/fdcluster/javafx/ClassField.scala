@@ -3,7 +3,6 @@ package org.wa9nnn.fdcluster.javafx
 
 
 import org.wa9nnn.fdcluster.javafx.entry.ContestClass
-import org.wa9nnn.util.InputHelper.forceCaps
 import org.wa9nnn.util.WithDisposition
 import scalafx.Includes._
 import scalafx.beans.binding.{Bindings, BooleanBinding}
@@ -16,12 +15,12 @@ import scalafx.scene.input.KeyEvent
  *
  */
 class ClassField extends TextField with WithDisposition with NextField {
-  forceCaps(this)
+
   var previousWasValid = false
   onKeyTyped = { event: KeyEvent =>
     if (previousWasValid) {
-      onDoneFunction(event.character.head)
       text = text.value.dropRight(1)
+      onDoneFunction(event.character.head)
     }
     previousWasValid = validProperty.value
   }

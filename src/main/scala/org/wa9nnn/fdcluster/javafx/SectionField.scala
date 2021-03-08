@@ -2,10 +2,11 @@
 package org.wa9nnn.fdcluster.javafx
 
 import org.wa9nnn.fdcluster.javafx.entry.Sections
-import org.wa9nnn.util.InputHelper.forceCaps
 import org.wa9nnn.util.WithDisposition
+import scalafx.Includes._
 import scalafx.beans.binding.{Bindings, BooleanBinding}
 import scalafx.scene.control.{TextArea, TextField}
+import scalafx.scene.input.KeyEvent
 
 /**
  * Section entry field
@@ -20,24 +21,29 @@ class SectionField(sectionPrompt: TextArea) extends TextField with WithDispositi
 
   sectionPrompt.setText(allSections)
 
-  forceCaps(this)
-
-
   text.onChange { (_, _, newValue) =>
-
     sectionPrompt.setText(Sections
       .find(newValue)
       .map(section ⇒ section.code + ": " + section.name)
       .mkString("\n")
     )
   }
+
+  onKeyTyped = { event: KeyEvent =>
+    val ch = event.character.head
+    if(ch == '\r' && validProperty.value) {
+      onDoneFunction(ch)
+    }
+    }
+
+  override def onDone(f: Char => Unit): Unit = super.onDone(f)
+
   val b: BooleanBinding = Bindings.createBooleanBinding(
     () => {
       val str = Option(text.value).getOrElse("")
-      Sections.isValid(str)
-    }
-    ,
-    text
+      val value = Sections.find(str)
+      value.size <= 3
+    }, text
   )
   validProperty.bind(b)
 
@@ -45,6 +51,5 @@ class SectionField(sectionPrompt: TextArea) extends TextField with WithDispositi
     super.reset()
     sectionPrompt.setText(allSections)
   }
-
 }
 

@@ -36,7 +36,7 @@ class EntryScene @Inject()(@Inject()
   val sectionPrompt = new TextArea()
   val qsoSection = new SectionField(sectionPrompt)
 
-  var actionResult = new TextArea()
+  var actionResult = new TextArea() with WithDisposition
   actionResult.getStyleClass.add("dupPrompt")
   actionResult.disable
 
@@ -103,6 +103,7 @@ class EntryScene @Inject()(@Inject()
   qsoSection.onDone { _ =>
     qsoSubmit.disable = false
     qsoSubmit.happy()
+    save()
   }
   qsoSubmit.onAction = (_: ActionEvent) => {
     save()
@@ -113,24 +114,11 @@ class EntryScene @Inject()(@Inject()
     if (state) {
       qsoSubmit.disable = false
       qsoSubmit.happy()
-      qsoSubmit.requestFocus()
     } else {
       qsoSubmit.disable = true
       qsoSubmit.sad()
     }
-
   }
-
-
-  //  def showSad(destination: TextInputControl, message: String): Unit = {
-  //    makeSad(destination)
-  //    destination.setText(message)
-  //  }
-  //
-  //  def showHappy(destination: TextInputControl, message: String): Unit = {
-  //    makeHappy(destination)
-  //    destination.setText(message)
-  //  }
 
   def save(): Unit = {
     import org.wa9nnn.fdcluster.model.MessageFormats._
@@ -140,15 +128,16 @@ class EntryScene @Inject()(@Inject()
     Await.result(future, timeout.duration).asInstanceOf[AddResult] match {
       case Dup(dupQso) ⇒
         val pretty = Json.prettyPrint(Json.toJson(dupQso.qso))
-      //        showSad(actionResult, s"Duplicate:\n$pretty")
+        actionResult.text = s"Duplicate:\n$pretty"
+        actionResult.sad()
       case Added(qsoRecord) ⇒
-      //        showHappy(actionResult, s"Added:\n${qsoRecord.qso.callsign} ${qsoRecord.qso.exchange}")
+        actionResult.text = s"Added:\n${qsoRecord.qso.callsign} ${qsoRecord.qso.exchange}"
+        actionResult.happy()
     }
 
-    qsoCallsign.clear()
-    qsoClass.clear()
-    //    qsoSection.value = ""
-    qsoSection.clear()
+    qsoCallsign.reset()
+    qsoClass.reset()
+    qsoSection.reset()
     qsoCallsign.requestFocus()
   }
 
@@ -164,6 +153,6 @@ class EntryScene @Inject()(@Inject()
     destination.positionCaret(1)
   }
 
-
+  qsoCallsign.requestFocus()
 }
 

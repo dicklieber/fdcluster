@@ -1,8 +1,6 @@
 
 package org.wa9nnn.fdcluster.javafx
 
-import org.wa9nnn.fdcluster.javafx.entry.ContestClass
-import org.wa9nnn.util.InputHelper.forceCaps
 import org.wa9nnn.util.WithDisposition
 import scalafx.Includes._
 import scalafx.beans.binding.{Bindings, BooleanBinding}
@@ -15,14 +13,15 @@ import scalafx.scene.input.KeyEvent
  *
  */
 class CallSignField extends TextField with WithDisposition with NextField {
-  forceCaps(this)
 
   onKeyTyped = { event: KeyEvent =>
     event.character.headOption match {
       case Some(char) =>
         // If we're a valid call sign and the next char is digit we want move to the next field.
-        if (char.isDigit && CallsignValidator.valid(text.value).isEmpty)
+        if (char.isDigit && CallsignValidator.valid(text.value).isEmpty) {
+          text = text.value.dropRight(1)
           onDoneFunction(char)
+        }
       case None =>
         // Not a Char.
     }

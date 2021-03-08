@@ -1,7 +1,7 @@
 
 package org.wa9nnn.util
 
-import scalafx.scene.control.{TextField, TextFormatter}
+import scalafx.scene.control.{TextField, TextFormatter, TextInputControl}
 import scalafx.util.converter.FormatStringConverter
 
 import java.text.NumberFormat
@@ -11,7 +11,7 @@ object InputHelper {
    *
    * @param textFields that will ensure uppercase
    */
-  def forceCaps(textFields: TextField*): Unit = {
+  def forceCaps(textFields: TextInputControl*): Unit = {
     textFields.foreach {
       _.setTextFormatter(new TextFormatter[AnyRef]((change: TextFormatter.Change) => {
         def foo(change: TextFormatter.Change) = {
