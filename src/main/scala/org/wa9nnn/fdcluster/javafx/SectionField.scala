@@ -1,10 +1,9 @@
 
 package org.wa9nnn.fdcluster.javafx
 
-import org.wa9nnn.fdcluster.javafx.entry.{ContestSectionValidator, FieldValidator, Sections}
+import org.wa9nnn.fdcluster.javafx.entry.{ContestSectionValidator, Sections}
 import org.wa9nnn.util.WithDisposition
 import scalafx.Includes._
-import scalafx.beans.binding.{Bindings, BooleanBinding}
 import scalafx.scene.control.{TextArea, TextField}
 import scalafx.scene.input.KeyEvent
 
@@ -17,7 +16,7 @@ class SectionField(sectionPrompt: TextArea) extends TextField with WithDispositi
   setFieldValidator(ContestSectionValidator)
 
   private val allSections = Sections.sections.map { section: Section ⇒ f"${section.code}%-3s" }
-    .grouped(7)
+    .grouped(9)
     .map(_.mkString(" "))
     .mkString("\n")
 

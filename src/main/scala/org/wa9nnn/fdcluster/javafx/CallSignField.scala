@@ -3,7 +3,7 @@ package org.wa9nnn.fdcluster.javafx
 
 import scalafx.Includes._
 import scalafx.scene.control.TextField
-import scalafx.scene.input.KeyEvent
+import scalafx.scene.input.{KeyCode, KeyEvent}
 
 /**
  * Callsign entry field
@@ -13,13 +13,13 @@ import scalafx.scene.input.KeyEvent
 class CallSignField extends TextField with NextField {
   setFieldValidator(CallsignValidator)
 
-   onKeyTyped = { event: KeyEvent =>
+   onKeyPressed = { event: KeyEvent =>
 
-    val sChar = event.character
-    val character = sChar.headOption.getOrElse(Char.MinValue)
-    if (character.isDigit && validProperty.value) {
+    val key: KeyCode = event.code
+    if (key.isDigitKey && validProperty.value) {
       event.consume()
-      onDoneFunction(sChar)
+      val str: String = key.name
+      onDoneFunction(str)
     }
   }
 }

@@ -6,7 +6,7 @@ import akka.pattern.ask
 import akka.util.Timeout
 import com.google.inject.Inject
 import com.google.inject.name.Named
-import org.wa9nnn.fdcluster.javafx.{CallSignField, ClassField, Section, SectionField}
+import org.wa9nnn.fdcluster.javafx.{CallSignField, ClassField, SectionField}
 import org.wa9nnn.fdcluster.model
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.store.{AddResult, Added, Dup}
@@ -14,7 +14,7 @@ import org.wa9nnn.util.WithDisposition
 import play.api.libs.json.Json
 import scalafx.Includes._
 import scalafx.event.ActionEvent
-import scalafx.geometry.Insets
+import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.control._
 import scalafx.scene.layout.{BorderPane, HBox, VBox}
@@ -41,10 +41,20 @@ class EntryScene @Inject()(@Inject()
   actionResult.disable
 
   val qsoSubmit = new Button("Log") with WithDisposition
+  val clearButton = new Button("Clear") with WithDisposition
+  clearButton.onAction = _ => {
+    clear()
+  }
   qsoSubmit.disable = true
   qsoSubmit.sad()
   val pane: BorderPane = new BorderPane {
     padding = Insets(25)
+    private val buttons = new HBox() {
+      alignment = Pos.BottomCenter
+      spacing = 8
+      padding = Insets(10)
+      children = List(qsoSubmit, clearButton)
+    }
     center = new HBox(
       new VBox(
         new Label("Callsign"),
@@ -55,7 +65,7 @@ class EntryScene @Inject()(@Inject()
         new Label("Class"),
         qsoClass,
         new VBox(
-          qsoSubmit,
+          buttons,
           bandModeOpPanel
         )
       ),
@@ -70,33 +80,9 @@ class EntryScene @Inject()(@Inject()
   val scene: Scene = new Scene {
     root = pane
   }
-
-  private val qsoCallsignText = qsoCallsign.textProperty()
-  private val qsoClassText = qsoClass.textProperty()
-  private val qsoSectionText = qsoSection.textProperty()
-
-
-  private val allSections = Sections.sections.map { section: Section ⇒ f"${section.code}%-3s" }
-    .grouped(7)
-    .map(_.mkString(" "))
-    .mkString("\n")
-
-  sectionPrompt.setText(allSections)
-  qsoSectionText.addListener { (_, _, newValue) =>
-    val choices = if (newValue != "") {
-      Sections
-        .find(newValue)
-        .map(section ⇒ section.code + ": " + section.name)
-        .mkString("\n")
-    } else {
-      allSections
-    }
-    sectionPrompt.setText(choices)
-  }
-
-  qsoCallsign.onDone(next =>
+  qsoCallsign.onDone { next =>
     nextField(next, qsoClass)
-  )
+  }
   qsoClass.onDone(next =>
     nextField(next, qsoSection)
   )
@@ -135,6 +121,11 @@ class EntryScene @Inject()(@Inject()
         actionResult.happy()
     }
 
+    clear()
+  }
+
+  private def clear(): Unit = {
+    actionResult.clear()
     qsoCallsign.reset()
     qsoClass.reset()
     qsoSection.reset()
@@ -142,22 +133,21 @@ class EntryScene @Inject()(@Inject()
   }
 
   def readQso(): Qso = {
-    val exchange = Exchange(qsoClassText.get(), qsoSectionText.get())
-
-    model.Qso(qsoCallsignText.get(), bandModeStore.bandModeOperator, exchange)
+    val exchange = Exchange(qsoClass.text.value, qsoSection.text.value)
+    model.Qso(qsoCallsign.text.value, bandModeStore.bandModeOperator, exchange)
   }
 
   /**
    *
-   * @param nextText what start off next field with.
+   * @param nextText    what start off next field with.
    * @param destination the next field.
    */
   def nextField(nextText: String, destination: TextField): Unit = {
     destination.requestFocus()
-    destination.setText(nextText)
+//    destination.setText(nextText) todo I don't understand how the class field works without this! Uncomment doubles number!
     destination.positionCaret(1)
   }
 
-  qsoCallsign.requestFocus()
+  clear()
 }
 

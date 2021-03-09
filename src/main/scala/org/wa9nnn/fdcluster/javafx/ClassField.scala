@@ -16,9 +16,8 @@ import scalafx.scene.input.KeyEvent
 class ClassField extends TextField with WithDisposition with NextField {
   setFieldValidator(ContestClassValidator)
 
-  onKeyTyped = { event: KeyEvent =>
+  onKeyPressed = { event: KeyEvent =>
     val sChar = event.character
-    val character = sChar.headOption.getOrElse(Char.MinValue)
     if (validProperty.value) {
       event.consume()
       onDoneFunction(sChar)
