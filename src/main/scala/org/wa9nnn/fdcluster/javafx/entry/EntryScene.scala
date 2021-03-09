@@ -94,11 +94,11 @@ class EntryScene @Inject()(@Inject()
     sectionPrompt.setText(choices)
   }
 
-  qsoCallsign.onDone(nextChar =>
-    nextField(nextChar, qsoClass)
+  qsoCallsign.onDone(next =>
+    nextField(next, qsoClass)
   )
-  qsoClass.onDone(nextChar =>
-    nextField(nextChar, qsoSection)
+  qsoClass.onDone(next =>
+    nextField(next, qsoSection)
   )
   qsoSection.onDone { _ =>
     qsoSubmit.disable = false
@@ -147,9 +147,14 @@ class EntryScene @Inject()(@Inject()
     model.Qso(qsoCallsignText.get(), bandModeStore.bandModeOperator, exchange)
   }
 
-  def nextField(nextChar: Char, destination: TextField): Unit = {
+  /**
+   *
+   * @param nextText what start off next field with.
+   * @param destination the next field.
+   */
+  def nextField(nextText: String, destination: TextField): Unit = {
     destination.requestFocus()
-    destination.setText(nextChar.toString())
+    destination.setText(nextText)
     destination.positionCaret(1)
   }
 

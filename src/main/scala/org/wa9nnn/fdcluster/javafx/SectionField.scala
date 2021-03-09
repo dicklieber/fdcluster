@@ -1,7 +1,7 @@
 
 package org.wa9nnn.fdcluster.javafx
 
-import org.wa9nnn.fdcluster.javafx.entry.Sections
+import org.wa9nnn.fdcluster.javafx.entry.{ContestSectionValidator, FieldValidator, Sections}
 import org.wa9nnn.util.WithDisposition
 import scalafx.Includes._
 import scalafx.beans.binding.{Bindings, BooleanBinding}
@@ -14,6 +14,8 @@ import scalafx.scene.input.KeyEvent
  *
  */
 class SectionField(sectionPrompt: TextArea) extends TextField with WithDisposition with NextField {
+  setFieldValidator(ContestSectionValidator)
+
   private val allSections = Sections.sections.map { section: Section ⇒ f"${section.code}%-3s" }
     .grouped(7)
     .map(_.mkString(" "))
@@ -30,22 +32,14 @@ class SectionField(sectionPrompt: TextArea) extends TextField with WithDispositi
   }
 
   onKeyTyped = { event: KeyEvent =>
-    val ch = event.character.head
+    val ch = event.character.headOption.getOrElse("")
+
     if(ch == '\r' && validProperty.value) {
-      onDoneFunction(ch)
+      onDoneFunction("")// noting to pass on, were at the end of the QSO
     }
     }
 
-  override def onDone(f: Char => Unit): Unit = super.onDone(f)
-
-  val b: BooleanBinding = Bindings.createBooleanBinding(
-    () => {
-      val str = Option(text.value).getOrElse("")
-      val value = Sections.find(str)
-      value.size <= 3
-    }, text
-  )
-  validProperty.bind(b)
+  override def onDone(f: String => Unit): Unit = super.onDone(f)
 
   override def reset(): Unit = {
     super.reset()

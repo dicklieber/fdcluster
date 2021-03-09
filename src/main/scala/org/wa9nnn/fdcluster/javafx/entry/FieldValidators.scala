@@ -1,10 +1,11 @@
 
 package org.wa9nnn.fdcluster.javafx.entry
 
-import scalafx.scene.control.TextField
+import scalafx.beans.property.StringProperty
+import scalafx.scene.control.TextInputControl
 
 
-object ContestClass extends FieldValidator {
+object ContestClassValidator extends FieldValidator {
 
   private val regx = """(\d+)([IOH])""".r
 
@@ -18,7 +19,7 @@ object ContestClass extends FieldValidator {
   override def errMessage = "e.g. 1H, 3O 2I"
 }
 
-object ContestSection extends FieldValidator {
+object ContestSectionValidator extends FieldValidator {
 
   def valid(value: String): Option[String] = {
     if (Sections.byCode.contains(value))
@@ -35,7 +36,7 @@ object AlwaysValid extends FieldValidator {
 
   override def errMessage = ""
 
-  override def valid(textField: TextField): Option[String] = None
+  override def valid(textField: TextInputControl): Option[String] = None
 }
 
 
@@ -51,11 +52,19 @@ trait FieldValidator {
 
   /**
    *
-   * @param textField to be validated.
+   * @param textInputControl to be validated. [[scalafx.scene.control.TextField]] or [[scalafx.scene.control.TextArea]]
    * @return one if valid otherwise the error message.
    */
-  def valid(textField: TextField): Option[String] = {
-    valid(textField.getText)
+  def valid(textInputControl: TextInputControl): Option[String] = {
+    valid(textInputControl.getText)
+  }
+  /**
+   *
+   * @param stringProperty to be validated.
+   * @return one if valid otherwise the error message.
+   */
+  def valid(stringProperty: StringProperty): Option[String] = {
+    valid(stringProperty.value)
   }
 }
 
