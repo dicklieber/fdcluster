@@ -33,8 +33,7 @@ class EntryScene @Inject()(@Inject()
   val qsoCallsign = new CallSignField()
   val qsoClass = new ClassField()
 
-  val sectionPrompt = new TextArea()
-  val qsoSection = new SectionField(sectionPrompt)
+  val qsoSection = new SectionField()
 
   var actionResult = new TextArea() with WithDisposition
   actionResult.getStyleClass.add("dupPrompt")
@@ -72,7 +71,7 @@ class EntryScene @Inject()(@Inject()
       new VBox(
         new Label("Section"),
         qsoSection,
-        sectionPrompt
+        qsoSection.sectionPrompt
       )
     )
   }
@@ -83,9 +82,10 @@ class EntryScene @Inject()(@Inject()
   qsoCallsign.onDone { next =>
     nextField(next, qsoClass)
   }
-  qsoClass.onDone(next =>
-    nextField(next, qsoSection)
-  )
+  qsoClass.onDone { next =>
+    qsoSection.requestFocus()
+    qsoSection.clear()
+  }
   qsoSection.onDone { _ =>
     qsoSubmit.disable = false
     qsoSubmit.happy()
