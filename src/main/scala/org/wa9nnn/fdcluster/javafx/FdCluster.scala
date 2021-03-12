@@ -35,7 +35,7 @@ object FdCluster extends JFXApp  with StructuredLogging {
   private val clusterScene = injector.instance[ClusterScene]
   private val nodeInfo: NodeInfo = injector.instance[NodeInfo]
   private val runningTaskPane: RunningTaskPane = injector.instance[RunningTaskPane]
-  private val statusPane = injector.instance[StatusPane]
+  private val statusPane: StatusPane = injector.instance[StatusPane]
   try {
     injector.instance[Server]
   } catch {
@@ -79,7 +79,7 @@ object FdCluster extends JFXApp  with StructuredLogging {
     center = tabPane
     bottom =  new VBox(
       runningTaskPane.pane,
-//      statusPane
+     statusPane.pane
     )
   }
   val ourScene = new Scene()

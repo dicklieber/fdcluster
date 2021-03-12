@@ -1,13 +1,17 @@
 
 package org.wa9nnn.fdcluster.javafx
 
-import javafx.util.Duration
-import org.wa9nnn.util.{WithDisposition, Disposition, StructuredLogging}
-import scalafx.application.Platform
+import org.scalafx.extras.onFX
+import org.wa9nnn.util.{DelayedFuture, Disposition, StructuredLogging, WithDisposition}
+import scalafx.animation.FadeTransition
+import scalafx.collections.ObservableBuffer
 import scalafx.scene.control.Label
 import scalafx.scene.layout.{Pane, VBox}
+import scalafx.util
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.ExecutionContext.Implicits._
+import scala.concurrent.duration.{Duration, FiniteDuration, SECONDS}
 
 /**
  * One of timely status info
@@ -19,19 +23,39 @@ class StatusPane @Inject() extends StructuredLogging {
     styleClass += "statusLine"
   }
 
-  def apply: Pane = new VBox(messageLabel)
+  def pane: Pane = new VBox(messageLabel)
 
   def message(text: String): Unit = message(StatusMessage(text))
 
   def messageSad(text: String): Unit = message(StatusMessage(text, disposition = Disposition.sad))
 
+  def clear(): Unit = {
+    messageLabel.text = ""
+  }
+
   def message(statusMessage: StatusMessage): Unit = {
-    Platform.runLater(() => {
+    onFX {
+      messageLabel.styleClass = ObservableBuffer[String](statusMessage.styleClasses)
       messageLabel.disposition(statusMessage.disposition)
+      messageLabel.text = statusMessage.text
       statusMessage.nexus.foreach { nexus =>
         logJson(nexus) ++ ("msg" -> statusMessage.text)
       }
-    })
+    }
+
+
+    DelayedFuture(statusMessage.duration) {
+      onFX {
+        fadeTransition.play()
+        println("fading...")
+      }
+    }
+  }
+  val fadeTransition: FadeTransition = new FadeTransition {
+    duration = util.Duration(500)
+    node = messageLabel
+    fromValue = 1
+    toValue = 0
   }
 }
 
@@ -44,5 +68,6 @@ class StatusPane @Inject() extends StructuredLogging {
  */
 case class StatusMessage(text: String = "",
                          nexus: Option[String] = None,
+                         styleClasses: Seq[String] = Seq.empty,
                          disposition: Disposition = Disposition.neutral,
-                         duration: Duration = Duration.seconds(10))
+                         duration: FiniteDuration = Duration(10, SECONDS))

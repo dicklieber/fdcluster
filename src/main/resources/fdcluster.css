@@ -31,7 +31,11 @@
 .happy {
     -fx-text-fill: green;
 }
-
+.hiDick {
+    -fx-text-fill: blue;
+    -fx-font-weight: bold;
+    -fx-font-size: 24;
+}
 .differentHour1 {
     -fx-background-color: lightcoral;
 }

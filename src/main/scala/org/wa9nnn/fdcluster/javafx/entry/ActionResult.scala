@@ -4,6 +4,7 @@ package org.wa9nnn.fdcluster.javafx.entry
 import akka.actor.ActorRef
 import akka.pattern.ask
 import akka.util.Timeout
+import org.scalafx.extras.onFX
 import org.wa9nnn.fdcluster.model.BandMode
 import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
 import org.wa9nnn.fdcluster.store.{Search, SearchResult}
@@ -45,8 +46,8 @@ class ActionResult(storeActor: ActorRef)(implicit timeout: Timeout, bandMode: Ob
     vbox.children = value
   }
 
-  def update(text: Text): Unit = {
-    vbox.children = Seq(text)
+  def showSad(text:String): Unit = {
+    vbox.children = Seq(new Label(text))
   }
 
   private val accum = Seq.newBuilder[Label]
@@ -71,7 +72,7 @@ class ActionResult(storeActor: ActorRef)(implicit timeout: Timeout, bandMode: Ob
 
   def done(): Unit = {
     val value = accum.result()
-    vbox.children = value
+      vbox.children = value
   }
 
   def clear(): Unit = accum.clear()

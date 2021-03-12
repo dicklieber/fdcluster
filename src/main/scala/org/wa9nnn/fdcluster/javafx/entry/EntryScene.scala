@@ -6,8 +6,9 @@ import akka.pattern.ask
 import akka.util.Timeout
 import com.google.inject.Inject
 import com.google.inject.name.Named
+import org.scalafx.extras.onFX
 import org.wa9nnn.fdcluster.javafx.entry.section.SectionField
-import org.wa9nnn.fdcluster.javafx.{CallSignField, ClassField}
+import org.wa9nnn.fdcluster.javafx.{CallSignField, ClassField, StatusMessage, StatusPane}
 import org.wa9nnn.fdcluster.model
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.store.{AddResult, Added, Dup}
@@ -19,11 +20,11 @@ import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.control._
 import scalafx.scene.layout.{BorderPane, HBox, VBox}
-import scalafx.scene.paint.Color
-import scalafx.scene.text.Text
 
 import java.util.concurrent.TimeUnit
-import scala.concurrent.Await
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+import scala.util.{Failure, Success, Try}
 
 /**
  * Create ScalaFX UI for field day entry mode.
@@ -32,6 +33,7 @@ class EntryScene @Inject()(
                             bandModeStore: BandModeOperatorStore,
                             bandModeOpPanel: BandModeOpPanel,
                             ourStationStore: OurStationStore,
+                            statusPane: StatusPane,
                             @Inject() @Named("store") store: ActorRef) {
   private implicit val timeout = Timeout(5, TimeUnit.SECONDS)
   implicit val bandMode = bandModeStore.bandMode
@@ -116,29 +118,31 @@ class EntryScene @Inject()(
     import org.wa9nnn.fdcluster.model.MessageFormats._
     val potentialQso: Qso = readQso()
     if (potentialQso.callsign == ourStationStore.value.ourCallsign) {
-      actionResult.update(new Text(s"Can't work our own station: \n${potentialQso.callsign}!") {
-        fill = Color.Red
-      }
-      )
+      actionResult.showSad(s"Can't work our own station: \n${potentialQso.callsign}!")
     }
     else {
-      val future = store ? potentialQso //todo dont wait?
-      val text: Text = Await.result(future, timeout.duration).asInstanceOf[AddResult] match {
-        case Dup(dupQso) ⇒
-          val pretty = Json.prettyPrint(Json.toJson(dupQso.qso))
-          new Text(s"Duplicate:\n$pretty") {
-            fill = Color.Red
-          }
-        //        actionResult.sad()
-        case Added(qsoRecord) ⇒
-          new Text(s"Added:\n${qsoRecord.qso.callsign} ${qsoRecord.qso.exchange}") {
-            fill = Color.Green
-          }
-        //        actionResult.happy()
+      val future: Future[AddResult] = (store ? potentialQso).mapTo[AddResult]
+      future onComplete { tr: Try[AddResult] =>
+        actionResult.clear()
+        tr match {
+          case Failure(exception) =>
+          case Success(Dup(dupQso)) =>
+            val pretty = Json.prettyPrint(Json.toJson(dupQso.qso))
+            actionResult.addSad(s"Duplicate:\n$pretty")
+          case Success(Added(qsoRecord)) =>
+            actionResult.addHappy(s"Added:\n${qsoRecord.qso.callsign} ${qsoRecord.qso.exchange}") //        actionResult.happy(
+            if (qsoRecord.qso.callsign == "WA9NNN") {
+              onFX {
+                statusPane.message(StatusMessage("Thanks for using fdcluster, from Dick Lieber WA9NNN", styleClasses = Seq("hiDick")))
+              }
+            }
+        }
+        onFX {
+          actionResult.done()
+          clear()
+        }
       }
-      actionResult.update(text)
     }
-    clear()
   }
 
   private def clear(): Unit = {
