@@ -6,6 +6,7 @@ import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
 import org.specs2.runner.sbtRun.env.commandLine
 import org.specs2.specification.BeforeAfterEach
+import org.wa9nnn.fdcluster.{FileManager, MockFileManager}
 import org.wa9nnn.fdcluster.javafx.sync.SyncSteps
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHourDigest}
@@ -84,8 +85,9 @@ class StoreSyncSpec extends Specification with BeforeAfterEach with DebugTimer w
     }
   }
   val directory: Path = Files.createTempDirectory("StoreMapImplSpec")
-  var persistence: Persistence = new Persistence(directory.toString)
-  val journalPath = directory.resolve("journal.json")
+  val fileManager: FileManager = MockFileManager()
+  var persistence: Persistence = new Persistence(fileManager)
+  val journalPath: Path = directory.resolve("journal.json")
 
 
   override def before(): Unit = {
@@ -98,7 +100,7 @@ class StoreSyncSpec extends Specification with BeforeAfterEach with DebugTimer w
         new OurStationStore(persistence),
         new BandModeOperatorStore(persistence),
         allQsos,
-        mockSyncSteps, journalPath,
+        mockSyncSteps, fileManager,
         commandLine
       )
     }

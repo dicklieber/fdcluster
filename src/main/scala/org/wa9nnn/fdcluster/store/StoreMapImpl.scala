@@ -9,7 +9,7 @@ import org.wa9nnn.fdcluster.javafx.sync.SyncSteps
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHour}
-import org.wa9nnn.fdcluster.store
+import org.wa9nnn.fdcluster.{FileLocus, FileManager, store}
 import org.wa9nnn.fdcluster.store.network.FdHour
 import org.wa9nnn.util.{CommandLine, StructuredLogging}
 import play.api.libs.json.{JsValue, Json}
@@ -33,7 +33,7 @@ class StoreMapImpl @Inject()(nodeInfo: NodeInfo,
                              bandModeStore: BandModeOperatorStore,
                              @Named("allQsos") allQsos: ObservableBuffer[QsoRecord],
                              syncSteps: SyncSteps = new SyncSteps,
-                             @Named("journalPath") journalFilePath: Path,
+                             fileManager: FileManager,
                              commandLine: CommandLine
                             )
   extends Store with StructuredLogging with DefaultInstrumented {
@@ -144,8 +144,7 @@ class StoreMapImpl @Inject()(nodeInfo: NodeInfo,
     loadingIndicesFlag = false
   }
 
-  val journalDir: Path = journalFilePath.getParent
-  Files.createDirectories(journalDir)
+  val journalFilePath: Path = fileManager.getPath(FileLocus.journalFile)
 
   logger.info(s"journal: ${journalFilePath.toAbsolutePath.toString}")
 

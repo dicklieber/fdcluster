@@ -19,9 +19,9 @@ package org.wa9nnn.fdcluster.store
 
 import org.apache.commons.io.FileUtils._
 import org.specs2.mock.Mockito
-import org.specs2.mock.Mockito.mock
 import org.specs2.mutable.Specification
 import org.specs2.specification.After
+import org.wa9nnn.fdcluster.FileManager
 import org.wa9nnn.fdcluster.javafx.sync.SyncSteps
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
@@ -30,23 +30,23 @@ import scalafx.collections.ObservableBuffer
 
 import java.nio.file.{Files, Path}
 
-class StoreMapImplSpec extends Specification with After with Mockito{
+class StoreMapImplSpec extends Specification with After with Mockito {
   val expectedNodeAddress: NodeAddress = NodeAddress()
 
   implicit val nodeInfo: NodeInfoImpl = new NodeInfoImpl(
     contest = Contest("WFD", 2017),
     nodeAddress = expectedNodeAddress)
-
+  val fileManager: FileManager = mock[FileManager]//todo need some values
   private val directory: Path = Files.createTempDirectory("StoreMapImplSpec")
-  val persistence = new Persistence(directory.toAbsolutePath.toString)
+  val persistence = new Persistence(fileManager)
   private val journal: Path = Files.createTempFile("fdcluster-journal", ".log")
   val allQsos = new ObservableBuffer[QsoRecord]()
 
-  val commandLine:CommandLine= mock[CommandLine].is("skipJournal") returns(false)
+  val commandLine: CommandLine = mock[CommandLine].is("skipJournal") returns (false)
 
   private val storeMapImpl = new StoreMapImpl(nodeInfo,
     new OurStationStore(persistence),
-    new BandModeOperatorStore(persistence), allQsos, new SyncSteps, journal, commandLine)
+    new BandModeOperatorStore(persistence), allQsos, new SyncSteps, fileManager, commandLine)
   private val worked: CallSign = "K2ORS"
   private val exchange: Exchange = Exchange("2I", "WPA")
   private val bandMode = BandModeOperator()

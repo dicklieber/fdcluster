@@ -2,6 +2,7 @@
 package org.wa9nnn.util
 
 import com.github.racc.tscg.TypesafeConfig
+import org.wa9nnn.fdcluster.{FileLocus, FileManager}
 import play.api.libs.json.{Json, Reads, Writes}
 
 import java.nio.file.StandardOpenOption._
@@ -18,8 +19,8 @@ import scala.util.{Failure, Success, Try}
  *
  * @param basePath where to write files
  */
-class Persistence @Inject()(@TypesafeConfig("fdcluster.configPath") configPath: String) extends StructuredLogging {
-  val path: Path = Paths.get(configPath)
+class Persistence @Inject()(fileManager: FileManager) extends StructuredLogging {
+  val path: Path = fileManager.getPath(FileLocus.`var`)
   Files.createDirectories(path)
   if (!Files.isDirectory(path)) {
     throw new IllegalStateException(s"${path.toAbsolutePath.toString} does not exist or can't be created!")

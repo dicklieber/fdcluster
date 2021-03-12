@@ -6,6 +6,7 @@ import org.wa9nnn.fdcluster.javafx.entry.RunningTaskInfoConsumer
 import org.wa9nnn.fdcluster.javafx.runningtask.RunningTask
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.QsoRecord
+import org.wa9nnn.fdcluster.{FileLocus, FileManager}
 import play.api.libs.json.Json
 import scalafx.collections.ObservableBuffer
 
@@ -26,9 +27,11 @@ import scala.util.Using
  * @param runningTaskInfoConsumer progress UI
  */
 class JournalLoaderImpl @Inject()(@Named("allQsos") allQsos: ObservableBuffer[QsoRecord],
-                                  @Named("journalPath") journalFilePath: Path,
+                                  fileManager: FileManager,
                                   val runningTaskInfoConsumer: RunningTaskInfoConsumer) extends RunningTask with JournalLoader {
   override def taskName: String = "Journal Loader"
+
+  val journalFilePath: Path = fileManager.getPath(FileLocus.journalFile)
 
   def run(): Future[BufferReady.type] = {
     Future {

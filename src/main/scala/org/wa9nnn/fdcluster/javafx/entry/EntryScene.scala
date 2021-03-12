@@ -20,7 +20,7 @@ import scalafx.scene.Scene
 import scalafx.scene.control._
 import scalafx.scene.layout.{BorderPane, HBox, VBox}
 import scalafx.scene.paint.Color
-import scalafx.scene.text.{Text, TextFlow}
+import scalafx.scene.text.Text
 
 import java.util.concurrent.TimeUnit
 import scala.concurrent.Await
@@ -28,15 +28,15 @@ import scala.concurrent.Await
 /**
  * Create ScalaFX UI for field day entry mode.
  */
-class EntryScene @Inject()(@Inject()
-                           bandModeStore: BandModeOperatorStore,
-                           bandModeOpPanel: BandModeOpPanel,
-                           @Inject() @Named("store") store: ActorRef) {
+class EntryScene @Inject()(
+                            bandModeStore: BandModeOperatorStore,
+                            bandModeOpPanel: BandModeOpPanel,
+                            @Inject() @Named("store") store: ActorRef) {
   private implicit val timeout = Timeout(5, TimeUnit.SECONDS)
   implicit val bandMode = bandModeStore.bandMode
 
   var actionResult = new ActionResult(store)
-  val qsoCallsign = new CallSignField( actionResult)
+  val qsoCallsign = new CallSignField(actionResult)
   val qsoClass = new ClassField()
 
   val qsoSection = new SectionField()

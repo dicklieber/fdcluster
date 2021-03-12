@@ -18,23 +18,39 @@
 
 package org.wa9nnn.fdcluster.model
 
-import com.typesafe.config.Config
-import javax.inject.Inject
+import org.wa9nnn.util.CommandLine
 import play.api.libs.json._
 
-case class Contest(event: String = "FD", year: Int) {
+import java.time.LocalDate
 
-  @Inject()def this(config: Config) {
-    this(config.getString("fdcluster.contest.event"), config.getInt("fdcluster.contest.year"))
-  }
+case class Contest(event: String = "FD", year: Int = {
+  LocalDate.now().getYear
+}) {
 
   override def toString: String = {
-    s"$event:$year"
+    s"$event-$year"
   }
 }
 
 object Contest {
-  private val r = """(.*):(\d{4})""".r
+  private val r = """(.*)-(\d{4})""".r
+
+  /**
+   * Determine contest based on month.
+   *
+   * @param commandLine for ovrerrides with "contest.year=xxxx" or "contest.name=MYFD"
+   * @return
+   */
+  def apply(commandLine: CommandLine): Contest = {
+    val date = LocalDate.now()
+    val calculatedName = date.getMonth match {
+      case m if 1 until 2 contains (m) => "WFD"
+      case _ => "FD"
+    }
+    val year = commandLine.getInt("contest.year").getOrElse(date.getYear)
+    val name = commandLine.getString("contest.name").getOrElse(calculatedName)
+    new Contest(name, year)
+  }
 
   def apply(in: String): Contest = {
     in match {

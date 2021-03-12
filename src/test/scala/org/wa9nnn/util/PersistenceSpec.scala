@@ -4,6 +4,7 @@ import org.apache.commons.io.FileUtils._
 import org.specs2.execute.{AsResult, Result}
 import org.specs2.mutable.Specification
 import org.specs2.specification.ForEach
+import org.wa9nnn.fdcluster.MockFileManager
 import org.wa9nnn.fdcluster.model.BandModeOperator
 import org.wa9nnn.fdcluster.model.MessageFormats._
 
@@ -12,10 +13,10 @@ import java.nio.file.{Files, Path, Paths}
 
 trait PreferencesContext extends ForEach[Persistence] {
   def foreach[R: AsResult](r: Persistence => R): Result = {
-    val path: Path = Files.createTempDirectory("PersistenceSpec")
-    val persistence = new Persistence(path.toString)
+   val fileManager = new MockFileManager()
+    val persistence = new Persistence(fileManager)
     try AsResult(r(persistence))
-    finally deleteDirectory(path.toFile)
+    finally fileManager.clean()
   }
 }
 

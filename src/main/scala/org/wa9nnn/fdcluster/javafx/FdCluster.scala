@@ -28,7 +28,6 @@ object FdCluster extends JFXApp  with StructuredLogging {
 
 
   private val injector = Guice.createInjector(new Module(parameters))
-  private val contest = Contest("WFD", 2019)
 //  implicit val nodeInfo: NodeInfo = new NodeInfoImpl(contest)
 //  private val storeActorRef: ActorRef = injector.getInstance(Key.get(classOf[ActorRef], Names.named("store")))
   private val entryScene = injector.instance[EntryScene]

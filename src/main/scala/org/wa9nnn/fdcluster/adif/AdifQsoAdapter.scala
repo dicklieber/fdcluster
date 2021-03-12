@@ -31,7 +31,7 @@ object AdifQsoAdapter {
         try {
           map(tagName)
         } catch {
-          case _: NoSuchElementException =>
+          case e: NoSuchElementException =>
             throw new MissingRequiredTag(tagName)
           case x =>
             throw x
