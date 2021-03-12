@@ -31,6 +31,7 @@ import scala.concurrent.Await
 class EntryScene @Inject()(
                             bandModeStore: BandModeOperatorStore,
                             bandModeOpPanel: BandModeOpPanel,
+                            ourStationStore: OurStationStore,
                             @Inject() @Named("store") store: ActorRef) {
   private implicit val timeout = Timeout(5, TimeUnit.SECONDS)
   implicit val bandMode = bandModeStore.bandMode
@@ -38,6 +39,7 @@ class EntryScene @Inject()(
   var actionResult = new ActionResult(store)
   val qsoCallsign = new CallSignField(actionResult)
   val qsoClass = new ClassField()
+  private val value: OurStation = ourStationStore.value
 
   val qsoSection = new SectionField()
 
@@ -113,22 +115,29 @@ class EntryScene @Inject()(
   def save(): Unit = {
     import org.wa9nnn.fdcluster.model.MessageFormats._
     val potentialQso: Qso = readQso()
-
-    val future = store ? potentialQso //todo dont wait?
-    val text: Text = Await.result(future, timeout.duration).asInstanceOf[AddResult] match {
-      case Dup(dupQso) ⇒
-        val pretty = Json.prettyPrint(Json.toJson(dupQso.qso))
-        new Text(s"Duplicate:\n$pretty") {
-          fill = Color.Red
-        }
-      //        actionResult.sad()
-      case Added(qsoRecord) ⇒
-        new Text(s"Added:\n${qsoRecord.qso.callsign} ${qsoRecord.qso.exchange}") {
-          fill = Color.Green
-        }
-      //        actionResult.happy()
+    if (potentialQso.callsign == ourStationStore.value.ourCallsign) {
+      actionResult.update(new Text(s"Can't work our own station: \n${potentialQso.callsign}!") {
+        fill = Color.Red
+      }
+      )
     }
-    actionResult.update(text)
+    else {
+      val future = store ? potentialQso //todo dont wait?
+      val text: Text = Await.result(future, timeout.duration).asInstanceOf[AddResult] match {
+        case Dup(dupQso) ⇒
+          val pretty = Json.prettyPrint(Json.toJson(dupQso.qso))
+          new Text(s"Duplicate:\n$pretty") {
+            fill = Color.Red
+          }
+        //        actionResult.sad()
+        case Added(qsoRecord) ⇒
+          new Text(s"Added:\n${qsoRecord.qso.callsign} ${qsoRecord.qso.exchange}") {
+            fill = Color.Green
+          }
+        //        actionResult.happy()
+      }
+      actionResult.update(text)
+    }
     clear()
   }
 
