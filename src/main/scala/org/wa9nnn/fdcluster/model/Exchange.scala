@@ -18,7 +18,7 @@
 
 package org.wa9nnn.fdcluster.model
 
-import org.wa9nnn.fdcluster.javafx.Section
+import org.wa9nnn.fdcluster.javafx.entry.section.Section
 import org.wa9nnn.fdcluster.javafx.entry.{EntryCategory, Sections}
 import org.wa9nnn.fdcluster.model.Exchange.classParser
 import play.api.libs.json._

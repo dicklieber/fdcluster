@@ -10,10 +10,11 @@
 
     <logger name="javax.management" level="INFO"/>
     <logger name="org.wa9nnn.fdcluster.javafx.entry.EntryScene" level="INFO"/>
+    <logger name="org.wa9nnn" level="INFO"/>
 
 
     <root level="TRACE">
-        <appender-ref ref="DEBUG"/>
+        <appender-ref ref="STDOUT"/>
     </root>
 
 </configuration>

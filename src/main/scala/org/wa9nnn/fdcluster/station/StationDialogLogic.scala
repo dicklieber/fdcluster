@@ -1,8 +1,9 @@
 
 package org.wa9nnn.fdcluster.station
 
-import org.wa9nnn.fdcluster.javafx.{CallsignValidator, Section}
+import org.wa9nnn.fdcluster.javafx.CallsignValidator
 import org.wa9nnn.fdcluster.javafx.entry.EntryCategory
+import org.wa9nnn.fdcluster.javafx.entry.section.Section
 import org.wa9nnn.fdcluster.model.Exchange
 import scalafx.beans.property._
 import scalafx.scene.control.SpinnerValueFactory

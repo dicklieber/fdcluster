@@ -2,7 +2,7 @@
 package org.wa9nnn.fdcluster.model.sync
 
 import akka.util.ByteString
-import org.wa9nnn.fdcluster.model.MessageFormats.{Digest, _}
+import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.{BandModeOperator, Codec, NodeAddress, OurStation}
 import org.wa9nnn.fdcluster.store.network.FdHour
 import play.api.libs.json.Json
@@ -29,7 +29,7 @@ case class NodeStatus(nodeAddress: NodeAddress,
                       bandMode: BandModeOperator,
                       qsoRate: Double,
                       stamp: LocalDateTime = LocalDateTime.now()) extends Codec {
-
+assert(bandMode != null, "null BandModeOperator")
   def digestForHour(fdHour: FdHour): Option[QsoHourDigest] = {
     qsoHourDigests.find(_.startOfHour == fdHour)
   }

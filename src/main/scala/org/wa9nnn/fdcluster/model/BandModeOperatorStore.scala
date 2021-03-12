@@ -5,11 +5,13 @@ package org.wa9nnn.fdcluster.model
 
 import org.wa9nnn.fdcluster.model.BandModeOperator.{Band, Mode}
 import org.wa9nnn.fdcluster.model.MessageFormats._
-import org.wa9nnn.util.{StructuredLogging, Persistence}
-import scalafx.beans.property.StringProperty
+import org.wa9nnn.util.{Persistence, StructuredLogging}
+import scalafx.beans.property.{BooleanProperty, ObjectProperty, ReadOnlyObjectWrapper, StringProperty}
 import scalafx.collections.ObservableBuffer
 
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.{Inject, Singleton}
+
 @Singleton
 class BandModeOperatorStore @Inject()(persistence: Persistence) extends StructuredLogging {
   private val bmo: BandModeOperator = persistence.loadFromFile[BandModeOperator]().getOrElse(BandModeOperator())
@@ -29,7 +31,8 @@ class BandModeOperatorStore @Inject()(persistence: Persistence) extends Structur
       save()
     }
   }
-  def bandModeOperator :BandModeOperator = new BandModeOperator(band.value, mode.value, operator.value)
+  val bandModeOperator: ObjectProperty[BandModeOperator] = ReadOnlyObjectWrapper(bmo)
+  val bandMode: ReadOnlyObjectWrapper[BandMode] = ReadOnlyObjectWrapper(bmo.bandMode)
 
   val knownOperators: ObservableBuffer[CallSign] = ObservableBuffer[CallSign](persistence.loadFromFile[KnownOperators]().getOrElse(new KnownOperators).callSigns)
   knownOperators.onChange { (ov: ObservableBuffer[CallSign], _) =>
@@ -40,16 +43,43 @@ class BandModeOperatorStore @Inject()(persistence: Persistence) extends Structur
   private def save(): Unit = {
     val bmo = BandModeOperator(band.value, mode.value, operator.value)
     logJson("bmochange", bmo)
+    bandModeOperator.value = bmo
+    bandMode.value = bmo.bandMode
     persistence.saveToFile(bmo)
   }
+
+  if (logger.isTraceEnabled) {
+    bandModeOperator.onChange((_, _, nv) =>
+      logger.trace(s"bandModeOperator: $bandModeOperator")
+    )
+    bandMode.onChange((_, _, nv) =>
+      logger.trace(s"bandMode: $bandMode")
+    )
+  }
 }
+
+class Compositor(boolProperties: BooleanProperty*) extends BooleanProperty {
+  val bools: Array[AtomicBoolean] = Array.fill(boolProperties.size)(new AtomicBoolean())
+  boolProperties.zipWithIndex.foreach { case (bp, i) =>
+    bp.onChange { (_, _, nv) =>
+      bools(i).set(nv)
+      calc()
+    }
+  }
+
+  def calc(): Unit = {
+    value = !bools.exists(_.get() == false)
+  }
+}
+
 
 /**
  * safer to construct via {{org.wa9nnn.fdlog.model.BandModeFactory#apply(java.lang.String, java.lang.String)}}
  */
 case class BandModeOperator(bandName: Band = "20m", modeName: Mode = "PH", operator: CallSign = "") {
-  override def toString: String = s"$bandName"
-  def bandMode:BandMode = BandMode(bandName, modeName)
+  override def toString: String = s"$bandName $modeName $operator"
+
+  def bandMode: BandMode = BandMode(bandName, modeName)
 }
 
 object BandModeOperator {
@@ -60,6 +90,6 @@ object BandModeOperator {
 
 case class KnownOperators(callSigns: List[CallSign] = List.empty)
 
-case class BandMode(bandName: Band = "20m", modeName: Mode = "PH"){
+case class BandMode(bandName: Band = "20m", modeName: Mode = "PH") {
   override def toString: CallSign = s"$bandName, $modeName"
 }

@@ -1,8 +1,8 @@
 package org.wa9nnn.fdcluster.javafx
 
 import org.specs2.mutable.Specification
-import org.wa9nnn.fdcluster.javafx.Section
 import org.wa9nnn.fdcluster.javafx.entry.Sections
+import org.wa9nnn.fdcluster.javafx.entry.section.Section
 
 
 class SectionSpec extends Specification {

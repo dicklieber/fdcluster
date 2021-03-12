@@ -37,12 +37,13 @@ class StoreMapImpl @Inject()(nodeInfo: NodeInfo,
                              commandLine: CommandLine
                             )
   extends Store with StructuredLogging with DefaultInstrumented {
+
+
   /**
    * This is the canonical set of data. If its not here then we know we have to also add to [[byCallsign]] and [[allQsos]]
    */
   private val byUuid = new TrieMap[Uuid, QsoRecord]()
   private val byCallsign = new TrieMap[CallSign, Set[QsoRecord]]
-
 
 
   logger.info(s"skipJournal: ${commandLine.is("skipJournal")}")
@@ -73,7 +74,8 @@ class StoreMapImpl @Inject()(nodeInfo: NodeInfo,
   private val qsoMeter = metrics.meter("qso")
   private val qsosDigestTimer = metrics.timer("qsos digest")
   private val hourDigestsTimer = metrics.timer("hours digest")
-private var loadingIndicesFlag = false
+  private var loadingIndicesFlag = false
+
   /**
    * This will also add to journal on disk; unless duplicate.
    *
@@ -81,7 +83,7 @@ private var loadingIndicesFlag = false
    * @return [[Dup]] is already in this node. [[Added]] if new to this node.
    */
   def addRecord(qsoRecord: QsoRecord): AddResult = {
-    if(loadingIndicesFlag){
+    if (loadingIndicesFlag) {
       throw new IllegalStateException("Busy loading indices")
     }
     insertQsoRecord(qsoRecord) match {
@@ -101,7 +103,7 @@ private var loadingIndicesFlag = false
    * @return [[None]] if this is new, [[Some[QsoRecord]]] if uuid already exists
    */
   private def insertQsoRecord(qsoRecord: QsoRecord): Option[QsoRecord] = {
-    if(loadingIndicesFlag){
+    if (loadingIndicesFlag) {
       throw new IllegalStateException("Busy loading indices")
     }
     val maybeExisting = byUuid.putIfAbsent(qsoRecord.uuid, qsoRecord)
@@ -116,6 +118,7 @@ private var loadingIndicesFlag = false
 
   /**
    * Ony for loadLocalIndicies
+   *
    * @param qsoRecord not already in indices!
    */
   private def localInsert(qsoRecord: QsoRecord): Unit = {
@@ -129,12 +132,13 @@ private var loadingIndicesFlag = false
         byCallsign.put(callsign, qsoRecords)
     }
   }
+
   /**
    * Invoked when we have loaded the journal, if any.
    */
   def loadLocalIndicies(): Unit = {
     loadingIndicesFlag = true
-    allQsos.foreach{qso =>
+    allQsos.foreach { qso =>
       localInsert(qso)
     }
     loadingIndicesFlag = false
@@ -181,10 +185,16 @@ private var loadingIndicesFlag = false
     }
   }
 
-  override def search(in: String): Seq[QsoRecord] = {
-    byUuid.values.find(_.qso.callsign.contains(in))
-  }.toSeq
+  override def search(search:Search): SearchResult = {
+    val max = search.max
+    val matching = byUuid.values.filter { qsorecord => {
+      qsorecord.qso.callsign.contains(search.partial) && search.bandMode == qsorecord.qso.bandMode.bandMode
+    }
+    }.toSeq
 
+    val limited = matching.take(max)
+    SearchResult(limited, matching.length)
+  }
   override def dump: QsosFromNode = QsosFromNode(nodeInfo.nodeAddress, byUuid.values.toList.sorted)
 
   /**
@@ -252,7 +262,13 @@ private var loadingIndicesFlag = false
         .sortBy(_.startOfHour)
     }
     val rate = qsoMeter.fifteenMinuteRate
-    sync.NodeStatus(nodeInfo.nodeAddress, nodeInfo.url, byUuid.size, sDigest, hourDigests, ourStationStore.value, bandModeStore.bandModeOperator, rate)
+    val bmo = bandModeStore.bandModeOperator.value
+    if (bmo == null) {
+      logger.error("bmo is null!")
+      sync.NodeStatus(nodeInfo.nodeAddress, nodeInfo.url, byUuid.size, sDigest, hourDigests, ourStationStore.value, new BandModeOperator(), rate)
+    }
+    else
+      sync.NodeStatus(nodeInfo.nodeAddress, nodeInfo.url, byUuid.size, sDigest, hourDigests, ourStationStore.value, bmo, rate)
   }
 
   /**
@@ -282,9 +298,7 @@ private var loadingIndicesFlag = false
       .toList
   }
 
-  override def debugClear(): Unit
-
-  = {
+  override def debugClear(): Unit = {
     logger.info(s"Clearing this nodes store for debugging!")
     byUuid.clear()
     byCallsign.clear()

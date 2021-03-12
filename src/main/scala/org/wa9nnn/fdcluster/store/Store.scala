@@ -1,8 +1,8 @@
 package org.wa9nnn.fdcluster.store
 
-import org.wa9nnn.fdcluster.model.MessageFormats.{CallSign, Uuid}
-import org.wa9nnn.fdcluster.model.{Qso, QsoRecord, QsosFromNode}
+import org.wa9nnn.fdcluster.model.MessageFormats.Uuid
 import org.wa9nnn.fdcluster.model.sync.NodeStatus
+import org.wa9nnn.fdcluster.model.{Qso, QsoRecord, QsosFromNode}
 import org.wa9nnn.fdcluster.store.network.FdHour
 
 trait Store {
@@ -25,10 +25,10 @@ trait Store {
   /**
    * find potential matches by callsign
    *
-   * @param in some or all of a callsign.
-   * @return potneital matches.
+   * @param search some or all of a callsign and BandMode
+   * @return matches matches.
    */
-  def search(in: CallSign): Seq[QsoRecord]
+  def search(search:Search): SearchResult
 
   /**
    * @return ids of all [[NodeDatabase]] known to this node.

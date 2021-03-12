@@ -1,18 +1,20 @@
 
-package org.wa9nnn.fdcluster.javafx
+package org.wa9nnn.fdcluster.javafx.entry.section
 
 import org.wa9nnn.fdcluster.javafx.entry.Sections
 import scalafx.geometry.Orientation.Vertical
 import scalafx.scene.control.{Button, ButtonBase}
 import scalafx.scene.layout.{Pane, TilePane, VBox}
 
+/**
+ * A scalaFx pane that shows sections and allows mouse selection.
+ * @param sectionField clicking a buitton will update this textfield.
+ */
 class SectionPrompt(implicit sectionField: SectionField) extends Pane {
-  private val sectionButtons = Sections.sections.map {
-    LongButton
-  }
+  private val sectionButtons = Sections.sections.map {LongButton}
   private val sectionButtonsMap = sectionButtons.map(sb => sb.section -> sb).toMap
 
-  val allSections: TilePane = new TilePane() {
+  private val allSections: TilePane = new TilePane() {
     orientation = Vertical
     prefRows = 9
     children = Sections.sections.map { section =>
@@ -23,6 +25,13 @@ class SectionPrompt(implicit sectionField: SectionField) extends Pane {
       }
     }
   }
+  private val resetButton = new Button("Reset"){
+    onAction = _ => {
+      sectionField.clear()
+      sectionField.requestFocus()
+    }
+  }
+
   showAll()
 
   sectionField.text.onChange { (_, _, newValue) =>
@@ -36,7 +45,7 @@ class SectionPrompt(implicit sectionField: SectionField) extends Pane {
 
   def showSome(sections: Seq[Section]): Unit = {
     children = new VBox() {
-      children = sections.map(sectionButtonsMap(_))
+      children = sections.map(sectionButtonsMap(_)).appended(resetButton)
     }
   }
 

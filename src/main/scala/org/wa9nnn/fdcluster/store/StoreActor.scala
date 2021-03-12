@@ -20,9 +20,8 @@ import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.model.sync.NodeStatus
 import org.wa9nnn.fdcluster.store.network.cluster.ClusterState
 import org.wa9nnn.fdcluster.store.network.{FdHour, MultcastSenderActor, MulticastListenerActor}
-import org.wa9nnn.util.LaurelDbImporterTask
+import org.wa9nnn.util.{ImportTask, LaurelDbImporterTask}
 import play.api.libs.json.Json
-import org.wa9nnn.util.ImportTask
 
 import java.net.InetAddress
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -132,7 +131,7 @@ class StoreActor(injector: Injector,
       val laurelDbImporterTask = injector.instance[LaurelDbImporterTask]
       laurelDbImporterTask(blr)
 
-    case cer :CabrilloExportRequest =>
+    case cer: CabrilloExportRequest =>
       val cabrilloGenerator: CabrilloGenerator = injector.instance[CabrilloGenerator]
       cabrilloGenerator(cer)
 
@@ -143,6 +142,9 @@ class StoreActor(injector: Injector,
     case ImportRequest(path) =>
       val importTask = injector.instance[ImportTask]
       importTask(path)
+
+    case search: Search =>
+      sender ! store.search(search)
 
     case x ⇒
       println(s"Unexpected Message; $x")
@@ -187,3 +189,15 @@ case object DebugClearStore
 case class DebugKillRandom(nToKill: Int)
 
 case object BufferReady
+
+case class Search(partial: String, bandMode: BandMode, max: Int = 15)
+
+case class SearchResult(qsos: Seq[QsoRecord], fullCount: Int) {
+  def display(): String = {
+    val length = qsos.length
+    if (length < fullCount)
+      f"$length%,d of $fullCount%,d"
+    else
+      ""
+  }
+}

@@ -1,5 +1,5 @@
 
-package org.wa9nnn.fdcluster.javafx
+package org.wa9nnn.fdcluster.javafx.entry.section
 
 /**
   * One ARRL section

@@ -4,7 +4,7 @@ import org.specs2.execute.{AsResult, Result}
 import org.specs2.matcher.DataTables
 import org.specs2.mutable.Specification
 import org.specs2.specification.ForEach
-import org.wa9nnn.fdcluster.javafx.Section
+import org.wa9nnn.fdcluster.javafx.entry.section.Section
 import org.wa9nnn.fdcluster.javafx.entry.{EntryCategory, Sections}
 import org.wa9nnn.fdcluster.model.Exchange
 import scalafx.beans.property.{BooleanProperty, ObjectProperty, StringProperty}

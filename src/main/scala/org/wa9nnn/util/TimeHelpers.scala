@@ -26,10 +26,14 @@ object TimeHelpers {
   implicit def durationToString(duration: Duration): String = {
     DurationFormat(duration)
   }
+  def localFrom(instant: Instant):String = {
+    val zonedDateTime = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault())
+    zonedDateTime.format(formatter)
+  }
   
   def parseInstant(in: String): Instant = Instant.parse(in)
 
-  val msHour = 1000 * 60 * 60
+  val msHour: Int = 1000 * 60 * 60
   val utcZoneId: ZoneId = ZoneId.of("UTC")
 
 }

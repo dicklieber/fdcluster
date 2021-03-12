@@ -13,7 +13,8 @@ import scalafx.scene.control.TextInputControl
  */
 trait NextField extends TextInputControl with WithDisposition with StructuredLogging {
   forceCaps(this)
-
+  styleClass += "qsoField"
+  sad()
 
   var onDoneFunction: String => Unit = (_: String) => {}
 
@@ -34,6 +35,9 @@ trait NextField extends TextInputControl with WithDisposition with StructuredLog
     )
   }
 
+  validProperty.onChange{(_,_,nv) =>
+    disposition(nv)
+  }
 
   def reset(): Unit = {
     text = ""

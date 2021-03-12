@@ -1,14 +1,15 @@
 
-package org.wa9nnn.fdcluster.javafx
+package org.wa9nnn.fdcluster.javafx.entry.section
 
-import org.wa9nnn.fdcluster.javafx.entry.{ContestSectionValidator, Sections}
+import org.wa9nnn.fdcluster.javafx.NextField
+import org.wa9nnn.fdcluster.javafx.entry.ContestSectionValidator
 import org.wa9nnn.util.WithDisposition
 import scalafx.Includes._
 import scalafx.scene.control.TextField
 import scalafx.scene.input.KeyEvent
 
 /**
- * Section entry field
+ * Section entry field for entring QSOs
  * sad or happy as validated while typing.
  *
  */

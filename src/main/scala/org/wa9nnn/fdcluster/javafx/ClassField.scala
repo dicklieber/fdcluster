@@ -4,9 +4,7 @@ package org.wa9nnn.fdcluster.javafx
 
 import org.wa9nnn.fdcluster.javafx.entry.ContestClassValidator
 import org.wa9nnn.util.WithDisposition
-import scalafx.Includes._
 import scalafx.scene.control.TextField
-import scalafx.scene.input.KeyEvent
 
 /**
  * Callsign entry field
@@ -16,12 +14,12 @@ import scalafx.scene.input.KeyEvent
 class ClassField extends TextField with WithDisposition with NextField {
   setFieldValidator(ContestClassValidator)
 
-  onKeyPressed = { event: KeyEvent =>
-    val sChar = event.character
-    if (validProperty.value) {
-      event.consume()
-      onDoneFunction(sChar)
+  validProperty.onChange{(_,_,nv) =>
+    if(nv) {
+      // move to next field as soon as class is vallid.
+      onDoneFunction("")
     }
   }
+
 }
 

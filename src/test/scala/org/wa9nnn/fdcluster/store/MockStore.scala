@@ -39,7 +39,7 @@ class MockStore extends Store {
    * @param in some or all of a callsign.
    * @return potneital matches.
    */
-  override def search(in: CallSign): Seq[QsoRecord] = throw new NotImplementedError()
+  override def search(search: Search): SearchResult = throw new NotImplementedError()
 
   /**
    * @return ids of all [[NodeDatabase]] known to this node.

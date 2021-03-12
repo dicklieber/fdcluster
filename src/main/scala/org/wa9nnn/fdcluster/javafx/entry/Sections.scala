@@ -1,6 +1,6 @@
 package org.wa9nnn.fdcluster.javafx.entry
 
-import org.wa9nnn.fdcluster.javafx.Section
+import org.wa9nnn.fdcluster.javafx.entry.section.Section
 
 import scala.language.postfixOps
 

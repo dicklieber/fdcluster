@@ -2,7 +2,8 @@
 package org.wa9nnn.fdcluster.javafx.menu
 
 import org.wa9nnn.fdcluster.javafx.entry.{EntryCategory, Sections}
-import org.wa9nnn.fdcluster.javafx.{ClassField, Section}
+import org.wa9nnn.fdcluster.javafx.ClassField
+import org.wa9nnn.fdcluster.javafx.entry.section.Section
 import org.wa9nnn.fdcluster.model.{OurStation, OurStationStore}
 import org.wa9nnn.fdcluster.station.StationDialogLogic
 import org.wa9nnn.util.InputHelper.forceCaps
