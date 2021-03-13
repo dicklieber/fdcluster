@@ -6,6 +6,7 @@ import com.google.inject.Injector
 import com.google.inject.name.Named
 import com.typesafe.scalalogging.LazyLogging
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
+import org.wa9nnn.fdcluster.FileManager
 import org.wa9nnn.fdcluster.cabrillo.{CabrilloDialog, CabrilloExportRequest}
 import org.wa9nnn.fdcluster.javafx.debug.DebugRemoveDialog
 import org.wa9nnn.fdcluster.javafx.sync.{SyncDialog, SyncSteps}
@@ -16,6 +17,7 @@ import scalafx.application.Platform
 import scalafx.event.ActionEvent
 import scalafx.scene.control._
 
+import java.awt.Desktop
 import javax.inject.Inject
 import scala.concurrent.duration.DurationInt
 import scala.jdk.CollectionConverters._
@@ -26,9 +28,10 @@ class FdClusterMenu @Inject()(
                                @Named("store") store: ActorRef,
                                syncSteps: SyncSteps,
                                syncDialog: SyncDialog,
+                               fileManager: FileManager,
                                debugRemoveDialog: DebugRemoveDialog) extends LazyLogging {
   private implicit val timeout = Timeout(5 seconds)
-
+  private val desktop = Desktop.getDesktop
   private val environmentMenuItem = new MenuItem {
     text = "Environment"
     onAction = { _: ActionEvent =>
@@ -130,6 +133,12 @@ class FdClusterMenu @Inject()(
       }
     }
   }
+  private val filesMenuItem = new MenuItem {
+    text = "FdCluster Files"
+    onAction = { _ =>
+      desktop.browseFileDirectory(fileManager.directory.toFile)
+    }
+  }
 
   private val exitMenuItem = new MenuItem {
     text = "Exit"
@@ -149,6 +158,7 @@ class FdClusterMenu @Inject()(
           importMenuItem,
           exportMenuItem,
           exportCabrillo,
+          filesMenuItem,
           exitMenuItem,
         )
       }, new Menu("_Debug") {

@@ -61,7 +61,7 @@ class Persistence @Inject()(fileManager: FileManager) extends StructuredLogging 
     }
     r match {
       case Failure(exception) =>
-        logger.error(s"$path1", exception)
+        logger.debug(s"$path1", exception)
       case Success(value) =>
         logger.debug(s"Loaded: $value")
     }
