@@ -10,7 +10,7 @@ import scalafx.scene.layout.{Pane, TilePane, VBox}
  * A scalaFx pane that shows sections and allows mouse selection.
  * @param sectionField clicking a buitton will update this textfield.
  */
-class SectionPrompt(implicit sectionField: SectionField) extends Pane {
+class   SectionPrompt(implicit sectionField: SectionField) extends Pane {
   private val sectionButtons = Sections.sections.map {LongButton}
   private val sectionButtonsMap = sectionButtons.map(sb => sb.section -> sb).toMap
 

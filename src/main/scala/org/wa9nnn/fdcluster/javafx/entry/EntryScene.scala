@@ -33,6 +33,7 @@ class EntryScene @Inject()(
                             bandModeStore: BandModeOperatorStore,
                             bandModeOpPanel: BandModeOpPanel,
                             ourStationStore: OurStationStore,
+                            statsPane: StatsPane,
                             statusPane: StatusPane,
                             @Inject() @Named("store") store: ActorRef) {
   private implicit val timeout = Timeout(5, TimeUnit.SECONDS)
@@ -71,6 +72,7 @@ class EntryScene @Inject()(
         qsoClass,
         new VBox(
           buttons,
+          statsPane.pane,
           bandModeOpPanel
         )
       ),

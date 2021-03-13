@@ -13,7 +13,6 @@ import scalafx.application.Platform
 import scalafx.beans.property.ObjectProperty
 import scalafx.scene.control.Label
 import scalafx.scene.layout.{Pane, VBox}
-import scalafx.scene.text.Text
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -26,18 +25,19 @@ class ActionResult(storeActor: ActorRef)(implicit timeout: Timeout, bandMode: Ob
     future.onComplete {
       case Failure(exception) =>
         logger.error(s"Search for dup: $partial", exception)
-      case Success(searchResult:SearchResult) =>
+      case Success(searchResult: SearchResult) =>
         Platform.runLater {
           clear()
           searchResult.qsos.foreach { qsoRecord =>
             val qsoBandMode = qsoRecord.qso.bandMode.bandMode
             add(new Label(s"${qsoRecord.qso.callsign}") {
-              styleClass.addAll ( "qsoField", "sadQso", "sad")
-//              fill = Color.Blue
+              styleClass.addAll("qsoField", "sadQso", "sad")
             })
           }
           add(new Label(searchResult.display()))
-          done()
+          onFX {
+            done()
+          }
         }
     }
   }
@@ -46,7 +46,7 @@ class ActionResult(storeActor: ActorRef)(implicit timeout: Timeout, bandMode: Ob
     vbox.children = value
   }
 
-  def showSad(text:String): Unit = {
+  def showSad(text: String): Unit = {
     vbox.children = Seq(new Label(text))
   }
 
@@ -72,7 +72,7 @@ class ActionResult(storeActor: ActorRef)(implicit timeout: Timeout, bandMode: Ob
 
   def done(): Unit = {
     val value = accum.result()
-      vbox.children = value
+    vbox.children = value
   }
 
   def clear(): Unit = accum.clear()
