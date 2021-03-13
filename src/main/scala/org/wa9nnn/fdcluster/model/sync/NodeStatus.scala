@@ -9,16 +9,18 @@ import play.api.libs.json.Json
 
 import java.net.URL
 import java.time.LocalDateTime
+
 /**
  *
- * @param nodeAddress    our IP and instance.
- * @param apiUrl         how to talk to this node.
+ * @param nodeAddress       our IP and instance.
+ * @param apiUrl            how to talk to this node. URL of the API.
  * @param qsoCount          of QSOs in db.
- * @param digest         of all QSO UUIDs
- * @param qsoHourDigests for quickly determining what we have.
- * @param ourStation band, mode, operator etc.
- * @param qsoRate        qsos per minute
- * @param stamp          when this message was generated.
+ * @param digest            over all QSO UUIDs
+ * @param qsoHourDigests    for quickly determining what we have.
+ * @param ourStation        band, mode, operator etc.
+ * @param bandMode          band mode and current operator
+ * @param qsoRate           qsos per minute
+ * @param stamp             when this message was generated.
  */
 case class NodeStatus(nodeAddress: NodeAddress,
                       apiUrl: URL,
@@ -29,7 +31,8 @@ case class NodeStatus(nodeAddress: NodeAddress,
                       bandMode: BandModeOperator,
                       qsoRate: Double,
                       stamp: LocalDateTime = LocalDateTime.now()) extends Codec {
-assert(bandMode != null, "null BandModeOperator")
+  assert(bandMode != null, "null BandModeOperator")
+
   def digestForHour(fdHour: FdHour): Option[QsoHourDigest] = {
     qsoHourDigests.find(_.startOfHour == fdHour)
   }

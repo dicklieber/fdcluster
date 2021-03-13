@@ -15,12 +15,19 @@ import scala.collection.concurrent.TrieMap
  *
  */
 case class FdHour(epochHours: Long) extends Ordered[FdHour] with LabelSource {
-
-  override val (toString, toolTip) = {
-    val dt: ZonedDateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(epochHours / msHour), utcZoneId)
+   val display: String = {
+    val instant = Instant.ofEpochMilli(epochHours * msHour)
+    val dt: ZonedDateTime = ZonedDateTime.ofInstant(instant, utcZoneId)
     val day: Int = dt.getDayOfMonth
     val hour: Int = dt.getHour
-    (f"$day:$hour%02d", s"utc date: $day hour: $hour")
+    f"$day:$hour%02d"
+  }
+   override val toString: String = {
+    val instant = Instant.ofEpochMilli(epochHours * msHour)
+    val dt: ZonedDateTime = ZonedDateTime.ofInstant(instant, utcZoneId)
+    val day: Int = dt.getDayOfMonth
+    val hour: Int = dt.getHour
+    s"utc date: $day hour: $hour"
   }
 
   /**
@@ -32,6 +39,15 @@ case class FdHour(epochHours: Long) extends Ordered[FdHour] with LabelSource {
 
   override def compare(that: FdHour): Int = {
     this.epochHours compareTo that.epochHours
+  }
+
+  override def equals(obj: Any): Boolean = {
+    obj match {
+      case that: FdHour =>
+        this.epochHours == that.epochHours
+      case _ =>
+        false
+    }
   }
 
   override def setLabel(labeled: Labeled): Unit = {

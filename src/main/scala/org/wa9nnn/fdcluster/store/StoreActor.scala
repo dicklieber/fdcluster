@@ -35,7 +35,6 @@ class StoreActor(injector: Injector,
                  store: StoreMapImpl,
                  journalLoader: JournalLoader
                 ) extends Actor with LazyLogging with DefaultInstrumented {
-  //  private val store = new StoreMapImpl(nodeInfo, currentStationProvider, bandModeStore, allQsos, syncSteps, journalPath)
   private val clusterState = new ClusterState(nodeInfo.nodeAddress)
   private implicit val timeout: Timeout = Timeout(5 seconds)
 

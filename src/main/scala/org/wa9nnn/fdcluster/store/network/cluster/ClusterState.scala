@@ -12,7 +12,8 @@ import scala.collection.concurrent.TrieMap
 import scala.collection.immutable
 
 /**
- * State of all nodes in the cluster, including this one.
+ * Mutable state of all nodes in the cluster, including this one.
+ * From this nodes point-of-view.
  *
  * @param ourNodeAddress who we are.
  */

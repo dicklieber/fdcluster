@@ -1,20 +1,20 @@
 
 package org.wa9nnn.fdcluster.model.sync
 
-import java.security.MessageDigest
-
 import org.wa9nnn.fdcluster.javafx.cluster.LabelSource
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.{QsoRecord, sync}
 import org.wa9nnn.fdcluster.store.network.FdHour
 import scalafx.scene.control.Labeled
 
+import java.security.MessageDigest
+
 /**
  *
- * @param startOfHour truncated to the hour.
+ * @param fdHour hour this is for..
  * @param qsos        QSOs in this hour.
  */
-case class QsoHour(startOfHour: FdHour, qsos: List[QsoRecord]) {
+case class QsoHour(fdHour: FdHour, qsos: List[QsoRecord]) {
 
   lazy val hourDigest: QsoHourDigest = {
     val messageDigest: MessageDigest = MessageDigest.getInstance("SHA-256")
@@ -23,12 +23,12 @@ case class QsoHour(startOfHour: FdHour, qsos: List[QsoRecord]) {
     val encoder = java.util.Base64.getEncoder
     val bytes1 = encoder.encode(bytes)
     val sDigest = new String(bytes1)
-    sync.QsoHourDigest(startOfHour, sDigest, qsos.size)
+    sync.QsoHourDigest(fdHour, sDigest, qsos.size)
   }
 
   lazy val qsoIds: QsoHourIds = {
     val ids = qsos.map(_.fdLogId.uuid)
-    QsoHourIds(startOfHour, ids)
+    QsoHourIds(fdHour, ids)
   }
 }
 
@@ -47,7 +47,7 @@ object QsoHour {
  * @param digest      of all the QsoIDs in this hour.
  * @param size        number of Qsos in this hour.  //todo Do we actually need this? isn't the digest sufficient?
  */
-case class QsoHourDigest(startOfHour: FdHour, digest: Digest, size: Int)extends LabelSource {
+case class QsoHourDigest(startOfHour: FdHour, digest: Digest, size: Int) extends LabelSource {
   override def setLabel(labeled: Labeled): Unit = {
     if (size == 0) {
       labeled.text = "--"

@@ -293,7 +293,7 @@ class StoreMapImpl @Inject()(nodeInfo: NodeInfo,
     byUuid.values
       .toList
       .sorted.groupBy(_.fdHour).values.map(QsoHour(_))
-      .filter(_.startOfHour == fdHour)
+      .filter(_.fdHour == fdHour)
       .toList
   }
 

@@ -66,7 +66,7 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
     val chttp = config.getConfig("fdcluster.http")
     val hostName = inetAddress.getCanonicalHostName
     val port = chttp.getInt("port")
-    val url = new URL(s"https://$hostName:$port")
+    val url = new URL(s"http://$hostName:$port")
     val ret = new NodeInfoImpl(contest, nodeAddress, url)
     ret
   }
