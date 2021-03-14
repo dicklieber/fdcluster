@@ -1,4 +1,22 @@
 
+/*
+ * Copyright (C) 2021  Dick Lieber, WA9NNN
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 package org.wa9nnn.util
 
 import com.github.racc.tscg.TypesafeConfig
@@ -17,7 +35,7 @@ import scala.util.{Failure, Success, Try}
  * Files are persisted in the [[basePath]] directory using a file name that is the class name (without path)
  * so e.g. [[org.wa9nnn.fdcluster.model.BandModeOperator#BandMode(java.lang.String, java.lang.String)]] is saved as <basePath>/BandMode
  *
- * @param basePath where to write files
+ * @param fileManager where to write files
  */
 class Persistence @Inject()(fileManager: FileManager) extends StructuredLogging {
   val path: Path = fileManager.getPath(FileLocus.`var`)

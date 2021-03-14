@@ -1,4 +1,22 @@
 
+/*
+ * Copyright (C) 2021  Dick Lieber, WA9NNN
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 package org.wa9nnn.fdcluster
 
 import akka.actor.{ActorRef, ActorSystem, Props}
@@ -16,13 +34,15 @@ import scalafx.application.JFXApp.Parameters
 import scalafx.collections.ObservableBuffer
 
 import java.net.{Inet4Address, InetAddress, NetworkInterface, URL}
-import java.nio.file.{Path, Paths}
 import javax.inject.{Named, Singleton}
 import scala.jdk.CollectionConverters._
 
 /**
+ * This is where dependemnch injection (Guice) is managed.
+ * Note not all objects are specifically configured here. Many, (most) are simply annotated with @Inject() and
+ * scala guice magic does automaticaly addsa them as required.
  *
- * @param args command line arg
+ * @param parameters command line args
  */
 class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
 
