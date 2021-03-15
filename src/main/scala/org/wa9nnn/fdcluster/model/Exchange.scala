@@ -25,7 +25,7 @@ import play.api.libs.json._
 
 import scala.util.matching.Regex
 
-class Exchange(val entryClass: String = EntryCategory.defaultCategory.buildClass(1), val section: String = Sections.defaultCode) {
+case class Exchange(val entryClass: String = EntryCategory.defaultCategory.buildClass(1), val section: String = Sections.defaultCode) {
 
   def display: String = s"$entryClass $section"
 

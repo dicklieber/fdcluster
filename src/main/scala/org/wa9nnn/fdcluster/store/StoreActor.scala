@@ -38,6 +38,7 @@ import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.model.sync.NodeStatus
 import org.wa9nnn.fdcluster.store.network.cluster.ClusterState
 import org.wa9nnn.fdcluster.store.network.{FdHour, MultcastSenderActor, MulticastListenerActor}
+import org.wa9nnn.fdcluster.tools.{GenerateRandomQsos, RandomQso}
 import org.wa9nnn.util.{ImportTask, LaurelDbImporterTask}
 import play.api.libs.json.Json
 
@@ -51,7 +52,8 @@ class StoreActor(injector: Injector,
                  inetAddress: InetAddress, config: Config,
                  syncSteps: SyncSteps,
                  store: StoreMapImpl,
-                 journalLoader: JournalLoader
+                 journalLoader: JournalLoader,
+                 randomQso: RandomQso
                 ) extends Actor with LazyLogging with DefaultInstrumented {
   private val clusterState = new ClusterState(nodeInfo.nodeAddress)
   private implicit val timeout: Timeout = Timeout(5 seconds)
@@ -163,6 +165,12 @@ class StoreActor(injector: Injector,
     case search: Search =>
       sender ! store.search(search)
 
+    case gr: GenerateRandomQsos =>
+      randomQso(gr) {
+        qso =>
+          store.add(qso)
+      }
+
     case x ⇒
       println(s"Unexpected Message; $x")
 
@@ -206,6 +214,7 @@ case object DebugClearStore
 case class DebugKillRandom(nToKill: Int)
 
 case object BufferReady
+
 
 case class Search(partial: String, bandMode: BandMode, max: Int = 15)
 

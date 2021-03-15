@@ -29,6 +29,7 @@ import org.wa9nnn.fdcluster.javafx.sync.{ProgressStep, SyncSteps}
 import org.wa9nnn.fdcluster.metrics.Reporter
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.store._
+import org.wa9nnn.fdcluster.tools.RandomQso
 import org.wa9nnn.util.{CommandLine, CommandLineScalaFxImpl}
 import scalafx.application.JFXApp.Parameters
 import scalafx.collections.ObservableBuffer
@@ -101,9 +102,10 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
                  config: Config,
                  syncSteps: SyncSteps,
                  storeMapImpl: StoreMapImpl,
-                 journalLoader: JournalLoader
+                 journalLoader: JournalLoader,
+                 randomQso: RandomQso
                 ): ActorRef = {
-    actorSystem.actorOf(Props(new StoreActor(injector, nodeInfo, inetAddress, config, syncSteps, storeMapImpl, journalLoader)))
+    actorSystem.actorOf(Props(new StoreActor(injector, nodeInfo, inetAddress, config, syncSteps, storeMapImpl, journalLoader, randomQso)))
   }
 
   /**

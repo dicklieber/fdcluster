@@ -59,7 +59,7 @@ class StationDialog @Inject()(ourStationStore: OurStationStore) extends Dialog[O
     tooltip = "Number of simultaneous transmitters. Combined with category to produce exchange class."
   }
 
-  private val category = new ComboBox[EntryCategory](EntryCategory.catagories) {
+  private val category = new ComboBox[EntryCategory](EntryCategory.categories) {
     tooltip = "Combined with number of transmitters to make exchange class."
     converter = StringConverter.toStringConverter {
       case h: EntryCategory =>

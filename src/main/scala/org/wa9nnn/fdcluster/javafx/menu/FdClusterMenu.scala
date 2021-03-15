@@ -30,6 +30,7 @@ import org.wa9nnn.fdcluster.javafx.debug.DebugRemoveDialog
 import org.wa9nnn.fdcluster.javafx.sync.{SyncDialog, SyncSteps}
 import org.wa9nnn.fdcluster.rig.RigDialog
 import org.wa9nnn.fdcluster.store.{DebugClearStore, Sync}
+import org.wa9nnn.fdcluster.tools.RandomQsoDialog
 import scalafx.Includes._
 import scalafx.application.Platform
 import scalafx.event.ActionEvent
@@ -166,6 +167,15 @@ class FdClusterMenu @Inject()(
     }
   }
 
+  private val generateTimed = new MenuItem{
+    text ="Generate Timed"
+    onAction =  { _ =>
+      new RandomQsoDialog().showAndWait().foreach{grq =>
+        store ! grq
+      }
+    }
+  }
+
   val menuBar: MenuBar = new MenuBar {
     menus = List(
       new Menu("_File") {
@@ -184,7 +194,8 @@ class FdClusterMenu @Inject()(
         items = List(
           debugClearStoreMenuItem,
           debugRandomKillerMenuItem,
-          debugDemoBulkMenuItem
+          debugDemoBulkMenuItem,
+          generateTimed
         )
       },
       new Menu("_Edit") {

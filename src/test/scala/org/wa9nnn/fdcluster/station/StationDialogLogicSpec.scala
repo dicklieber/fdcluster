@@ -46,7 +46,7 @@ class StationDialogLogicSpec extends Specification with DataTables with StationD
     "ok exchange and callsign" >> { stationDialogLogic: StationDialogLogic =>
       stationDialogLogic.callsign.value = "WA9NNN"
       stationDialogLogic.transmitters.value = 3
-      stationDialogLogic.category.value = EntryCategory.catagories(1)
+      stationDialogLogic.category.value = EntryCategory.categories(1)
       stationDialogLogic.section.value = Sections.byCode("IL")
 
       stationDialogLogic.exchangeLabel.value must beEqualTo ("3I IL")
@@ -54,7 +54,7 @@ class StationDialogLogicSpec extends Specification with DataTables with StationD
     }
     "ok exchange with bad callsign" >> { stationDialogLogic: StationDialogLogic =>
       stationDialogLogic.transmitters.value = 3
-      stationDialogLogic.category.value = EntryCategory.catagories(1)
+      stationDialogLogic.category.value = EntryCategory.categories(1)
       stationDialogLogic.section.value = Sections.byCode("IL")
 
       stationDialogLogic.exchangeLabel.value must beEqualTo ("3I IL")

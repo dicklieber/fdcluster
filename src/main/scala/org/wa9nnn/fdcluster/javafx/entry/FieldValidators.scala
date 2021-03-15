@@ -97,15 +97,15 @@ object EntryCategory {
     forDesignator(entryClass.head)
   }
 
-  val catagories = Seq(
+  val categories = Seq(
     EntryCategory("Home"),
     EntryCategory("Indoor"),
     EntryCategory("Outdoor"),
   )
-  val defaultCategory: EntryCategory = catagories(2)
+  val defaultCategory: EntryCategory = categories(2)
 
   def forDesignator(designator: Char): EntryCategory = {
-    catagories.find(_.designator == designator).getOrElse(defaultCategory)
+    categories.find(_.designator == designator).getOrElse(defaultCategory)
   }
 }
 
