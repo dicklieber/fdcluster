@@ -11,6 +11,9 @@ import org.wa9nnn.util.DebugTimer
 
 import scala.util.Random
 
+/**
+ * todo replace this with [[]]
+ */
 object QsoGenerator extends DefaultInstrumented  with DebugTimer with LazyLogging{
   val bmf = new BandModeFactory()
 

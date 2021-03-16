@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2021  Dick Lieber, WA9NNN
  *
@@ -16,48 +15,50 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 package org.wa9nnn.fdcluster.tools
 
 import org.wa9nnn.fdcluster.javafx.entry.RunningTaskInfoConsumer
 import org.wa9nnn.fdcluster.javafx.runningtask.RunningTask
-import org.wa9nnn.fdcluster.model.{Exchange, Qso}
+import org.wa9nnn.fdcluster.model.Qso
 
 import java.time.Instant
 import java.time.temporal.ChronoUnit
-import javax.inject.{Inject, Singleton}
+import javax.inject.Inject
 
-object RandomQso { //todo inject
-  var bandMode = new RandomBandMode()
-  val randomExchange = new RandomExchange()
-  var exchange = new Exchange()
-  val callSign = new RandomCallsign
+class RandomQsoGenerator @Inject()(val runningTaskInfoConsumer: RunningTaskInfoConsumer) {
 
-  def apply(stamp: Instant = Instant.now()): Qso = {
-    Qso(callSign.next, bandMode.next, randomExchange.next(), stamp)
+  def apply(gr: GenerateRandomQsos): (Qso => Unit) => Unit = {
+    new Task(runningTaskInfoConsumer)(gr)
   }
 
-}
+  class Task(val runningTaskInfoConsumer: RunningTaskInfoConsumer) extends RunningTask {
+    override def taskName: String = "Generate Random QSOs"
 
-@Singleton
-class RandomQso @Inject()(val runningTaskInfoConsumer: RunningTaskInfoConsumer) extends RunningTask {
-  override def taskName: String = "Generate Random QSOs"
+    var bandMode = new RandomBandMode()
+    val randomExchange = new RandomExchange()
+    val callSign = new RandomCallsign
 
-  def apply(gr: GenerateRandomQsos)(f: (Qso) => Unit): Unit = {
-    var lastStamp = Instant.now().minus(gr.hoursBefore, ChronoUnit.HOURS)
 
-    for (_ <- 0 to gr.ntoGen) {
-      f(RandomQso(lastStamp))
-      addOne()
-      lastStamp = lastStamp.plus(gr.between)
+    def apply(gr: GenerateRandomQsos)(f: Qso => Unit): Unit = {
+      totalIterations = gr.ntoGen
+      var lastStamp = Instant.now().minus(gr.hoursBefore, ChronoUnit.HOURS)
+
+      for (_ <- 0 to gr.ntoGen) {
+        f(Qso(callSign.next, bandMode.next, randomExchange.next(), lastStamp))
+        addOne()
+        lastStamp = lastStamp.plus(gr.between)
+      }
+      done()
     }
   }
-
-  done()
-
-
 }
 
+/**
+ *
+ * @param ntoGen      how many.
+ * @param hoursBefore where to start
+ * @param between     how much to advance the 'clock' between each QSO.
+ */
 case class GenerateRandomQsos(ntoGen: Int = 10000,
                               hoursBefore: Int = 23,
                               between: java.time.Duration = java.time.Duration.ofSeconds(5))

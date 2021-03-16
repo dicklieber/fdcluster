@@ -20,6 +20,7 @@
 package org.wa9nnn.fdcluster.store
 
 import com.google.inject.name.Named
+import org.apache.commons.math3.stat.descriptive.SummaryStatistics
 import org.wa9nnn.fdcluster.javafx.entry.RunningTaskInfoConsumer
 import org.wa9nnn.fdcluster.javafx.runningtask.RunningTask
 import org.wa9nnn.fdcluster.model.MessageFormats._
@@ -38,66 +39,86 @@ import scala.io.Source
 import scala.util.Using
 
 /**
- * Fills the "allQsos" ObsesrverabeBuffer from the journal.
+ * Fills the "allQsos" from the journal.
+ * Runs at startup only.
+ * Talks directly to allQsos which can only be done at startup time.
  *
  * @param allQsos                 where to store.
- * @param journalFilePath         file.
+ * @param fileManager             where to find files..
  * @param runningTaskInfoConsumer progress UI
  */
-class JournalLoaderImpl @Inject()(@Named("allQsos") allQsos: ObservableBuffer[QsoRecord],
-                                  fileManager: FileManager,
-                                  val runningTaskInfoConsumer: RunningTaskInfoConsumer) extends RunningTask with JournalLoader {
-  override def taskName: String = "Journal Loader"
-
-  val journalFilePath: Path = fileManager.getPath(FileLocus.journalFile)
-
-  def run(): Future[BufferReady.type] = {
-    Future {
-      val typicalQsoLength = 413 // imperially determined by loading journal then divided file size by number of QSOs
-      totalIterations = Files.size(journalFilePath) / typicalQsoLength
-      val lineNumber = new AtomicInteger()
-      val errorCount = new AtomicInteger()
-      Using(Source.fromFile(journalFilePath.toUri)) { bufferedSource ⇒
-        bufferedSource.getLines()
-          .foreach { line: String ⇒
-            lineNumber.incrementAndGet()
-            try {
-              addOne()
-              val qsoRecord = Json.parse(line).as[QsoRecord]
-              allQsos.addOne(qsoRecord) // todo consider batching up and using addAll instead of addOne
-
-            } catch {
-              case e: Exception =>
-                val err = errorCount.incrementAndGet()
-                err match {
-                  case 25 =>
-                    logger.error("More than 25 errors, stopping logging!")
-                  case x if x < 25 =>
-                    logJson("Journal Error")
-                      .++("line" -> lineNumber.get,
-                        "error" -> e.getClass.getName,
-                        "qso" -> line
-                      )
-                      .error()
-                }
-            }
-          }
-      }
-      if (errorCount.get > 0) {
-        logger.info(f"${errorCount.get}%,d lines with errors in $journalFilePath")
-      }
-      val duration = Duration.between(start, Instant.now())
-      val d: String = org.wa9nnn.util.TimeHelpers.durationToString(duration)
-      val c: Int = lineNumber.get()
-      val qsoPerSecond: Double = c.toDouble / duration.getSeconds.toDouble
-      //      logger.info(f"loaded $c%,d records in $d ($qsoPerSecond%.2f/per sec)")
-      done()
-      BufferReady
-    }
+class JournalLoader @Inject()(@Named("allQsos") allQsos: ObservableBuffer[QsoRecord],
+                              fileManager: FileManager,
+                              val runningTaskInfoConsumer: RunningTaskInfoConsumer) {
+  def apply(): Future[BufferReady.type] = {
+    new Task(runningTaskInfoConsumer)()
   }
 
-}
+  class Task(val runningTaskInfoConsumer: RunningTaskInfoConsumer) extends RunningTask {
 
-trait JournalLoader {
-  def run(): Future[BufferReady.type]
+    override def taskName: String = "Journal Loader"
+
+    val journalFilePath: Path = fileManager.getPath(FileLocus.journalFile)
+
+    def apply(): Future[BufferReady.type] = {
+      Future {
+        if (Files.size(journalFilePath) > 0) {
+          val qsoLineLengths = new SummaryStatistics()
+          val typicalQsoLength = 363 // empirically determined by loading journal then divided file size by number of QSOs
+          // see log message with meanLineLength to get latest.
+          totalIterations = Files.size(journalFilePath) / typicalQsoLength
+          val lineNumber = new AtomicInteger()
+          val errorCount = new AtomicInteger()
+          Using(Source.fromFile(journalFilePath.toUri)) { bufferedSource ⇒
+            bufferedSource.getLines()
+              .foreach { line: String ⇒
+                qsoLineLengths.addValue(line.length)
+                lineNumber.incrementAndGet()
+                try {
+                  addOne()
+                  val qsoRecord = Json.parse(line).as[QsoRecord]
+                  allQsos.addOne(qsoRecord) // todo consider batching up and using addAll instead of addOne
+
+                } catch {
+                  case e: Exception =>
+                    val err = errorCount.incrementAndGet()
+                    err match {
+                      case 25 =>
+                        logger.error("More than 25 errors, stopping logging!")
+                      case x if x < 25 =>
+                        logJson("Journal Error")
+                          .++("line" -> lineNumber.get,
+                            "error" -> e.getClass.getName,
+                            "qso" -> line,
+                          )
+                          .error()
+                    }
+                }
+              }
+          }
+          if (errorCount.get > 0) {
+            logger.info(f"${errorCount.get}%,d lines with errors in $journalFilePath")
+          }
+          val duration = Duration.between(start, Instant.now())
+          val d: String = org.wa9nnn.util.TimeHelpers.durationToString(duration)
+          val c: Int = lineNumber.get()
+          val qsoPerSecond: Double = c.toDouble / duration.getSeconds.toDouble
+          logger.info(f"loaded $c%,d records in $d ($qsoPerSecond%.2f/per sec)")
+          logJson("load journal")
+            .++(
+              "qsos" -> c,
+              "qsoPerSecond" -> qsoPerSecond,
+              "meanLineLength" -> qsoLineLengths.getMean,
+              "journal" -> journalFilePath
+            )
+            .info()
+        } else {
+          // no journal file
+          logger.info(s"no journal at $journalFilePath")
+        }
+        done()
+        BufferReady
+      }
+    }
+  }
 }

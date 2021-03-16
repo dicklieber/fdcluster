@@ -33,7 +33,7 @@ class RandomQsoSpec extends Specification {
       override def done(): Unit = {}
     }
 
-    val randomQso = new RandomQso(rtc)
+    val randomQso = new RandomQsoGenerator(rtc)
     "nextQso" in {
       val b = Array.newBuilder[Qso]
       for (_ <-  0 to 10) {

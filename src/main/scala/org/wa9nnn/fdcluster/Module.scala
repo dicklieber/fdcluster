@@ -29,7 +29,7 @@ import org.wa9nnn.fdcluster.javafx.sync.{ProgressStep, SyncSteps}
 import org.wa9nnn.fdcluster.metrics.Reporter
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.store._
-import org.wa9nnn.fdcluster.tools.RandomQso
+import org.wa9nnn.fdcluster.tools.RandomQsoGenerator
 import org.wa9nnn.util.{CommandLine, CommandLineScalaFxImpl}
 import scalafx.application.JFXApp.Parameters
 import scalafx.collections.ObservableBuffer
@@ -68,7 +68,6 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
       bind[OurStationStore].asEagerSingleton()
       bind[Reporter].asEagerSingleton()
       bind[Store].to[StoreMapImpl]
-      bind[JournalLoader].to[JournalLoaderImpl].in[Singleton]
     }
 
     catch {
@@ -103,9 +102,9 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
                  syncSteps: SyncSteps,
                  storeMapImpl: StoreMapImpl,
                  journalLoader: JournalLoader,
-                 randomQso: RandomQso
+                 randomQsoGenerator: RandomQsoGenerator
                 ): ActorRef = {
-    actorSystem.actorOf(Props(new StoreActor(injector, nodeInfo, inetAddress, config, syncSteps, storeMapImpl, journalLoader, randomQso)))
+    actorSystem.actorOf(Props(new StoreActor(injector, nodeInfo, inetAddress, config, syncSteps, storeMapImpl, journalLoader, randomQsoGenerator)))
   }
 
   /**

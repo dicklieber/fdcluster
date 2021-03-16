@@ -38,7 +38,7 @@ import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.model.sync.NodeStatus
 import org.wa9nnn.fdcluster.store.network.cluster.ClusterState
 import org.wa9nnn.fdcluster.store.network.{FdHour, MultcastSenderActor, MulticastListenerActor}
-import org.wa9nnn.fdcluster.tools.{GenerateRandomQsos, RandomQso}
+import org.wa9nnn.fdcluster.tools.{GenerateRandomQsos, RandomQsoGenerator}
 import org.wa9nnn.util.{ImportTask, LaurelDbImporterTask}
 import play.api.libs.json.Json
 
@@ -53,7 +53,7 @@ class StoreActor(injector: Injector,
                  syncSteps: SyncSteps,
                  store: StoreMapImpl,
                  journalLoader: JournalLoader,
-                 randomQso: RandomQso
+                 randomQso: RandomQsoGenerator
                 ) extends Actor with LazyLogging with DefaultInstrumented {
   private val clusterState = new ClusterState(nodeInfo.nodeAddress)
   private implicit val timeout: Timeout = Timeout(5 seconds)
@@ -69,7 +69,7 @@ class StoreActor(injector: Injector,
 
   context.system.scheduler.scheduleAtFixedRate(2 seconds, 17 seconds, self, StatusPing)
 
-  journalLoader.run().pipeTo(self)
+  journalLoader().pipeTo(self)
 
   override def receive: Receive = {
     case BufferReady =>
