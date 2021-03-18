@@ -28,14 +28,15 @@ import java.util.UUID
 
 /**
  * * One contact with another station.
- * * Things that are relevant for the contest.
+ * * Things that are relevant for the contest plus a UUID.
  *
  * @param callsign of the worked station.
  * @param bandMode that was used.
  * @param exchange from the worked station.
  * @param stamp    when QSO occurred.
+ * @param uuid     id unique QSO id in time & space.
  */
-case class Qso(callsign: CallSign, bandMode: BandModeOperator, exchange: Exchange, stamp: Instant = Instant.now()) {
+case class Qso(callsign: CallSign, bandMode: BandMode, exchange: Exchange, stamp: Instant = Instant.now(), uuid: String = UUID.randomUUID.toString) {
   def isDup(that: Qso): Boolean = {
     this.callsign == that.callsign &&
       this.bandMode == that.bandMode
@@ -46,23 +47,20 @@ case class Qso(callsign: CallSign, bandMode: BandModeOperator, exchange: Exchang
 /**
  * This is what's in the store and journal.log.
  *
- * @param contest       ARRL winter and year
- * @param ourStation    within our site.
- * @param qso           who we worked.
- * @param fdLogId       housekeeping info for replication.
+ * @param qso           info from worked station.
+ * @param qsoMetadata   info about ur station.
  */
-case class QsoRecord(qso: Qso, contest: Contest, ourStation: OurStation, fdLogId: FdLogId) extends Ordered[QsoRecord] {
+case class QsoRecord(qso: Qso, qsoMetadata: QsoMetadata) extends Ordered[QsoRecord] {
   def callsign: CallSign = qso.callsign
 
-  def uuid: String = fdLogId.uuid
+  lazy val display: String = s"$callsign on ${qso.bandMode} in $fdHour"
 
-  lazy val display: String = s"$callsign on ${qso.bandMode} at ${fdLogId.nodeAddress.display} in $fdHour"
-
-  override def hashCode: Int = fdLogId.uuid.hashCode()
+  override def hashCode: Int = qso.uuid.hashCode()
 
   def dup(qso: Qso): Boolean = {
     this.qso.isDup(qso)
   }
+
 
   override def compare(that: QsoRecord): Int = this.callsign compareTo that.callsign
 
@@ -81,18 +79,6 @@ case class QsosFromNode(nodeAddress: NodeAddress, qsos: List[QsoRecord]) {
 }
 
 /**
- * Info used internally by FDLog.
- *
- * @param nodeAddress ip address of the network node.
- * @param uuid        unique id in time and space. Two QsoRecords with the same uuid can be considered equal.
- */
-case class FdLogId(nodeAddress: NodeAddress, uuid: String = UUID.randomUUID.toString) {
-  override def equals(obj: Any): Boolean = uuid == this.uuid
-
-}
-
-
-/**
  * This is what gets multi-casted to cluster.
  *
  * @param qsoRecord   the new QSO
@@ -108,13 +94,14 @@ case class DistributedQsoRecord(qsoRecord: QsoRecord, nodeAddress: NodeAddress, 
 
 object DistributedQsoRecord {
   val qsoVersion = "1:"
+
   def apply(byteString: ByteString): DistributedQsoRecord = {
     val sJson = byteString.decodeString("UTF-8")
     val jsValue = Json.parse(sJson)
     try {
       jsValue.as[DistributedQsoRecord]
     } catch {
-      case e:Exception =>
+      case e: Exception =>
         e.printStackTrace()
         throw e
     }

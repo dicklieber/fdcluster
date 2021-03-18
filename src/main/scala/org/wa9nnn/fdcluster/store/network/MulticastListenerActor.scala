@@ -90,7 +90,7 @@ class MulticastListenerActor(inetAddress: InetAddress, val config: Config) exten
       }
     } catch {
       case e: Exception ⇒
-        logger.error(s"parsing received message:${new String(array)}")
+        logger.error(s"parsing received message:${new String(array)}",e)
         None
     }
   }

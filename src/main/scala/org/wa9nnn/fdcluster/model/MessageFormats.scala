@@ -43,16 +43,18 @@ import scala.language.implicitConversions
 object MessageFormats {
 
   import UrlFormt.urlFormat
+  import InetAddressFormat.inetAddressFormat
 
   implicit val fdHourFormat: Format[FdHour] = Json.format[FdHour]
   implicit val uuidsRequestFormat: Format[RequestUuidsForHour] = Json.format[RequestUuidsForHour]
-  implicit val transmitterFormat: Format[OurStation] = Json.format[OurStation]
+  implicit val contest: Format[Contest] = Json.format[Contest]
   implicit val bandFormat: Format[AvailableBand] = Json.format[AvailableBand]
-  implicit val bandModeFormat: Format[BandModeOperator] = Json.format[BandModeOperator]
+  implicit val bandModeFormat: Format[BandMode] = Json.format[BandMode]
+  implicit val bandModeOpFormat: Format[CurrentStation] = Json.format[CurrentStation]
   implicit val qsoFormat: Format[Qso] = Json.format[Qso]
   implicit val nodeAddressFormat: Format[NodeAddress] = Json.format[NodeAddress]
   implicit val uuidsFormat: Format[UuidsAtHost] = Json.format[UuidsAtHost]
-  implicit val fdLogIdFormat: Format[FdLogId] = Json.format[FdLogId]
+  implicit val qmd: Format[QsoMetadata] = Json.format[QsoMetadata]
   implicit val qsoRecordFormat: Format[QsoRecord] = Json.format[QsoRecord]
   implicit val distributedQsoRecordFormat: Format[DistributedQsoRecord] = Json.format[DistributedQsoRecord]
   implicit val qsosFormat: Format[QsoHourIds] = Json.format[QsoHourIds]

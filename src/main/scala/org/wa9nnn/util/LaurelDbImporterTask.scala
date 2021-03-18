@@ -22,7 +22,7 @@ package org.wa9nnn.util
 import org.wa9nnn.fdcluster.javafx.entry.RunningTaskInfoConsumer
 import org.wa9nnn.fdcluster.javafx.menu.BuildLoadRequest
 import org.wa9nnn.fdcluster.javafx.runningtask.RunningTask
-import org.wa9nnn.fdcluster.model.{BandModeOperator, Exchange, Qso}
+import org.wa9nnn.fdcluster.model.{BandMode, CurrentStation, Exchange, Qso}
 import org.wa9nnn.fdcluster.store.{Added, Dup, Store}
 
 import java.nio.file.{Files, Paths}
@@ -64,7 +64,7 @@ class LaurelDbImporterTask @Inject()(store: Store, val runningTaskInfoConsumer: 
         val callsign = cols(1)
         val qso = Qso(
           callsign = callsign,
-          bandMode = BandModeOperator(),
+          bandMode = BandMode(),
           exchange = exchange)
         store.add(qso) match {
           case Added(_) =>

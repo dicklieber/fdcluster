@@ -17,26 +17,17 @@
  *
  */
 
-package org.wa9nnn.fdcluster.model
+package org.wa9nnn.util
 
-import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
+import scala.language.implicitConversions
 
-import java.time.LocalDate
-import javax.inject.Inject
-
-case class Contest @Inject() (callSign:CallSign = "",
-                              ourExchange:Exchange =  new Exchange(),
-                              event: String = "FD",
-                              year: Int = {
-  LocalDate.now().getYear
-}) {
-
-  override def toString: String = {
-    s"$event-$year"
-  }
-  lazy val toId:String = {
-    f"$event$year%04d$callSign"
+object BoolConverter {
+  implicit def s2b(s: String): Boolean = {
+    s match {
+      case "true" => true
+      case "1" => true
+      case "yes" => true
+      case _ => false
+    }
   }
 }
-
-

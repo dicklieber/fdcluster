@@ -23,10 +23,11 @@ import org.wa9nnn.fdcluster.javafx.sync.SyncSteps
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHour}
-import org.wa9nnn.fdcluster.{FileLocus, FileManager, store}
 import org.wa9nnn.fdcluster.store.network.FdHour
+import org.wa9nnn.fdcluster.{FileManager, FileLocus, FileManagerConfig, store}
 import org.wa9nnn.util.{CommandLine, StructuredLogging}
 import play.api.libs.json.{JsValue, Json}
+import scalafx.beans.property.ObjectProperty
 import scalafx.collections.ObservableBuffer
 
 import java.nio.file.{Files, Path, StandardOpenOption}
@@ -37,21 +38,16 @@ import scala.collection.concurrent.TrieMap
 /**
  * This can only be used within the [[StoreActor]]
  *
- * @param nodeInfo                    who we are
- * @param ourStationStore             things that may vary with operator.
- * @param journalFilePath             where journal file lives.
  */
 @Singleton
-class StoreMapImpl @Inject()(nodeInfo: NodeInfo,
-                             ourStationStore: OurStationStore,
-                             bandModeStore: BandModeOperatorStore,
+class StoreMapImpl @Inject()( na: NodeAddress,
+                             @Named("qsoMetadata") qsoMetadata: ObjectProperty[QsoMetadata],
                              @Named("allQsos") allQsos: ObservableBuffer[QsoRecord],
                              syncSteps: SyncSteps = new SyncSteps,
-                             fileManager: FileManager,
-                             commandLine: CommandLine
+                             fileManager: FileManager
                             )
   extends Store with StructuredLogging with DefaultInstrumented {
-
+  implicit val nodeddress: NodeAddress = na
 
   /**
    * This is the canonical set of data. If its not here then we know we have to also add to [[byCallsign]] and [[allQsos]]
@@ -60,7 +56,6 @@ class StoreMapImpl @Inject()(nodeInfo: NodeInfo,
   private val byCallsign = new TrieMap[CallSign, Set[QsoRecord]]
 
 
-  logger.info(s"skipJournal: ${commandLine.is("skipJournal")}")
 
   //   override lazy val metricBaseName = MetricName("Store")
   private val random = new SecureRandom()
@@ -77,13 +72,9 @@ class StoreMapImpl @Inject()(nodeInfo: NodeInfo,
           byCallsign.put(targetCallsign, remainder)
         }
       }
-      byUuid.remove(targetQsoRecord.uuid)
+      byUuid.remove(targetQsoRecord.qso.uuid)
     }
   }
-
-
-  implicit val node: NodeAddress = nodeInfo.nodeAddress
-
 
   private val qsoMeter = metrics.meter("qso")
   private val qsosDigestTimer = metrics.timer("qsos digest")
@@ -120,7 +111,7 @@ class StoreMapImpl @Inject()(nodeInfo: NodeInfo,
     if (loadingIndicesFlag) {
       throw new IllegalStateException("Busy loading indices")
     }
-    val maybeExisting = byUuid.putIfAbsent(qsoRecord.uuid, qsoRecord)
+    val maybeExisting = byUuid.putIfAbsent(qsoRecord.qso.uuid, qsoRecord)
     if (maybeExisting.isEmpty) {
       allQsos.add(qsoRecord)
       val callsign = qsoRecord.qso.callsign
@@ -131,14 +122,14 @@ class StoreMapImpl @Inject()(nodeInfo: NodeInfo,
   }
 
   /**
-   * Ony for loadLocalIndicies
+   * Only for loadLocalIndices
    *
    * @param qsoRecord not already in indices!
    */
   private def localInsert(qsoRecord: QsoRecord): Unit = {
-    val maybeExisting = byUuid.putIfAbsent(qsoRecord.uuid, qsoRecord)
+    val maybeExisting = byUuid.putIfAbsent(qsoRecord.qso.uuid, qsoRecord)
     maybeExisting match {
-      case Some(value) =>
+      case Some(_) =>
         logger.error(s"Already have uuid of $qsoRecord")
       case None =>
         val callsign = qsoRecord.qso.callsign
@@ -183,7 +174,8 @@ class StoreMapImpl @Inject()(nodeInfo: NodeInfo,
       case Some(duplicateRecord) =>
         Dup(duplicateRecord)
       case None =>
-        val newRecord = QsoRecord(potentialQso, nodeInfo.contest, ourStationStore.value, nodeInfo.fdLogId)
+        val newRecord = QsoRecord(qso = potentialQso,
+          qsoMetadata = qsoMetadata.value)
         qsoMeter.mark()
         addRecord(newRecord)
     }
@@ -198,21 +190,22 @@ class StoreMapImpl @Inject()(nodeInfo: NodeInfo,
     }
   }
 
-  override def search(search:Search): SearchResult = {
+  override def search(search: Search): SearchResult = {
     val max = search.max
     val matching = byUuid.values.filter { qsorecord => {
-      qsorecord.qso.callsign.contains(search.partial) && search.bandMode == qsorecord.qso.bandMode.bandMode
+      qsorecord.qso.callsign.contains(search.partial) && search.bandMode == qsorecord.qso.bandMode
     }
     }.toSeq
 
     val limited = matching.take(max)
     SearchResult(limited, matching.length)
   }
-  override def dump: QsosFromNode = QsosFromNode(nodeInfo.nodeAddress, byUuid.values.toList.sorted)
+
+  override def dump: QsosFromNode = QsosFromNode(nodeddress, byUuid.values.toList.sorted)
 
   /**
    *
-   * @return ids of all [[NodeDatabase]] known to this node.
+   * @return ids of all nodes known to this node.
    */
   def contactIds: NodeQsoIds = {
     store.NodeQsoIds(byUuid.keys.toSet)
@@ -258,7 +251,7 @@ class StoreMapImpl @Inject()(nodeInfo: NodeInfo,
 
     val sDigest = qsosDigestTimer.time {
       val messageDigest: MessageDigest = MessageDigest.getInstance("SHA-256")
-      byUuid.values.foreach(qr ⇒ messageDigest.update(qr.fdLogId.uuid.getBytes()))
+      byUuid.values.foreach(qr ⇒ messageDigest.update(qr.qso.uuid.getBytes()))
       val bytes = messageDigest.digest()
       val encoder = java.util.Base64.getEncoder
       val bytes1 = encoder.encode(bytes)
@@ -275,53 +268,49 @@ class StoreMapImpl @Inject()(nodeInfo: NodeInfo,
         .sortBy(_.startOfHour)
     }
     val rate = qsoMeter.fifteenMinuteRate
-    val bmo = bandModeStore.bandModeOperator.value
-    if (bmo == null) {
-      logger.error("bmo is null!")
-      sync.NodeStatus(nodeInfo.nodeAddress, nodeInfo.url, byUuid.size, sDigest, hourDigests, ourStationStore.value, new BandModeOperator(), rate)
-    }
-    else
-      sync.NodeStatus(nodeInfo.nodeAddress, nodeInfo.url, byUuid.size, sDigest, hourDigests, ourStationStore.value, bmo, rate)
-  }
+    val currentStation = CurrentStation()
 
-  /**
-   *
-   * @param fdHours [[List.empty]] returns all Uuids for all QSPOs.
-   */
-  override def uuidForHours(fdHours: Set[FdHour]): List[Uuid] = {
-    if (fdHours.isEmpty) {
-      byUuid.keys.toList
-    } else {
-      allQsos.flatMap { qr ⇒
-        if (fdHours.contains(qr.fdHour)) {
-          Seq(qr.uuid)
-        } else {
-          Seq.empty
+    sync.NodeStatus(nodeddress, byUuid.size, sDigest, hourDigests, qsoMetadata.value, currentStation, rate)
+
+  }
+    /**
+     *
+     * @param fdHours [[List.empty]] returns all Uuids for all QSPOs.
+     */
+    override def uuidForHours(fdHours: Set[FdHour]): List[Uuid] = {
+      if (fdHours.isEmpty) {
+        byUuid.keys.toList
+      } else {
+        allQsos.flatMap { qr ⇒
+          if (fdHours.contains(qr.fdHour)) {
+            Seq(qr.qso.uuid)
+          } else {
+            Seq.empty
+          }
         }
-      }
-    }.toList
-  }
+      }.toList
+    }
 
 
-  def get(fdHour: FdHour): List[QsoHour] = {
-    byUuid.values
-      .toList
-      .sorted.groupBy(_.fdHour).values.map(QsoHour(_))
-      .filter(_.fdHour == fdHour)
-      .toList
-  }
+    def get(fdHour: FdHour): List[QsoHour] = {
+      byUuid.values
+        .toList
+        .sorted.groupBy(_.fdHour).values.map(QsoHour(_))
+        .filter(_.fdHour == fdHour)
+        .toList
+    }
 
-  override def debugClear(): Unit = {
-    logger.info(s"Clearing this nodes store for debugging!")
-    byUuid.clear()
-    byCallsign.clear()
-    allQsos.clear()
-  }
+    override def debugClear(): Unit = {
+      logger.info(s"Clearing this nodes store for debugging!")
+      byUuid.clear()
+      byCallsign.clear()
+      allQsos.clear()
+    }
 
-  override def missingUuids(uuidsAtOtherHost: List[Uuid]): List[Uuid] = {
-    uuidsAtOtherHost.filter(otherUuid ⇒
-      !byUuid.contains(otherUuid)
-    )
+    override def missingUuids(uuidsAtOtherHost: List[Uuid]): List[Uuid] = {
+      uuidsAtOtherHost.filter(otherUuid ⇒
+        !byUuid.contains(otherUuid)
+      )
+    }
   }
-}
 

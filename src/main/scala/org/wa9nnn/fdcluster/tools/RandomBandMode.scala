@@ -19,8 +19,8 @@
 
 package org.wa9nnn.fdcluster.tools
 
-import org.wa9nnn.fdcluster.model.BandModeOperator.{Band, Mode}
-import org.wa9nnn.fdcluster.model.{BandModeFactory, BandModeOperator}
+import org.wa9nnn.fdcluster.model.CurrentStation.{Band, Mode}
+import org.wa9nnn.fdcluster.model.{BandMode, BandModeFactory, CurrentStation}
 
 import java.security.SecureRandom
 import javax.inject.Inject
@@ -30,8 +30,8 @@ class RandomBandMode @Inject()(bandModeFactory:BandModeFactory = new BandModeFac
   val modes: List[Mode] = bandModeFactory.modes.map(_.mode)
   val bands: List[Band] = bandModeFactory.avalableBands.map(_.band)
 
-  def next: BandModeOperator = {
-    BandModeOperator(  bands(random.nextInt(bands.length)),
+  def next: BandMode = {
+    BandMode(  bands(random.nextInt(bands.length)),
       modes(random.nextInt(modes.length)))
   }
 }

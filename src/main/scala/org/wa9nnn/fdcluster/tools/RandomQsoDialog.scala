@@ -19,7 +19,7 @@
 
 package org.wa9nnn.fdcluster.tools
 
-import org.wa9nnn.fdcluster.javafx.DialogGrid
+import org.wa9nnn.fdcluster.javafx.GridOfControls
 import org.wa9nnn.util.StructuredLogging
 import scalafx.scene.control.{ButtonType, Dialog}
 
@@ -29,7 +29,7 @@ class RandomQsoDialog(generateRandomQsos: GenerateRandomQsos = GenerateRandomQso
 
 
   val dp = dialogPane()
-  private val dialogGrid = new DialogGrid()
+  private val dialogGrid = new GridOfControls()
   dp.setContent(dialogGrid)
   val ntoGen = dialogGrid.addInt("Qso count", generateRandomQsos.ntoGen)
   val hoursBefore = dialogGrid.addInt("Hours before", generateRandomQsos.hoursBefore)

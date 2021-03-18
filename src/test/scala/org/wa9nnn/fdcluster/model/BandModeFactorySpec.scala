@@ -2,7 +2,7 @@ package org.wa9nnn.fdcluster.model
 
 import org.specs2.matcher.DataTables
 import org.specs2.mutable.Specification
-import org.wa9nnn.fdcluster.model.BandModeOperator.Band
+import org.wa9nnn.fdcluster.model.CurrentStation.Band
 
 class BandModeFactorySpec extends Specification with DataTables {
 

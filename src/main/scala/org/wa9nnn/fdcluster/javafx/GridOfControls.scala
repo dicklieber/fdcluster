@@ -31,9 +31,9 @@ import java.time.Duration
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
- * Help to build a GridPane for a dialog with one column of labeled controls.
+ * Help to build a GridPane of one column of labeled controls.
  */
-class DialogGrid extends GridPane {
+class GridOfControls extends GridPane {
   hgap = 10
   vgap = 10
   padding = Insets(20, 100, 10, 10)
@@ -69,7 +69,6 @@ class DialogGrid extends GridPane {
 
   def addDuration(labelText: String, defValue: Duration): ObjectProperty[Duration] = {
     val row = label(labelText)
-
     val control = new TextField()
     control.text = defValue.toString()
     add(control, 1, row)

@@ -73,6 +73,14 @@ class RunningTaskPane extends RunningTaskInfoConsumer {
   }
 }
 
+class NullRunningTaskConsumer extends RunningTaskInfoConsumer {
+  override def update(info: RunningTaskInfo): Unit = {
+  }
+
+
+  override def done(): Unit = {}
+}
+
 trait RunningTaskInfoConsumer {
   def update(info: RunningTaskInfo): Unit
 

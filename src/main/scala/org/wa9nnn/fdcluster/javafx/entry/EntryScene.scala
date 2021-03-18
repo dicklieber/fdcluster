@@ -33,6 +33,7 @@ import org.wa9nnn.fdcluster.store.{AddResult, Added, Dup}
 import org.wa9nnn.util.WithDisposition
 import play.api.libs.json.Json
 import scalafx.Includes._
+import scalafx.beans.property.ObjectProperty
 import scalafx.event.ActionEvent
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
@@ -48,19 +49,18 @@ import scala.util.{Failure, Success, Try}
  * Create ScalaFX UI for field day entry mode.
  */
 class EntryScene @Inject()(
-                            bandModeStore: BandModeOperatorStore,
                             bandModeOpPanel: BandModeOpPanel,
-                            ourStationStore: OurStationStore,
+                            @Named("contest") contestProperty: ObjectProperty[Contest],
+                            @Named("qsoMetadata") qsoMetadataProperty: ObjectProperty[QsoMetadata],
+                            @Named("currentStation") currentStation: ObjectProperty[CurrentStation],
                             statsPane: StatsPane,
                             statusPane: StatusPane,
                             @Inject() @Named("store") store: ActorRef) {
   private implicit val timeout = Timeout(5, TimeUnit.SECONDS)
-  implicit val bandMode = bandModeStore.bandMode
 
-  var actionResult = new ActionResult(store)
+  var actionResult = new ActionResult(store, qsoMetadataProperty.value)
   val qsoCallsign = new CallSignField(actionResult)
   val qsoClass = new ClassField()
-  private val value: OurStation = ourStationStore.value
 
   val qsoSection = new SectionField()
 
@@ -137,7 +137,7 @@ class EntryScene @Inject()(
   def save(): Unit = {
     import org.wa9nnn.fdcluster.model.MessageFormats._
     val potentialQso: Qso = readQso()
-    if (potentialQso.callsign == ourStationStore.value.ourCallsign) {
+    if (potentialQso.callsign == contestProperty.value.callSign) {
       actionResult.showSad(s"Can't work our own station: \n${potentialQso.callsign}!")
     }
     else {
@@ -174,7 +174,7 @@ class EntryScene @Inject()(
 
   def readQso(): Qso = {
     val exchange = Exchange(qsoClass.text.value, qsoSection.text.value)
-    model.Qso(qsoCallsign.text.value, bandModeStore.bandModeOperator.value, exchange)
+    model.Qso(qsoCallsign.text.value, currentStation.value.bandMode, exchange)
   }
 
   /**

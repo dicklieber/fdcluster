@@ -22,7 +22,7 @@ package org.wa9nnn.fdcluster.javafx.data
 import akka.util.Timeout
 import com.google.inject.Inject
 import com.google.inject.name.Named
-import org.wa9nnn.fdcluster.{FileLocus, FileManager}
+import org.wa9nnn.fdcluster.{FileLocus, FileManagerConfig}
 import org.wa9nnn.fdcluster.javafx.entry.Sections
 import org.wa9nnn.fdcluster.model.QsoRecord
 import org.wa9nnn.util.TimeHelpers
@@ -45,7 +45,7 @@ import java.util.concurrent.TimeUnit
 /**
  * Create JavaFX UI to view QSOs.
  */
-class DataScene @Inject()(fileManager: FileManager,
+class DataScene @Inject()(fileManager: FileManagerConfig,
                           @Named("allQsos") allQsoBuffer: ObservableBuffer[QsoRecord]) {
 
   implicit val timeout: Timeout = Timeout(5, TimeUnit.SECONDS)

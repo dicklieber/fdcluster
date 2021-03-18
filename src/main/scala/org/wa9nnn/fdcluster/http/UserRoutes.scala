@@ -30,18 +30,18 @@ import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport._
 import org.wa9nnn.fdcluster.javafx.sync.{RequestUuidsForHour, UuidsAtHost}
-import org.wa9nnn.fdcluster.model.QsosFromNode
+import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.sync.QsoHour
-import org.wa9nnn.fdcluster.store.{DumpQsos, NodeInfo}
+import org.wa9nnn.fdcluster.model.{NodeAddress, QsosFromNode}
+import org.wa9nnn.fdcluster.store.DumpQsos
 import org.wa9nnn.fdcluster.store.network.FdHour
 import play.api.libs.json.JsValue
-import org.wa9nnn.fdcluster.model.MessageFormats._
 
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
 trait UserRoutes extends LazyLogging {
-  val nodeInfo: NodeInfo
+  val nodeAddress: NodeAddress
   /**
    * Automatically applied to convert the JsValue, e.g. {{Json.toJson(qsoHours)}} to what complete() needs.
    * complete(Json.toJson(qsoHours))
@@ -54,7 +54,7 @@ trait UserRoutes extends LazyLogging {
   val store: ActorRef
 
   // Required by the `ask` (?) method below
-  implicit lazy val timeout = Timeout(5 seconds) // usually we'd obtain the timeout from the system's configuration
+  implicit lazy val timeout: Timeout = Timeout(5 seconds) // usually we'd obtain the timeout from the system's configuration
 
   lazy val userRoutes: Route =
     encodeResponse(

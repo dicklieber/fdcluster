@@ -1,12 +1,11 @@
 
 package org.wa9nnn.fdcluster.store
 
-import org.wa9nnn.fdcluster.model.MessageFormats.{CallSign, Uuid}
-import org.wa9nnn.fdcluster.model.sync.NodeStatus
+import org.wa9nnn.fdcluster.model.MessageFormats.Uuid
 import org.wa9nnn.fdcluster.model._
+import org.wa9nnn.fdcluster.model.sync.NodeStatus
 import org.wa9nnn.fdcluster.store.network.FdHour
 
-import java.util.UUID
 import scala.collection.mutable.ArrayBuffer
 
 class MockStore extends Store {
@@ -18,12 +17,9 @@ class MockStore extends Store {
    * @return Added or Dup
    */
   override def add(potentialQso: Qso): AddResult = {
-    val fdLogId = new FdLogId(NodeAddress())
-    val ourStation = OurStation("WM9W")
-    val contest = Contest(year = 19)
-    val qsoRecord = QsoRecord(potentialQso, contest, ourStation, fdLogId)
+    val qsoRecord = QsoRecord(potentialQso, QsoMetadata())
     qsos.append(qsoRecord)
-    new Added(qsoRecord)
+     Added(qsoRecord)
   }
 
   /**
@@ -36,7 +32,7 @@ class MockStore extends Store {
   /**
    * find potential matches by callsign
    *
-   * @param in some or all of a callsign.
+   * @param search some or all of a callsign.
    * @return potneital matches.
    */
   override def search(search: Search): SearchResult = throw new NotImplementedError()

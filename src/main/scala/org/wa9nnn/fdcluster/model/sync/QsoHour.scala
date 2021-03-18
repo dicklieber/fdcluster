@@ -36,7 +36,7 @@ case class QsoHour(fdHour: FdHour, qsos: List[QsoRecord]) {
 
   lazy val hourDigest: QsoHourDigest = {
     val messageDigest: MessageDigest = MessageDigest.getInstance("SHA-256")
-    qsos.foreach(qr ⇒ messageDigest.update(qr.fdLogId.uuid.getBytes()))
+    qsos.foreach(qr ⇒ messageDigest.update(qr.qso.uuid.getBytes()))
     val bytes = messageDigest.digest()
     val encoder = java.util.Base64.getEncoder
     val bytes1 = encoder.encode(bytes)
@@ -45,7 +45,7 @@ case class QsoHour(fdHour: FdHour, qsos: List[QsoRecord]) {
   }
 
   lazy val qsoIds: QsoHourIds = {
-    val ids = qsos.map(_.fdLogId.uuid)
+    val ids = qsos.map(_.qso.uuid)
     QsoHourIds(fdHour, ids)
   }
 }

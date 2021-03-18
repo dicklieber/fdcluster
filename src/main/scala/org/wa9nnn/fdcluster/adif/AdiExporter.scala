@@ -69,7 +69,7 @@ class AdiExporter @Inject()(@Named("allQsos") allQsos: ObservableBuffer[QsoRecor
 
 
       //records
-      allQsos.foreach { qso =>
+      allQsos.foreach { qso: QsoRecord =>
         AdifQsoAdapter(qso.qso).entries.toSeq.sorted.foreach(adifentry =>
           print(adifentry))
         addOne()

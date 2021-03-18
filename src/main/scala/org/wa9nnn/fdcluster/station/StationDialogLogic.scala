@@ -29,7 +29,7 @@ import scalafx.scene.control.SpinnerValueFactory
 import scala.util.{Failure, Try}
 
 /**
- * Handles interaction between [[org.wa9nnn.fdcluster.javafx.menu.StationDialog]] controls
+ * Handles interaction between [[org.wa9nnn.fdcluster.javafx.menu.ContestDialog]] controls
  *
  * Given values for: callsign, transmitters, category & section
  * Set exchangeLabel to Exchange

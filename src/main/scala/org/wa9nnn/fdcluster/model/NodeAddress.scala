@@ -19,29 +19,68 @@
 
 package org.wa9nnn.fdcluster.model
 
+import com.typesafe.config.Config
+
+import java.net.{Inet4Address, InetAddress, NetworkInterface, URL}
 import javax.inject.Inject
+import scala.jdk.CollectionConverters._
 
 /**
  * Identifies one node in the cluster.
  * For testing there can be more than one node at an IP address. So the instance is used to qualify them.
- * This is not suitable to send messages to a node. Thats in org.wa9nnn.fdcluster.model.sync.NodeStatus#apiUrl()
+ * This is not suitable to send messages to a node. That's in org.wa9nnn.fdcluster.model.sync.NodeStatus#apiUrl()
  *
- * @param instance from "instance in application.conf. Can be overridden on the command line. e.g. -Dinstance=2
- * @param nodeAddress
+ * @param host ip address of this node.
+ * @param instance    from application.conf or command line e.g -Dinstance=2
+ * @param httpPort    as opposed to the multicast port.
  */
-case class NodeAddress @Inject()(instance: Int = 0, nodeAddress: String = "localhost") extends Ordered[NodeAddress] {
-  def display: String = {
-    s"$nodeAddress:$instance"
+case class NodeAddress @Inject()(host:String = "localhost", instance: Int=0, httpPort: Int=8000) extends Ordered[NodeAddress] {
+  val display: String = {
+    s"$host:$instance"
   }
-  def graphiteName:String = {
-    s"${nodeAddress.replace('.', '_')}:$instance"
+  val graphiteName: String = {
+    s"${host.replace('.', '_')}:$instance"
   }
 
-  override def compare(that: NodeAddress): Int = {
-    var ret = this.nodeAddress compareTo that.nodeAddress
-    if (ret == 0) {
-      ret = this.instance compareTo that.instance
-    }
-    ret
+  val url: URL = {
+    new URL("http", host, httpPort, "")
   }
+
+  val inetAddress:InetAddress = InetAddress.getByName(host)
+  override def compare(that: NodeAddress): Int = {
+    that match {
+      case address: NodeAddress =>
+        var ret = address.host compareTo that.host
+        if (ret == 0) {
+          ret = this.instance compareTo that.instance
+        }
+        ret
+      case _ => -1
+    }
+  }
+}
+
+object NodeAddress {
+  def apply(config: Config): NodeAddress = {
+    val instance = config.getInt("instance")
+    val httpPort = config.getInt("fdcluster.http.port")
+    NodeAddress(determineIp().getHostAddress, instance, httpPort)
+  }
+
+  /**
+   *
+   * @return this 1st  V4 address that is not the loopback address.
+   */
+  def determineIp(): InetAddress = {
+    (for {
+      networkInterface <- NetworkInterface.getNetworkInterfaces.asScala.toList
+      inetAddresses <- networkInterface.getInetAddresses.asScala
+      if !inetAddresses.isLoopbackAddress && inetAddresses.isInstanceOf[Inet4Address]
+    } yield {
+      inetAddresses
+    })
+      .headOption.getOrElse(throw new IllegalStateException("No IP address!"))
+
+  }
+
 }

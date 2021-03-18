@@ -97,11 +97,11 @@ class ClusterTable extends LazyLogging {
       buildRow("QSOs", _.nodeStatus.qsoCount),
       buildRow("QSO/Minute", _.nodeStatus.qsoRate),
       buildRow("Digest", _.nodeStatus.digest),
-      buildRow("Band", _.nodeStatus.bandMode.bandName),
-      buildRow("Mode", _.nodeStatus.bandMode.modeName),
-      buildRow("Operator", _.nodeStatus.ourStation.ourCallsign),
-      buildRow("Rig", _.nodeStatus.ourStation.rig),
-      buildRow("Antenna", _.nodeStatus.ourStation.antenna),
+      buildRow("Band", _.nodeStatus.bandModeOperator.bandName),
+      buildRow("Mode", _.nodeStatus.bandModeOperator.modeName),
+      buildRow("Operator", _.nodeStatus.bandModeOperator.operator),
+      buildRow("Rig", _.nodeStatus.bandModeOperator.rig),
+      buildRow("Antenna", _.nodeStatus.bandModeOperator.antenna),
     ) ++ buildHours
 
     data.clear()

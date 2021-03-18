@@ -22,7 +22,7 @@ package org.wa9nnn.fdcluster.model
 import com.typesafe.config.{Config, ConfigFactory}
 import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.model.AvailableBand.availaBandRegx
-import org.wa9nnn.fdcluster.model.BandModeOperator._
+import org.wa9nnn.fdcluster.model.CurrentStation._
 import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
 
 import javax.inject.Inject
@@ -81,8 +81,8 @@ class BandModeFactory @Inject()(config: Config = ConfigFactory.load()) extends L
       rigMode -> am.mode
     }).toMap
   }
-  def bandModeOperator(bandName: Band = "20m", modeName: Mode = "PH", operator: CallSign = ""):BandModeOperator = {
+  def bandModeOperator(bandName: Band = "20m", modeName: Mode = "PH", operator: CallSign = ""):CurrentStation = {
     //todo handle band validation.
-    new BandModeOperator(bandName, modeMapping(modeName), operator)
+    new CurrentStation(bandName, modeMapping(modeName), operator)
   }
 }

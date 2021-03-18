@@ -19,7 +19,7 @@
 
 package org.wa9nnn.fdcluster.adif
 
-import org.wa9nnn.fdcluster.model.{BandModeOperator, Exchange, Qso}
+import org.wa9nnn.fdcluster.model.{BandMode, Exchange, Qso}
 import org.wa9nnn.fdcluster.{model, _}
 import org.wa9nnn.util.TimeHelpers.utcZoneId
 
@@ -57,7 +57,7 @@ object AdifQsoAdapter {
       }
     }
 
-    val bandMode = BandModeOperator(
+    val bandMode = BandMode(
       bandName = m"BAND",
       modeName = m"MODE"
     )
@@ -76,20 +76,21 @@ object AdifQsoAdapter {
     )
   }
 
-  def apply(model: Qso): adif.AdifQso = {
+  def apply(qso: Qso): adif.AdifQso = {
     implicit def e(t2: (String, String)): AdifEntry = {
       AdifEntry(t2._1, t2._2)
     }
 
-    val zdt = ZonedDateTime.ofInstant(model.stamp, utcZoneId)
+    val zdt = ZonedDateTime.ofInstant(qso.stamp, utcZoneId)
     val entries = Set.newBuilder[AdifEntry]
+    entries += "APP_FDC_UUID" -> qso.uuid
     entries += "QSO_DATE" -> zdt.toLocalDate.format(BASIC_ISO_DATE)
     entries += "TIME_ON" -> zdt.toLocalTime.format(timeFormat)
-    entries += "CALL" -> model.callsign
-    entries += "BAND" -> model.bandMode.bandName
-    entries += "MODE" -> model.bandMode.modeName
-    entries += "CLASS" -> model.exchange.entryClass
-    entries += "ARRL_SECT" -> model.exchange.section
+    entries += "CALL" -> qso.callsign
+    entries += "BAND" -> qso.bandMode.bandName
+    entries += "MODE" -> qso.bandMode.modeName
+    entries += "CLASS" -> qso.exchange.entryClass
+    entries += "ARRL_SECT" -> qso.exchange.section
 
     adif.AdifQso(entries.result())
   }

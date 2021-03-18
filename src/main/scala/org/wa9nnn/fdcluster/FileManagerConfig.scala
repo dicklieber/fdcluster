@@ -19,19 +19,18 @@
 
 package org.wa9nnn.fdcluster
 
-import com.typesafe.config.{Config, ConfigFactory}
+import com.typesafe.config.Config
 import org.wa9nnn.fdcluster.FileManagerConfig.logFilePropertyName
 import org.wa9nnn.fdcluster.model.Contest
+import scalafx.beans.property.ObjectProperty
 
 import java.nio.file.{Files, Path, Paths}
+import javax.inject.{Inject, Named}
 
 /**
  * All access to various files should go through this.
  */
-class FileManagerConfig(config: Config, val contest: Contest) extends FileManager {
-  def this() {
-    this(ConfigFactory.load(), Contest())
-  }
+class FileManagerConfig @Inject()(config: Config, @Named("contest")val contest: ObjectProperty[Contest]) extends FileManager {
 
   override def directory: Path = Paths.get(config.getString("directory"))
 
@@ -57,11 +56,11 @@ trait FileManager {
 
   def directory: Path
 
-  def contest: Contest
+  def contest: ObjectProperty[Contest]
 
   val map: Map[FileLocus, Path] = FileLocus.values().map { locus =>
     if (locus == FileLocus.contest) {
-      locus -> directory.resolve(contest.toString)
+      locus -> directory.resolve(contest.value.event)
     } else
       locus -> directory.resolve(locus.getPathPiece)
   }.toMap

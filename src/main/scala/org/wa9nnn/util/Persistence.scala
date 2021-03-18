@@ -20,7 +20,7 @@
 package org.wa9nnn.util
 
 import com.github.racc.tscg.TypesafeConfig
-import org.wa9nnn.fdcluster.{FileLocus, FileManager}
+import org.wa9nnn.fdcluster.{FileManager, FileLocus, FileManagerConfig}
 import play.api.libs.json.{Json, Reads, Writes}
 
 import java.nio.file.StandardOpenOption._
@@ -33,7 +33,7 @@ import scala.util.{Failure, Success, Try}
 /**
  * A simple persistence engine that between case classes and files
  * Files are persisted in the [[basePath]] directory using a file name that is the class name (without path)
- * so e.g. [[org.wa9nnn.fdcluster.model.BandModeOperator#BandMode(java.lang.String, java.lang.String)]] is saved as <basePath>/BandMode
+ * so e.g. [[org.wa9nnn.fdcluster.model.CurrentStation#BandMode(java.lang.String, java.lang.String)]] is saved as <basePath>/BandMode
  *
  * @param fileManager where to write files
  */

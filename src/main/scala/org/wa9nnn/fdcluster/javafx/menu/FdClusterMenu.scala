@@ -24,7 +24,7 @@ import com.google.inject.Injector
 import com.google.inject.name.Named
 import com.typesafe.scalalogging.LazyLogging
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
-import org.wa9nnn.fdcluster.FileManager
+import org.wa9nnn.fdcluster.FileManagerConfig
 import org.wa9nnn.fdcluster.cabrillo.{CabrilloDialog, CabrilloExportRequest}
 import org.wa9nnn.fdcluster.javafx.debug.DebugRemoveDialog
 import org.wa9nnn.fdcluster.javafx.sync.{SyncDialog, SyncSteps}
@@ -47,7 +47,7 @@ class FdClusterMenu @Inject()(
                                @Named("store") store: ActorRef,
                                syncSteps: SyncSteps,
                                syncDialog: SyncDialog,
-                               fileManager: FileManager,
+                               fileManager: FileManagerConfig,
                                debugRemoveDialog: DebugRemoveDialog) extends LazyLogging {
   private implicit val timeout = Timeout(5 seconds)
   private val desktop = Desktop.getDesktop
@@ -70,7 +70,7 @@ class FdClusterMenu @Inject()(
   private val currentStationMenuItem = new MenuItem {
     text = "Current Station"
     onAction = { _: ActionEvent =>
-      injector.instance[StationDialog].showAndWait()
+      injector.instance[ContestDialog].showAndWait()
     }
   }
   private val syncNowMenuItem = new MenuItem {

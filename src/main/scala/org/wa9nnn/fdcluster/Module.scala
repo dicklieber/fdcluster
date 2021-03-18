@@ -32,16 +32,15 @@ import org.wa9nnn.fdcluster.store._
 import org.wa9nnn.fdcluster.tools.RandomQsoGenerator
 import org.wa9nnn.util.{CommandLine, CommandLineScalaFxImpl}
 import scalafx.application.JFXApp.Parameters
+import scalafx.beans.property.ObjectProperty
 import scalafx.collections.ObservableBuffer
 
-import java.net.{Inet4Address, InetAddress, NetworkInterface, URL}
 import javax.inject.{Named, Singleton}
-import scala.jdk.CollectionConverters._
 
 /**
- * This is where dependemnch injection (Guice) is managed.
+ * This is where dependency injection (Guice) is managed.
  * Note not all objects are specifically configured here. Many, (most) are simply annotated with @Inject() and
- * scala guice magic does automaticaly addsa them as required.
+ * scala guice magic does automatically addsa them as required.
  *
  * @param parameters command line args
  */
@@ -51,100 +50,56 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
     try {
       val commandLine = new CommandLineScalaFxImpl(parameters)
       bind[CommandLine].toInstance(commandLine)
-      val contest = Contest(commandLine)
-      bind[Contest].toInstance(contest)
       val config = ConfigFactory.load
-      val fileManager = new FileManagerConfig(config, contest)
-      // FileManager sets up log file so load early before logging start.
-      bind[FileManager].toInstance(fileManager)
       val actorSystem = ActorSystem("default", config)
-
+      bind[NodeAddress]
+        .toInstance(NodeAddress.apply(config))
+      bind[FileManager].to[FileManagerConfig]
+      bind[ObjectProperty[Contest]]
+        .annotatedWithName("contest")
+        .toInstance(ObjectProperty[Contest](Contest()))
+      bind[ObjectProperty[QsoMetadata]]
+        .annotatedWithName("qsoMetadata")
+        .toInstance(ObjectProperty(QsoMetadata()))
+      bind[ObjectProperty[CurrentStation]]
+        .annotatedWithName("currentStation")
+        .toInstance(ObjectProperty(CurrentStation()))
+      bind[ObservableBuffer[QsoRecord]]
+        .annotatedWithName("allQsos")
+        .toInstance(new ObservableBuffer[QsoRecord])
+      bind[ObservableBuffer[ProgressStep]]
+        .annotatedWithName("stepsData")
+        .toInstance(new ObservableBuffer[ProgressStep])
       val runningTaskPane = new RunningTaskPane
       bind[RunningTaskPane].toInstance(runningTaskPane)
       bind[RunningTaskInfoConsumer].toInstance(runningTaskPane)
       bind[ActorSystem].toInstance(actorSystem)
       bind[Config].toInstance(actorSystem.settings.config)
       install(TypesafeConfigModule.fromConfigWithPackage(config, "org.wa9nnn"))
-      bind[OurStationStore].asEagerSingleton()
       bind[Reporter].asEagerSingleton()
       bind[Store].to[StoreMapImpl]
     }
-
     catch {
       case e: Throwable ⇒
         e.printStackTrace()
     }
-
   }
 
-  @Provides
-  @Singleton
-  def getNodeInfo(contest: Contest,
-                  nodeAddress: NodeAddress,
-                  @Named("ourInetAddresss") inetAddress: InetAddress,
-                  config: Config): NodeInfo = {
-    val chttp = config.getConfig("fdcluster.http")
-    val hostName = inetAddress.getCanonicalHostName
-    val port = chttp.getInt("port")
-    val url = new URL(s"http://$hostName:$port")
-    val ret = new NodeInfoImpl(contest, nodeAddress, url)
-    ret
-  }
 
   @Provides
   @Singleton
   @Named("store")
   def getMyActor(actorSystem: ActorSystem,
                  injector: Injector,
-                 nodeInfo: NodeInfo,
-                 @Named("ourInetAddresss") inetAddress: InetAddress,
+                 nodeAddress: NodeAddress,
                  config: Config,
                  syncSteps: SyncSteps,
                  storeMapImpl: StoreMapImpl,
                  journalLoader: JournalLoader,
                  randomQsoGenerator: RandomQsoGenerator
                 ): ActorRef = {
-    actorSystem.actorOf(Props(new StoreActor(injector, nodeInfo, inetAddress, config, syncSteps, storeMapImpl, journalLoader, randomQsoGenerator)))
+    actorSystem.actorOf(Props(new StoreActor(injector, nodeAddress, config, syncSteps, storeMapImpl, journalLoader, randomQsoGenerator)))
   }
 
-  /**
-   *
-   * @return this 1st  V4 address that is not the loopback address.
-   */
-  @Provides
-  @Singleton
-  @Named("ourInetAddresss")
-  def determineIp(): InetAddress = {
-    (for {
-      networkInterface <- NetworkInterface.getNetworkInterfaces.asScala.toList
-      inetAddresses <- networkInterface.getInetAddresses.asScala
-      if !inetAddresses.isLoopbackAddress && inetAddresses.isInstanceOf[Inet4Address]
-    } yield {
-      inetAddresses
-    })
-      .headOption.getOrElse(throw new IllegalStateException("No IP address!"))
-
-  }
-
-  @Provides
-  @Singleton
-  def nodeAddress(@Named("ourInetAddresss") inetAddress: InetAddress, config: Config): NodeAddress = {
-    val instance = config.getInt("instance")
-    NodeAddress(instance, inetAddress.getCanonicalHostName)
-  }
-
-  @Provides
-  @Singleton
-  @Named("stepsData")
-  def stepsData(): ObservableBuffer[ProgressStep] = {
-    ObservableBuffer[ProgressStep](Seq.empty)
-  }
-
-  @Provides
-  @Singleton
-  @Named("allQsos")
-  def qsoBufferData(): ObservableBuffer[QsoRecord] = {
-    ObservableBuffer[QsoRecord](Seq.empty)
-  }
 
 }

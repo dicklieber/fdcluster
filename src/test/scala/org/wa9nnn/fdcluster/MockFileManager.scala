@@ -13,5 +13,5 @@ case class MockFileManager() extends FileManager {
     FileUtils.deleteDirectory(directory.toFile)
   }
 
-  override def contest: Contest = Contest("FD", 2019)
+  override def contest: Contest = Contest()
 }

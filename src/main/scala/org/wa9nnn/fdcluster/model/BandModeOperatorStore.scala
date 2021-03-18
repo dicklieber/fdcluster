@@ -21,7 +21,7 @@ package org.wa9nnn.fdcluster.model
 
 //import org.wa9nnn.fdcluster.model.BandModeOperator.{Band, Mode}
 
-import org.wa9nnn.fdcluster.model.BandModeOperator.{Band, Mode}
+import org.wa9nnn.fdcluster.model.CurrentStation.{Band, Mode}
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.util.{Persistence, StructuredLogging}
 import scalafx.beans.property.{BooleanProperty, ObjectProperty, ReadOnlyObjectWrapper, StringProperty}
@@ -32,7 +32,7 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class BandModeOperatorStore @Inject()(persistence: Persistence) extends StructuredLogging {
-  private val bmo: BandModeOperator = persistence.loadFromFile[BandModeOperator]().getOrElse(BandModeOperator())
+  private val bmo: CurrentStation = persistence.loadFromFile[CurrentStation]().getOrElse(CurrentStation())
 
   val band: StringProperty = new StringProperty(bmo.bandName) {
     onChange { (_, _, _) =>
@@ -49,7 +49,7 @@ class BandModeOperatorStore @Inject()(persistence: Persistence) extends Structur
       save()
     }
   }
-  val bandModeOperator: ObjectProperty[BandModeOperator] = ReadOnlyObjectWrapper(bmo)
+  val bandModeOperator: ObjectProperty[CurrentStation] = ReadOnlyObjectWrapper(bmo)
   val bandMode: ReadOnlyObjectWrapper[BandMode] = ReadOnlyObjectWrapper(bmo.bandMode)
 
   val knownOperators: ObservableBuffer[CallSign] = ObservableBuffer[CallSign](persistence.loadFromFile[KnownOperators]().getOrElse(new KnownOperators).callSigns)
@@ -59,7 +59,7 @@ class BandModeOperatorStore @Inject()(persistence: Persistence) extends Structur
 
 
   private def save(): Unit = {
-    val bmo = BandModeOperator(band.value, mode.value, operator.value)
+    val bmo = CurrentStation(band.value, mode.value, operator.value)
     logJson("bmochange", bmo)
     bandModeOperator.value = bmo
     bandMode.value = bmo.bandMode
@@ -92,15 +92,20 @@ class Compositor(boolProperties: BooleanProperty*) extends BooleanProperty {
 
 
 /**
- * safer to construct via {{org.wa9nnn.fdlog.model.BandModeFactory#apply(java.lang.String, java.lang.String)}}
+ *
+ * @param bandName band name limited to whats allow for contest
+ * @param modeName CW,DI,PH
+ * @param operator callsign of operator. must be a callsign
+ * @param rig using this rig free form.
+ * @param antenna and this antenna free form.
  */
-case class BandModeOperator(bandName: Band = "20m", modeName: Mode = "PH", operator: CallSign = "") {
+case class CurrentStation(bandName: Band = "20m", modeName: Mode = "PH", operator: CallSign = "", rig: String = "", antenna: String = "") {
   override def toString: String = s"$bandName $modeName $operator"
 
-  def bandMode: BandMode = BandMode(bandName, modeName)
+  lazy val bandMode: BandMode = BandMode(bandName, modeName)
 }
 
-object BandModeOperator {
+object CurrentStation {
   type Band = String
   type Mode = String
 

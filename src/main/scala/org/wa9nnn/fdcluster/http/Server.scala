@@ -19,8 +19,6 @@
 
 package org.wa9nnn.fdcluster.http
 
-import java.net.URL
-
 import akka.actor.{ActorRef, ActorSystem}
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.marshalling.ToResponseMarshallable
@@ -28,9 +26,10 @@ import akka.http.scaladsl.server.Route
 import com.google.inject.Inject
 import com.google.inject.name.Named
 import com.typesafe.config.Config
-import org.wa9nnn.fdcluster.store.NodeInfo
+import org.wa9nnn.fdcluster.model.NodeAddress
 import play.api.libs.json.{JsValue, Json}
 
+import java.net.URL
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.implicitConversions
 import scala.util.{Failure, Success}
@@ -45,7 +44,7 @@ import scala.util.{Failure, Success}
 class Server @Inject()(@Inject() @Named("store") val store: ActorRef,
                        system: ActorSystem,
                        config: Config,
-                       val nodeInfo: NodeInfo) extends UserRoutes {
+                       val nodeAddress: NodeAddress) extends UserRoutes {
   private implicit val s = system
   implicit val executionContext: ExecutionContext = system.dispatcher
 
@@ -65,7 +64,7 @@ class Server @Inject()(@Inject() @Named("store") val store: ActorRef,
   //#main-class
 
   //#http-server
-  private val url: URL = nodeInfo.url
+  private val url: URL = nodeAddress.url
   private val host: String = url.getHost
   private val port: Int = url.getPort
   val serverBinding: Future[Http.ServerBinding] = Http().bindAndHandle(routes, host, port)

@@ -19,15 +19,17 @@
 
 package org.wa9nnn.fdcluster.javafx.menu
 
-import org.wa9nnn.fdcluster.javafx.entry.{EntryCategory, Sections}
 import org.wa9nnn.fdcluster.javafx.ClassField
 import org.wa9nnn.fdcluster.javafx.entry.section.Section
-import org.wa9nnn.fdcluster.model.{OurStation, OurStationStore}
+import org.wa9nnn.fdcluster.javafx.entry.{EntryCategory, Sections}
+import org.wa9nnn.fdcluster.model.Contest
 import org.wa9nnn.fdcluster.station.StationDialogLogic
 import org.wa9nnn.util.InputHelper.forceCaps
 import org.wa9nnn.util.StructuredLogging
 import scalafx.Includes._
 import scalafx.application.Platform
+import scalafx.beans.binding.Bindings
+import scalafx.beans.property.{IntegerProperty, ObjectProperty}
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Node
 import scalafx.scene.control.ButtonBar.ButtonData
@@ -41,21 +43,21 @@ import javax.inject.Inject
 /**
  * UI for things that need to be setup for the contest.
  *
- * @param ourStationStore where the data lives.
+ * @param contest where the data lives.
  */
-class StationDialog @Inject()(ourStationStore: OurStationStore) extends Dialog[OurStation] with StructuredLogging {
+class ContestDialog @Inject()(currentProperty: ObjectProperty[Contest]) extends Dialog[Contest] with StructuredLogging {
+  val current: Contest = currentProperty.value
   val dp: DialogPane = dialogPane()
 
   private val saveButton = new ButtonType("Save", ButtonData.OKDone)
   private val cancelButton = ButtonType.Cancel
 
-  private val current: OurStation = ourStationStore.apply()
   private val callSign = new ClassField() {
-    text = current.ourCallsign
-    tooltip = """Used in the "Info Sent" field in QSO."""
+    text = current.callSign
+    tooltip = """Callsign of the club or individual entrnt.."""
   }
   private val transmitters = new Spinner[Integer](1, 30, 1) {
-    valueFactory().value = current.transmitters
+    valueFactory().value = current.ourExchange.transmitters
     tooltip = "Number of simultaneous transmitters. Combined with category to produce exchange class."
   }
 
@@ -66,7 +68,7 @@ class StationDialog @Inject()(ourStationStore: OurStationStore) extends Dialog[O
         h.category
       case _ => "-Choose Category-"
     }
-    selectionModel.value.select(EntryCategory.fromEntryClass(current.exchange.entryClass))
+    selectionModel.value.select(EntryCategory.fromEntryClass(current.ourExchange.entryClass))
   }
 
   private val section = new ComboBox[Section](Sections.sortedByCode) {
@@ -78,16 +80,20 @@ class StationDialog @Inject()(ourStationStore: OurStationStore) extends Dialog[O
       else
         "-Choose Section-"
     }
-    selectionModel.value.select(Sections.byCode(current.exchange.section))
+    selectionModel.value.select(Sections.byCode(current.ourExchange.section))
   }
+  val yearProperty = IntegerProperty(current.year)
 
-  private val rig = new TextField() {
-    text = current.rig
+  private val year = new TextField() {
+    Bindings.createStringBinding(() =>
+      yearProperty.toString()
+      , yearProperty)
   }
-  private val antenna = new TextField() {
-    text = current.antenna
+  private val event = new ComboBox[String](Seq("FD", "WFD")) {
+    tooltip =
+      """FD ARRL Field Day (June).
+        |WFD Winter Field Day (January)""".stripMargin
   }
-
   private val exchangeDisplay: Label = new Label() {
     style = ""
   }
@@ -107,8 +113,8 @@ class StationDialog @Inject()(ourStationStore: OurStationStore) extends Dialog[O
   resultConverter = {
     button: ButtonType ⇒
       if (button == saveButton) {
-        val newOurStation = OurStation(callSign.text.value, stationDialogLogic.exchange.get, rig.text.value, antenna.text.value)
-        ourStationStore.value = newOurStation
+        new Contest(callSign.text.value, stationDialogLogic.exchange.get,
+          event.value.value, yearProperty.value)
       }
       null
   }
@@ -131,12 +137,13 @@ class StationDialog @Inject()(ourStationStore: OurStationStore) extends Dialog[O
       add(node, 1, r)
     }
 
-    add("Station Callsign", callSign)
+    add("Event", event)
+    add("Year", year)
+    add("Entrant Callsign", callSign)
     add("Transmitter", transmitters)
     add("Category", category)
     add("Section", section)
-    add("Rig", rig)
-    add("Antenna", antenna)
+    add("Event", event)
 
   }
   val stationDialogLogic = new StationDialogLogic(

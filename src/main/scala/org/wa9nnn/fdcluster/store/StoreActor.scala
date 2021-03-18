@@ -42,28 +42,26 @@ import org.wa9nnn.fdcluster.tools.{GenerateRandomQsos, RandomQsoGenerator}
 import org.wa9nnn.util.{ImportTask, LaurelDbImporterTask}
 import play.api.libs.json.Json
 
-import java.net.InetAddress
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
 class StoreActor(injector: Injector,
-                 nodeInfo: NodeInfo,
-                 inetAddress: InetAddress, config: Config,
+                 nodeAddress: NodeAddress, config: Config,
                  syncSteps: SyncSteps,
                  store: StoreMapImpl,
                  journalLoader: JournalLoader,
                  randomQso: RandomQsoGenerator
                 ) extends Actor with LazyLogging with DefaultInstrumented {
-  private val clusterState = new ClusterState(nodeInfo.nodeAddress)
+  private val clusterState = new ClusterState(nodeAddress)
   private implicit val timeout: Timeout = Timeout(5 seconds)
 
 
-  private val ourNode = nodeInfo.nodeAddress
+//  private val ourNode = nodeInfo.nodeAddress
 
   logger.info(s"StoreActor: ${self.path}")
 
-  context.actorOf(MulticastListenerActor.props(inetAddress, config), "MulticastListener")
+  context.actorOf(MulticastListenerActor.props(nodeAddress.inetAddress, config), "MulticastListener")
   private val senderActor: ActorRef = context.actorOf(MultcastSenderActor.props(config), "MulticastSender")
   private val clientActor = context.actorOf(ClientActor.props(syncSteps))
 
@@ -79,7 +77,7 @@ class StoreActor(injector: Injector,
       val addResult: AddResult = store.add(potentialQso)
       addResult match {
         case Added(addedQsoRecord) ⇒
-          val record = DistributedQsoRecord(addedQsoRecord, nodeInfo.nodeAddress, store.size)
+          val record = DistributedQsoRecord(addedQsoRecord, nodeAddress, store.size)
           senderActor ! JsonContainer(record.getClass.getSimpleName, record)
         case unexpected ⇒
           println(s"Received: $unexpected")
@@ -91,12 +89,12 @@ class StoreActor(injector: Injector,
 
     case RequestUuidsForHour(_, fdHours, _) ⇒
       val uuids = store.uuidForHours(fdHours.toSet)
-      sender ! UuidsAtHost(nodeInfo.nodeAddress, uuids)
+      sender ! UuidsAtHost(nodeAddress, uuids)
 
     case d: DistributedQsoRecord ⇒
       val qsoRecord = d.qsoRecord
-      val nodeAddress = qsoRecord.fdLogId.nodeAddress
-      if (nodeAddress != ourNode) {
+      val nodeAddress = qsoRecord.qsoMetadata.node
+      if (nodeAddress != nodeAddress) {
         logger.debug(s"Ingesting ${qsoRecord.qso} from $nodeAddress")
         store.addRecord(qsoRecord)
       } else {
@@ -174,6 +172,16 @@ class StoreActor(injector: Injector,
     case x ⇒
       println(s"Unexpected Message; $x")
 
+  }
+
+
+  override  def aroundReceive(receive: Receive, msg: Any): Unit = {
+    try {
+      super.aroundReceive(receive, msg)
+    } catch {
+      case e:Exception =>
+        logger.error("StoreActor", e)
+    }
   }
 
   override def postStop(): Unit = {

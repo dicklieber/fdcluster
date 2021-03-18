@@ -1,12 +1,10 @@
 package org.wa9nnn.fdcluster.tools
 
-import org.mockito.internal.matchers.Any
 import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
 import org.wa9nnn.fdcluster.javafx.entry.{RunningTaskInfo, RunningTaskInfoConsumer}
 import org.wa9nnn.fdcluster.javafx.menu.BuildLoadRequest
-import org.wa9nnn.fdcluster.model.{BandModeOperator, Contest, Exchange, FdLogId, OurStation, Qso, QsoRecord}
-import org.wa9nnn.fdcluster.store.{AddResult, Added, MockStore, Store}
+import org.wa9nnn.fdcluster.store.MockStore
 import org.wa9nnn.util.LaurelDbImporterTask
 
 import java.nio.file.Paths

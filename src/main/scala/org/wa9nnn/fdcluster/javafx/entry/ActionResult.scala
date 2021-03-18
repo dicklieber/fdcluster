@@ -23,7 +23,7 @@ import akka.actor.ActorRef
 import akka.pattern.ask
 import akka.util.Timeout
 import org.scalafx.extras.onFX
-import org.wa9nnn.fdcluster.model.BandMode
+import org.wa9nnn.fdcluster.model.{BandMode, QsoMetadata}
 import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
 import org.wa9nnn.fdcluster.store.{Search, SearchResult}
 import org.wa9nnn.util.{StructuredLogging, WithDisposition}
@@ -36,10 +36,11 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
-class ActionResult(storeActor: ActorRef)(implicit timeout: Timeout, bandMode: ObjectProperty[BandMode]) extends StructuredLogging {
+class ActionResult(storeActor: ActorRef, qsoMetadata: QsoMetadata)(implicit timeout: Timeout) extends StructuredLogging {
 
   def potentiaDup(partial: CallSign): Unit = {
-    val future: Future[Any] = storeActor ? Search(partial, bandMode.value)
+    val bm=BandMode()//todo when we re do station panel in EntryScene
+    val future: Future[Any] = storeActor ? Search(partial, bm)
     future.onComplete {
       case Failure(exception) =>
         logger.error(s"Search for dup: $partial", exception)
@@ -47,7 +48,7 @@ class ActionResult(storeActor: ActorRef)(implicit timeout: Timeout, bandMode: Ob
         Platform.runLater {
           clear()
           searchResult.qsos.foreach { qsoRecord =>
-            val qsoBandMode = qsoRecord.qso.bandMode.bandMode
+//            val qsoBandMode = qsoRecord.qso.bandMode
             add(new Label(s"${qsoRecord.qso.callsign}") {
               styleClass.addAll("qsoField", "sadQso", "sad")
             })

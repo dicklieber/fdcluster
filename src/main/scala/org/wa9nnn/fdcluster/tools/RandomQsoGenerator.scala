@@ -17,7 +17,7 @@
  */
 package org.wa9nnn.fdcluster.tools
 
-import org.wa9nnn.fdcluster.javafx.entry.RunningTaskInfoConsumer
+import org.wa9nnn.fdcluster.javafx.entry.{NullRunningTaskConsumer, RunningTaskInfoConsumer}
 import org.wa9nnn.fdcluster.javafx.runningtask.RunningTask
 import org.wa9nnn.fdcluster.model.Qso
 
@@ -25,7 +25,7 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 
-class RandomQsoGenerator @Inject()(val runningTaskInfoConsumer: RunningTaskInfoConsumer) {
+class RandomQsoGenerator @Inject()(val runningTaskInfoConsumer: RunningTaskInfoConsumer = new NullRunningTaskConsumer()) {
 
   def apply(gr: GenerateRandomQsos): (Qso => Unit) => Unit = {
     new Task(runningTaskInfoConsumer)(gr)

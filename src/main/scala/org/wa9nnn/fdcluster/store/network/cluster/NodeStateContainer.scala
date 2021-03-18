@@ -63,7 +63,7 @@ class NodeStateContainer(initialNodeStatus: NodeStatus, ourNodeAddress: NodeAddr
   }
 
   def url: URL = {
-    nodeStatus.apiUrl
+    nodeStatus.nodeAddress.url
   }
 
   def forHour(fdHour: FdHour): Option[NodeFdHourDigest] = {

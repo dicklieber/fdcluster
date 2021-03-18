@@ -27,8 +27,7 @@ import org.wa9nnn.fdcluster.javafx.cluster.ClusterScene
 import org.wa9nnn.fdcluster.javafx.data.DataScene
 import org.wa9nnn.fdcluster.javafx.entry.{EntryScene, RunningTaskPane}
 import org.wa9nnn.fdcluster.javafx.menu.FdClusterMenu
-import org.wa9nnn.fdcluster.model.Contest
-import org.wa9nnn.fdcluster.store.NodeInfo
+import org.wa9nnn.fdcluster.model.NodeAddress
 import org.wa9nnn.util.StructuredLogging
 import scalafx.Includes._
 import scalafx.application.JFXApp.PrimaryStage
@@ -51,7 +50,7 @@ object FdCluster extends JFXApp  with StructuredLogging {
   private val entryScene = injector.instance[EntryScene]
   private val dataScene = injector.instance[DataScene]
   private val clusterScene = injector.instance[ClusterScene]
-  private val nodeInfo: NodeInfo = injector.instance[NodeInfo]
+  private val nodeAddress: NodeAddress = injector.instance[NodeAddress]
   private val runningTaskPane: RunningTaskPane = injector.instance[RunningTaskPane]
   private val statusPane: StatusPane = injector.instance[StatusPane]
   try {
@@ -110,7 +109,7 @@ object FdCluster extends JFXApp  with StructuredLogging {
   ourScene.root = rootPane
 
   stage = new PrimaryStage() {
-    title = "FDCluster @ " + nodeInfo.nodeAddress.display
+    title = "FDCluster @ " + nodeAddress.display
     scene = ourScene
     private val externalForm: String = getClass.getResource("/images/wfdlogo.png").toExternalForm
     icons += new Image(externalForm)

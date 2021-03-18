@@ -21,7 +21,7 @@ package org.wa9nnn.fdcluster.model.sync
 
 import akka.util.ByteString
 import org.wa9nnn.fdcluster.model.MessageFormats._
-import org.wa9nnn.fdcluster.model.{BandModeOperator, Codec, NodeAddress, OurStation}
+import org.wa9nnn.fdcluster.model.{Codec, CurrentStation, NodeAddress, QsoMetadata}
 import org.wa9nnn.fdcluster.store.network.FdHour
 import play.api.libs.json.Json
 
@@ -35,21 +35,20 @@ import java.time.LocalDateTime
  * @param qsoCount          of QSOs in db.
  * @param digest            over all QSO UUIDs
  * @param qsoHourDigests    for quickly determining what we have.
- * @param ourStation        band, mode, operator etc.
- * @param bandMode          band mode and current operator
+ * @param qsoMetadata        band, mode, operator etc.
+ * @param bandModeOperator          band mode and current operator
  * @param qsoRate           qsos per minute
  * @param stamp             when this message was generated.
  */
 case class NodeStatus(nodeAddress: NodeAddress,
-                      apiUrl: URL,
                       qsoCount: Int,
                       digest: Digest,
                       qsoHourDigests: List[QsoHourDigest],
-                      ourStation: OurStation,
-                      bandMode: BandModeOperator,
+                      qsoMetadata: QsoMetadata,
+                      bandModeOperator: CurrentStation,
                       qsoRate: Double,
                       stamp: LocalDateTime = LocalDateTime.now()) extends Codec {
-  assert(bandMode != null, "null BandModeOperator")
+  assert(bandModeOperator != null, "null BandModeOperator")
 
   def digestForHour(fdHour: FdHour): Option[QsoHourDigest] = {
     qsoHourDigests.find(_.startOfHour == fdHour)

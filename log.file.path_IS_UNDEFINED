@@ -4319,3 +4319,1247 @@ file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
 2021-03-12 12:15:14,044 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
 file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
 2021-03-12 12:15:21,260 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 7190 ms to scan 1 urls, producing 817 keys and 10153 values 
+2021-03-17 17:19:41,007 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-17 17:19:41,210 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 192 ms to scan 1 urls, producing 848 keys and 10399 values 
+2021-03-17 17:20:34,449 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-17 17:20:34,601 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 143 ms to scan 1 urls, producing 848 keys and 10407 values 
+2021-03-17 17:29:28,159 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-17 17:29:28,313 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 143 ms to scan 1 urls, producing 848 keys and 10408 values 
+2021-03-17 17:30:14,779 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-17 17:30:14,911 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 129 ms to scan 1 urls, producing 848 keys and 10409 values 
+2021-03-17 17:30:55,747 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-17 17:30:55,899 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 142 ms to scan 1 urls, producing 848 keys and 10409 values 
+2021-03-17 17:36:44,848 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-17 17:36:44,988 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 137 ms to scan 1 urls, producing 848 keys and 10409 values 
+2021-03-17 17:39:33,830 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-17 17:39:33,976 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 143 ms to scan 1 urls, producing 848 keys and 10409 values 
+2021-03-17 18:22:54,631 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-17 18:22:54,812 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 171 ms to scan 1 urls, producing 844 keys and 10405 values 
+2021-03-17 18:24:35,019 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-17 18:24:35,183 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 154 ms to scan 1 urls, producing 844 keys and 10407 values 
+2021-03-17 18:29:42,103 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-17 18:29:42,265 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 150 ms to scan 1 urls, producing 844 keys and 10419 values 
+2021-03-17 18:31:07,819 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-17 18:31:07,960 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 138 ms to scan 1 urls, producing 844 keys and 10423 values 
+2021-03-17 18:36:01,637 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-17 18:36:01,772 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 132 ms to scan 1 urls, producing 844 keys and 10423 values 
+2021-03-17 18:42:12,073 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-17 18:42:12,216 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 133 ms to scan 1 urls, producing 844 keys and 10419 values 
+2021-03-17 18:43:10,859 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-17 18:43:10,998 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 136 ms to scan 1 urls, producing 844 keys and 10411 values 
+2021-03-17 18:43:57,542 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-17 18:43:57,681 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 130 ms to scan 1 urls, producing 844 keys and 10419 values 
+2021-03-17 18:46:13,921 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-17 18:46:14,055 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 132 ms to scan 1 urls, producing 844 keys and 10419 values 
+2021-03-17 18:49:07,804 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-17 18:49:07,950 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 136 ms to scan 1 urls, producing 845 keys and 10420 values 
+2021-03-17 18:50:27,561 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-17 18:50:27,712 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 141 ms to scan 1 urls, producing 845 keys and 10424 values 
+2021-03-17 18:51:29,480 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-17 18:51:29,624 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 134 ms to scan 1 urls, producing 845 keys and 10420 values 
+2021-03-17 18:53:33,696 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-17 18:53:33,843 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 138 ms to scan 1 urls, producing 845 keys and 10416 values 
+2021-03-17 18:55:06,739 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-17 18:55:06,885 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 136 ms to scan 1 urls, producing 845 keys and 10416 values 
+2021-03-17 18:57:43,500 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-17 18:57:43,648 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 138 ms to scan 1 urls, producing 845 keys and 10408 values 
+2021-03-17 19:04:57,190 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-17 19:04:57,342 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 142 ms to scan 1 urls, producing 845 keys and 10414 values 
+2021-03-17 19:05:30,682 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-17 19:05:30,829 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 138 ms to scan 1 urls, producing 845 keys and 10414 values 
+2021-03-17 19:05:31,643 INFO [JavaFX Application Thread] o.w.f.s.StoreMapImpl [StoreMapImpl.scala:60] skipJournal: false
+2021-03-17 19:05:31,644 INFO [JavaFX Application Thread] o.w.f.s.StoreMapImpl [StoreMapImpl.scala:156] journal: /Users/dlieber/fdcluster1/journal.json
+2021-03-17 19:05:31,649 INFO [default-akka.actor.default-dispatcher-6] o.w.f.s.StoreActor [StoreActor.scala:62] StoreActor: akka://default/user/$a
+2021-03-17 19:05:31,729 INFO [default-akka.actor.default-dispatcher-5] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:47] Multicast listener started.
+2021-03-17 19:05:31,938 ERROR [scala-execution-context-global-42] o.w.f.s.JournalLoader$Task [StructuredLogging.scala:162] {"reason":"Journal Error","line":1,"error":"play.api.libs.json.JsResultException","qso":"{\"qso\":{\"callsign\":\"NC0ULU\",\"bandMode\":{\"bandName\":\"15m\",\"modeName\":\"CW\"},\"exchange\":\"16I;AL\",\"stamp\":\"2021-03-15T05:29:46.613327Z\",\"uuid\":\"a36450f6-1284-4192-afb0-5a5172f119fe\"},\"contest\":\"FD-2021\",\"ourStation\":{\"ourCallsign\":\"WM9W\",\"exchange\":\"1O;IL\",\"rig\":\"\",\"antenna\":\"\"},\"operator\":\"KD9BYW\",\"nodeAddress\":{\"instance\":1,\"nodeAddress\":\"192.168.0.233\"}}"}
+2021-03-17 19:05:31,939 ERROR [scala-execution-context-global-42] o.w.f.s.JournalLoader$Task [StructuredLogging.scala:162] {"reason":"Journal Error","line":2,"error":"play.api.libs.json.JsResultException","qso":"{\"qso\":{\"callsign\":\"KZ9YRM\",\"bandMode\":{\"bandName\":\"1.25m\",\"modeName\":\"DI\"},\"exchange\":\"4O;NNJ\",\"stamp\":\"2021-03-15T05:29:51.613327Z\",\"uuid\":\"be2ecdcb-dd2f-4a61-a6ac-bdd247298b23\"},\"contest\":\"FD-2021\",\"ourStation\":{\"ourCallsign\":\"WM9W\",\"exchange\":\"1O;IL\",\"rig\":\"\",\"antenna\":\"\"},\"operator\":\"KD9BYW\",\"nodeAddress\":{\"instance\":1,\"nodeAddress\":\"192.168.0.233\"}}"}
+2021-03-17 19:05:31,941 ERROR [scala-execution-context-global-42] o.w.f.s.JournalLoader$Task [StructuredLogging.scala:162] {"reason":"Journal Error","line":3,"error":"play.api.libs.json.JsResultException","qso":"{\"qso\":{\"callsign\":\"KK9ZHR\",\"bandMode\":{\"bandName\":\"70cm\",\"modeName\":\"DI\"},\"exchange\":\"15H;EMA\",\"stamp\":\"2021-03-15T05:29:56.613327Z\",\"uuid\":\"168ac37a-071f-446a-acd9-293536de6ea5\"},\"contest\":\"FD-2021\",\"ourStation\":{\"ourCallsign\":\"WM9W\",\"exchange\":\"1O;IL\",\"rig\":\"\",\"antenna\":\"\"},\"operator\":\"KD9BYW\",\"nodeAddress\":{\"instance\":1,\"nodeAddress\":\"192.168.0.233\"}}"}
+2021-03-17 19:05:31,942 ERROR [scala-execution-context-global-42] o.w.f.s.JournalLoader$Task [StructuredLogging.scala:162] {"reason":"Journal Error","line":4,"error":"play.api.libs.json.JsResultException","qso":"{\"qso\":{\"callsign\":\"AV0QAN\",\"bandMode\":{\"bandName\":\"1.25m\",\"modeName\":\"DI\"},\"exchange\":\"7H;MB\",\"stamp\":\"2021-03-15T05:30:01.613327Z\",\"uuid\":\"476ac489-ebac-4452-8827-497bb5300197\"},\"contest\":\"FD-2021\",\"ourStation\":{\"ourCallsign\":\"WM9W\",\"exchange\":\"1O;IL\",\"rig\":\"\",\"antenna\":\"\"},\"operator\":\"KD9BYW\",\"nodeAddress\":{\"instance\":1,\"nodeAddress\":\"192.168.0.233\"}}"}
+2021-03-17 19:05:31,943 ERROR [scala-execution-context-global-42] o.w.f.s.JournalLoader$Task [StructuredLogging.scala:162] {"reason":"Journal Error","line":5,"error":"play.api.libs.json.JsResultException","qso":"{\"qso\":{\"callsign\":\"A4VOS\",\"bandMode\":{\"bandName\":\"10m\",\"modeName\":\"CW\"},\"exchange\":\"10O;NV\",\"stamp\":\"2021-03-15T05:30:06.613327Z\",\"uuid\":\"104cb633-e874-4693-ae89-aece4f392389\"},\"contest\":\"FD-2021\",\"ourStation\":{\"ourCallsign\":\"WM9W\",\"exchange\":\"1O;IL\",\"rig\":\"\",\"antenna\":\"\"},\"operator\":\"KD9BYW\",\"nodeAddress\":{\"instance\":1,\"nodeAddress\":\"192.168.0.233\"}}"}
+2021-03-17 19:05:31,944 ERROR [scala-execution-context-global-42] o.w.f.s.JournalLoader$Task [StructuredLogging.scala:162] {"reason":"Journal Error","line":6,"error":"play.api.libs.json.JsResultException","qso":"{\"qso\":{\"callsign\":\"NW5YEH\",\"bandMode\":{\"bandName\":\"70cm\",\"modeName\":\"DI\"},\"exchange\":\"11I;WMA\",\"stamp\":\"2021-03-15T05:30:11.613327Z\",\"uuid\":\"9f96a74d-61f7-42d6-b512-2dc3d6ae6821\"},\"contest\":\"FD-2021\",\"ourStation\":{\"ourCallsign\":\"WM9W\",\"exchange\":\"1O;IL\",\"rig\":\"\",\"antenna\":\"\"},\"operator\":\"KD9BYW\",\"nodeAddress\":{\"instance\":1,\"nodeAddress\":\"192.168.0.233\"}}"}
+2021-03-17 19:05:31,946 ERROR [scala-execution-context-global-42] o.w.f.s.JournalLoader$Task [StructuredLogging.scala:162] {"reason":"Journal Error","line":7,"error":"play.api.libs.json.JsResultException","qso":"{\"qso\":{\"callsign\":\"AU6CPG\",\"bandMode\":{\"bandName\":\"15m\",\"modeName\":\"PH\"},\"exchange\":\"13I;IN\",\"stamp\":\"2021-03-15T05:30:16.613327Z\",\"uuid\":\"87d22d52-321c-49ac-a635-d762cb7c4024\"},\"contest\":\"FD-2021\",\"ourStation\":{\"ourCallsign\":\"WM9W\",\"exchange\":\"1O;IL\",\"rig\":\"\",\"antenna\":\"\"},\"operator\":\"KD9BYW\",\"nodeAddress\":{\"instance\":1,\"nodeAddress\":\"192.168.0.233\"}}"}
+2021-03-17 19:05:31,947 ERROR [scala-execution-context-global-42] o.w.f.s.JournalLoader$Task [StructuredLogging.scala:162] {"reason":"Journal Error","line":8,"error":"play.api.libs.json.JsResultException","qso":"{\"qso\":{\"callsign\":\"NC7OWG\",\"bandMode\":{\"bandName\":\"15m\",\"modeName\":\"CW\"},\"exchange\":\"11I;TN\",\"stamp\":\"2021-03-15T05:30:21.613327Z\",\"uuid\":\"241cf874-006c-41cb-bb55-c9762d610713\"},\"contest\":\"FD-2021\",\"ourStation\":{\"ourCallsign\":\"WM9W\",\"exchange\":\"1O;IL\",\"rig\":\"\",\"antenna\":\"\"},\"operator\":\"KD9BYW\",\"nodeAddress\":{\"instance\":1,\"nodeAddress\":\"192.168.0.233\"}}"}
+2021-03-17 19:05:31,948 ERROR [scala-execution-context-global-42] o.w.f.s.JournalLoader$Task [StructuredLogging.scala:162] {"reason":"Journal Error","line":9,"error":"play.api.libs.json.JsResultException","qso":"{\"qso\":{\"callsign\":\"ND7ZFW\",\"bandMode\":{\"bandName\":\"20m\",\"modeName\":\"DI\"},\"exchange\":\"12O;WCF\",\"stamp\":\"2021-03-15T05:30:26.613327Z\",\"uuid\":\"4b6e7f96-0249-4cec-bd98-978d18fe9a69\"},\"contest\":\"FD-2021\",\"ourStation\":{\"ourCallsign\":\"WM9W\",\"exchange\":\"1O;IL\",\"rig\":\"\",\"antenna\":\"\"},\"operator\":\"KD9BYW\",\"nodeAddress\":{\"instance\":1,\"nodeAddress\":\"192.168.0.233\"}}"}
+2021-03-17 19:05:31,949 ERROR [scala-execution-context-global-42] o.w.f.s.JournalLoader$Task [StructuredLogging.scala:162] {"reason":"Journal Error","line":10,"error":"play.api.libs.json.JsResultException","qso":"{\"qso\":{\"callsign\":\"AT0MFM\",\"bandMode\":{\"bandName\":\"80m\",\"modeName\":\"CW\"},\"exchange\":\"17I;SV\",\"stamp\":\"2021-03-15T05:30:31.613327Z\",\"uuid\":\"1079ba3f-30c2-446b-b11d-2a8c2c755b5a\"},\"contest\":\"FD-2021\",\"ourStation\":{\"ourCallsign\":\"WM9W\",\"exchange\":\"1O;IL\",\"rig\":\"\",\"antenna\":\"\"},\"operator\":\"KD9BYW\",\"nodeAddress\":{\"instance\":1,\"nodeAddress\":\"192.168.0.233\"}}"}
+2021-03-17 19:05:31,951 ERROR [scala-execution-context-global-42] o.w.f.s.JournalLoader$Task [StructuredLogging.scala:162] {"reason":"Journal Error","line":11,"error":"play.api.libs.json.JsResultException","qso":"{\"qso\":{\"callsign\":\"AD8WH\",\"bandMode\":{\"bandName\":\"2m\",\"modeName\":\"PH\"},\"exchange\":\"4I;MT\",\"stamp\":\"2021-03-15T05:30:36.613327Z\",\"uuid\":\"f664efc1-b1e1-40bf-83bb-134a57b755bc\"},\"contest\":\"FD-2021\",\"ourStation\":{\"ourCallsign\":\"WM9W\",\"exchange\":\"1O;IL\",\"rig\":\"\",\"antenna\":\"\"},\"operator\":\"KD9BYW\",\"nodeAddress\":{\"instance\":1,\"nodeAddress\":\"192.168.0.233\"}}"}
+2021-03-17 19:05:31,952 ERROR [scala-execution-context-global-42] o.w.f.s.JournalLoader$Task [StructuredLogging.scala:162] {"reason":"Journal Error","line":12,"error":"play.api.libs.json.JsResultException","qso":"{\"qso\":{\"callsign\":\"NQ9JKM\",\"bandMode\":{\"bandName\":\"6m\",\"modeName\":\"PH\"},\"exchange\":\"16I;UT\",\"stamp\":\"2021-03-15T05:30:41.613327Z\",\"uuid\":\"63ef1410-ddd5-45db-8832-ff5dee15d75f\"},\"contest\":\"FD-2021\",\"ourStation\":{\"ourCallsign\":\"WM9W\",\"exchange\":\"1O;IL\",\"rig\":\"\",\"antenna\":\"\"},\"operator\":\"KD9BYW\",\"nodeAddress\":{\"instance\":1,\"nodeAddress\":\"192.168.0.233\"}}"}
+2021-03-17 19:05:31,953 ERROR [scala-execution-context-global-42] o.w.f.s.JournalLoader$Task [StructuredLogging.scala:162] {"reason":"Journal Error","line":13,"error":"play.api.libs.json.JsResultException","qso":"{\"qso\":{\"callsign\":\"NN4YLK\",\"bandMode\":{\"bandName\":\"70cm\",\"modeName\":\"DI\"},\"exchange\":\"14O;AR\",\"stamp\":\"2021-03-15T05:30:46.613327Z\",\"uuid\":\"e314cd57-b1d7-410d-9c24-e126e91f7e33\"},\"contest\":\"FD-2021\",\"ourStation\":{\"ourCallsign\":\"WM9W\",\"exchange\":\"1O;IL\",\"rig\":\"\",\"antenna\":\"\"},\"operator\":\"KD9BYW\",\"nodeAddress\":{\"instance\":1,\"nodeAddress\":\"192.168.0.233\"}}"}
+2021-03-17 19:05:31,955 ERROR [scala-execution-context-global-42] o.w.f.s.JournalLoader$Task [StructuredLogging.scala:162] {"reason":"Journal Error","line":14,"error":"play.api.libs.json.JsResultException","qso":"{\"qso\":{\"callsign\":\"KQ6OJO\",\"bandMode\":{\"bandName\":\"20m\",\"modeName\":\"DI\"},\"exchange\":\"18I;VI\",\"stamp\":\"2021-03-15T05:30:51.613327Z\",\"uuid\":\"b03ce187-ffb3-49c7-872c-7aac0104b8f6\"},\"contest\":\"FD-2021\",\"ourStation\":{\"ourCallsign\":\"WM9W\",\"exchange\":\"1O;IL\",\"rig\":\"\",\"antenna\":\"\"},\"operator\":\"KD9BYW\",\"nodeAddress\":{\"instance\":1,\"nodeAddress\":\"192.168.0.233\"}}"}
+2021-03-17 19:05:31,956 ERROR [scala-execution-context-global-42] o.w.f.s.JournalLoader$Task [StructuredLogging.scala:162] {"reason":"Journal Error","line":15,"error":"play.api.libs.json.JsResultException","qso":"{\"qso\":{\"callsign\":\"W0XKC\",\"bandMode\":{\"bandName\":\"160m\",\"modeName\":\"DI\"},\"exchange\":\"1O;NNJ\",\"stamp\":\"2021-03-15T05:30:56.613327Z\",\"uuid\":\"73e4d1fb-9f00-49fd-aa74-7aa2426c6779\"},\"contest\":\"FD-2021\",\"ourStation\":{\"ourCallsign\":\"WM9W\",\"exchange\":\"1O;IL\",\"rig\":\"\",\"antenna\":\"\"},\"operator\":\"KD9BYW\",\"nodeAddress\":{\"instance\":1,\"nodeAddress\":\"192.168.0.233\"}}"}
+2021-03-17 19:05:31,958 ERROR [scala-execution-context-global-42] o.w.f.s.JournalLoader$Task [StructuredLogging.scala:162] {"reason":"Journal Error","line":16,"error":"play.api.libs.json.JsResultException","qso":"{\"qso\":{\"callsign\":\"WR9FDX\",\"bandMode\":{\"bandName\":\"80m\",\"modeName\":\"PH\"},\"exchange\":\"11I;EWA\",\"stamp\":\"2021-03-15T05:31:01.613327Z\",\"uuid\":\"c31869cb-7d6d-4bd7-8572-a13c31075e38\"},\"contest\":\"FD-2021\",\"ourStation\":{\"ourCallsign\":\"WM9W\",\"exchange\":\"1O;IL\",\"rig\":\"\",\"antenna\":\"\"},\"operator\":\"KD9BYW\",\"nodeAddress\":{\"instance\":1,\"nodeAddress\":\"192.168.0.233\"}}"}
+2021-03-17 19:05:31,959 ERROR [scala-execution-context-global-42] o.w.f.s.JournalLoader$Task [StructuredLogging.scala:162] {"reason":"Journal Error","line":17,"error":"play.api.libs.json.JsResultException","qso":"{\"qso\":{\"callsign\":\"WE1LJX\",\"bandMode\":{\"bandName\":\"80m\",\"modeName\":\"PH\"},\"exchange\":\"17H;PR\",\"stamp\":\"2021-03-15T05:31:06.613327Z\",\"uuid\":\"f1895043-eda5-4929-a282-fa097690d08c\"},\"contest\":\"FD-2021\",\"ourStation\":{\"ourCallsign\":\"WM9W\",\"exchange\":\"1O;IL\",\"rig\":\"\",\"antenna\":\"\"},\"operator\":\"KD9BYW\",\"nodeAddress\":{\"instance\":1,\"nodeAddress\":\"192.168.0.233\"}}"}
+2021-03-17 19:05:31,960 ERROR [scala-execution-context-global-42] o.w.f.s.JournalLoader$Task [StructuredLogging.scala:162] {"reason":"Journal Error","line":18,"error":"play.api.libs.json.JsResultException","qso":"{\"qso\":{\"callsign\":\"NJ6ZWN\",\"bandMode\":{\"bandName\":\"20m\",\"modeName\":\"DI\"},\"exchange\":\"12H;KY\",\"stamp\":\"2021-03-15T05:31:11.613327Z\",\"uuid\":\"6c79ffe0-621c-4c6e-8ac6-4a07b88b8378\"},\"contest\":\"FD-2021\",\"ourStation\":{\"ourCallsign\":\"WM9W\",\"exchange\":\"1O;IL\",\"rig\":\"\",\"antenna\":\"\"},\"operator\":\"KD9BYW\",\"nodeAddress\":{\"instance\":1,\"nodeAddress\":\"192.168.0.233\"}}"}
+2021-03-17 19:05:31,961 ERROR [scala-execution-context-global-42] o.w.f.s.JournalLoader$Task [StructuredLogging.scala:162] {"reason":"Journal Error","line":19,"error":"play.api.libs.json.JsResultException","qso":"{\"qso\":{\"callsign\":\"WI0MZU\",\"bandMode\":{\"bandName\":\"1.25m\",\"modeName\":\"PH\"},\"exchange\":\"20I;ID\",\"stamp\":\"2021-03-15T05:31:16.613327Z\",\"uuid\":\"6137f1f3-b4ea-4969-9e61-0bcdfe3fe8ab\"},\"contest\":\"FD-2021\",\"ourStation\":{\"ourCallsign\":\"WM9W\",\"exchange\":\"1O;IL\",\"rig\":\"\",\"antenna\":\"\"},\"operator\":\"KD9BYW\",\"nodeAddress\":{\"instance\":1,\"nodeAddress\":\"192.168.0.233\"}}"}
+2021-03-17 19:05:31,962 ERROR [scala-execution-context-global-42] o.w.f.s.JournalLoader$Task [StructuredLogging.scala:162] {"reason":"Journal Error","line":20,"error":"play.api.libs.json.JsResultException","qso":"{\"qso\":{\"callsign\":\"NM8RZH\",\"bandMode\":{\"bandName\":\"1.25m\",\"modeName\":\"CW\"},\"exchange\":\"20H;OK\",\"stamp\":\"2021-03-15T05:31:21.613327Z\",\"uuid\":\"be6bed0f-0beb-4bb4-b756-e4404daf4648\"},\"contest\":\"FD-2021\",\"ourStation\":{\"ourCallsign\":\"WM9W\",\"exchange\":\"1O;IL\",\"rig\":\"\",\"antenna\":\"\"},\"operator\":\"KD9BYW\",\"nodeAddress\":{\"instance\":1,\"nodeAddress\":\"192.168.0.233\"}}"}
+2021-03-17 19:05:31,963 ERROR [scala-execution-context-global-42] o.w.f.s.JournalLoader$Task [StructuredLogging.scala:162] {"reason":"Journal Error","line":21,"error":"play.api.libs.json.JsResultException","qso":"{\"qso\":{\"callsign\":\"NS2ANH\",\"bandMode\":{\"bandName\":\"70cm\",\"modeName\":\"DI\"},\"exchange\":\"16I;MO\",\"stamp\":\"2021-03-15T05:31:26.613327Z\",\"uuid\":\"e04c7f89-b906-4d93-bf37-61b5d307e0b0\"},\"contest\":\"FD-2021\",\"ourStation\":{\"ourCallsign\":\"WM9W\",\"exchange\":\"1O;IL\",\"rig\":\"\",\"antenna\":\"\"},\"operator\":\"KD9BYW\",\"nodeAddress\":{\"instance\":1,\"nodeAddress\":\"192.168.0.233\"}}"}
+2021-03-17 19:05:31,964 ERROR [scala-execution-context-global-42] o.w.f.s.JournalLoader$Task [StructuredLogging.scala:162] {"reason":"Journal Error","line":22,"error":"play.api.libs.json.JsResultException","qso":"{\"qso\":{\"callsign\":\"WY7PZR\",\"bandMode\":{\"bandName\":\"1.25m\",\"modeName\":\"CW\"},\"exchange\":\"19O;WWA\",\"stamp\":\"2021-03-15T05:31:31.613327Z\",\"uuid\":\"d608fa8c-bdc3-4ae2-93e0-14fa4a6e30cf\"},\"contest\":\"FD-2021\",\"ourStation\":{\"ourCallsign\":\"WM9W\",\"exchange\":\"1O;IL\",\"rig\":\"\",\"antenna\":\"\"},\"operator\":\"KD9BYW\",\"nodeAddress\":{\"instance\":1,\"nodeAddress\":\"192.168.0.233\"}}"}
+2021-03-17 19:05:31,965 ERROR [scala-execution-context-global-42] o.w.f.s.JournalLoader$Task [StructuredLogging.scala:162] {"reason":"Journal Error","line":23,"error":"play.api.libs.json.JsResultException","qso":"{\"qso\":{\"callsign\":\"WU4EYV\",\"bandMode\":{\"bandName\":\"2m\",\"modeName\":\"DI\"},\"exchange\":\"5I;RI\",\"stamp\":\"2021-03-15T05:31:36.613327Z\",\"uuid\":\"051dbdb7-83f0-4e73-96a2-f5bba62ab795\"},\"contest\":\"FD-2021\",\"ourStation\":{\"ourCallsign\":\"WM9W\",\"exchange\":\"1O;IL\",\"rig\":\"\",\"antenna\":\"\"},\"operator\":\"KD9BYW\",\"nodeAddress\":{\"instance\":1,\"nodeAddress\":\"192.168.0.233\"}}"}
+2021-03-17 19:05:31,965 ERROR [scala-execution-context-global-42] o.w.f.s.JournalLoader$Task [StructuredLogging.scala:162] {"reason":"Journal Error","line":24,"error":"play.api.libs.json.JsResultException","qso":"{\"qso\":{\"callsign\":\"NZ0TVR\",\"bandMode\":{\"bandName\":\"2m\",\"modeName\":\"PH\"},\"exchange\":\"7O;ORG\",\"stamp\":\"2021-03-15T05:31:41.613327Z\",\"uuid\":\"cae8e333-0749-4d27-b499-177731ec91ed\"},\"contest\":\"FD-2021\",\"ourStation\":{\"ourCallsign\":\"WM9W\",\"exchange\":\"1O;IL\",\"rig\":\"\",\"antenna\":\"\"},\"operator\":\"KD9BYW\",\"nodeAddress\":{\"instance\":1,\"nodeAddress\":\"192.168.0.233\"}}"}
+2021-03-17 19:05:31,966 ERROR [scala-execution-context-global-42] o.w.f.s.JournalLoader$Task [JournalLoader.scala:87] More than 25 errors, stopping logging!
+2021-03-17 19:05:31,967 INFO [scala-execution-context-global-42] o.w.f.s.JournalLoader$Task [JournalLoader.scala:100] 26 lines with errors in /Users/dlieber/fdcluster1/journal.json
+2021-03-17 19:05:31,969 INFO [scala-execution-context-global-42] o.w.f.s.JournalLoader$Task [JournalLoader.scala:106] loaded 26 records in 185 ms (Infinity/per sec)
+2021-03-17 19:05:32,658 ERROR [default-akka.actor.default-dispatcher-9] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:99] postStop: MulticastListenerActor
+2021-03-17 19:05:32,659 ERROR [default-akka.actor.default-dispatcher-13] o.w.f.s.StoreActor [StoreActor.scala:178] postStop: StoreActor
+2021-03-17 19:05:39,569 INFO [JavaFX Application Thread] o.w.f.m.BandModeOperatorStore [StructuredLogging.scala:98] bmochange: {"bandName":"160m","modeName":"PH","operator":"","rig":"","antenna":""}
+2021-03-17 19:07:05,414 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-17 19:07:05,562 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 138 ms to scan 1 urls, producing 845 keys and 10414 values 
+2021-03-17 19:07:06,352 INFO [JavaFX Application Thread] o.w.f.s.StoreMapImpl [StoreMapImpl.scala:60] skipJournal: false
+2021-03-17 19:07:06,354 INFO [JavaFX Application Thread] o.w.f.s.StoreMapImpl [StoreMapImpl.scala:156] journal: /Users/dlieber/fdcluster1/journal.json
+2021-03-17 19:07:06,360 INFO [default-akka.actor.default-dispatcher-6] o.w.f.s.StoreActor [StoreActor.scala:62] StoreActor: akka://default/user/$a
+2021-03-17 19:07:06,433 INFO [default-akka.actor.default-dispatcher-9] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:47] Multicast listener started.
+2021-03-17 19:07:06,647 INFO [scala-execution-context-global-42] o.w.f.s.JournalLoader$Task [JournalLoader.scala:117] no journal at /Users/dlieber/fdcluster1/journal.json
+2021-03-17 19:07:07,423 ERROR [default-akka.actor.default-dispatcher-6] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:99] postStop: MulticastListenerActor
+2021-03-17 19:07:07,424 ERROR [default-akka.actor.default-dispatcher-9] o.w.f.s.StoreActor [StoreActor.scala:178] postStop: StoreActor
+2021-03-17 19:07:22,159 ERROR [scala-execution-context-global-42] o.w.f.j.e.ActionResult [ActionResult.scala:46] Search for dup: W
+akka.pattern.AskTimeoutException: Recipient [Actor[akka://default/user/$a#-161288327]] had already been terminated. Message of type [org.wa9nnn.fdcluster.store.Search].
+	at akka.pattern.AskableActorRef$.recipientTerminatedException(AskSupport.scala:290)
+	at akka.pattern.AskableActorRef$.internalAsk$extension(AskSupport.scala:335)
+	at akka.pattern.AskableActorRef$.$qmark$extension(AskSupport.scala:327)
+	at org.wa9nnn.fdcluster.javafx.entry.ActionResult.potentiaDup(ActionResult.scala:43)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1(CallSignField.scala:41)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1$adapted(CallSignField.scala:35)
+	at scalafx.beans.value.ObservableValue$$anon$1.changed(ObservableValue.scala:116)
+	at com.sun.javafx.binding.ExpressionHelper$Generic.fireValueChangedEvent(ExpressionHelper.java:360)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextInputControl$TextProperty.fireValueChangedEvent(TextInputControl.java:1430)
+	at javafx.scene.control.TextInputControl$TextProperty.markInvalid(TextInputControl.java:1434)
+	at javafx.scene.control.TextInputControl$TextProperty.controlContentHasChanged(TextInputControl.java:1373)
+	at javafx.scene.control.TextInputControl$TextProperty.access$1600(TextInputControl.java:1341)
+	at javafx.scene.control.TextInputControl.lambda$new$0(TextInputControl.java:144)
+	at com.sun.javafx.binding.ExpressionHelper$SingleInvalidation.fireValueChangedEvent(ExpressionHelper.java:136)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextField$TextFieldContent.insert(TextField.java:87)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:1244)
+	at javafx.scene.control.TextInputControl.updateContent(TextInputControl.java:566)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:558)
+	at javafx.scene.control.skin.TextFieldSkin.replaceText(TextFieldSkin.java:450)
+	at com.sun.javafx.scene.control.behavior.TextFieldBehavior.replaceText(TextFieldBehavior.java:208)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.defaultKeyTyped(TextInputControlBehavior.java:400)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.lambda$keyMapping$62(TextInputControlBehavior.java:330)
+	at com.sun.javafx.scene.control.inputmap.InputMap.handle(InputMap.java:274)
+	at com.sun.javafx.event.CompositeEventHandler$NormalEventHandlerRecord.handleBubblingEvent(CompositeEventHandler.java:218)
+	at com.sun.javafx.event.CompositeEventHandler.dispatchBubblingEvent(CompositeEventHandler.java:80)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:238)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:191)
+	at com.sun.javafx.event.CompositeEventDispatcher.dispatchBubblingEvent(CompositeEventDispatcher.java:59)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:58)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.EventUtil.fireEventImpl(EventUtil.java:74)
+	at com.sun.javafx.event.EventUtil.fireEvent(EventUtil.java:54)
+	at javafx.event.Event.fireEvent(Event.java:198)
+	at javafx.scene.Scene$KeyHandler.process(Scene.java:4058)
+	at javafx.scene.Scene$KeyHandler.access$1500(Scene.java:4004)
+	at javafx.scene.Scene.processKeyEvent(Scene.java:2121)
+	at javafx.scene.Scene$ScenePeerListener.keyEvent(Scene.java:2595)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:217)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:149)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:389)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.lambda$handleKeyEvent$1(GlassViewEventHandler.java:248)
+	at com.sun.javafx.tk.quantum.QuantumToolkit.runWithoutRenderLock(QuantumToolkit.java:390)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.handleKeyEvent(GlassViewEventHandler.java:247)
+	at com.sun.glass.ui.View.handleKeyEvent(View.java:547)
+	at com.sun.glass.ui.View.notifyKey(View.java:971)
+2021-03-17 19:07:22,316 ERROR [scala-execution-context-global-42] o.w.f.j.e.ActionResult [ActionResult.scala:46] Search for dup: WA
+akka.pattern.AskTimeoutException: Recipient [Actor[akka://default/user/$a#-161288327]] had already been terminated. Message of type [org.wa9nnn.fdcluster.store.Search].
+	at akka.pattern.AskableActorRef$.recipientTerminatedException(AskSupport.scala:290)
+	at akka.pattern.AskableActorRef$.internalAsk$extension(AskSupport.scala:335)
+	at akka.pattern.AskableActorRef$.$qmark$extension(AskSupport.scala:327)
+	at org.wa9nnn.fdcluster.javafx.entry.ActionResult.potentiaDup(ActionResult.scala:43)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1(CallSignField.scala:41)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1$adapted(CallSignField.scala:35)
+	at scalafx.beans.value.ObservableValue$$anon$1.changed(ObservableValue.scala:116)
+	at com.sun.javafx.binding.ExpressionHelper$Generic.fireValueChangedEvent(ExpressionHelper.java:360)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextInputControl$TextProperty.fireValueChangedEvent(TextInputControl.java:1430)
+	at javafx.scene.control.TextInputControl$TextProperty.markInvalid(TextInputControl.java:1434)
+	at javafx.scene.control.TextInputControl$TextProperty.controlContentHasChanged(TextInputControl.java:1373)
+	at javafx.scene.control.TextInputControl$TextProperty.access$1600(TextInputControl.java:1341)
+	at javafx.scene.control.TextInputControl.lambda$new$0(TextInputControl.java:144)
+	at com.sun.javafx.binding.ExpressionHelper$SingleInvalidation.fireValueChangedEvent(ExpressionHelper.java:136)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextField$TextFieldContent.insert(TextField.java:87)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:1244)
+	at javafx.scene.control.TextInputControl.updateContent(TextInputControl.java:566)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:558)
+	at javafx.scene.control.skin.TextFieldSkin.replaceText(TextFieldSkin.java:450)
+	at com.sun.javafx.scene.control.behavior.TextFieldBehavior.replaceText(TextFieldBehavior.java:208)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.defaultKeyTyped(TextInputControlBehavior.java:400)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.lambda$keyMapping$62(TextInputControlBehavior.java:330)
+	at com.sun.javafx.scene.control.inputmap.InputMap.handle(InputMap.java:274)
+	at com.sun.javafx.event.CompositeEventHandler$NormalEventHandlerRecord.handleBubblingEvent(CompositeEventHandler.java:218)
+	at com.sun.javafx.event.CompositeEventHandler.dispatchBubblingEvent(CompositeEventHandler.java:80)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:238)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:191)
+	at com.sun.javafx.event.CompositeEventDispatcher.dispatchBubblingEvent(CompositeEventDispatcher.java:59)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:58)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.EventUtil.fireEventImpl(EventUtil.java:74)
+	at com.sun.javafx.event.EventUtil.fireEvent(EventUtil.java:54)
+	at javafx.event.Event.fireEvent(Event.java:198)
+	at javafx.scene.Scene$KeyHandler.process(Scene.java:4058)
+	at javafx.scene.Scene$KeyHandler.access$1500(Scene.java:4004)
+	at javafx.scene.Scene.processKeyEvent(Scene.java:2121)
+	at javafx.scene.Scene$ScenePeerListener.keyEvent(Scene.java:2595)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:217)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:149)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:389)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.lambda$handleKeyEvent$1(GlassViewEventHandler.java:248)
+	at com.sun.javafx.tk.quantum.QuantumToolkit.runWithoutRenderLock(QuantumToolkit.java:390)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.handleKeyEvent(GlassViewEventHandler.java:247)
+	at com.sun.glass.ui.View.handleKeyEvent(View.java:547)
+	at com.sun.glass.ui.View.notifyKey(View.java:971)
+2021-03-17 19:07:23,059 ERROR [scala-execution-context-global-42] o.w.f.j.e.ActionResult [ActionResult.scala:46] Search for dup: WA8
+akka.pattern.AskTimeoutException: Recipient [Actor[akka://default/user/$a#-161288327]] had already been terminated. Message of type [org.wa9nnn.fdcluster.store.Search].
+	at akka.pattern.AskableActorRef$.recipientTerminatedException(AskSupport.scala:290)
+	at akka.pattern.AskableActorRef$.internalAsk$extension(AskSupport.scala:335)
+	at akka.pattern.AskableActorRef$.$qmark$extension(AskSupport.scala:327)
+	at org.wa9nnn.fdcluster.javafx.entry.ActionResult.potentiaDup(ActionResult.scala:43)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1(CallSignField.scala:41)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1$adapted(CallSignField.scala:35)
+	at scalafx.beans.value.ObservableValue$$anon$1.changed(ObservableValue.scala:116)
+	at com.sun.javafx.binding.ExpressionHelper$Generic.fireValueChangedEvent(ExpressionHelper.java:360)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextInputControl$TextProperty.fireValueChangedEvent(TextInputControl.java:1430)
+	at javafx.scene.control.TextInputControl$TextProperty.markInvalid(TextInputControl.java:1434)
+	at javafx.scene.control.TextInputControl$TextProperty.controlContentHasChanged(TextInputControl.java:1373)
+	at javafx.scene.control.TextInputControl$TextProperty.access$1600(TextInputControl.java:1341)
+	at javafx.scene.control.TextInputControl.lambda$new$0(TextInputControl.java:144)
+	at com.sun.javafx.binding.ExpressionHelper$SingleInvalidation.fireValueChangedEvent(ExpressionHelper.java:136)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextField$TextFieldContent.insert(TextField.java:87)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:1244)
+	at javafx.scene.control.TextInputControl.updateContent(TextInputControl.java:566)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:558)
+	at javafx.scene.control.skin.TextFieldSkin.replaceText(TextFieldSkin.java:450)
+	at com.sun.javafx.scene.control.behavior.TextFieldBehavior.replaceText(TextFieldBehavior.java:208)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.defaultKeyTyped(TextInputControlBehavior.java:400)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.lambda$keyMapping$62(TextInputControlBehavior.java:330)
+	at com.sun.javafx.scene.control.inputmap.InputMap.handle(InputMap.java:274)
+	at com.sun.javafx.event.CompositeEventHandler$NormalEventHandlerRecord.handleBubblingEvent(CompositeEventHandler.java:218)
+	at com.sun.javafx.event.CompositeEventHandler.dispatchBubblingEvent(CompositeEventHandler.java:80)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:238)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:191)
+	at com.sun.javafx.event.CompositeEventDispatcher.dispatchBubblingEvent(CompositeEventDispatcher.java:59)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:58)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.EventUtil.fireEventImpl(EventUtil.java:74)
+	at com.sun.javafx.event.EventUtil.fireEvent(EventUtil.java:54)
+	at javafx.event.Event.fireEvent(Event.java:198)
+	at javafx.scene.Scene$KeyHandler.process(Scene.java:4058)
+	at javafx.scene.Scene$KeyHandler.access$1500(Scene.java:4004)
+	at javafx.scene.Scene.processKeyEvent(Scene.java:2121)
+	at javafx.scene.Scene$ScenePeerListener.keyEvent(Scene.java:2595)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:217)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:149)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:389)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.lambda$handleKeyEvent$1(GlassViewEventHandler.java:248)
+	at com.sun.javafx.tk.quantum.QuantumToolkit.runWithoutRenderLock(QuantumToolkit.java:390)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.handleKeyEvent(GlassViewEventHandler.java:247)
+	at com.sun.glass.ui.View.handleKeyEvent(View.java:547)
+	at com.sun.glass.ui.View.notifyKey(View.java:971)
+2021-03-17 19:07:37,662 ERROR [scala-execution-context-global-42] o.w.f.j.e.ActionResult [ActionResult.scala:46] Search for dup: 1
+akka.pattern.AskTimeoutException: Recipient [Actor[akka://default/user/$a#-161288327]] had already been terminated. Message of type [org.wa9nnn.fdcluster.store.Search].
+	at akka.pattern.AskableActorRef$.recipientTerminatedException(AskSupport.scala:290)
+	at akka.pattern.AskableActorRef$.internalAsk$extension(AskSupport.scala:335)
+	at akka.pattern.AskableActorRef$.$qmark$extension(AskSupport.scala:327)
+	at org.wa9nnn.fdcluster.javafx.entry.ActionResult.potentiaDup(ActionResult.scala:43)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1(CallSignField.scala:41)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1$adapted(CallSignField.scala:35)
+	at scalafx.beans.value.ObservableValue$$anon$1.changed(ObservableValue.scala:116)
+	at com.sun.javafx.binding.ExpressionHelper$Generic.fireValueChangedEvent(ExpressionHelper.java:360)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextInputControl$TextProperty.fireValueChangedEvent(TextInputControl.java:1430)
+	at javafx.scene.control.TextInputControl$TextProperty.markInvalid(TextInputControl.java:1434)
+	at javafx.scene.control.TextInputControl$TextProperty.controlContentHasChanged(TextInputControl.java:1373)
+	at javafx.scene.control.TextInputControl$TextProperty.access$1600(TextInputControl.java:1341)
+	at javafx.scene.control.TextInputControl.lambda$new$0(TextInputControl.java:144)
+	at com.sun.javafx.binding.ExpressionHelper$SingleInvalidation.fireValueChangedEvent(ExpressionHelper.java:136)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextField$TextFieldContent.insert(TextField.java:87)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:1244)
+	at javafx.scene.control.TextInputControl.updateContent(TextInputControl.java:566)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:558)
+	at javafx.scene.control.skin.TextFieldSkin.replaceText(TextFieldSkin.java:450)
+	at com.sun.javafx.scene.control.behavior.TextFieldBehavior.replaceText(TextFieldBehavior.java:208)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.defaultKeyTyped(TextInputControlBehavior.java:400)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.lambda$keyMapping$62(TextInputControlBehavior.java:330)
+	at com.sun.javafx.scene.control.inputmap.InputMap.handle(InputMap.java:274)
+	at com.sun.javafx.event.CompositeEventHandler$NormalEventHandlerRecord.handleBubblingEvent(CompositeEventHandler.java:218)
+	at com.sun.javafx.event.CompositeEventHandler.dispatchBubblingEvent(CompositeEventHandler.java:80)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:238)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:191)
+	at com.sun.javafx.event.CompositeEventDispatcher.dispatchBubblingEvent(CompositeEventDispatcher.java:59)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:58)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.EventUtil.fireEventImpl(EventUtil.java:74)
+	at com.sun.javafx.event.EventUtil.fireEvent(EventUtil.java:54)
+	at javafx.event.Event.fireEvent(Event.java:198)
+	at javafx.scene.Scene$KeyHandler.process(Scene.java:4058)
+	at javafx.scene.Scene$KeyHandler.access$1500(Scene.java:4004)
+	at javafx.scene.Scene.processKeyEvent(Scene.java:2121)
+	at javafx.scene.Scene$ScenePeerListener.keyEvent(Scene.java:2595)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:217)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:149)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:389)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.lambda$handleKeyEvent$1(GlassViewEventHandler.java:248)
+	at com.sun.javafx.tk.quantum.QuantumToolkit.runWithoutRenderLock(QuantumToolkit.java:390)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.handleKeyEvent(GlassViewEventHandler.java:247)
+	at com.sun.glass.ui.View.handleKeyEvent(View.java:547)
+	at com.sun.glass.ui.View.notifyKey(View.java:971)
+2021-03-17 19:07:38,224 ERROR [scala-execution-context-global-42] o.w.f.j.e.ActionResult [ActionResult.scala:46] Search for dup: 1W
+akka.pattern.AskTimeoutException: Recipient [Actor[akka://default/user/$a#-161288327]] had already been terminated. Message of type [org.wa9nnn.fdcluster.store.Search].
+	at akka.pattern.AskableActorRef$.recipientTerminatedException(AskSupport.scala:290)
+	at akka.pattern.AskableActorRef$.internalAsk$extension(AskSupport.scala:335)
+	at akka.pattern.AskableActorRef$.$qmark$extension(AskSupport.scala:327)
+	at org.wa9nnn.fdcluster.javafx.entry.ActionResult.potentiaDup(ActionResult.scala:43)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1(CallSignField.scala:41)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1$adapted(CallSignField.scala:35)
+	at scalafx.beans.value.ObservableValue$$anon$1.changed(ObservableValue.scala:116)
+	at com.sun.javafx.binding.ExpressionHelper$Generic.fireValueChangedEvent(ExpressionHelper.java:360)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextInputControl$TextProperty.fireValueChangedEvent(TextInputControl.java:1430)
+	at javafx.scene.control.TextInputControl$TextProperty.markInvalid(TextInputControl.java:1434)
+	at javafx.scene.control.TextInputControl$TextProperty.controlContentHasChanged(TextInputControl.java:1373)
+	at javafx.scene.control.TextInputControl$TextProperty.access$1600(TextInputControl.java:1341)
+	at javafx.scene.control.TextInputControl.lambda$new$0(TextInputControl.java:144)
+	at com.sun.javafx.binding.ExpressionHelper$SingleInvalidation.fireValueChangedEvent(ExpressionHelper.java:136)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextField$TextFieldContent.insert(TextField.java:87)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:1244)
+	at javafx.scene.control.TextInputControl.updateContent(TextInputControl.java:566)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:558)
+	at javafx.scene.control.skin.TextFieldSkin.replaceText(TextFieldSkin.java:450)
+	at com.sun.javafx.scene.control.behavior.TextFieldBehavior.replaceText(TextFieldBehavior.java:208)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.defaultKeyTyped(TextInputControlBehavior.java:400)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.lambda$keyMapping$62(TextInputControlBehavior.java:330)
+	at com.sun.javafx.scene.control.inputmap.InputMap.handle(InputMap.java:274)
+	at com.sun.javafx.event.CompositeEventHandler$NormalEventHandlerRecord.handleBubblingEvent(CompositeEventHandler.java:218)
+	at com.sun.javafx.event.CompositeEventHandler.dispatchBubblingEvent(CompositeEventHandler.java:80)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:238)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:191)
+	at com.sun.javafx.event.CompositeEventDispatcher.dispatchBubblingEvent(CompositeEventDispatcher.java:59)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:58)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.EventUtil.fireEventImpl(EventUtil.java:74)
+	at com.sun.javafx.event.EventUtil.fireEvent(EventUtil.java:54)
+	at javafx.event.Event.fireEvent(Event.java:198)
+	at javafx.scene.Scene$KeyHandler.process(Scene.java:4058)
+	at javafx.scene.Scene$KeyHandler.access$1500(Scene.java:4004)
+	at javafx.scene.Scene.processKeyEvent(Scene.java:2121)
+	at javafx.scene.Scene$ScenePeerListener.keyEvent(Scene.java:2595)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:217)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:149)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:389)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.lambda$handleKeyEvent$1(GlassViewEventHandler.java:248)
+	at com.sun.javafx.tk.quantum.QuantumToolkit.runWithoutRenderLock(QuantumToolkit.java:390)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.handleKeyEvent(GlassViewEventHandler.java:247)
+	at com.sun.glass.ui.View.handleKeyEvent(View.java:547)
+	at com.sun.glass.ui.View.notifyKey(View.java:971)
+2021-03-17 19:07:38,493 ERROR [scala-execution-context-global-42] o.w.f.j.e.ActionResult [ActionResult.scala:46] Search for dup: 1W1
+akka.pattern.AskTimeoutException: Recipient [Actor[akka://default/user/$a#-161288327]] had already been terminated. Message of type [org.wa9nnn.fdcluster.store.Search].
+	at akka.pattern.AskableActorRef$.recipientTerminatedException(AskSupport.scala:290)
+	at akka.pattern.AskableActorRef$.internalAsk$extension(AskSupport.scala:335)
+	at akka.pattern.AskableActorRef$.$qmark$extension(AskSupport.scala:327)
+	at org.wa9nnn.fdcluster.javafx.entry.ActionResult.potentiaDup(ActionResult.scala:43)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1(CallSignField.scala:41)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1$adapted(CallSignField.scala:35)
+	at scalafx.beans.value.ObservableValue$$anon$1.changed(ObservableValue.scala:116)
+	at com.sun.javafx.binding.ExpressionHelper$Generic.fireValueChangedEvent(ExpressionHelper.java:360)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextInputControl$TextProperty.fireValueChangedEvent(TextInputControl.java:1430)
+	at javafx.scene.control.TextInputControl$TextProperty.markInvalid(TextInputControl.java:1434)
+	at javafx.scene.control.TextInputControl$TextProperty.controlContentHasChanged(TextInputControl.java:1373)
+	at javafx.scene.control.TextInputControl$TextProperty.access$1600(TextInputControl.java:1341)
+	at javafx.scene.control.TextInputControl.lambda$new$0(TextInputControl.java:144)
+	at com.sun.javafx.binding.ExpressionHelper$SingleInvalidation.fireValueChangedEvent(ExpressionHelper.java:136)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextField$TextFieldContent.insert(TextField.java:87)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:1244)
+	at javafx.scene.control.TextInputControl.updateContent(TextInputControl.java:566)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:558)
+	at javafx.scene.control.skin.TextFieldSkin.replaceText(TextFieldSkin.java:450)
+	at com.sun.javafx.scene.control.behavior.TextFieldBehavior.replaceText(TextFieldBehavior.java:208)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.defaultKeyTyped(TextInputControlBehavior.java:400)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.lambda$keyMapping$62(TextInputControlBehavior.java:330)
+	at com.sun.javafx.scene.control.inputmap.InputMap.handle(InputMap.java:274)
+	at com.sun.javafx.event.CompositeEventHandler$NormalEventHandlerRecord.handleBubblingEvent(CompositeEventHandler.java:218)
+	at com.sun.javafx.event.CompositeEventHandler.dispatchBubblingEvent(CompositeEventHandler.java:80)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:238)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:191)
+	at com.sun.javafx.event.CompositeEventDispatcher.dispatchBubblingEvent(CompositeEventDispatcher.java:59)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:58)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.EventUtil.fireEventImpl(EventUtil.java:74)
+	at com.sun.javafx.event.EventUtil.fireEvent(EventUtil.java:54)
+	at javafx.event.Event.fireEvent(Event.java:198)
+	at javafx.scene.Scene$KeyHandler.process(Scene.java:4058)
+	at javafx.scene.Scene$KeyHandler.access$1500(Scene.java:4004)
+	at javafx.scene.Scene.processKeyEvent(Scene.java:2121)
+	at javafx.scene.Scene$ScenePeerListener.keyEvent(Scene.java:2595)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:217)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:149)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:389)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.lambda$handleKeyEvent$1(GlassViewEventHandler.java:248)
+	at com.sun.javafx.tk.quantum.QuantumToolkit.runWithoutRenderLock(QuantumToolkit.java:390)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.handleKeyEvent(GlassViewEventHandler.java:247)
+	at com.sun.glass.ui.View.handleKeyEvent(View.java:547)
+	at com.sun.glass.ui.View.notifyKey(View.java:971)
+2021-03-17 19:07:40,112 ERROR [scala-execution-context-global-42] o.w.f.j.e.ActionResult [ActionResult.scala:46] Search for dup: 1W1=
+akka.pattern.AskTimeoutException: Recipient [Actor[akka://default/user/$a#-161288327]] had already been terminated. Message of type [org.wa9nnn.fdcluster.store.Search].
+	at akka.pattern.AskableActorRef$.recipientTerminatedException(AskSupport.scala:290)
+	at akka.pattern.AskableActorRef$.internalAsk$extension(AskSupport.scala:335)
+	at akka.pattern.AskableActorRef$.$qmark$extension(AskSupport.scala:327)
+	at org.wa9nnn.fdcluster.javafx.entry.ActionResult.potentiaDup(ActionResult.scala:43)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1(CallSignField.scala:41)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1$adapted(CallSignField.scala:35)
+	at scalafx.beans.value.ObservableValue$$anon$1.changed(ObservableValue.scala:116)
+	at com.sun.javafx.binding.ExpressionHelper$Generic.fireValueChangedEvent(ExpressionHelper.java:360)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextInputControl$TextProperty.fireValueChangedEvent(TextInputControl.java:1430)
+	at javafx.scene.control.TextInputControl$TextProperty.markInvalid(TextInputControl.java:1434)
+	at javafx.scene.control.TextInputControl$TextProperty.controlContentHasChanged(TextInputControl.java:1373)
+	at javafx.scene.control.TextInputControl$TextProperty.access$1600(TextInputControl.java:1341)
+	at javafx.scene.control.TextInputControl.lambda$new$0(TextInputControl.java:144)
+	at com.sun.javafx.binding.ExpressionHelper$SingleInvalidation.fireValueChangedEvent(ExpressionHelper.java:136)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextField$TextFieldContent.insert(TextField.java:87)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:1244)
+	at javafx.scene.control.TextInputControl.updateContent(TextInputControl.java:566)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:558)
+	at javafx.scene.control.skin.TextFieldSkin.replaceText(TextFieldSkin.java:450)
+	at com.sun.javafx.scene.control.behavior.TextFieldBehavior.replaceText(TextFieldBehavior.java:208)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.defaultKeyTyped(TextInputControlBehavior.java:400)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.lambda$keyMapping$62(TextInputControlBehavior.java:330)
+	at com.sun.javafx.scene.control.inputmap.InputMap.handle(InputMap.java:274)
+	at com.sun.javafx.event.CompositeEventHandler$NormalEventHandlerRecord.handleBubblingEvent(CompositeEventHandler.java:218)
+	at com.sun.javafx.event.CompositeEventHandler.dispatchBubblingEvent(CompositeEventHandler.java:80)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:238)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:191)
+	at com.sun.javafx.event.CompositeEventDispatcher.dispatchBubblingEvent(CompositeEventDispatcher.java:59)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:58)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.EventUtil.fireEventImpl(EventUtil.java:74)
+	at com.sun.javafx.event.EventUtil.fireEvent(EventUtil.java:54)
+	at javafx.event.Event.fireEvent(Event.java:198)
+	at javafx.scene.Scene$KeyHandler.process(Scene.java:4058)
+	at javafx.scene.Scene$KeyHandler.access$1500(Scene.java:4004)
+	at javafx.scene.Scene.processKeyEvent(Scene.java:2121)
+	at javafx.scene.Scene$ScenePeerListener.keyEvent(Scene.java:2595)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:217)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:149)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:389)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.lambda$handleKeyEvent$1(GlassViewEventHandler.java:248)
+	at com.sun.javafx.tk.quantum.QuantumToolkit.runWithoutRenderLock(QuantumToolkit.java:390)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.handleKeyEvent(GlassViewEventHandler.java:247)
+	at com.sun.glass.ui.View.handleKeyEvent(View.java:547)
+	at com.sun.glass.ui.View.notifyKey(View.java:971)
+2021-03-17 19:07:40,294 ERROR [scala-execution-context-global-42] o.w.f.j.e.ActionResult [ActionResult.scala:46] Search for dup: 1W1==
+akka.pattern.AskTimeoutException: Recipient [Actor[akka://default/user/$a#-161288327]] had already been terminated. Message of type [org.wa9nnn.fdcluster.store.Search].
+	at akka.pattern.AskableActorRef$.recipientTerminatedException(AskSupport.scala:290)
+	at akka.pattern.AskableActorRef$.internalAsk$extension(AskSupport.scala:335)
+	at akka.pattern.AskableActorRef$.$qmark$extension(AskSupport.scala:327)
+	at org.wa9nnn.fdcluster.javafx.entry.ActionResult.potentiaDup(ActionResult.scala:43)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1(CallSignField.scala:41)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1$adapted(CallSignField.scala:35)
+	at scalafx.beans.value.ObservableValue$$anon$1.changed(ObservableValue.scala:116)
+	at com.sun.javafx.binding.ExpressionHelper$Generic.fireValueChangedEvent(ExpressionHelper.java:360)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextInputControl$TextProperty.fireValueChangedEvent(TextInputControl.java:1430)
+	at javafx.scene.control.TextInputControl$TextProperty.markInvalid(TextInputControl.java:1434)
+	at javafx.scene.control.TextInputControl$TextProperty.controlContentHasChanged(TextInputControl.java:1373)
+	at javafx.scene.control.TextInputControl$TextProperty.access$1600(TextInputControl.java:1341)
+	at javafx.scene.control.TextInputControl.lambda$new$0(TextInputControl.java:144)
+	at com.sun.javafx.binding.ExpressionHelper$SingleInvalidation.fireValueChangedEvent(ExpressionHelper.java:136)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextField$TextFieldContent.insert(TextField.java:87)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:1244)
+	at javafx.scene.control.TextInputControl.updateContent(TextInputControl.java:566)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:558)
+	at javafx.scene.control.skin.TextFieldSkin.replaceText(TextFieldSkin.java:450)
+	at com.sun.javafx.scene.control.behavior.TextFieldBehavior.replaceText(TextFieldBehavior.java:208)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.defaultKeyTyped(TextInputControlBehavior.java:400)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.lambda$keyMapping$62(TextInputControlBehavior.java:330)
+	at com.sun.javafx.scene.control.inputmap.InputMap.handle(InputMap.java:274)
+	at com.sun.javafx.event.CompositeEventHandler$NormalEventHandlerRecord.handleBubblingEvent(CompositeEventHandler.java:218)
+	at com.sun.javafx.event.CompositeEventHandler.dispatchBubblingEvent(CompositeEventHandler.java:80)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:238)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:191)
+	at com.sun.javafx.event.CompositeEventDispatcher.dispatchBubblingEvent(CompositeEventDispatcher.java:59)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:58)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.EventUtil.fireEventImpl(EventUtil.java:74)
+	at com.sun.javafx.event.EventUtil.fireEvent(EventUtil.java:54)
+	at javafx.event.Event.fireEvent(Event.java:198)
+	at javafx.scene.Scene$KeyHandler.process(Scene.java:4058)
+	at javafx.scene.Scene$KeyHandler.access$1500(Scene.java:4004)
+	at javafx.scene.Scene.processKeyEvent(Scene.java:2121)
+	at javafx.scene.Scene$ScenePeerListener.keyEvent(Scene.java:2595)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:217)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:149)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:389)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.lambda$handleKeyEvent$1(GlassViewEventHandler.java:248)
+	at com.sun.javafx.tk.quantum.QuantumToolkit.runWithoutRenderLock(QuantumToolkit.java:390)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.handleKeyEvent(GlassViewEventHandler.java:247)
+	at com.sun.glass.ui.View.handleKeyEvent(View.java:547)
+	at com.sun.glass.ui.View.notifyKey(View.java:971)
+2021-03-17 19:07:42,117 ERROR [scala-execution-context-global-42] o.w.f.j.e.ActionResult [ActionResult.scala:46] Search for dup: 1W1=
+akka.pattern.AskTimeoutException: Recipient [Actor[akka://default/user/$a#-161288327]] had already been terminated. Message of type [org.wa9nnn.fdcluster.store.Search].
+	at akka.pattern.AskableActorRef$.recipientTerminatedException(AskSupport.scala:290)
+	at akka.pattern.AskableActorRef$.internalAsk$extension(AskSupport.scala:335)
+	at akka.pattern.AskableActorRef$.$qmark$extension(AskSupport.scala:327)
+	at org.wa9nnn.fdcluster.javafx.entry.ActionResult.potentiaDup(ActionResult.scala:43)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1(CallSignField.scala:41)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1$adapted(CallSignField.scala:35)
+	at scalafx.beans.value.ObservableValue$$anon$1.changed(ObservableValue.scala:116)
+	at com.sun.javafx.binding.ExpressionHelper$Generic.fireValueChangedEvent(ExpressionHelper.java:360)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextInputControl$TextProperty.fireValueChangedEvent(TextInputControl.java:1430)
+	at javafx.scene.control.TextInputControl$TextProperty.markInvalid(TextInputControl.java:1434)
+	at javafx.scene.control.TextInputControl$TextProperty.controlContentHasChanged(TextInputControl.java:1373)
+	at javafx.scene.control.TextInputControl$TextProperty.access$1600(TextInputControl.java:1341)
+	at javafx.scene.control.TextInputControl.lambda$new$0(TextInputControl.java:144)
+	at com.sun.javafx.binding.ExpressionHelper$SingleInvalidation.fireValueChangedEvent(ExpressionHelper.java:136)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextField$TextFieldContent.delete(TextField.java:96)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:1240)
+	at javafx.scene.control.TextInputControl.updateContent(TextInputControl.java:566)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:558)
+	at javafx.scene.control.TextInputControl.deleteText(TextInputControl.java:506)
+	at javafx.scene.control.TextInputControl.deletePreviousChar(TextInputControl.java:932)
+	at javafx.scene.control.skin.TextFieldSkin.deleteChar(TextFieldSkin.java:469)
+	at com.sun.javafx.scene.control.behavior.TextFieldBehavior.deleteChar(TextFieldBehavior.java:203)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.deletePreviousChar(TextInputControlBehavior.java:473)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.lambda$new$12(TextInputControlBehavior.java:145)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.lambda$keyMapping$62(TextInputControlBehavior.java:330)
+	at com.sun.javafx.scene.control.inputmap.InputMap.handle(InputMap.java:274)
+	at com.sun.javafx.event.CompositeEventHandler$NormalEventHandlerRecord.handleBubblingEvent(CompositeEventHandler.java:218)
+	at com.sun.javafx.event.CompositeEventHandler.dispatchBubblingEvent(CompositeEventHandler.java:80)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:238)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:191)
+	at com.sun.javafx.event.CompositeEventDispatcher.dispatchBubblingEvent(CompositeEventDispatcher.java:59)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:58)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.EventUtil.fireEventImpl(EventUtil.java:74)
+	at com.sun.javafx.event.EventUtil.fireEvent(EventUtil.java:54)
+	at javafx.event.Event.fireEvent(Event.java:198)
+	at javafx.scene.Scene$KeyHandler.process(Scene.java:4058)
+	at javafx.scene.Scene$KeyHandler.access$1500(Scene.java:4004)
+	at javafx.scene.Scene.processKeyEvent(Scene.java:2121)
+	at javafx.scene.Scene$ScenePeerListener.keyEvent(Scene.java:2595)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:217)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:149)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:389)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.lambda$handleKeyEvent$1(GlassViewEventHandler.java:248)
+	at com.sun.javafx.tk.quantum.QuantumToolkit.runWithoutRenderLock(QuantumToolkit.java:390)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.handleKeyEvent(GlassViewEventHandler.java:247)
+	at com.sun.glass.ui.View.handleKeyEvent(View.java:547)
+	at com.sun.glass.ui.View.notifyKey(View.java:971)
+2021-03-17 19:07:42,256 ERROR [scala-execution-context-global-42] o.w.f.j.e.ActionResult [ActionResult.scala:46] Search for dup: 1W1
+akka.pattern.AskTimeoutException: Recipient [Actor[akka://default/user/$a#-161288327]] had already been terminated. Message of type [org.wa9nnn.fdcluster.store.Search].
+	at akka.pattern.AskableActorRef$.recipientTerminatedException(AskSupport.scala:290)
+	at akka.pattern.AskableActorRef$.internalAsk$extension(AskSupport.scala:335)
+	at akka.pattern.AskableActorRef$.$qmark$extension(AskSupport.scala:327)
+	at org.wa9nnn.fdcluster.javafx.entry.ActionResult.potentiaDup(ActionResult.scala:43)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1(CallSignField.scala:41)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1$adapted(CallSignField.scala:35)
+	at scalafx.beans.value.ObservableValue$$anon$1.changed(ObservableValue.scala:116)
+	at com.sun.javafx.binding.ExpressionHelper$Generic.fireValueChangedEvent(ExpressionHelper.java:360)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextInputControl$TextProperty.fireValueChangedEvent(TextInputControl.java:1430)
+	at javafx.scene.control.TextInputControl$TextProperty.markInvalid(TextInputControl.java:1434)
+	at javafx.scene.control.TextInputControl$TextProperty.controlContentHasChanged(TextInputControl.java:1373)
+	at javafx.scene.control.TextInputControl$TextProperty.access$1600(TextInputControl.java:1341)
+	at javafx.scene.control.TextInputControl.lambda$new$0(TextInputControl.java:144)
+	at com.sun.javafx.binding.ExpressionHelper$SingleInvalidation.fireValueChangedEvent(ExpressionHelper.java:136)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextField$TextFieldContent.delete(TextField.java:96)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:1240)
+	at javafx.scene.control.TextInputControl.updateContent(TextInputControl.java:566)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:558)
+	at javafx.scene.control.TextInputControl.deleteText(TextInputControl.java:506)
+	at javafx.scene.control.TextInputControl.deletePreviousChar(TextInputControl.java:932)
+	at javafx.scene.control.skin.TextFieldSkin.deleteChar(TextFieldSkin.java:469)
+	at com.sun.javafx.scene.control.behavior.TextFieldBehavior.deleteChar(TextFieldBehavior.java:203)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.deletePreviousChar(TextInputControlBehavior.java:473)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.lambda$new$12(TextInputControlBehavior.java:145)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.lambda$keyMapping$62(TextInputControlBehavior.java:330)
+	at com.sun.javafx.scene.control.inputmap.InputMap.handle(InputMap.java:274)
+	at com.sun.javafx.event.CompositeEventHandler$NormalEventHandlerRecord.handleBubblingEvent(CompositeEventHandler.java:218)
+	at com.sun.javafx.event.CompositeEventHandler.dispatchBubblingEvent(CompositeEventHandler.java:80)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:238)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:191)
+	at com.sun.javafx.event.CompositeEventDispatcher.dispatchBubblingEvent(CompositeEventDispatcher.java:59)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:58)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.EventUtil.fireEventImpl(EventUtil.java:74)
+	at com.sun.javafx.event.EventUtil.fireEvent(EventUtil.java:54)
+	at javafx.event.Event.fireEvent(Event.java:198)
+	at javafx.scene.Scene$KeyHandler.process(Scene.java:4058)
+	at javafx.scene.Scene$KeyHandler.access$1500(Scene.java:4004)
+	at javafx.scene.Scene.processKeyEvent(Scene.java:2121)
+	at javafx.scene.Scene$ScenePeerListener.keyEvent(Scene.java:2595)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:217)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:149)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:389)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.lambda$handleKeyEvent$1(GlassViewEventHandler.java:248)
+	at com.sun.javafx.tk.quantum.QuantumToolkit.runWithoutRenderLock(QuantumToolkit.java:390)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.handleKeyEvent(GlassViewEventHandler.java:247)
+	at com.sun.glass.ui.View.handleKeyEvent(View.java:547)
+	at com.sun.glass.ui.View.notifyKey(View.java:971)
+2021-03-17 19:07:42,407 ERROR [scala-execution-context-global-42] o.w.f.j.e.ActionResult [ActionResult.scala:46] Search for dup: 1W
+akka.pattern.AskTimeoutException: Recipient [Actor[akka://default/user/$a#-161288327]] had already been terminated. Message of type [org.wa9nnn.fdcluster.store.Search].
+	at akka.pattern.AskableActorRef$.recipientTerminatedException(AskSupport.scala:290)
+	at akka.pattern.AskableActorRef$.internalAsk$extension(AskSupport.scala:335)
+	at akka.pattern.AskableActorRef$.$qmark$extension(AskSupport.scala:327)
+	at org.wa9nnn.fdcluster.javafx.entry.ActionResult.potentiaDup(ActionResult.scala:43)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1(CallSignField.scala:41)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1$adapted(CallSignField.scala:35)
+	at scalafx.beans.value.ObservableValue$$anon$1.changed(ObservableValue.scala:116)
+	at com.sun.javafx.binding.ExpressionHelper$Generic.fireValueChangedEvent(ExpressionHelper.java:360)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextInputControl$TextProperty.fireValueChangedEvent(TextInputControl.java:1430)
+	at javafx.scene.control.TextInputControl$TextProperty.markInvalid(TextInputControl.java:1434)
+	at javafx.scene.control.TextInputControl$TextProperty.controlContentHasChanged(TextInputControl.java:1373)
+	at javafx.scene.control.TextInputControl$TextProperty.access$1600(TextInputControl.java:1341)
+	at javafx.scene.control.TextInputControl.lambda$new$0(TextInputControl.java:144)
+	at com.sun.javafx.binding.ExpressionHelper$SingleInvalidation.fireValueChangedEvent(ExpressionHelper.java:136)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextField$TextFieldContent.delete(TextField.java:96)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:1240)
+	at javafx.scene.control.TextInputControl.updateContent(TextInputControl.java:566)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:558)
+	at javafx.scene.control.TextInputControl.deleteText(TextInputControl.java:506)
+	at javafx.scene.control.TextInputControl.deletePreviousChar(TextInputControl.java:932)
+	at javafx.scene.control.skin.TextFieldSkin.deleteChar(TextFieldSkin.java:469)
+	at com.sun.javafx.scene.control.behavior.TextFieldBehavior.deleteChar(TextFieldBehavior.java:203)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.deletePreviousChar(TextInputControlBehavior.java:473)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.lambda$new$12(TextInputControlBehavior.java:145)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.lambda$keyMapping$62(TextInputControlBehavior.java:330)
+	at com.sun.javafx.scene.control.inputmap.InputMap.handle(InputMap.java:274)
+	at com.sun.javafx.event.CompositeEventHandler$NormalEventHandlerRecord.handleBubblingEvent(CompositeEventHandler.java:218)
+	at com.sun.javafx.event.CompositeEventHandler.dispatchBubblingEvent(CompositeEventHandler.java:80)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:238)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:191)
+	at com.sun.javafx.event.CompositeEventDispatcher.dispatchBubblingEvent(CompositeEventDispatcher.java:59)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:58)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.EventUtil.fireEventImpl(EventUtil.java:74)
+	at com.sun.javafx.event.EventUtil.fireEvent(EventUtil.java:54)
+	at javafx.event.Event.fireEvent(Event.java:198)
+	at javafx.scene.Scene$KeyHandler.process(Scene.java:4058)
+	at javafx.scene.Scene$KeyHandler.access$1500(Scene.java:4004)
+	at javafx.scene.Scene.processKeyEvent(Scene.java:2121)
+	at javafx.scene.Scene$ScenePeerListener.keyEvent(Scene.java:2595)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:217)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:149)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:389)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.lambda$handleKeyEvent$1(GlassViewEventHandler.java:248)
+	at com.sun.javafx.tk.quantum.QuantumToolkit.runWithoutRenderLock(QuantumToolkit.java:390)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.handleKeyEvent(GlassViewEventHandler.java:247)
+	at com.sun.glass.ui.View.handleKeyEvent(View.java:547)
+	at com.sun.glass.ui.View.notifyKey(View.java:971)
+2021-03-17 19:07:43,557 ERROR [scala-execution-context-global-42] o.w.f.j.e.ActionResult [ActionResult.scala:46] Search for dup: 1
+akka.pattern.AskTimeoutException: Recipient [Actor[akka://default/user/$a#-161288327]] had already been terminated. Message of type [org.wa9nnn.fdcluster.store.Search].
+	at akka.pattern.AskableActorRef$.recipientTerminatedException(AskSupport.scala:290)
+	at akka.pattern.AskableActorRef$.internalAsk$extension(AskSupport.scala:335)
+	at akka.pattern.AskableActorRef$.$qmark$extension(AskSupport.scala:327)
+	at org.wa9nnn.fdcluster.javafx.entry.ActionResult.potentiaDup(ActionResult.scala:43)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1(CallSignField.scala:41)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1$adapted(CallSignField.scala:35)
+	at scalafx.beans.value.ObservableValue$$anon$1.changed(ObservableValue.scala:116)
+	at com.sun.javafx.binding.ExpressionHelper$Generic.fireValueChangedEvent(ExpressionHelper.java:360)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextInputControl$TextProperty.fireValueChangedEvent(TextInputControl.java:1430)
+	at javafx.scene.control.TextInputControl$TextProperty.markInvalid(TextInputControl.java:1434)
+	at javafx.scene.control.TextInputControl$TextProperty.controlContentHasChanged(TextInputControl.java:1373)
+	at javafx.scene.control.TextInputControl$TextProperty.access$1600(TextInputControl.java:1341)
+	at javafx.scene.control.TextInputControl.lambda$new$0(TextInputControl.java:144)
+	at com.sun.javafx.binding.ExpressionHelper$SingleInvalidation.fireValueChangedEvent(ExpressionHelper.java:136)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextField$TextFieldContent.delete(TextField.java:96)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:1240)
+	at javafx.scene.control.TextInputControl.updateContent(TextInputControl.java:566)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:558)
+	at javafx.scene.control.TextInputControl.deleteText(TextInputControl.java:506)
+	at javafx.scene.control.TextInputControl.deletePreviousChar(TextInputControl.java:932)
+	at javafx.scene.control.skin.TextFieldSkin.deleteChar(TextFieldSkin.java:469)
+	at com.sun.javafx.scene.control.behavior.TextFieldBehavior.deleteChar(TextFieldBehavior.java:203)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.deletePreviousChar(TextInputControlBehavior.java:473)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.lambda$new$12(TextInputControlBehavior.java:145)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.lambda$keyMapping$62(TextInputControlBehavior.java:330)
+	at com.sun.javafx.scene.control.inputmap.InputMap.handle(InputMap.java:274)
+	at com.sun.javafx.event.CompositeEventHandler$NormalEventHandlerRecord.handleBubblingEvent(CompositeEventHandler.java:218)
+	at com.sun.javafx.event.CompositeEventHandler.dispatchBubblingEvent(CompositeEventHandler.java:80)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:238)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:191)
+	at com.sun.javafx.event.CompositeEventDispatcher.dispatchBubblingEvent(CompositeEventDispatcher.java:59)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:58)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.EventUtil.fireEventImpl(EventUtil.java:74)
+	at com.sun.javafx.event.EventUtil.fireEvent(EventUtil.java:54)
+	at javafx.event.Event.fireEvent(Event.java:198)
+	at javafx.scene.Scene$KeyHandler.process(Scene.java:4058)
+	at javafx.scene.Scene$KeyHandler.access$1500(Scene.java:4004)
+	at javafx.scene.Scene.processKeyEvent(Scene.java:2121)
+	at javafx.scene.Scene$ScenePeerListener.keyEvent(Scene.java:2595)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:217)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:149)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:389)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.lambda$handleKeyEvent$1(GlassViewEventHandler.java:248)
+	at com.sun.javafx.tk.quantum.QuantumToolkit.runWithoutRenderLock(QuantumToolkit.java:390)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.handleKeyEvent(GlassViewEventHandler.java:247)
+	at com.sun.glass.ui.View.handleKeyEvent(View.java:547)
+	at com.sun.glass.ui.View.notifyKey(View.java:971)
+2021-03-17 19:07:44,615 ERROR [scala-execution-context-global-42] o.w.f.j.e.ActionResult [ActionResult.scala:46] Search for dup: W
+akka.pattern.AskTimeoutException: Recipient [Actor[akka://default/user/$a#-161288327]] had already been terminated. Message of type [org.wa9nnn.fdcluster.store.Search].
+	at akka.pattern.AskableActorRef$.recipientTerminatedException(AskSupport.scala:290)
+	at akka.pattern.AskableActorRef$.internalAsk$extension(AskSupport.scala:335)
+	at akka.pattern.AskableActorRef$.$qmark$extension(AskSupport.scala:327)
+	at org.wa9nnn.fdcluster.javafx.entry.ActionResult.potentiaDup(ActionResult.scala:43)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1(CallSignField.scala:41)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1$adapted(CallSignField.scala:35)
+	at scalafx.beans.value.ObservableValue$$anon$1.changed(ObservableValue.scala:116)
+	at com.sun.javafx.binding.ExpressionHelper$Generic.fireValueChangedEvent(ExpressionHelper.java:360)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextInputControl$TextProperty.fireValueChangedEvent(TextInputControl.java:1430)
+	at javafx.scene.control.TextInputControl$TextProperty.markInvalid(TextInputControl.java:1434)
+	at javafx.scene.control.TextInputControl$TextProperty.controlContentHasChanged(TextInputControl.java:1373)
+	at javafx.scene.control.TextInputControl$TextProperty.access$1600(TextInputControl.java:1341)
+	at javafx.scene.control.TextInputControl.lambda$new$0(TextInputControl.java:144)
+	at com.sun.javafx.binding.ExpressionHelper$SingleInvalidation.fireValueChangedEvent(ExpressionHelper.java:136)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextField$TextFieldContent.insert(TextField.java:87)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:1244)
+	at javafx.scene.control.TextInputControl.updateContent(TextInputControl.java:566)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:558)
+	at javafx.scene.control.skin.TextFieldSkin.replaceText(TextFieldSkin.java:450)
+	at com.sun.javafx.scene.control.behavior.TextFieldBehavior.replaceText(TextFieldBehavior.java:208)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.defaultKeyTyped(TextInputControlBehavior.java:400)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.lambda$keyMapping$62(TextInputControlBehavior.java:330)
+	at com.sun.javafx.scene.control.inputmap.InputMap.handle(InputMap.java:274)
+	at com.sun.javafx.event.CompositeEventHandler$NormalEventHandlerRecord.handleBubblingEvent(CompositeEventHandler.java:218)
+	at com.sun.javafx.event.CompositeEventHandler.dispatchBubblingEvent(CompositeEventHandler.java:80)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:238)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:191)
+	at com.sun.javafx.event.CompositeEventDispatcher.dispatchBubblingEvent(CompositeEventDispatcher.java:59)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:58)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.EventUtil.fireEventImpl(EventUtil.java:74)
+	at com.sun.javafx.event.EventUtil.fireEvent(EventUtil.java:54)
+	at javafx.event.Event.fireEvent(Event.java:198)
+	at javafx.scene.Scene$KeyHandler.process(Scene.java:4058)
+	at javafx.scene.Scene$KeyHandler.access$1500(Scene.java:4004)
+	at javafx.scene.Scene.processKeyEvent(Scene.java:2121)
+	at javafx.scene.Scene$ScenePeerListener.keyEvent(Scene.java:2595)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:217)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:149)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:389)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.lambda$handleKeyEvent$1(GlassViewEventHandler.java:248)
+	at com.sun.javafx.tk.quantum.QuantumToolkit.runWithoutRenderLock(QuantumToolkit.java:390)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.handleKeyEvent(GlassViewEventHandler.java:247)
+	at com.sun.glass.ui.View.handleKeyEvent(View.java:547)
+	at com.sun.glass.ui.View.notifyKey(View.java:971)
+2021-03-17 19:07:45,019 ERROR [scala-execution-context-global-42] o.w.f.j.e.ActionResult [ActionResult.scala:46] Search for dup: W2
+akka.pattern.AskTimeoutException: Recipient [Actor[akka://default/user/$a#-161288327]] had already been terminated. Message of type [org.wa9nnn.fdcluster.store.Search].
+	at akka.pattern.AskableActorRef$.recipientTerminatedException(AskSupport.scala:290)
+	at akka.pattern.AskableActorRef$.internalAsk$extension(AskSupport.scala:335)
+	at akka.pattern.AskableActorRef$.$qmark$extension(AskSupport.scala:327)
+	at org.wa9nnn.fdcluster.javafx.entry.ActionResult.potentiaDup(ActionResult.scala:43)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1(CallSignField.scala:41)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1$adapted(CallSignField.scala:35)
+	at scalafx.beans.value.ObservableValue$$anon$1.changed(ObservableValue.scala:116)
+	at com.sun.javafx.binding.ExpressionHelper$Generic.fireValueChangedEvent(ExpressionHelper.java:360)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextInputControl$TextProperty.fireValueChangedEvent(TextInputControl.java:1430)
+	at javafx.scene.control.TextInputControl$TextProperty.markInvalid(TextInputControl.java:1434)
+	at javafx.scene.control.TextInputControl$TextProperty.controlContentHasChanged(TextInputControl.java:1373)
+	at javafx.scene.control.TextInputControl$TextProperty.access$1600(TextInputControl.java:1341)
+	at javafx.scene.control.TextInputControl.lambda$new$0(TextInputControl.java:144)
+	at com.sun.javafx.binding.ExpressionHelper$SingleInvalidation.fireValueChangedEvent(ExpressionHelper.java:136)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextField$TextFieldContent.insert(TextField.java:87)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:1244)
+	at javafx.scene.control.TextInputControl.updateContent(TextInputControl.java:566)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:558)
+	at javafx.scene.control.skin.TextFieldSkin.replaceText(TextFieldSkin.java:450)
+	at com.sun.javafx.scene.control.behavior.TextFieldBehavior.replaceText(TextFieldBehavior.java:208)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.defaultKeyTyped(TextInputControlBehavior.java:400)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.lambda$keyMapping$62(TextInputControlBehavior.java:330)
+	at com.sun.javafx.scene.control.inputmap.InputMap.handle(InputMap.java:274)
+	at com.sun.javafx.event.CompositeEventHandler$NormalEventHandlerRecord.handleBubblingEvent(CompositeEventHandler.java:218)
+	at com.sun.javafx.event.CompositeEventHandler.dispatchBubblingEvent(CompositeEventHandler.java:80)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:238)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:191)
+	at com.sun.javafx.event.CompositeEventDispatcher.dispatchBubblingEvent(CompositeEventDispatcher.java:59)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:58)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.EventUtil.fireEventImpl(EventUtil.java:74)
+	at com.sun.javafx.event.EventUtil.fireEvent(EventUtil.java:54)
+	at javafx.event.Event.fireEvent(Event.java:198)
+	at javafx.scene.Scene$KeyHandler.process(Scene.java:4058)
+	at javafx.scene.Scene$KeyHandler.access$1500(Scene.java:4004)
+	at javafx.scene.Scene.processKeyEvent(Scene.java:2121)
+	at javafx.scene.Scene$ScenePeerListener.keyEvent(Scene.java:2595)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:217)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:149)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:389)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.lambda$handleKeyEvent$1(GlassViewEventHandler.java:248)
+	at com.sun.javafx.tk.quantum.QuantumToolkit.runWithoutRenderLock(QuantumToolkit.java:390)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.handleKeyEvent(GlassViewEventHandler.java:247)
+	at com.sun.glass.ui.View.handleKeyEvent(View.java:547)
+	at com.sun.glass.ui.View.notifyKey(View.java:971)
+2021-03-17 19:07:54,334 ERROR [scala-execution-context-global-42] o.w.f.j.e.ActionResult [ActionResult.scala:46] Search for dup: D
+akka.pattern.AskTimeoutException: Recipient [Actor[akka://default/user/$a#-161288327]] had already been terminated. Message of type [org.wa9nnn.fdcluster.store.Search].
+	at akka.pattern.AskableActorRef$.recipientTerminatedException(AskSupport.scala:290)
+	at akka.pattern.AskableActorRef$.internalAsk$extension(AskSupport.scala:335)
+	at akka.pattern.AskableActorRef$.$qmark$extension(AskSupport.scala:327)
+	at org.wa9nnn.fdcluster.javafx.entry.ActionResult.potentiaDup(ActionResult.scala:43)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1(CallSignField.scala:41)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1$adapted(CallSignField.scala:35)
+	at scalafx.beans.value.ObservableValue$$anon$1.changed(ObservableValue.scala:116)
+	at com.sun.javafx.binding.ExpressionHelper$Generic.fireValueChangedEvent(ExpressionHelper.java:360)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextInputControl$TextProperty.fireValueChangedEvent(TextInputControl.java:1430)
+	at javafx.scene.control.TextInputControl$TextProperty.markInvalid(TextInputControl.java:1434)
+	at javafx.scene.control.TextInputControl$TextProperty.controlContentHasChanged(TextInputControl.java:1373)
+	at javafx.scene.control.TextInputControl$TextProperty.access$1600(TextInputControl.java:1341)
+	at javafx.scene.control.TextInputControl.lambda$new$0(TextInputControl.java:144)
+	at com.sun.javafx.binding.ExpressionHelper$SingleInvalidation.fireValueChangedEvent(ExpressionHelper.java:136)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextField$TextFieldContent.insert(TextField.java:87)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:1244)
+	at javafx.scene.control.TextInputControl.updateContent(TextInputControl.java:566)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:558)
+	at javafx.scene.control.skin.TextFieldSkin.replaceText(TextFieldSkin.java:450)
+	at com.sun.javafx.scene.control.behavior.TextFieldBehavior.replaceText(TextFieldBehavior.java:208)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.defaultKeyTyped(TextInputControlBehavior.java:400)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.lambda$keyMapping$62(TextInputControlBehavior.java:330)
+	at com.sun.javafx.scene.control.inputmap.InputMap.handle(InputMap.java:274)
+	at com.sun.javafx.event.CompositeEventHandler$NormalEventHandlerRecord.handleBubblingEvent(CompositeEventHandler.java:218)
+	at com.sun.javafx.event.CompositeEventHandler.dispatchBubblingEvent(CompositeEventHandler.java:80)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:238)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:191)
+	at com.sun.javafx.event.CompositeEventDispatcher.dispatchBubblingEvent(CompositeEventDispatcher.java:59)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:58)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.EventUtil.fireEventImpl(EventUtil.java:74)
+	at com.sun.javafx.event.EventUtil.fireEvent(EventUtil.java:54)
+	at javafx.event.Event.fireEvent(Event.java:198)
+	at javafx.scene.Scene$KeyHandler.process(Scene.java:4058)
+	at javafx.scene.Scene$KeyHandler.access$1500(Scene.java:4004)
+	at javafx.scene.Scene.processKeyEvent(Scene.java:2121)
+	at javafx.scene.Scene$ScenePeerListener.keyEvent(Scene.java:2595)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:217)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:149)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:389)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.lambda$handleKeyEvent$1(GlassViewEventHandler.java:248)
+	at com.sun.javafx.tk.quantum.QuantumToolkit.runWithoutRenderLock(QuantumToolkit.java:390)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.handleKeyEvent(GlassViewEventHandler.java:247)
+	at com.sun.glass.ui.View.handleKeyEvent(View.java:547)
+	at com.sun.glass.ui.View.notifyKey(View.java:971)
+2021-03-17 19:07:54,715 ERROR [scala-execution-context-global-42] o.w.f.j.e.ActionResult [ActionResult.scala:46] Search for dup: D4
+akka.pattern.AskTimeoutException: Recipient [Actor[akka://default/user/$a#-161288327]] had already been terminated. Message of type [org.wa9nnn.fdcluster.store.Search].
+	at akka.pattern.AskableActorRef$.recipientTerminatedException(AskSupport.scala:290)
+	at akka.pattern.AskableActorRef$.internalAsk$extension(AskSupport.scala:335)
+	at akka.pattern.AskableActorRef$.$qmark$extension(AskSupport.scala:327)
+	at org.wa9nnn.fdcluster.javafx.entry.ActionResult.potentiaDup(ActionResult.scala:43)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1(CallSignField.scala:41)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1$adapted(CallSignField.scala:35)
+	at scalafx.beans.value.ObservableValue$$anon$1.changed(ObservableValue.scala:116)
+	at com.sun.javafx.binding.ExpressionHelper$Generic.fireValueChangedEvent(ExpressionHelper.java:360)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextInputControl$TextProperty.fireValueChangedEvent(TextInputControl.java:1430)
+	at javafx.scene.control.TextInputControl$TextProperty.markInvalid(TextInputControl.java:1434)
+	at javafx.scene.control.TextInputControl$TextProperty.controlContentHasChanged(TextInputControl.java:1373)
+	at javafx.scene.control.TextInputControl$TextProperty.access$1600(TextInputControl.java:1341)
+	at javafx.scene.control.TextInputControl.lambda$new$0(TextInputControl.java:144)
+	at com.sun.javafx.binding.ExpressionHelper$SingleInvalidation.fireValueChangedEvent(ExpressionHelper.java:136)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextField$TextFieldContent.insert(TextField.java:87)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:1244)
+	at javafx.scene.control.TextInputControl.updateContent(TextInputControl.java:566)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:558)
+	at javafx.scene.control.skin.TextFieldSkin.replaceText(TextFieldSkin.java:450)
+	at com.sun.javafx.scene.control.behavior.TextFieldBehavior.replaceText(TextFieldBehavior.java:208)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.defaultKeyTyped(TextInputControlBehavior.java:400)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.lambda$keyMapping$62(TextInputControlBehavior.java:330)
+	at com.sun.javafx.scene.control.inputmap.InputMap.handle(InputMap.java:274)
+	at com.sun.javafx.event.CompositeEventHandler$NormalEventHandlerRecord.handleBubblingEvent(CompositeEventHandler.java:218)
+	at com.sun.javafx.event.CompositeEventHandler.dispatchBubblingEvent(CompositeEventHandler.java:80)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:238)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:191)
+	at com.sun.javafx.event.CompositeEventDispatcher.dispatchBubblingEvent(CompositeEventDispatcher.java:59)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:58)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.EventUtil.fireEventImpl(EventUtil.java:74)
+	at com.sun.javafx.event.EventUtil.fireEvent(EventUtil.java:54)
+	at javafx.event.Event.fireEvent(Event.java:198)
+	at javafx.scene.Scene$KeyHandler.process(Scene.java:4058)
+	at javafx.scene.Scene$KeyHandler.access$1500(Scene.java:4004)
+	at javafx.scene.Scene.processKeyEvent(Scene.java:2121)
+	at javafx.scene.Scene$ScenePeerListener.keyEvent(Scene.java:2595)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:217)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:149)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:389)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.lambda$handleKeyEvent$1(GlassViewEventHandler.java:248)
+	at com.sun.javafx.tk.quantum.QuantumToolkit.runWithoutRenderLock(QuantumToolkit.java:390)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.handleKeyEvent(GlassViewEventHandler.java:247)
+	at com.sun.glass.ui.View.handleKeyEvent(View.java:547)
+	at com.sun.glass.ui.View.notifyKey(View.java:971)
+2021-03-17 19:10:26,594 ERROR [scala-execution-context-global-42] o.w.f.j.e.ActionResult [ActionResult.scala:46] Search for dup: D
+akka.pattern.AskTimeoutException: Recipient [Actor[akka://default/user/$a#-161288327]] had already been terminated. Message of type [org.wa9nnn.fdcluster.store.Search].
+	at akka.pattern.AskableActorRef$.recipientTerminatedException(AskSupport.scala:290)
+	at akka.pattern.AskableActorRef$.internalAsk$extension(AskSupport.scala:335)
+	at akka.pattern.AskableActorRef$.$qmark$extension(AskSupport.scala:327)
+	at org.wa9nnn.fdcluster.javafx.entry.ActionResult.potentiaDup(ActionResult.scala:43)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1(CallSignField.scala:41)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1$adapted(CallSignField.scala:35)
+	at scalafx.beans.value.ObservableValue$$anon$1.changed(ObservableValue.scala:116)
+	at com.sun.javafx.binding.ExpressionHelper$Generic.fireValueChangedEvent(ExpressionHelper.java:360)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextInputControl$TextProperty.fireValueChangedEvent(TextInputControl.java:1430)
+	at javafx.scene.control.TextInputControl$TextProperty.markInvalid(TextInputControl.java:1434)
+	at javafx.scene.control.TextInputControl$TextProperty.controlContentHasChanged(TextInputControl.java:1373)
+	at javafx.scene.control.TextInputControl$TextProperty.access$1600(TextInputControl.java:1341)
+	at javafx.scene.control.TextInputControl.lambda$new$0(TextInputControl.java:144)
+	at com.sun.javafx.binding.ExpressionHelper$SingleInvalidation.fireValueChangedEvent(ExpressionHelper.java:136)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextField$TextFieldContent.insert(TextField.java:87)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:1244)
+	at javafx.scene.control.TextInputControl.updateContent(TextInputControl.java:566)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:558)
+	at javafx.scene.control.skin.TextFieldSkin.replaceText(TextFieldSkin.java:450)
+	at com.sun.javafx.scene.control.behavior.TextFieldBehavior.replaceText(TextFieldBehavior.java:208)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.defaultKeyTyped(TextInputControlBehavior.java:400)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.lambda$keyMapping$62(TextInputControlBehavior.java:330)
+	at com.sun.javafx.scene.control.inputmap.InputMap.handle(InputMap.java:274)
+	at com.sun.javafx.event.CompositeEventHandler$NormalEventHandlerRecord.handleBubblingEvent(CompositeEventHandler.java:218)
+	at com.sun.javafx.event.CompositeEventHandler.dispatchBubblingEvent(CompositeEventHandler.java:80)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:238)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:191)
+	at com.sun.javafx.event.CompositeEventDispatcher.dispatchBubblingEvent(CompositeEventDispatcher.java:59)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:58)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.EventUtil.fireEventImpl(EventUtil.java:74)
+	at com.sun.javafx.event.EventUtil.fireEvent(EventUtil.java:54)
+	at javafx.event.Event.fireEvent(Event.java:198)
+	at javafx.scene.Scene$KeyHandler.process(Scene.java:4058)
+	at javafx.scene.Scene$KeyHandler.access$1500(Scene.java:4004)
+	at javafx.scene.Scene.processKeyEvent(Scene.java:2121)
+	at javafx.scene.Scene$ScenePeerListener.keyEvent(Scene.java:2595)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:217)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:149)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:389)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.lambda$handleKeyEvent$1(GlassViewEventHandler.java:248)
+	at com.sun.javafx.tk.quantum.QuantumToolkit.runWithoutRenderLock(QuantumToolkit.java:390)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.handleKeyEvent(GlassViewEventHandler.java:247)
+	at com.sun.glass.ui.View.handleKeyEvent(View.java:547)
+	at com.sun.glass.ui.View.notifyKey(View.java:971)
+2021-03-17 19:10:26,932 ERROR [scala-execution-context-global-42] o.w.f.j.e.ActionResult [ActionResult.scala:46] Search for dup: D3
+akka.pattern.AskTimeoutException: Recipient [Actor[akka://default/user/$a#-161288327]] had already been terminated. Message of type [org.wa9nnn.fdcluster.store.Search].
+	at akka.pattern.AskableActorRef$.recipientTerminatedException(AskSupport.scala:290)
+	at akka.pattern.AskableActorRef$.internalAsk$extension(AskSupport.scala:335)
+	at akka.pattern.AskableActorRef$.$qmark$extension(AskSupport.scala:327)
+	at org.wa9nnn.fdcluster.javafx.entry.ActionResult.potentiaDup(ActionResult.scala:43)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1(CallSignField.scala:41)
+	at org.wa9nnn.fdcluster.javafx.CallSignField.$anonfun$new$1$adapted(CallSignField.scala:35)
+	at scalafx.beans.value.ObservableValue$$anon$1.changed(ObservableValue.scala:116)
+	at com.sun.javafx.binding.ExpressionHelper$Generic.fireValueChangedEvent(ExpressionHelper.java:360)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextInputControl$TextProperty.fireValueChangedEvent(TextInputControl.java:1430)
+	at javafx.scene.control.TextInputControl$TextProperty.markInvalid(TextInputControl.java:1434)
+	at javafx.scene.control.TextInputControl$TextProperty.controlContentHasChanged(TextInputControl.java:1373)
+	at javafx.scene.control.TextInputControl$TextProperty.access$1600(TextInputControl.java:1341)
+	at javafx.scene.control.TextInputControl.lambda$new$0(TextInputControl.java:144)
+	at com.sun.javafx.binding.ExpressionHelper$SingleInvalidation.fireValueChangedEvent(ExpressionHelper.java:136)
+	at com.sun.javafx.binding.ExpressionHelper.fireValueChangedEvent(ExpressionHelper.java:80)
+	at javafx.scene.control.TextField$TextFieldContent.insert(TextField.java:87)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:1244)
+	at javafx.scene.control.TextInputControl.updateContent(TextInputControl.java:566)
+	at javafx.scene.control.TextInputControl.replaceText(TextInputControl.java:558)
+	at javafx.scene.control.skin.TextFieldSkin.replaceText(TextFieldSkin.java:450)
+	at com.sun.javafx.scene.control.behavior.TextFieldBehavior.replaceText(TextFieldBehavior.java:208)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.defaultKeyTyped(TextInputControlBehavior.java:400)
+	at com.sun.javafx.scene.control.behavior.TextInputControlBehavior.lambda$keyMapping$62(TextInputControlBehavior.java:330)
+	at com.sun.javafx.scene.control.inputmap.InputMap.handle(InputMap.java:274)
+	at com.sun.javafx.event.CompositeEventHandler$NormalEventHandlerRecord.handleBubblingEvent(CompositeEventHandler.java:218)
+	at com.sun.javafx.event.CompositeEventHandler.dispatchBubblingEvent(CompositeEventHandler.java:80)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:238)
+	at com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:191)
+	at com.sun.javafx.event.CompositeEventDispatcher.dispatchBubblingEvent(CompositeEventDispatcher.java:59)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:58)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56)
+	at com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114)
+	at com.sun.javafx.event.EventUtil.fireEventImpl(EventUtil.java:74)
+	at com.sun.javafx.event.EventUtil.fireEvent(EventUtil.java:54)
+	at javafx.event.Event.fireEvent(Event.java:198)
+	at javafx.scene.Scene$KeyHandler.process(Scene.java:4058)
+	at javafx.scene.Scene$KeyHandler.access$1500(Scene.java:4004)
+	at javafx.scene.Scene.processKeyEvent(Scene.java:2121)
+	at javafx.scene.Scene$ScenePeerListener.keyEvent(Scene.java:2595)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:217)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler$KeyEventNotification.run(GlassViewEventHandler.java:149)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:389)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.lambda$handleKeyEvent$1(GlassViewEventHandler.java:248)
+	at com.sun.javafx.tk.quantum.QuantumToolkit.runWithoutRenderLock(QuantumToolkit.java:390)
+	at com.sun.javafx.tk.quantum.GlassViewEventHandler.handleKeyEvent(GlassViewEventHandler.java:247)
+	at com.sun.glass.ui.View.handleKeyEvent(View.java:547)
+	at com.sun.glass.ui.View.notifyKey(View.java:971)
+2021-03-17 19:11:08,915 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-17 19:11:09,063 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 140 ms to scan 1 urls, producing 845 keys and 10414 values 
+2021-03-17 19:11:09,795 INFO [JavaFX Application Thread] o.w.f.s.StoreMapImpl [StoreMapImpl.scala:60] skipJournal: false
+2021-03-17 19:11:09,796 INFO [JavaFX Application Thread] o.w.f.s.StoreMapImpl [StoreMapImpl.scala:156] journal: /Users/dlieber/fdcluster1/journal.json
+2021-03-17 19:11:09,824 INFO [default-akka.actor.default-dispatcher-5] o.w.f.s.StoreActor [StoreActor.scala:62] StoreActor: akka://default/user/$a
+2021-03-17 19:11:09,944 INFO [default-akka.actor.default-dispatcher-6] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:47] Multicast listener started.
+2021-03-17 19:11:09,992 INFO [scala-execution-context-global-42] o.w.f.s.JournalLoader$Task [JournalLoader.scala:117] no journal at /Users/dlieber/fdcluster1/journal.json
+2021-03-17 19:11:10,803 ERROR [default-akka.actor.default-dispatcher-6] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:99] postStop: MulticastListenerActor
+2021-03-17 19:11:29,205 ERROR [default-akka.actor.default-dispatcher-9] o.w.f.s.StoreActor [StoreActor.scala:178] postStop: StoreActor
+2021-03-17 19:14:48,149 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-17 19:14:48,300 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 140 ms to scan 1 urls, producing 845 keys and 10413 values 
+2021-03-17 19:14:49,163 INFO [JavaFX Application Thread] o.w.f.s.StoreMapImpl [StoreMapImpl.scala:60] skipJournal: false
+2021-03-17 19:14:49,165 INFO [JavaFX Application Thread] o.w.f.s.StoreMapImpl [StoreMapImpl.scala:156] journal: /Users/dlieber/fdcluster1/journal.json
+2021-03-17 19:14:49,208 INFO [default-akka.actor.default-dispatcher-5] o.w.f.s.StoreActor [StoreActor.scala:62] StoreActor: akka://default/user/$a
+2021-03-17 19:14:49,275 INFO [default-akka.actor.default-dispatcher-6] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:47] Multicast listener started.
+2021-03-17 19:14:49,385 INFO [scala-execution-context-global-42] o.w.f.s.JournalLoader$Task [JournalLoader.scala:117] no journal at /Users/dlieber/fdcluster1/journal.json
+2021-03-17 19:14:50,178 ERROR [default-akka.actor.default-dispatcher-9] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:99] postStop: MulticastListenerActor
+2021-03-17 19:14:55,980 ERROR [default-akka.actor.default-dispatcher-7] o.w.f.s.StoreActor [StoreActor.scala:188] postStop: StoreActor
+2021-03-17 19:15:25,091 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-17 19:15:25,240 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 147 ms to scan 1 urls, producing 845 keys and 10413 values 
+2021-03-17 19:15:26,026 INFO [JavaFX Application Thread] o.w.f.s.StoreMapImpl [StoreMapImpl.scala:60] skipJournal: false
+2021-03-17 19:15:26,028 INFO [JavaFX Application Thread] o.w.f.s.StoreMapImpl [StoreMapImpl.scala:156] journal: /Users/dlieber/fdcluster1/journal.json
+2021-03-17 19:15:27,974 INFO [default-akka.actor.default-dispatcher-5] o.w.f.s.StoreActor [StoreActor.scala:62] StoreActor: akka://default/user/$a
+2021-03-17 19:15:36,401 INFO [default-akka.actor.default-dispatcher-6] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:47] Multicast listener started.
+2021-03-17 19:15:37,967 INFO [scala-execution-context-global-41] o.w.f.s.JournalLoader$Task [JournalLoader.scala:117] no journal at /Users/dlieber/fdcluster1/journal.json
+2021-03-17 19:16:17,566 ERROR [default-akka.actor.default-dispatcher-6] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:93] parsing received message:{"className":"NodeStatus","json":"{\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"qsoCount\":0,\"digest\":\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\",\"qsoHourDigests\":[],\"qsoMetadata\":{\"operator\":\"\",\"rig\":\"\",\"ant\":\"\",\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"contestId\":\"FD2021WA9NNN\"},\"bandModeOperator\":{\"bandName\":\"20m\",\"modeName\":\"PH\",\"operator\":\"\",\"rig\":\"\",\"antenna\":\"\"},\"qsoRate\":0,\"stamp\":\"2021-03-17T19:15:49.047312\"}"}
+2021-03-17 19:16:37,481 ERROR [default-akka.actor.default-dispatcher-6] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:93] parsing received message:{"className":"NodeStatus","json":"{\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"qsoCount\":0,\"digest\":\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\",\"qsoHourDigests\":[],\"qsoMetadata\":{\"operator\":\"\",\"rig\":\"\",\"ant\":\"\",\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"contestId\":\"FD2021WA9NNN\"},\"bandModeOperator\":{\"bandName\":\"20m\",\"modeName\":\"PH\",\"operator\":\"\",\"rig\":\"\",\"antenna\":\"\"},\"qsoRate\":0,\"stamp\":\"2021-03-17T19:16:17.568895\"}"}
+2021-03-17 19:16:38,078 ERROR [default-akka.actor.default-dispatcher-6] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:93] parsing received message:{"className":"NodeStatus","json":"{\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"qsoCount\":0,\"digest\":\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\",\"qsoHourDigests\":[],\"qsoMetadata\":{\"operator\":\"\",\"rig\":\"\",\"ant\":\"\",\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"contestId\":\"FD2021WA9NNN\"},\"bandModeOperator\":{\"bandName\":\"20m\",\"modeName\":\"PH\",\"operator\":\"\",\"rig\":\"\",\"antenna\":\"\"},\"qsoRate\":0,\"stamp\":\"2021-03-17T19:16:37.48193\"}"}
+2021-03-17 19:16:38,740 ERROR [default-akka.actor.default-dispatcher-6] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:93] parsing received message:{"className":"NodeStatus","json":"{\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"qsoCount\":0,\"digest\":\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\",\"qsoHourDigests\":[],\"qsoMetadata\":{\"operator\":\"\",\"rig\":\"\",\"ant\":\"\",\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"contestId\":\"FD2021WA9NNN\"},\"bandModeOperator\":{\"bandName\":\"20m\",\"modeName\":\"PH\",\"operator\":\"\",\"rig\":\"\",\"antenna\":\"\"},\"qsoRate\":0,\"stamp\":\"2021-03-17T19:16:37.485401\"}"}
+2021-03-17 19:16:39,482 ERROR [default-akka.actor.default-dispatcher-6] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:99] postStop: MulticastListenerActor
+2021-03-17 19:16:39,619 ERROR [default-akka.actor.default-dispatcher-7] o.w.f.s.StoreActor [StoreActor.scala:188] postStop: StoreActor
+2021-03-17 19:17:51,195 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-17 19:17:51,355 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 150 ms to scan 1 urls, producing 845 keys and 10413 values 
+2021-03-17 19:17:52,215 INFO [JavaFX Application Thread] o.w.f.s.StoreMapImpl [StoreMapImpl.scala:60] skipJournal: false
+2021-03-17 19:17:52,217 INFO [JavaFX Application Thread] o.w.f.s.StoreMapImpl [StoreMapImpl.scala:156] journal: /Users/dlieber/fdcluster1/journal.json
+2021-03-17 19:17:55,952 INFO [default-akka.actor.default-dispatcher-6] o.w.f.s.StoreActor [StoreActor.scala:62] StoreActor: akka://default/user/$a
+2021-03-17 19:18:01,821 INFO [default-akka.actor.default-dispatcher-5] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:47] Multicast listener started.
+2021-03-17 19:19:41,863 INFO [scala-execution-context-global-41] o.w.f.s.JournalLoader$Task [JournalLoader.scala:117] no journal at /Users/dlieber/fdcluster1/journal.json
+2021-03-17 19:20:07,341 ERROR [default-akka.actor.default-dispatcher-5] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:93] parsing received message:{"className":"NodeStatus","json":"{\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"qsoCount\":0,\"digest\":\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\",\"qsoHourDigests\":[],\"qsoMetadata\":{\"operator\":\"\",\"rig\":\"\",\"ant\":\"\",\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"contestId\":\"FD2021WA9NNN\"},\"bandModeOperator\":{\"bandName\":\"20m\",\"modeName\":\"PH\",\"operator\":\"\",\"rig\":\"\",\"antenna\":\"\"},\"qsoRate\":0,\"stamp\":\"2021-03-17T19:19:43.529051\"}"}
+2021-03-17 19:21:47,584 ERROR [default-akka.actor.default-dispatcher-5] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:93] parsing received message:{"className":"NodeStatus","json":"{\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"qsoCount\":0,\"digest\":\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\",\"qsoHourDigests\":[],\"qsoMetadata\":{\"operator\":\"\",\"rig\":\"\",\"ant\":\"\",\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"contestId\":\"FD2021WA9NNN\"},\"bandModeOperator\":{\"bandName\":\"20m\",\"modeName\":\"PH\",\"operator\":\"\",\"rig\":\"\",\"antenna\":\"\"},\"qsoRate\":0,\"stamp\":\"2021-03-17T19:19:43.584989\"}"}
+2021-03-17 19:21:47,597 ERROR [default-akka.actor.default-dispatcher-5] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:93] parsing received message:{"className":"NodeStatus","json":"{\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"qsoCount\":0,\"digest\":\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\",\"qsoHourDigests\":[],\"qsoMetadata\":{\"operator\":\"\",\"rig\":\"\",\"ant\":\"\",\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"contestId\":\"FD2021WA9NNN\"},\"bandModeOperator\":{\"bandName\":\"20m\",\"modeName\":\"PH\",\"operator\":\"\",\"rig\":\"\",\"antenna\":\"\"},\"qsoRate\":0,\"stamp\":\"2021-03-17T19:19:43.588885\"}"}
+2021-03-17 19:21:47,600 ERROR [default-akka.actor.default-dispatcher-5] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:93] parsing received message:{"className":"NodeStatus","json":"{\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"qsoCount\":0,\"digest\":\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\",\"qsoHourDigests\":[],\"qsoMetadata\":{\"operator\":\"\",\"rig\":\"\",\"ant\":\"\",\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"contestId\":\"FD2021WA9NNN\"},\"bandModeOperator\":{\"bandName\":\"20m\",\"modeName\":\"PH\",\"operator\":\"\",\"rig\":\"\",\"antenna\":\"\"},\"qsoRate\":0,\"stamp\":\"2021-03-17T19:19:43.592948\"}"}
+2021-03-17 19:21:47,603 ERROR [default-akka.actor.default-dispatcher-5] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:93] parsing received message:{"className":"NodeStatus","json":"{\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"qsoCount\":0,\"digest\":\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\",\"qsoHourDigests\":[],\"qsoMetadata\":{\"operator\":\"\",\"rig\":\"\",\"ant\":\"\",\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"contestId\":\"FD2021WA9NNN\"},\"bandModeOperator\":{\"bandName\":\"20m\",\"modeName\":\"PH\",\"operator\":\"\",\"rig\":\"\",\"antenna\":\"\"},\"qsoRate\":0,\"stamp\":\"2021-03-17T19:19:43.596064\"}"}
+2021-03-17 19:21:47,605 ERROR [default-akka.actor.default-dispatcher-5] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:93] parsing received message:{"className":"NodeStatus","json":"{\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"qsoCount\":0,\"digest\":\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\",\"qsoHourDigests\":[],\"qsoMetadata\":{\"operator\":\"\",\"rig\":\"\",\"ant\":\"\",\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"contestId\":\"FD2021WA9NNN\"},\"bandModeOperator\":{\"bandName\":\"20m\",\"modeName\":\"PH\",\"operator\":\"\",\"rig\":\"\",\"antenna\":\"\"},\"qsoRate\":0,\"stamp\":\"2021-03-17T19:19:43.59873\"}"}
+2021-03-17 19:21:47,607 ERROR [default-akka.actor.default-dispatcher-5] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:93] parsing received message:{"className":"NodeStatus","json":"{\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"qsoCount\":0,\"digest\":\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\",\"qsoHourDigests\":[],\"qsoMetadata\":{\"operator\":\"\",\"rig\":\"\",\"ant\":\"\",\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"contestId\":\"FD2021WA9NNN\"},\"bandModeOperator\":{\"bandName\":\"20m\",\"modeName\":\"PH\",\"operator\":\"\",\"rig\":\"\",\"antenna\":\"\"},\"qsoRate\":0,\"stamp\":\"2021-03-17T19:19:43.600977\"}"}
+2021-03-17 19:21:47,610 ERROR [default-akka.actor.default-dispatcher-5] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:93] parsing received message:{"className":"NodeStatus","json":"{\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"qsoCount\":0,\"digest\":\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\",\"qsoHourDigests\":[],\"qsoMetadata\":{\"operator\":\"\",\"rig\":\"\",\"ant\":\"\",\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"contestId\":\"FD2021WA9NNN\"},\"bandModeOperator\":{\"bandName\":\"20m\",\"modeName\":\"PH\",\"operator\":\"\",\"rig\":\"\",\"antenna\":\"\"},\"qsoRate\":0,\"stamp\":\"2021-03-17T19:20:35.143181\"}"}
+2021-03-17 19:21:47,613 ERROR [default-akka.actor.default-dispatcher-5] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:93] parsing received message:{"className":"NodeStatus","json":"{\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"qsoCount\":0,\"digest\":\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\",\"qsoHourDigests\":[],\"qsoMetadata\":{\"operator\":\"\",\"rig\":\"\",\"ant\":\"\",\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"contestId\":\"FD2021WA9NNN\"},\"bandModeOperator\":{\"bandName\":\"20m\",\"modeName\":\"PH\",\"operator\":\"\",\"rig\":\"\",\"antenna\":\"\"},\"qsoRate\":0,\"stamp\":\"2021-03-17T19:21:47.606264\"}"}
+2021-03-17 19:21:47,621 ERROR [default-akka.actor.default-dispatcher-6] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:93] parsing received message:{"className":"NodeStatus","json":"{\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"qsoCount\":0,\"digest\":\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\",\"qsoHourDigests\":[],\"qsoMetadata\":{\"operator\":\"\",\"rig\":\"\",\"ant\":\"\",\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"contestId\":\"FD2021WA9NNN\"},\"bandModeOperator\":{\"bandName\":\"20m\",\"modeName\":\"PH\",\"operator\":\"\",\"rig\":\"\",\"antenna\":\"\"},\"qsoRate\":0,\"stamp\":\"2021-03-17T19:21:47.615327\"}"}
+2021-03-17 19:21:47,630 ERROR [default-akka.actor.default-dispatcher-5] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:93] parsing received message:{"className":"NodeStatus","json":"{\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"qsoCount\":0,\"digest\":\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\",\"qsoHourDigests\":[],\"qsoMetadata\":{\"operator\":\"\",\"rig\":\"\",\"ant\":\"\",\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"contestId\":\"FD2021WA9NNN\"},\"bandModeOperator\":{\"bandName\":\"20m\",\"modeName\":\"PH\",\"operator\":\"\",\"rig\":\"\",\"antenna\":\"\"},\"qsoRate\":0,\"stamp\":\"2021-03-17T19:21:47.626051\"}"}
+2021-03-17 19:21:47,638 ERROR [default-akka.actor.default-dispatcher-6] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:93] parsing received message:{"className":"NodeStatus","json":"{\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"qsoCount\":0,\"digest\":\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\",\"qsoHourDigests\":[],\"qsoMetadata\":{\"operator\":\"\",\"rig\":\"\",\"ant\":\"\",\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"contestId\":\"FD2021WA9NNN\"},\"bandModeOperator\":{\"bandName\":\"20m\",\"modeName\":\"PH\",\"operator\":\"\",\"rig\":\"\",\"antenna\":\"\"},\"qsoRate\":0,\"stamp\":\"2021-03-17T19:21:47.635074\"}"}
+2021-03-17 19:21:47,649 ERROR [default-akka.actor.default-dispatcher-5] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:93] parsing received message:{"className":"NodeStatus","json":"{\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"qsoCount\":0,\"digest\":\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\",\"qsoHourDigests\":[],\"qsoMetadata\":{\"operator\":\"\",\"rig\":\"\",\"ant\":\"\",\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"contestId\":\"FD2021WA9NNN\"},\"bandModeOperator\":{\"bandName\":\"20m\",\"modeName\":\"PH\",\"operator\":\"\",\"rig\":\"\",\"antenna\":\"\"},\"qsoRate\":0,\"stamp\":\"2021-03-17T19:21:47.646027\"}"}
+2021-03-17 19:21:47,659 ERROR [default-akka.actor.default-dispatcher-6] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:93] parsing received message:{"className":"NodeStatus","json":"{\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"qsoCount\":0,\"digest\":\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\",\"qsoHourDigests\":[],\"qsoMetadata\":{\"operator\":\"\",\"rig\":\"\",\"ant\":\"\",\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"contestId\":\"FD2021WA9NNN\"},\"bandModeOperator\":{\"bandName\":\"20m\",\"modeName\":\"PH\",\"operator\":\"\",\"rig\":\"\",\"antenna\":\"\"},\"qsoRate\":0,\"stamp\":\"2021-03-17T19:21:47.655327\"}"}
+2021-03-17 19:21:52,024 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-17 19:21:52,171 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 136 ms to scan 1 urls, producing 845 keys and 10413 values 
+2021-03-17 19:21:52,976 INFO [JavaFX Application Thread] o.w.f.s.StoreMapImpl [StoreMapImpl.scala:60] skipJournal: false
+2021-03-17 19:21:52,978 INFO [JavaFX Application Thread] o.w.f.s.StoreMapImpl [StoreMapImpl.scala:156] journal: /Users/dlieber/fdcluster1/journal.json
+2021-03-17 19:21:56,618 INFO [default-akka.actor.default-dispatcher-5] o.w.f.s.StoreActor [StoreActor.scala:62] StoreActor: akka://default/user/$a
+2021-03-17 19:23:35,712 INFO [default-akka.actor.default-dispatcher-6] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:47] Multicast listener started.
+2021-03-17 19:23:43,473 INFO [scala-execution-context-global-42] o.w.f.s.JournalLoader$Task [JournalLoader.scala:117] no journal at /Users/dlieber/fdcluster1/journal.json
+2021-03-17 19:25:50,694 ERROR [default-akka.actor.default-dispatcher-6] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:93] parsing received message:{"className":"NodeStatus","json":"{\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"qsoCount\":0,\"digest\":\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\",\"qsoHourDigests\":[],\"qsoMetadata\":{\"operator\":\"\",\"rig\":\"\",\"ant\":\"\",\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"contestId\":\"FD2021WA9NNN\"},\"bandModeOperator\":{\"bandName\":\"20m\",\"modeName\":\"PH\",\"operator\":\"\",\"rig\":\"\",\"antenna\":\"\"},\"qsoRate\":0,\"stamp\":\"2021-03-17T19:23:45.282511\"}"}
+2021-03-17 19:25:50,706 ERROR [default-akka.actor.default-dispatcher-6] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:93] parsing received message:{"className":"NodeStatus","json":"{\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"qsoCount\":0,\"digest\":\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\",\"qsoHourDigests\":[],\"qsoMetadata\":{\"operator\":\"\",\"rig\":\"\",\"ant\":\"\",\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"contestId\":\"FD2021WA9NNN\"},\"bandModeOperator\":{\"bandName\":\"20m\",\"modeName\":\"PH\",\"operator\":\"\",\"rig\":\"\",\"antenna\":\"\"},\"qsoRate\":0,\"stamp\":\"2021-03-17T19:23:51.30642\"}"}
+2021-03-17 19:25:50,709 ERROR [default-akka.actor.default-dispatcher-6] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:93] parsing received message:{"className":"NodeStatus","json":"{\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"qsoCount\":0,\"digest\":\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\",\"qsoHourDigests\":[],\"qsoMetadata\":{\"operator\":\"\",\"rig\":\"\",\"ant\":\"\",\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"contestId\":\"FD2021WA9NNN\"},\"bandModeOperator\":{\"bandName\":\"20m\",\"modeName\":\"PH\",\"operator\":\"\",\"rig\":\"\",\"antenna\":\"\"},\"qsoRate\":0,\"stamp\":\"2021-03-17T19:24:03.465299\"}"}
+2021-03-17 19:25:50,712 ERROR [default-akka.actor.default-dispatcher-6] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:93] parsing received message:{"className":"NodeStatus","json":"{\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"qsoCount\":0,\"digest\":\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\",\"qsoHourDigests\":[],\"qsoMetadata\":{\"operator\":\"\",\"rig\":\"\",\"ant\":\"\",\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"contestId\":\"FD2021WA9NNN\"},\"bandModeOperator\":{\"bandName\":\"20m\",\"modeName\":\"PH\",\"operator\":\"\",\"rig\":\"\",\"antenna\":\"\"},\"qsoRate\":0,\"stamp\":\"2021-03-17T19:24:29.327787\"}"}
+2021-03-17 19:25:50,714 ERROR [default-akka.actor.default-dispatcher-6] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:93] parsing received message:{"className":"NodeStatus","json":"{\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"qsoCount\":0,\"digest\":\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\",\"qsoHourDigests\":[],\"qsoMetadata\":{\"operator\":\"\",\"rig\":\"\",\"ant\":\"\",\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"contestId\":\"FD2021WA9NNN\"},\"bandModeOperator\":{\"bandName\":\"20m\",\"modeName\":\"PH\",\"operator\":\"\",\"rig\":\"\",\"antenna\":\"\"},\"qsoRate\":0,\"stamp\":\"2021-03-17T19:24:37.757745\"}"}
+2021-03-17 19:25:50,717 ERROR [default-akka.actor.default-dispatcher-7] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:93] parsing received message:{"className":"NodeStatus","json":"{\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"qsoCount\":0,\"digest\":\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\",\"qsoHourDigests\":[],\"qsoMetadata\":{\"operator\":\"\",\"rig\":\"\",\"ant\":\"\",\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"contestId\":\"FD2021WA9NNN\"},\"bandModeOperator\":{\"bandName\":\"20m\",\"modeName\":\"PH\",\"operator\":\"\",\"rig\":\"\",\"antenna\":\"\"},\"qsoRate\":0,\"stamp\":\"2021-03-17T19:25:50.702694\"}"}
+2021-03-17 19:25:50,719 ERROR [default-akka.actor.default-dispatcher-7] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:93] parsing received message:{"className":"NodeStatus","json":"{\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"qsoCount\":0,\"digest\":\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\",\"qsoHourDigests\":[],\"qsoMetadata\":{\"operator\":\"\",\"rig\":\"\",\"ant\":\"\",\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"contestId\":\"FD2021WA9NNN\"},\"bandModeOperator\":{\"bandName\":\"20m\",\"modeName\":\"PH\",\"operator\":\"\",\"rig\":\"\",\"antenna\":\"\"},\"qsoRate\":0,\"stamp\":\"2021-03-17T19:25:50.712788\"}"}
+2021-03-17 19:25:50,727 ERROR [default-akka.actor.default-dispatcher-6] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:93] parsing received message:{"className":"NodeStatus","json":"{\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"qsoCount\":0,\"digest\":\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\",\"qsoHourDigests\":[],\"qsoMetadata\":{\"operator\":\"\",\"rig\":\"\",\"ant\":\"\",\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"contestId\":\"FD2021WA9NNN\"},\"bandModeOperator\":{\"bandName\":\"20m\",\"modeName\":\"PH\",\"operator\":\"\",\"rig\":\"\",\"antenna\":\"\"},\"qsoRate\":0,\"stamp\":\"2021-03-17T19:25:50.722828\"}"}
+2021-03-17 19:25:50,736 ERROR [default-akka.actor.default-dispatcher-7] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:93] parsing received message:{"className":"NodeStatus","json":"{\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"qsoCount\":0,\"digest\":\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\",\"qsoHourDigests\":[],\"qsoMetadata\":{\"operator\":\"\",\"rig\":\"\",\"ant\":\"\",\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"contestId\":\"FD2021WA9NNN\"},\"bandModeOperator\":{\"bandName\":\"20m\",\"modeName\":\"PH\",\"operator\":\"\",\"rig\":\"\",\"antenna\":\"\"},\"qsoRate\":0,\"stamp\":\"2021-03-17T19:25:50.732163\"}"}
+2021-03-17 19:25:55,111 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-17 19:25:55,253 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 133 ms to scan 1 urls, producing 845 keys and 10413 values 
+2021-03-17 19:25:56,075 INFO [JavaFX Application Thread] o.w.f.s.StoreMapImpl [StoreMapImpl.scala:60] skipJournal: false
+2021-03-17 19:25:56,077 INFO [JavaFX Application Thread] o.w.f.s.StoreMapImpl [StoreMapImpl.scala:156] journal: /Users/dlieber/fdcluster1/journal.json
+2021-03-17 19:25:59,219 INFO [default-akka.actor.default-dispatcher-5] o.w.f.s.StoreActor [StoreActor.scala:62] StoreActor: akka://default/user/$a
+2021-03-17 19:26:06,524 INFO [default-akka.actor.default-dispatcher-6] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:47] Multicast listener started.
+2021-03-17 19:26:12,542 INFO [scala-execution-context-global-41] o.w.f.s.JournalLoader$Task [JournalLoader.scala:117] no journal at /Users/dlieber/fdcluster1/journal.json
+2021-03-17 19:27:03,915 ERROR [default-akka.actor.default-dispatcher-6] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:93] parsing received message:{"className":"NodeStatus","json":"{\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"192.168.0.233/192.168.0.233\"},\"qsoCount\":0,\"digest\":\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\",\"qsoHourDigests\":[],\"qsoMetadata\":{\"operator\":\"\",\"rig\":\"\",\"ant\":\"\",\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"contestId\":\"FD2021WA9NNN\"},\"bandModeOperator\":{\"bandName\":\"20m\",\"modeName\":\"PH\",\"operator\":\"\",\"rig\":\"\",\"antenna\":\"\"},\"qsoRate\":0,\"stamp\":\"2021-03-17T19:26:14.170416\"}"}
+2021-03-17 19:27:03,916 ERROR [default-akka.actor.default-dispatcher-6] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:93] parsing received message:{"className":"NodeStatus","json":"{\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"192.168.0.233/192.168.0.233\"},\"qsoCount\":0,\"digest\":\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\",\"qsoHourDigests\":[],\"qsoMetadata\":{\"operator\":\"\",\"rig\":\"\",\"ant\":\"\",\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"contestId\":\"FD2021WA9NNN\"},\"bandModeOperator\":{\"bandName\":\"20m\",\"modeName\":\"PH\",\"operator\":\"\",\"rig\":\"\",\"antenna\":\"\"},\"qsoRate\":0,\"stamp\":\"2021-03-17T19:27:03.874636\"}"}
+2021-03-17 19:27:03,917 ERROR [default-akka.actor.default-dispatcher-6] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:93] parsing received message:{"className":"NodeStatus","json":"{\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"192.168.0.233/192.168.0.233\"},\"qsoCount\":0,\"digest\":\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\",\"qsoHourDigests\":[],\"qsoMetadata\":{\"operator\":\"\",\"rig\":\"\",\"ant\":\"\",\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"contestId\":\"FD2021WA9NNN\"},\"bandModeOperator\":{\"bandName\":\"20m\",\"modeName\":\"PH\",\"operator\":\"\",\"rig\":\"\",\"antenna\":\"\"},\"qsoRate\":0,\"stamp\":\"2021-03-17T19:27:03.877191\"}"}
+2021-03-17 19:27:03,918 ERROR [default-akka.actor.default-dispatcher-6] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:93] parsing received message:{"className":"NodeStatus","json":"{\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"192.168.0.233/192.168.0.233\"},\"qsoCount\":0,\"digest\":\"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\",\"qsoHourDigests\":[],\"qsoMetadata\":{\"operator\":\"\",\"rig\":\"\",\"ant\":\"\",\"nodeAddress\":{\"instance\":1,\"inetAddress\":\"/192.168.0.233\"},\"contestId\":\"FD2021WA9NNN\"},\"bandModeOperator\":{\"bandName\":\"20m\",\"modeName\":\"PH\",\"operator\":\"\",\"rig\":\"\",\"antenna\":\"\"},\"qsoRate\":0,\"stamp\":\"2021-03-17T19:27:03.879161\"}"}
+2021-03-17 19:27:08,696 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-17 19:27:08,835 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 137 ms to scan 1 urls, producing 845 keys and 10413 values 
+2021-03-17 19:27:09,697 INFO [JavaFX Application Thread] o.w.f.s.StoreMapImpl [StoreMapImpl.scala:60] skipJournal: false
+2021-03-17 19:27:09,699 INFO [JavaFX Application Thread] o.w.f.s.StoreMapImpl [StoreMapImpl.scala:156] journal: /Users/dlieber/fdcluster1/journal.json
+2021-03-17 19:27:09,740 INFO [default-akka.actor.default-dispatcher-5] o.w.f.s.StoreActor [StoreActor.scala:62] StoreActor: akka://default/user/$a
+2021-03-17 19:27:10,021 INFO [default-akka.actor.default-dispatcher-6] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:47] Multicast listener started.
+2021-03-17 19:27:16,860 INFO [scala-execution-context-global-41] o.w.f.s.JournalLoader$Task [JournalLoader.scala:117] no journal at /Users/dlieber/fdcluster1/journal.json
+2021-03-17 19:28:08,288 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-17 19:28:08,450 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 152 ms to scan 1 urls, producing 845 keys and 10413 values 
+2021-03-17 19:28:09,336 INFO [JavaFX Application Thread] o.w.f.s.StoreMapImpl [StoreMapImpl.scala:60] skipJournal: false
+2021-03-17 19:28:09,338 INFO [JavaFX Application Thread] o.w.f.s.StoreMapImpl [StoreMapImpl.scala:156] journal: /Users/dlieber/fdcluster1/journal.json
+2021-03-17 19:28:09,376 INFO [default-akka.actor.default-dispatcher-5] o.w.f.s.StoreActor [StoreActor.scala:62] StoreActor: akka://default/user/$a
+2021-03-17 19:28:09,666 INFO [default-akka.actor.default-dispatcher-6] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:47] Multicast listener started.
+2021-03-17 19:28:09,940 INFO [scala-execution-context-global-42] o.w.f.s.JournalLoader$Task [JournalLoader.scala:117] no journal at /Users/dlieber/fdcluster1/journal.json
+2021-03-17 19:28:10,460 ERROR [default-akka.actor.default-dispatcher-7] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:99] postStop: MulticastListenerActor
+2021-03-17 19:28:14,662 ERROR [default-akka.actor.default-dispatcher-6] o.w.f.s.StoreActor [StoreActor.scala:188] postStop: StoreActor
+2021-03-17 19:29:02,276 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-17 19:29:02,426 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 142 ms to scan 1 urls, producing 845 keys and 10413 values 
+2021-03-17 19:29:03,190 INFO [JavaFX Application Thread] o.w.f.s.StoreMapImpl [StoreMapImpl.scala:60] skipJournal: false
+2021-03-17 19:29:03,192 INFO [JavaFX Application Thread] o.w.f.s.StoreMapImpl [StoreMapImpl.scala:156] journal: /Users/dlieber/fdcluster1/journal.json
+2021-03-17 19:29:03,223 INFO [default-akka.actor.default-dispatcher-5] o.w.f.s.StoreActor [StoreActor.scala:62] StoreActor: akka://default/user/$a
+2021-03-17 19:29:03,393 INFO [default-akka.actor.default-dispatcher-6] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:47] Multicast listener started.
+2021-03-17 19:29:03,534 INFO [scala-execution-context-global-41] o.w.f.s.JournalLoader$Task [JournalLoader.scala:117] no journal at /Users/dlieber/fdcluster1/journal.json
+2021-03-17 19:29:28,458 ERROR [default-akka.actor.default-dispatcher-11] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:99] postStop: MulticastListenerActor
+2021-03-17 19:29:28,459 ERROR [default-akka.actor.default-dispatcher-5] o.w.f.s.StoreActor [StoreActor.scala:188] postStop: StoreActor
+2021-03-18 00:16:24,716 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-18 00:16:24,945 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 216 ms to scan 1 urls, producing 842 keys and 10425 values 
+2021-03-18 00:27:56,028 DEBUG [JavaFX Application Thread] o.r.Reflections [Reflections.java:185] going to scan these urls:
+file:/Users/dlieber/dev/ham/fdcBacku/fdcluster/target/scala-2.13/classes/
+2021-03-18 00:27:56,172 INFO [JavaFX Application Thread] o.r.Reflections [Reflections.java:228] Reflections took 135 ms to scan 1 urls, producing 842 keys and 10421 values 
+2021-03-18 00:28:30,130 INFO [JavaFX Application Thread] o.w.f.s.StoreMapImpl [StoreMapImpl.scala:154] journal: /Users/dlieber/fdcluster1/journal.json
+2021-03-18 00:28:30,152 INFO [default-akka.actor.default-dispatcher-6] o.w.f.s.StoreActor [StoreActor.scala:62] StoreActor: akka://default/user/$a
+2021-03-18 00:28:30,348 INFO [default-akka.actor.default-dispatcher-7] o.w.f.s.n.MulticastListenerActor [MulticastListenerActor.scala:47] Multicast listener started.
+2021-03-18 00:28:30,555 INFO [scala-execution-context-global-43] o.w.f.s.JournalLoader$Task [JournalLoader.scala:122] no journal at /Users/dlieber/fdcluster1/journal.json
+2021-03-18 00:31:20,786 INFO [JavaFX Application Thread] o.w.f.m.BandModeOperatorStore [StructuredLogging.scala:98] bmochange: {"bandName":"80m","modeName":"PH","operator":"","rig":"","antenna":""}
+2021-03-18 00:31:22,438 INFO [JavaFX Application Thread] o.w.f.m.BandModeOperatorStore [StructuredLogging.scala:98] bmochange: {"bandName":"80m","modeName":"CW","operator":"","rig":"","antenna":""}
+2021-03-18 00:31:25,071 INFO [JavaFX Application Thread] o.w.f.m.BandModeOperatorStore [StructuredLogging.scala:98] bmochange: {"bandName":"80m","modeName":"CW","operator":"WA9NNN","rig":"","antenna":""}

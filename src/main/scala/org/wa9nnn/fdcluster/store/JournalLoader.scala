@@ -25,7 +25,8 @@ import org.wa9nnn.fdcluster.javafx.entry.RunningTaskInfoConsumer
 import org.wa9nnn.fdcluster.javafx.runningtask.RunningTask
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.QsoRecord
-import org.wa9nnn.fdcluster.{FileLocus, FileManager}
+import org.wa9nnn.fdcluster.{FileLocus, FileManagerConfig}
+import org.wa9nnn.util.BoolConverter.s2b
 import play.api.libs.json.Json
 import scalafx.collections.ObservableBuffer
 
@@ -48,7 +49,7 @@ import scala.util.Using
  * @param runningTaskInfoConsumer progress UI
  */
 class JournalLoader @Inject()(@Named("allQsos") allQsos: ObservableBuffer[QsoRecord],
-                              fileManager: FileManager,
+                              fileManager: FileManagerConfig,
                               val runningTaskInfoConsumer: RunningTaskInfoConsumer) {
   def apply(): Future[BufferReady.type] = {
     new Task(runningTaskInfoConsumer)()
@@ -62,7 +63,11 @@ class JournalLoader @Inject()(@Named("allQsos") allQsos: ObservableBuffer[QsoRec
 
     def apply(): Future[BufferReady.type] = {
       Future {
-        if (Files.size(journalFilePath) > 0) {
+        val skipJournal: Boolean = System.getProperty("skipJournal", "false")
+        if (skipJournal) {
+          logger.info("skipJournal")
+        }
+        if (Files.size(journalFilePath) > 0 && !skipJournal) {
           val qsoLineLengths = new SummaryStatistics()
           val typicalQsoLength = 363 // empirically determined by loading journal then divided file size by number of QSOs
           // see log message with meanLineLength to get latest.

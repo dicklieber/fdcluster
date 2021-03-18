@@ -1,19 +1,18 @@
 package org.wa9nnn.util
 
-import org.apache.commons.io.FileUtils._
 import org.specs2.execute.{AsResult, Result}
 import org.specs2.mutable.Specification
 import org.specs2.specification.ForEach
 import org.wa9nnn.fdcluster.MockFileManager
-import org.wa9nnn.fdcluster.model.BandModeOperator
+import org.wa9nnn.fdcluster.model.CurrentStation
 import org.wa9nnn.fdcluster.model.MessageFormats._
 
-import java.nio.file.{Files, Path, Paths}
+import java.nio.file.{Files, Paths}
 
 
 trait PreferencesContext extends ForEach[Persistence] {
   def foreach[R: AsResult](r: Persistence => R): Result = {
-   val fileManager = new MockFileManager()
+   val fileManager =  MockFileManager()
     val persistence = new Persistence(fileManager)
     try AsResult(r(persistence))
     finally fileManager.clean()
@@ -23,12 +22,12 @@ trait PreferencesContext extends ForEach[Persistence] {
 class PersistenceSpec extends Specification with PreferencesContext {
   "Persistence" >> {
     "save" >> { persistence: Persistence =>
-      val exchange = new BandModeOperator("20M", "DI")
+      val exchange = new CurrentStation("20M", "DI")
       val triedString = persistence.saveToFile(exchange, pretty = false)
       triedString must beASuccessfulTry[String].which(_.endsWith("BandModeOperator.json"))
     }
    "save pretty" >> { persistence: Persistence =>
-      val exchange = new BandModeOperator("20M", "DI")
+      val exchange = new CurrentStation("20M", "DI")
       val triedString = persistence.saveToFile(exchange)
       triedString must beASuccessfulTry[String].which(_.endsWith("BandModeOperator.json"))
      val path = Paths.get(triedString.get)
@@ -40,15 +39,15 @@ class PersistenceSpec extends Specification with PreferencesContext {
     }
 
     "roundTrip" >> { persistence: Persistence =>
-      val exchange = new BandModeOperator("20M", "DI")
+      val exchange = new CurrentStation("20M", "DI")
       persistence.saveToFile(exchange, pretty = false)
-      val backAgain = persistence.loadFromFile[BandModeOperator]()
+      val backAgain = persistence.loadFromFile[CurrentStation]()
       backAgain must beSuccessfulTry(exchange)
     }
 
     "nofile" >> { persistence: Persistence =>
-      val instance = persistence.loadFromFile[BandModeOperator]()
-      instance must beFailedTry[BandModeOperator]
+      val instance = persistence.loadFromFile[CurrentStation]()
+      instance must beFailedTry[CurrentStation]
     }
 
     "not case class" >> { persistence: Persistence =>

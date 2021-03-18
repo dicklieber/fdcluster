@@ -19,8 +19,7 @@
 
 package org.wa9nnn.fdcluster.model
 
-import java.net.URL
-
+import java.net.{InetAddress, URL}
 import play.api.libs.json.{Format, JsError, JsResult, JsString, JsSuccess, JsValue}
 
 object UrlFormt {
@@ -42,3 +41,23 @@ object UrlFormt {
   }
 
 }
+object InetAddressFormat {
+  implicit val  inetAddressFormat: Format[InetAddress] = new Format[InetAddress] {
+    override def reads(json: JsValue): JsResult[InetAddress] = {
+      try {
+        JsSuccess( InetAddress.getByName(json.as[String]))
+      }
+      catch {
+        case e: IllegalArgumentException ⇒ JsError(e.getMessage)
+      }
+    }
+
+    override def writes(url: InetAddress): JsValue = {
+      JsString(url.getHostName)
+    }
+  }
+
+}
+
+
+

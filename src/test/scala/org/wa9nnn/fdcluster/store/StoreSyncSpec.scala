@@ -4,18 +4,18 @@ package org.wa9nnn.fdcluster.store
 import org.apache.commons.io.FileUtils
 import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
-import org.specs2.runner.sbtRun.env.commandLine
 import org.specs2.specification.BeforeAfterEach
-import org.wa9nnn.fdcluster.{FileManager, MockFileManager}
 import org.wa9nnn.fdcluster.javafx.sync.SyncSteps
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHourDigest}
 import org.wa9nnn.fdcluster.store.network.FdHour
-import org.wa9nnn.util.{CommandLine, DebugTimer, Persistence, TimeHelpers}
+import org.wa9nnn.fdcluster.tools.{GenerateRandomQsos, RandomQsoGenerator}
+import org.wa9nnn.fdcluster.{FileManager, MockFileManager}
+import org.wa9nnn.util.{CommandLine, DebugTimer}
+import scalafx.beans.property.ObjectProperty
 import scalafx.collections.ObservableBuffer
 
 import java.nio.file.{Files, Path}
-import java.time.{Duration, LocalDateTime, ZonedDateTime}
 
 
 class StoreSyncSpec extends Specification with BeforeAfterEach with DebugTimer with Mockito {
@@ -23,9 +23,6 @@ class StoreSyncSpec extends Specification with BeforeAfterEach with DebugTimer w
   private val nQsos = 10000
   val mockSyncSteps: SyncSteps = mock[SyncSteps]
   val expectedNodeAddress: NodeAddress = NodeAddress()
-  implicit val nodeInfo: NodeInfoImpl = new NodeInfoImpl(
-    contest = Contest("WFD", 2017),
-    nodeAddress = expectedNodeAddress)
 
   private var storeMapImpl: StoreMapImpl = _
   private var records: List[QsoRecord] = _
@@ -56,9 +53,9 @@ class StoreSyncSpec extends Specification with BeforeAfterEach with DebugTimer w
 
     "uuidForQsos" >> {
       "someFdHours" >> {
-        var firstrHour = records.head.fdHour
-        var thirdrHour = firstrHour.plus(2)
-        val uuids = storeMapImpl.uuidForHours(Set(firstrHour, thirdrHour))
+        val firstHour = records.head.fdHour
+        val thirdHour = firstHour.plus(2)
+        val uuids = storeMapImpl.uuidForHours(Set(firstHour, thirdHour))
         uuids must haveSize(119)
       }
       "allFdHours" >> {
@@ -75,45 +72,45 @@ class StoreSyncSpec extends Specification with BeforeAfterEach with DebugTimer w
         missing must haveSize(2)
       }
       "some already in store" >> {
-        val alredyInNode = records(10).uuid
-        val missing = storeMapImpl.missingUuids(List("other1", alredyInNode, "other2"))
+        val alreadyInNode = records(10).qso.uuid
+        val missing = storeMapImpl.missingUuids(List("other1", alreadyInNode, "other2"))
         missing must contain("other1")
         missing must contain("other2")
-        missing must not contain (alredyInNode)
+        missing must not contain alreadyInNode
         missing must haveSize(2)
       }
     }
   }
   val directory: Path = Files.createTempDirectory("StoreMapImplSpec")
   val fileManager: FileManager = MockFileManager()
-  var persistence: Persistence = new Persistence(fileManager)
   val journalPath: Path = directory.resolve("journal.json")
 
 
   override def before(): Unit = {
-    val commandLine:CommandLine= mock[CommandLine].is("skipJournal") returns(false)
+    val commandLine: CommandLine = mock[CommandLine].is("skipJournal") returns false
 
     storeMapImpl = {
       println("Creating store")
       val allQsos = new ObservableBuffer[QsoRecord]()
-      new StoreMapImpl(nodeInfo,
-        new OurStationStore(persistence),
-        new BandModeOperatorStore(persistence),
-        allQsos,
-        mockSyncSteps, fileManager,
-        commandLine
+      new StoreMapImpl(NodeAddress(),
+        ObjectProperty[QsoMetadata](QsoMetadata()),
+        new ObservableBuffer[QsoRecord](),
+        mockSyncSteps, fileManager
       )
     }
-    val startTime = ZonedDateTime.of(2019, 6, 23, 12, 0, 0, 0, TimeHelpers.utcZoneId).toInstant
 
-    records = QsoGenerator(nQsos, Duration.ofMinutes(1), startTime)
+    val randomQsoGenerator = new RandomQsoGenerator()
+    val builder = List.newBuilder[QsoRecord]
+    randomQsoGenerator.apply(GenerateRandomQsos()) {builder += QsoRecord(_, QsoMetadata())
+    }
+    records = builder.result()
     debugTime(s"load ${records.size} in $$dur") {
       records.foreach(qr ⇒
         storeMapImpl.addRecord(qr))
     }
   }
 
-  override def after = {
+  override def after: Unit = {
     FileUtils.deleteDirectory(directory.toFile)
   }
 }

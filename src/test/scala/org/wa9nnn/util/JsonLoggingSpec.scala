@@ -5,7 +5,7 @@ import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
 import play.api.libs.json.{Format, Json}
 
-import java.util.UUID
+import java.net.InetAddress
 
 /**
  * Crappy Guru tests, a guru should look at log output
@@ -15,17 +15,10 @@ class JsonLoggingSpec extends Specification with StructuredLogging {
 
   implicit val f: Format[SomeClass] = Json.format[SomeClass]
 
-  "JsonLoggingSpec" should {
+  "JsonLogging" should {
     "logJson simple" in {
-      val someClass = new SomeClass()
+      val someClass = SomeClass()
       logJson("someClass", someClass)
-      ok
-    }
-    "logJson nested" in {
-      val fdLOgId = FdLogId(nodeAddress = NodeAddress(0, "10.10.10.1"), uuid = UUID.randomUUID().toString)
-
-      val ourStation = new QsoRecord(Qso("WA9NNN", BandModeOperator(), new Exchange()), Contest(year = 2021), OurStation(), fdLOgId)
-      logJson("ourStation", ourStation)
       ok
     }
   }

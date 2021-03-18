@@ -19,7 +19,7 @@
 
 package org.wa9nnn.fdcluster.model
 
-import org.wa9nnn.fdcluster.model.BandModeOperator.{Band, Mode}
+import org.wa9nnn.fdcluster.model.CurrentStation.{Band, Mode}
 
 import scala.util.matching.Regex
 
