@@ -27,6 +27,7 @@ import scala.util.matching.Regex
 
 case class Exchange( entryClass: String = EntryCategory.defaultCategory.buildClass(1),
                      section: String = Sections.defaultCode) {
+  def category: EntryCategory = EntryCategory.forDesignator(entryClass(1))
 
   def display: String = s"$entryClass $section"
 

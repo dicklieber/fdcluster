@@ -25,7 +25,7 @@ import org.wa9nnn.fdcluster.javafx.sync.SyncSteps
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.{FileManagerConfig, MockFileManager}
-import org.wa9nnn.util.{CommandLine, Persistence}
+import org.wa9nnn.util.{CommandLine, Persistence, PersistenceImpl}
 import scalafx.beans.property.ObjectProperty
 import scalafx.collections.ObservableBuffer
 
@@ -36,7 +36,7 @@ class StoreMapImplSpec extends Specification with After with Mockito {
 
   val fileManager: FileManagerConfig = mock[FileManagerConfig] //todo need some values
   private val directory: Path = Files.createTempDirectory("StoreMapImplSpec")
-  val persistence = new Persistence(fileManager)
+  val persistence = new PersistenceImpl(fileManager)
   val allQsos = new ObservableBuffer[QsoRecord]()
 
   val commandLine: CommandLine = mock[CommandLine].is("skipJournal") returns false

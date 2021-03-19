@@ -113,7 +113,7 @@ object Sections {
     Section("Alberta", "AB", "CA"),
     Section("British Columbia", "BC", "CA"),
     Section("Northern Territories", "NT", "CA"),
-    Section("DX", "DX", "DX")
+    Section("Outside US/Canada", "DX",  "DX")
   ).sorted
 
 

@@ -13,7 +13,7 @@ import java.nio.file.{Files, Paths}
 trait PreferencesContext extends ForEach[Persistence] {
   def foreach[R: AsResult](r: Persistence => R): Result = {
    val fileManager =  MockFileManager()
-    val persistence = new Persistence(fileManager)
+    val persistence = new PersistenceImpl(fileManager)
     try AsResult(r(persistence))
     finally fileManager.clean()
   }

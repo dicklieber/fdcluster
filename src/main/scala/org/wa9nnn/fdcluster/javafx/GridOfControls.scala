@@ -19,16 +19,18 @@
 
 package org.wa9nnn.fdcluster.javafx
 
-import javafx.scene.control.SingleSelectionModel
+import org.wa9nnn.util.InputHelper.{forceAllowed, forceCaps => ForceCaps, forceInt => ForceInt}
+import scalafx.Includes._
 import scalafx.beans.property.{IntegerProperty, ObjectProperty, StringProperty}
 import scalafx.geometry.Insets
-import scalafx.scene.control.{ComboBox, Label, TextArea, TextField}
+import scalafx.scene.control._
 import scalafx.scene.layout.GridPane
-import scalafx.scene.text.Text
+import scalafx.util.StringConverter
 
 import java.text.NumberFormat
 import java.time.Duration
 import java.util.concurrent.atomic.AtomicInteger
+import scala.util.matching.Regex
 
 /**
  * Help to build a GridPane of one column of labeled controls.
@@ -45,18 +47,31 @@ class GridOfControls extends GridPane {
     r
   }
 
-  def addText(labelText: String, defValue: String): StringProperty = {
+  def addText(labelText: String, defValue: String = "",
+              forceCaps: Boolean = false,
+              regx: Option[Regex] = None,
+              tooltip: Option[String] = None): StringProperty = {
     val row = label(labelText)
     val control = new TextField()
+    if (forceCaps) {
+      ForceCaps(control)
+    }
+    regx.foreach(regex =>
+      forceAllowed(control, regex)
+    )
+    tooltip.foreach(control.tooltip = _)
     control.text = defValue
     add(control, 1, row)
     control.text
   }
 
-  def addInt(labelText: String, defValue: Int): IntegerProperty = {
+  def addInt(labelText: String, defValue: Int = 0, tooltip: Option[String] = None): IntegerProperty = {
     val row = label(labelText)
 
     val control = new TextField()
+    ForceInt(control)
+
+    tooltip.foreach(control.tooltip = _)
     control.text = NumberFormat.getNumberInstance.format(defValue)
 
     add(control, 1, row)
@@ -67,10 +82,11 @@ class GridOfControls extends GridPane {
     integerProperty
   }
 
-  def addDuration(labelText: String, defValue: Duration): ObjectProperty[Duration] = {
+  def addDuration(labelText: String, defValue: Duration, tooltip: Option[String] = None): ObjectProperty[Duration] = {
     val row = label(labelText)
     val control = new TextField()
-    control.text = defValue.toString()
+    tooltip.foreach(control.tooltip = _)
+    control.text = defValue.toString
     add(control, 1, row)
     val durProperty = ObjectProperty(defValue)
     control.text.onChange { (_, _, nv) =>
@@ -80,23 +96,36 @@ class GridOfControls extends GridPane {
   }
 
 
-  def addTextArea(labelText: String, defValue: String, nRows: Int = 3): StringProperty = {
+  def addTextArea(labelText: String, defValue: String = "", nRows: Int = 3, tooltip: Option[String] = None): StringProperty = {
     val row = label(labelText)
     val control = new TextArea(defValue) {
       prefRowCount = nRows
     }
+    tooltip.foreach(control.tooltip = _)
     add(control, 1, row)
     control.text
   }
 
-  def addCombo[T](labelText: String, choices: Seq[T], defValue: Option[T]): SingleSelectionModel[T] = {
+  def addCombo[T](labelText: String,
+                  choices: Seq[T],
+                  defValue: Option[T] = None,
+                  tooltip: Option[String] = None,
+                  converter: Option[StringConverter[T]] = None): ObjectProperty[T] = {
     val row = label(labelText)
     val control = new ComboBox[T](choices)
-    val value: SingleSelectionModel[T] = control.selectionModel.value
-    defValue.foreach { d =>
-      value.select(d)
+    converter.foreach(control.converter = _)
+    tooltip.foreach(control.tooltip = _)
+
+    val selectionModel: SingleSelectionModel[T] = control.selectionModel.value
+    defValue.foreach { d: T =>
+      selectionModel.select(d)
     }
     add(control, 1, row)
-    value
+    control.value
+  }
+
+  def add(labelText: String, control:Control):Unit = {
+    val row = label(labelText)
+    add(control, 1, row)
   }
 }

@@ -47,7 +47,7 @@ object MessageFormats {
 
   implicit val fdHourFormat: Format[FdHour] = Json.format[FdHour]
   implicit val uuidsRequestFormat: Format[RequestUuidsForHour] = Json.format[RequestUuidsForHour]
-  implicit val contest: Format[Contest] = Json.format[Contest]
+  implicit val cf: Format[Contest] = Json.format[Contest]
   implicit val bandFormat: Format[AvailableBand] = Json.format[AvailableBand]
   implicit val bandModeFormat: Format[BandMode] = Json.format[BandMode]
   implicit val bandModeOpFormat: Format[CurrentStation] = Json.format[CurrentStation]

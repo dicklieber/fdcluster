@@ -19,6 +19,7 @@
 
 package org.wa9nnn.fdcluster.store
 
+import akka.actor.Status.Failure
 import akka.actor.{Actor, ActorRef}
 import akka.pattern.pipe
 import akka.util.{ByteString, Timeout}
@@ -57,7 +58,7 @@ class StoreActor(injector: Injector,
   private implicit val timeout: Timeout = Timeout(5 seconds)
 
 
-//  private val ourNode = nodeInfo.nodeAddress
+  //  private val ourNode = nodeInfo.nodeAddress
 
   logger.info(s"StoreActor: ${self.path}")
 
@@ -169,17 +170,23 @@ class StoreActor(injector: Injector,
           store.add(qso)
       }
 
+    case scala.util.Failure(e) =>
+      logger.error("Unexpected Failure", e)
+
+    case Failure(e) =>
+      logger.error("Unexpected Failure", e)
+
     case x ⇒
-      println(s"Unexpected Message; $x")
+      logger.error(s"Unexpected Message; $x")
 
   }
 
 
-  override  def aroundReceive(receive: Receive, msg: Any): Unit = {
+  override def aroundReceive(receive: Receive, msg: Any): Unit = {
     try {
       super.aroundReceive(receive, msg)
     } catch {
-      case e:Exception =>
+      case e: Exception =>
         logger.error("StoreActor", e)
     }
   }

@@ -29,7 +29,10 @@ import javax.inject.Inject
 import scala.reflect.ClassTag
 import scala.util.{Failure, Success, Try}
 
-
+trait Persistence {
+  def saveToFile[T: ClassTag](product: T, pretty: Boolean = true)(implicit writes: Writes[T]): Try[String]
+  def loadFromFile[T: ClassTag]()(implicit writes: Reads[T]): Try[T]
+}
 /**
  * A simple persistence engine that between case classes and files
  * Files are persisted in the [[basePath]] directory using a file name that is the class name (without path)
@@ -37,7 +40,7 @@ import scala.util.{Failure, Success, Try}
  *
  * @param fileManager where to write files
  */
-class Persistence @Inject()(fileManager: FileManager) extends StructuredLogging {
+class PersistenceImpl @Inject()(fileManager: FileManager) extends Persistence with StructuredLogging {
   val path: Path = fileManager.getPath(FileLocus.`var`)
   Files.createDirectories(path)
   if (!Files.isDirectory(path)) {
@@ -52,7 +55,7 @@ class Persistence @Inject()(fileManager: FileManager) extends StructuredLogging 
    * @tparam T of case class product.
    * @return file path or error
    */
-  def saveToFile[T: ClassTag](product: T, pretty: Boolean = true)(implicit writes: Writes[T]): Try[String] = {
+  override def saveToFile[T: ClassTag](product: T, pretty: Boolean = true)(implicit writes: Writes[T]): Try[String] = {
     Try {
       if (!product.isInstanceOf[Product]) throw new IllegalArgumentException(s"$product is not a case class!")
       val sJson = if (pretty)

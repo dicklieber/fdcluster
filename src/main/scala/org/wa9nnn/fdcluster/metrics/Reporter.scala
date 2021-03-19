@@ -40,6 +40,6 @@ class Reporter @Inject()(nodeAddress: NodeAddress) extends DefaultInstrumented {
     .convertRatesTo(TimeUnit.SECONDS)
     .convertDurationsTo(TimeUnit.MILLISECONDS)
     .filter(MetricFilter.ALL).build(graphite)
-  reporter.start(1, TimeUnit.MINUTES)
+//  reporter.start(1, TimeUnit.MINUTES)
 
 }

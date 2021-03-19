@@ -50,7 +50,7 @@ import scala.util.{Failure, Success, Try}
  */
 class EntryScene @Inject()(
                             bandModeOpPanel: BandModeOpPanel,
-                            @Named("contest") contestProperty: ObjectProperty[Contest],
+                            contestProperty: ContestProperty,
                             @Named("qsoMetadata") qsoMetadataProperty: ObjectProperty[QsoMetadata],
                             @Named("currentStation") currentStation: ObjectProperty[CurrentStation],
                             statsPane: StatsPane,
@@ -137,7 +137,7 @@ class EntryScene @Inject()(
   def save(): Unit = {
     import org.wa9nnn.fdcluster.model.MessageFormats._
     val potentialQso: Qso = readQso()
-    if (potentialQso.callsign == contestProperty.value.callSign) {
+    if (potentialQso.callsign == contestProperty.callSignProperty.value) {
       actionResult.showSad(s"Can't work our own station: \n${potentialQso.callsign}!")
     }
     else {

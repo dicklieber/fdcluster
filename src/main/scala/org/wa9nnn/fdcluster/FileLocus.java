@@ -21,7 +21,7 @@ package org.wa9nnn.fdcluster;
 public enum FileLocus {
     var("var"),
     journalFile("journal.json"),
-    contest("CONTEST"),
+    contest("contest"),
     logs("logDir"),
     logFile("logFile");
 

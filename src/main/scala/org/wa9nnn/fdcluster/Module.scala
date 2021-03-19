@@ -30,7 +30,7 @@ import org.wa9nnn.fdcluster.metrics.Reporter
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.store._
 import org.wa9nnn.fdcluster.tools.RandomQsoGenerator
-import org.wa9nnn.util.{CommandLine, CommandLineScalaFxImpl}
+import org.wa9nnn.util.{CommandLine, CommandLineScalaFxImpl, Persistence, PersistenceImpl}
 import scalafx.application.JFXApp.Parameters
 import scalafx.beans.property.ObjectProperty
 import scalafx.collections.ObservableBuffer
@@ -54,10 +54,11 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
       val actorSystem = ActorSystem("default", config)
       bind[NodeAddress]
         .toInstance(NodeAddress.apply(config))
+      bind[Persistence]
+        .to[PersistenceImpl]
+        .asEagerSingleton()
       bind[FileManager].to[FileManagerConfig]
-      bind[ObjectProperty[Contest]]
-        .annotatedWithName("contest")
-        .toInstance(ObjectProperty[Contest](Contest()))
+
       bind[ObjectProperty[QsoMetadata]]
         .annotatedWithName("qsoMetadata")
         .toInstance(ObjectProperty(QsoMetadata()))

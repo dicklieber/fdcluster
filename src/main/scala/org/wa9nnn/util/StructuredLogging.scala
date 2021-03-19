@@ -88,9 +88,10 @@ trait StructuredLogging {
 
   /**
    * Logs a case class as [[name]]: json
-   * @param name lable for json
+   *
+   * @param name      lable for json
    * @param caseClass will be converted to single line json
-   * @param writes how to convert to Json..
+   * @param writes    how to convert to Json..
    * @tparam T usually inferred.
    */
   def logJson[T <: Product : ClassTag](name: String, caseClass: T)(implicit writes: Writes[T]): Unit = {
@@ -187,7 +188,13 @@ object LogJson {
       case v: LocalDateTime ⇒ JsString(v.toString)
       case v: Int ⇒ JsNumber(v)
       case v: Long ⇒ JsNumber(v)
-      case v: Double ⇒ JsNumber(v)
+      case v: Double ⇒
+        v match {
+          case Double.NaN => JsString("NaN")
+          case Double.NegativeInfinity => JsString("Negative ♾")
+          case Double.PositiveInfinity => JsString("Positive ♾")
+          case x: Double => JsNumber(v)
+        }
       case v: Float ⇒ JsNumber(v.toDouble)
       case v: JsObject ⇒ v
       case x ⇒ JsString(Option(x).fold("null")(_.toString))

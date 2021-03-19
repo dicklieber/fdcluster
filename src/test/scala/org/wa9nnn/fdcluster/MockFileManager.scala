@@ -2,7 +2,8 @@
 package org.wa9nnn.fdcluster
 
 import org.apache.commons.io.FileUtils
-import org.wa9nnn.fdcluster.model.Contest
+import org.wa9nnn.fdcluster.model.{Contest, ContestProperty}
+import scalafx.beans.property.ObjectProperty
 
 import java.nio.file.{Files, Path}
 
@@ -13,5 +14,4 @@ case class MockFileManager() extends FileManager {
     FileUtils.deleteDirectory(directory.toFile)
   }
 
-  override def contest: Contest = Contest()
 }
