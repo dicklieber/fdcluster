@@ -79,6 +79,7 @@ object MessageFormats {
   type CallSign = String
   type Uuid = String
   type Digest = String
+  type Node = String
 
 }
 

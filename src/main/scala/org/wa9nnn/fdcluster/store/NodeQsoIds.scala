@@ -18,9 +18,7 @@
 package org.wa9nnn.fdcluster.store
 
 import java.time.Instant
-
-import org.wa9nnn.fdcluster.model.MessageFormats.Uuid
-import NodeInfo.Node
+import org.wa9nnn.fdcluster.model.MessageFormats.{Node, Uuid}
 import org.wa9nnn.fdcluster.model.{NodeAddress, QsoRecord}
 
 /**
