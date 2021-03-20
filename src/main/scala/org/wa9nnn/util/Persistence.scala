@@ -19,12 +19,11 @@
 
 package org.wa9nnn.util
 
-import com.github.racc.tscg.TypesafeConfig
-import org.wa9nnn.fdcluster.{FileManager, FileLocus, FileManagerConfig}
+import org.wa9nnn.fdcluster.FileManager
 import play.api.libs.json.{Json, Reads, Writes}
 
 import java.nio.file.StandardOpenOption._
-import java.nio.file.{Files, Path, Paths}
+import java.nio.file.{Files, Path}
 import javax.inject.Inject
 import scala.reflect.ClassTag
 import scala.util.{Failure, Success, Try}
@@ -35,13 +34,13 @@ trait Persistence {
 }
 /**
  * A simple persistence engine that between case classes and files
- * Files are persisted in the [[basePath]] directory using a file name that is the class name (without path)
+ * Files are persisted in the basePath directory using a file name that is the class name (without path)
  * so e.g. [[org.wa9nnn.fdcluster.model.CurrentStation#BandMode(java.lang.String, java.lang.String)]] is saved as <basePath>/BandMode
  *
  * @param fileManager where to write files
  */
 class PersistenceImpl @Inject()(fileManager: FileManager) extends Persistence with StructuredLogging {
-  val path: Path = fileManager.getPath(FileLocus.`var`)
+  val path: Path = fileManager.varDirectory
   Files.createDirectories(path)
   if (!Files.isDirectory(path)) {
     throw new IllegalStateException(s"${path.toAbsolutePath.toString} does not exist or can't be created!")

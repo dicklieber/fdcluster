@@ -22,7 +22,7 @@ package org.wa9nnn.fdcluster.model
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.util.Persistence
 import scalafx.beans.binding.{Bindings, ObjectBinding}
-import scalafx.beans.property.{IntegerProperty, ObjectProperty, StringProperty}
+import scalafx.beans.property.{ObjectProperty, StringProperty}
 
 import java.time.LocalDate
 import javax.inject.Inject
@@ -46,11 +46,12 @@ class ContestProperty @Inject()(persistence: Persistence) {
   val ourExchange: Exchange = ourExchangeProperty.value
   val eventYearProperty: StringProperty = StringProperty(current.year)
   val eventYear: String = eventYearProperty.value
+  val fileBase: String = contestProperty.value.fileBase
 
-  callSignProperty.onChange{(_,old,nv) =>
+  callSignProperty.onChange { (_, old, nv) =>
     println(s"callSignProperty changed from : $old to: $nv ")
   }
-  contestProperty.onChange{(_,old,nv) =>
+  contestProperty.onChange { (_, old, nv) =>
     println(s"contestProperty changed from : $old to: $nv ")
   }
   /**
@@ -68,7 +69,7 @@ class ContestProperty @Inject()(persistence: Persistence) {
     contestProperty.value = nv
   }
 
-  def save():Unit = {
+  def save(): Unit = {
     persistence.saveToFile(contestProperty.value)
   }
 }
@@ -89,9 +90,9 @@ case class Contest(callSign: CallSign = "",
                      LocalDate.now().getYear.toString
                    }) {
 
-//  override def toString: String = {
-//    s"$event-$year"
-//  }
+  def fileBase: String = {
+    s"$event-$year"
+  }
 
   lazy val toId: String = {
     f"$event$year$callSign"

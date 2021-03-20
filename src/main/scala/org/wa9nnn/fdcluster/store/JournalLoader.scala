@@ -21,11 +21,11 @@ package org.wa9nnn.fdcluster.store
 
 import com.google.inject.name.Named
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics
+import org.wa9nnn.fdcluster.FileManager
 import org.wa9nnn.fdcluster.javafx.entry.RunningTaskInfoConsumer
 import org.wa9nnn.fdcluster.javafx.runningtask.RunningTask
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.QsoRecord
-import org.wa9nnn.fdcluster.{FileLocus, FileManagerConfig}
 import org.wa9nnn.util.BoolConverter.s2b
 import play.api.libs.json.Json
 import scalafx.collections.ObservableBuffer
@@ -49,7 +49,7 @@ import scala.util.Using
  * @param runningTaskInfoConsumer progress UI
  */
 class JournalLoader @Inject()(@Named("allQsos") allQsos: ObservableBuffer[QsoRecord],
-                              fileManager: FileManagerConfig,
+                              fileManager: FileManager,
                               val runningTaskInfoConsumer: RunningTaskInfoConsumer) {
   def apply(): Future[BufferReady.type] = {
     new Task(runningTaskInfoConsumer)()
@@ -59,7 +59,7 @@ class JournalLoader @Inject()(@Named("allQsos") allQsos: ObservableBuffer[QsoRec
 
     override def taskName: String = "Journal Loader"
 
-    val journalFilePath: Path = fileManager.getPath(FileLocus.journalFile)
+    val journalFilePath: Path = fileManager.journalFile
 
     def apply(): Future[BufferReady.type] = {
       Future {

@@ -20,51 +20,49 @@
 package org.wa9nnn.fdcluster
 
 import com.typesafe.config.Config
-import org.wa9nnn.fdcluster.FileManagerConfig.logFilePropertyName
-import org.wa9nnn.fdcluster.model.{Contest, ContestProperty}
-import scalafx.beans.property.ObjectProperty
+import org.wa9nnn.fdcluster.model.{ContestProperty, ExportFile}
 
 import java.nio.file.{Files, Path, Paths}
-import javax.inject.Inject
 
 /**
  * All access to various files should go through this.
  */
-class FileManagerConfig @Inject()(config: Config) extends FileManager {
+class FileManagerConfig(config: Config) extends FileManager {
   override def directory: Path = Paths.get(config.getString("directory"))
 
-  val logFilePath: Path = {
+  {
+    // this just set "log.file.path" system property so logback .xml doesn't need explicit file key.
     val path = directory.resolve("logs").resolve("fdcluster.log")
     Files.createDirectories(path.getParent)
     val logFile = path.toAbsolutePath.toString
-    System.setProperty(logFilePropertyName, logFile)
+    System.setProperty("log.file.path", logFile)
     path
   }
-
-}
-
-object FileManagerConfig {
-
-  val logFilePropertyName = "log.file.path"
 }
 
 trait FileManager {
-  def getString(locus: FileLocus): String = {
-    getPath(locus).toString
-  }
-
+  /**
+   * Should be the only directory that FDCluster writes to. (by default)
+   * @return
+   */
   def directory: Path
+  /**
+   *
+   * @return where to keep settings
+   */
+  def varDirectory:Path = directory.resolve("var")
+  def journalFile:Path = directory.resolve("journal.json")
 
-  lazy val map: Map[FileLocus, Path] = FileLocus.values().map { locus =>
-      locus -> directory.resolve(locus.getPathPiece)
-  }.toMap
-  map.foreach { case (_, path) =>
-    if (!Files.isWritable(path))
-      Files.createDirectories(path.getParent)
-  }
-
-  def getPath(locus: FileLocus): Path = {
-    map(locus)
+  /**
+   *
+   * @param extension       without leading dot.
+   * @param contestProperty to make contest-specific names.
+   * @return with default directory and filename.
+   */
+  def defaultExportFile(extension: String)(implicit contestProperty: ContestProperty): ExportFile = {
+    val fileBase = contestProperty.fileBase
+    val dir: String = directory.resolve(fileBase).toAbsolutePath.toString
+    ExportFile(dir, s"$fileBase.$extension")
   }
 }
 

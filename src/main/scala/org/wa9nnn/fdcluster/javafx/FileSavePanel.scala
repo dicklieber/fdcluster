@@ -19,6 +19,7 @@
 
 package org.wa9nnn.fdcluster.javafx
 
+import org.wa9nnn.fdcluster.FileManager
 import org.wa9nnn.fdcluster.model.ExportFile
 import scalafx.Includes._
 import scalafx.beans.property.StringProperty
@@ -33,7 +34,7 @@ trait exportFile {
 
 }
 
-class FileSavePanel(exportFile: ExportFile )(implicit ownerWindow: Window) extends GridPane {
+class FileSavePanel(exportFile: ExportFile)(implicit ownerWindow: Window) extends GridPane {
 
   val path: StringProperty = new StringProperty(exportFile.absoluteDirectory)
   val fileName = new StringProperty(exportFile.fileName)
@@ -48,7 +49,7 @@ class FileSavePanel(exportFile: ExportFile )(implicit ownerWindow: Window) exten
     text <==> fileName
   }
 
-  val chooseFileButton: Button = new Button("choose file") {
+  val chooseFileButton: Button = new Button("choose directory") {
     onAction = { e: ActionEvent =>
       val file: File = directoryChooser.showDialog(ownerWindow)
       path.value = file.getAbsoluteFile.toString

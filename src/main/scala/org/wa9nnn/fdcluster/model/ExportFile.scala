@@ -21,9 +21,14 @@ package org.wa9nnn.fdcluster.model
 
 import java.nio.file.{Files, Path, Paths}
 
-//send to [[StoreActor]]
+//Message to send to [[StoreActor]] to cause ADIF export to happen.
 case class AdifExportRequest(exportFile: ExportFile = ExportFile())
 
+/**
+ * [[directory]] and [[fileName]] are kept separate so UI can easily allow user to edit both.
+ * @param directory to be resolved with filename.
+ * @param fileName to save under.
+ */
 case class ExportFile(directory: String = System.getProperty("user.home"), fileName: String = "") {
   def validate: Option[String] = {
     if (fileName.isBlank)

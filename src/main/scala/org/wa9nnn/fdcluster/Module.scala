@@ -48,16 +48,18 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
 
   override def configure(): Unit = {
     try {
-      val commandLine = new CommandLineScalaFxImpl(parameters)
-      bind[CommandLine].toInstance(commandLine)
       val config = ConfigFactory.load
+      val fileManager = new FileManagerConfig(config)
+      // File manager must be invoked before any logging is done as logback.xml uses the system property  "log.file.path"
+      // which gets set by th3 FileManager.
+      bind[FileManager].toInstance(fileManager)
+      bind[CommandLine].toInstance(new CommandLineScalaFxImpl(parameters))
       val actorSystem = ActorSystem("default", config)
       bind[NodeAddress]
         .toInstance(NodeAddress.apply(config))
       bind[Persistence]
         .to[PersistenceImpl]
         .asEagerSingleton()
-      bind[FileManager].to[FileManagerConfig]
 
       bind[ObjectProperty[QsoMetadata]]
         .annotatedWithName("qsoMetadata")

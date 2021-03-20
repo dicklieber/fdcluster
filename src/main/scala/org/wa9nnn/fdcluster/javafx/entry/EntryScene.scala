@@ -30,7 +30,7 @@ import org.wa9nnn.fdcluster.javafx.{CallSignField, ClassField, StatusMessage, St
 import org.wa9nnn.fdcluster.model
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.store.{AddResult, Added, Dup}
-import org.wa9nnn.util.WithDisposition
+import org.wa9nnn.util.{StructuredLogging, WithDisposition}
 import play.api.libs.json.Json
 import scalafx.Includes._
 import scalafx.beans.property.ObjectProperty
@@ -55,7 +55,7 @@ class EntryScene @Inject()(
                             @Named("currentStation") currentStation: ObjectProperty[CurrentStation],
                             statsPane: StatsPane,
                             statusPane: StatusPane,
-                            @Inject() @Named("store") store: ActorRef) {
+                            @Inject() @Named("store") store: ActorRef) extends StructuredLogging {
   private implicit val timeout = Timeout(5, TimeUnit.SECONDS)
 
   var actionResult = new ActionResult(store, qsoMetadataProperty.value)
@@ -146,11 +146,14 @@ class EntryScene @Inject()(
         actionResult.clear()
         tr match {
           case Failure(exception) =>
+            logger.error(s"adding QSO: $potentialQso", exception)
           case Success(Dup(dupQso)) =>
             val pretty = Json.prettyPrint(Json.toJson(dupQso.qso))
-            actionResult.addSad(s"Duplicate:\n$pretty")
+            actionResult.addSad(s"Duplicate:\n${dupQso.qso.callsign} ${dupQso.qso.bandMode}")
+            logger.info(s"Dup: ${Json.toJson(dupQso.qso).toString()}")
           case Success(Added(qsoRecord)) =>
             actionResult.addHappy(s"Added:\n${qsoRecord.qso.callsign} ${qsoRecord.qso.exchange}") //        actionResult.happy(
+            logger.info(s"Added: ${Json.toJson(qsoRecord).toString}")
             if (qsoRecord.qso.callsign == "WA9NNN") {
               onFX {
                 statusPane.message(StatusMessage("Thanks for using fdcluster, from Dick Lieber WA9NNN", styleClasses = Seq("hiDick")))

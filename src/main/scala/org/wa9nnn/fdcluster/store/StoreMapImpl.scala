@@ -24,8 +24,8 @@ import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHour}
 import org.wa9nnn.fdcluster.store.network.FdHour
-import org.wa9nnn.fdcluster.{FileManager, FileLocus, FileManagerConfig, store}
-import org.wa9nnn.util.{CommandLine, StructuredLogging}
+import org.wa9nnn.fdcluster.{FileManager, store}
+import org.wa9nnn.util.StructuredLogging
 import play.api.libs.json.{JsValue, Json}
 import scalafx.beans.property.ObjectProperty
 import scalafx.collections.ObservableBuffer
@@ -47,7 +47,7 @@ class StoreMapImpl @Inject()( na: NodeAddress,
                              fileManager: FileManager
                             )
   extends Store with StructuredLogging with DefaultInstrumented {
-  implicit val nodeddress: NodeAddress = na
+  implicit val nodeAddress: NodeAddress = na
 
   /**
    * This is the canonical set of data. If its not here then we know we have to also add to [[byCallsign]] and [[allQsos]]
@@ -141,7 +141,7 @@ class StoreMapImpl @Inject()( na: NodeAddress,
   /**
    * Invoked when we have loaded the journal, if any.
    */
-  def loadLocalIndicies(): Unit = {
+  def loadLocalIndices(): Unit = {
     loadingIndicesFlag = true
     allQsos.foreach { qso =>
       localInsert(qso)
@@ -149,9 +149,7 @@ class StoreMapImpl @Inject()( na: NodeAddress,
     loadingIndicesFlag = false
   }
 
-  val journalFilePath: Path = fileManager.getPath(FileLocus.journalFile)
-
-  logger.info(s"journal: ${journalFilePath.toAbsolutePath.toString}")
+  private val journalFilePath: Path = fileManager.journalFile
 
   private val outputStream = Files.newOutputStream(journalFilePath, StandardOpenOption.APPEND, StandardOpenOption.CREATE)
 
@@ -192,8 +190,8 @@ class StoreMapImpl @Inject()( na: NodeAddress,
 
   override def search(search: Search): SearchResult = {
     val max = search.max
-    val matching = byUuid.values.filter { qsorecord => {
-      qsorecord.qso.callsign.contains(search.partial) && search.bandMode == qsorecord.qso.bandMode
+    val matching = byUuid.values.filter { qsoRecord => {
+      qsoRecord.qso.callsign.contains(search.partial) && search.bandMode == qsoRecord.qso.bandMode
     }
     }.toSeq
 
@@ -201,7 +199,7 @@ class StoreMapImpl @Inject()( na: NodeAddress,
     SearchResult(limited, matching.length)
   }
 
-  override def dump: QsosFromNode = QsosFromNode(nodeddress, byUuid.values.toList.sorted)
+  override def dump: QsosFromNode = QsosFromNode(nodeAddress, byUuid.values.toList.sorted)
 
   /**
    *
@@ -270,7 +268,7 @@ class StoreMapImpl @Inject()( na: NodeAddress,
     val rate = qsoMeter.fifteenMinuteRate
     val currentStation = CurrentStation()
 
-    sync.NodeStatus(nodeddress, byUuid.size, sDigest, hourDigests, qsoMetadata.value, currentStation, rate)
+    sync.NodeStatus(nodeAddress, byUuid.size, sDigest, hourDigests, qsoMetadata.value, currentStation, rate)
 
   }
     /**

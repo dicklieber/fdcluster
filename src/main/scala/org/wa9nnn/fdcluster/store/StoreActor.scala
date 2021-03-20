@@ -73,7 +73,7 @@ class StoreActor(injector: Injector,
   override def receive: Receive = {
     case BufferReady =>
       //todo load local indices
-      store.loadLocalIndicies()
+      store.loadLocalIndices()
     case potentialQso: Qso ⇒
       val addResult: AddResult = store.add(potentialQso)
       addResult match {

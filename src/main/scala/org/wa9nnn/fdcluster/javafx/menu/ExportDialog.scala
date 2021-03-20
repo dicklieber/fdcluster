@@ -20,43 +20,48 @@
 package org.wa9nnn.fdcluster.javafx.menu
 
 import javafx.stage.Window
+import org.wa9nnn.fdcluster.FileManager
 import org.wa9nnn.fdcluster.javafx.FileSavePanel
-import org.wa9nnn.fdcluster.model.AdifExportRequest
 import org.wa9nnn.fdcluster.model.MessageFormats._
+import org.wa9nnn.fdcluster.model.{AdifExportRequest, ContestProperty}
 import org.wa9nnn.util.Persistence
 import scalafx.Includes._
 import scalafx.scene.control._
-import scalafx.stage.DirectoryChooser
 
 import javax.inject.Inject
 
-class ExportDialog @Inject()(persistence: Persistence) extends Dialog[AdifExportRequest] {
-  val exportRequest: AdifExportRequest = persistence.loadFromFile[AdifExportRequest].getOrElse(AdifExportRequest())
-  private val dp: DialogPane = dialogPane()
-  implicit val win: Window = dp.getScene.getWindow
+/**
+ * Dialog to get directory and file where export an DIF file.
+ * @param persistence saves user entered data between sessions.
+ * @param fileManager knows all about FDCluster files.
+ * @param contestProperty so can make contest-specific files.
+ */
+class ExportDialog @Inject()(implicit
+                             persistence: Persistence,
+                             fileManager: FileManager,
+                             contestProperty: ContestProperty) extends Dialog[AdifExportRequest] {
+  private val exportFile = persistence.loadFromFile[AdifExportRequest]
+    .map(_.exportFile)
+    .getOrElse(fileManager.defaultExportFile("adif"))
 
-  private val fileSavePanel = new FileSavePanel(exportRequest.exportFile)(win)
+  private val dp: DialogPane = dialogPane()
+
+  val win: Window = dp.getScene.getWindow
+  private val fileSavePanel = new FileSavePanel(exportFile)(win)
 
   title = "Export"
-  headerText = "Save as ADIF (adi)"
+  headerText = "Save as ADIF."
   resultConverter = dialogButton => {
-     if (dialogButton == ButtonType.OK) {
-
-       val exportRequest = AdifExportRequest(fileSavePanel.result)
-       persistence.saveToFile(exportRequest)
-       exportRequest
-
+    if (dialogButton == ButtonType.OK) {
+      val exportRequest = AdifExportRequest(fileSavePanel.result)
+      persistence.saveToFile(exportRequest)
+      exportRequest
     }
     else
       null
   }
 
   dialogPane().setContent(fileSavePanel)
-
   dp.getButtonTypes.addAll(ButtonType.OK, ButtonType.Cancel)
-
-  val directoryChooser: DirectoryChooser = new DirectoryChooser {
-    title = "Directory"
-  }
 }
 
