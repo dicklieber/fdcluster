@@ -38,7 +38,7 @@ import javax.inject.Inject
 case class BuildLoadRequest(path: String = System.getProperty("user.home"), max: Int = 100000)
 
 class BuildLoadDialog @Inject()(persistence: Persistence) extends Dialog[BuildLoadRequest] {
-  val blrIn: BuildLoadRequest = persistence.loadFromFile[BuildLoadRequest].getOrElse(BuildLoadRequest())
+  val blrIn: BuildLoadRequest = persistence.loadFromFile[BuildLoadRequest](() => BuildLoadRequest())
   title = "Demo Data Bulk Loader"
   headerText = "Look, a Custom Login Dialog"
   val path: StringProperty = new StringProperty(blrIn.path)

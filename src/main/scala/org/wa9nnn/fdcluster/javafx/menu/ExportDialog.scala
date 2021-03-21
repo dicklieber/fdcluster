@@ -32,22 +32,24 @@ import javax.inject.Inject
 
 /**
  * Dialog to get directory and file where export an DIF file.
- * @param persistence saves user entered data between sessions.
- * @param fileManager knows all about FDCluster files.
+ *
+ * @param persistence     saves user entered data between sessions.
+ * @param fileManager     knows all about FDCluster files.
  * @param contestProperty so can make contest-specific files.
  */
 class ExportDialog @Inject()(implicit
                              persistence: Persistence,
                              fileManager: FileManager,
                              contestProperty: ContestProperty) extends Dialog[AdifExportRequest] {
-  private val exportFile = persistence.loadFromFile[AdifExportRequest]
-    .map(_.exportFile)
-    .getOrElse(fileManager.defaultExportFile("adif"))
+  private val adifExportRequest: AdifExportRequest =
+    persistence.loadFromFile[AdifExportRequest] { () =>
+      AdifExportRequest(fileManager.defaultExportFile("adif"))
+    }
 
   private val dp: DialogPane = dialogPane()
 
   val win: Window = dp.getScene.getWindow
-  private val fileSavePanel = new FileSavePanel(exportFile)(win)
+  private val fileSavePanel = new FileSavePanel(adifExportRequest.exportFile)(win)
 
   title = "Export"
   headerText = "Save as ADIF."

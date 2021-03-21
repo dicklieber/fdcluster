@@ -24,7 +24,7 @@ import com.github.racc.tscg.TypesafeConfigModule
 import com.google.inject.{AbstractModule, Injector, Provides}
 import com.typesafe.config.{Config, ConfigFactory}
 import net.codingwell.scalaguice.ScalaModule
-import org.wa9nnn.fdcluster.javafx.entry.{RunningTaskInfoConsumer, RunningTaskPane}
+import org.wa9nnn.fdcluster.javafx.entry.{BandModeQsoMetadata, RunningTaskInfoConsumer, RunningTaskPane}
 import org.wa9nnn.fdcluster.javafx.sync.{ProgressStep, SyncSteps}
 import org.wa9nnn.fdcluster.metrics.Reporter
 import org.wa9nnn.fdcluster.model._
@@ -60,7 +60,6 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
       bind[Persistence]
         .to[PersistenceImpl]
         .asEagerSingleton()
-
       bind[ObjectProperty[QsoMetadata]]
         .annotatedWithName("qsoMetadata")
         .toInstance(ObjectProperty(QsoMetadata()))

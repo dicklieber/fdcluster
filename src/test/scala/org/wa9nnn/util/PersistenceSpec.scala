@@ -39,15 +39,15 @@ class PersistenceSpec extends Specification with PreferencesContext {
     }
 
     "roundTrip" >> { persistence: Persistence =>
-      val exchange = new CurrentStation("20M", "DI")
-      persistence.saveToFile(exchange, pretty = false)
-      val backAgain = persistence.loadFromFile[CurrentStation]()
-      backAgain must beSuccessfulTry(exchange)
+      val currentStation = new CurrentStation("20M", "DI")
+      persistence.saveToFile(currentStation, pretty = false)
+      val backAgain: CurrentStation = persistence.loadFromFile[CurrentStation](() => CurrentStation())
+      backAgain must be(currentStation)
     }
 
     "nofile" >> { persistence: Persistence =>
-      val instance = persistence.loadFromFile[CurrentStation]()
-      instance must beFailedTry[CurrentStation]
+      val instance = persistence.loadFromFile[CurrentStation](() => CurrentStation())
+      instance must beAnInstanceOf[CurrentStation]
     }
 
     "not case class" >> { persistence: Persistence =>

@@ -4,6 +4,17 @@
     -fx-font-weight: bold;
     -fx-font-family: monospace;
 }
+.qsoCallSign {
+    -fx-max-width: 200;
+}
+.qsoClass {
+    -fx-max-width: 60;
+}
+.qsoSection {
+    -fx-max-width: 60;
+}
+
+
 .happyQso {
     -fx-text-fill: green;
 }

@@ -126,4 +126,9 @@ object Sections {
   val defaultCode: String = {
     defaultSection.code
   }
+
+  val byArea: Map[String, String] = sections.map(section => section.code -> section.area).toMap
+  def callAreaForSection(sectionName:String):String = {
+    byArea(sectionName)
+  }
 }

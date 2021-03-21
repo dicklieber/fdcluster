@@ -20,7 +20,7 @@
 package org.wa9nnn.fdcluster.rig
 
 import org.wa9nnn.fdcluster.model.MessageFormats._
-import org.wa9nnn.util.{StructuredLogging, Persistence}
+import org.wa9nnn.util.{Persistence, StructuredLogging}
 import scalafx.beans.property.{IntegerProperty, ObjectProperty, StringProperty}
 
 import javax.inject.Inject
@@ -36,7 +36,7 @@ class RigStore @Inject()(persistence: Persistence) extends StructuredLogging {
   val band:StringProperty = new StringProperty()
   val rigFrequency = new IntegerProperty()
 
-  rigFrequency.onChange { (ov, was, tobo) =>
+  rigFrequency.onChange { (_, _, tobo) =>
     rigFrequencyDisplay.set(f"${tobo.intValue() / 1000000 % .04}")
   }
 
@@ -46,7 +46,7 @@ class RigStore @Inject()(persistence: Persistence) extends StructuredLogging {
 
   private val prefsKey = "rigSettings"
   rigSettings.value = {
-    persistence.loadFromFile[RigSettings].getOrElse(RigSettings())
+    persistence.loadFromFile[RigSettings](() => RigSettings())
   }
   rigSettings.onChange { (_, _, newSettings) =>
     persistence.saveToFile(rigSettings.value)

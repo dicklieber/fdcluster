@@ -28,6 +28,11 @@ import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
 import javax.inject.Inject
 import scala.jdk.CollectionConverters._
 
+/**
+ * Provides available bands and modes.
+ *
+ * @param config access to application.conf.
+ */
 class BandModeFactory @Inject()(config: Config = ConfigFactory.load()) extends LazyLogging {
   def modeForRig(rig: String): Option[String] = {
     modes.find(_.rigModes.contains(rig)).map(_.mode)
@@ -35,14 +40,12 @@ class BandModeFactory @Inject()(config: Config = ConfigFactory.load()) extends L
 
   /**
    * All the bands that can be used.
-   * Currently all band for WFD and ARRL Field day.
+   * Currently all bands for WFD and ARRL Field day.
    *
    */
-  val avalableBands: List[AvailableBand] = config.getStringList("fdcluster.bandMode.bands").asScala.toList.map {
-
-    s =>
-      val availaBandRegx(band, from, to) = s
-      AvailableBand(band, from.toInt, to.toInt)
+  val availableBands: List[AvailableBand] = config.getStringList("fdcluster.bandMode.bands").asScala.toList.map { s =>
+    val availaBandRegx(band, from, to) = s
+    AvailableBand(band, from.toInt, to.toInt)
   }.sorted
 
   /**
@@ -52,7 +55,7 @@ class BandModeFactory @Inject()(config: Config = ConfigFactory.load()) extends L
    * @return
    */
   def band(frequency: Int): Option[Band] = {
-    val maybeBand: Option[AvailableBand] = avalableBands.find(ab => ab.containsFfreq(frequency))
+    val maybeBand: Option[AvailableBand] = availableBands.find(ab => ab.containsFfreq(frequency))
     maybeBand.map(_.band)
   }
 
@@ -64,7 +67,7 @@ class BandModeFactory @Inject()(config: Config = ConfigFactory.load()) extends L
       .asScala
       .toList
       .sortBy(_.getKey)
-      .map { (entry) =>
+      .map { entry =>
         AvailableMode(
           entry.getKey,
           entry.getValue
@@ -81,7 +84,8 @@ class BandModeFactory @Inject()(config: Config = ConfigFactory.load()) extends L
       rigMode -> am.mode
     }).toMap
   }
-  def bandModeOperator(bandName: Band = "20m", modeName: Mode = "PH", operator: CallSign = ""):CurrentStation = {
+
+  def bandModeOperator(bandName: Band = "20m", modeName: Mode = "PH", operator: CallSign = ""): CurrentStation = {
     //todo handle band validation.
     new CurrentStation(bandName, modeMapping(modeName), operator)
   }

@@ -32,26 +32,25 @@ import javax.inject.Inject
  *
  * @param persistence saves and loads any a case class.
  */
-class ContestProperty @Inject()(persistence: Persistence) {
-  private val current = persistence.loadFromFile[Contest].getOrElse(Contest())
+class ContestProperty @Inject()(persistence: Persistence) extends ObjectProperty[Contest]{
+  value = persistence.loadFromFile[Contest](() => Contest())
 
-  val contestProperty: ObjectProperty[Contest] = ObjectProperty(current)
 
-  val contest: Contest = contestProperty.value
-  val callSignProperty: StringProperty = StringProperty(current.callSign)
+  val contest: Contest = value
+  val callSignProperty: StringProperty = StringProperty(persistence.loadFromFile[Contest](() => Contest()).callSign)
   val callSign: String = callSignProperty.value
-  val eventProperty: StringProperty = StringProperty(current.event)
+  val eventProperty: StringProperty = StringProperty(persistence.loadFromFile[Contest](() => Contest()).event)
   val event: String = eventProperty.value
-  val ourExchangeProperty: ObjectProperty[Exchange] = ObjectProperty(current.ourExchange)
+  val ourExchangeProperty: ObjectProperty[Exchange] = ObjectProperty(persistence.loadFromFile[Contest](() => Contest()).ourExchange)
   val ourExchange: Exchange = ourExchangeProperty.value
-  val eventYearProperty: StringProperty = StringProperty(current.year)
+  val eventYearProperty: StringProperty = StringProperty(persistence.loadFromFile[Contest](() => Contest()).year)
   val eventYear: String = eventYearProperty.value
-  val fileBase: String = contestProperty.value.fileBase
+  val fileBase: String = value.fileBase
 
   callSignProperty.onChange { (_, old, nv) =>
     println(s"callSignProperty changed from : $old to: $nv ")
   }
-  contestProperty.onChange { (_, old, nv) =>
+  onChange { (_, old, nv) =>
     println(s"contestProperty changed from : $old to: $nv ")
   }
   /**
@@ -66,12 +65,14 @@ class ContestProperty @Inject()(persistence: Persistence) {
   )
 
   b.onChange { (_, _, nv) =>
-    contestProperty.value = nv
+    value = nv
   }
 
   def save(): Unit = {
-    persistence.saveToFile(contestProperty.value)
+    persistence.saveToFile(value)
   }
+
+
 }
 
 /**

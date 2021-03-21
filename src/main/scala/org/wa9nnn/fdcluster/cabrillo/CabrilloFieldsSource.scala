@@ -41,7 +41,7 @@ class CabrilloFieldsSource @Inject()(config: Config,
     choices match
       {
         case "$bands" =>
-          bandModeFactory.avalableBands.map(_.band)
+          bandModeFactory.availableBands.map(_.band)
         case "$modes" =>
           bandModeFactory.modes.map(_.mode)
         case x =>

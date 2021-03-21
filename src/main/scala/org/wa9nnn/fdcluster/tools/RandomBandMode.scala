@@ -28,7 +28,7 @@ import javax.inject.Inject
 class RandomBandMode @Inject()(bandModeFactory:BandModeFactory = new BandModeFactory()){
   val random = new SecureRandom()
   val modes: List[Mode] = bandModeFactory.modes.map(_.mode)
-  val bands: List[Band] = bandModeFactory.avalableBands.map(_.band)
+  val bands: List[Band] = bandModeFactory.availableBands.map(_.band)
 
   def next: BandMode = {
     BandMode(  bands(random.nextInt(bands.length)),

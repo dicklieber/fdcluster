@@ -30,7 +30,8 @@ import scala.util.{Failure, Success, Try}
 
 trait Persistence {
   def saveToFile[T: ClassTag](product: T, pretty: Boolean = true)(implicit writes: Writes[T]): Try[String]
-  def loadFromFile[T: ClassTag]()(implicit writes: Reads[T]): Try[T]
+//  def loadFromFile[T: ClassTag]()(implicit writes: Reads[T]): Try[T]
+  def loadFromFile[T: ClassTag](f:() => T)(implicit writes: Reads[T]): T
 }
 /**
  * A simple persistence engine that between case classes and files
@@ -97,5 +98,16 @@ class PersistenceImpl @Inject()(fileManager: FileManager) extends Persistence wi
   private def pathForClass[T: ClassTag]()(implicit tag: ClassTag[T]): Path = {
     val last = tag.toString.split("""\.""").last
     path.resolve(last + ".json")
+  }
+
+  /**
+   * A bit nicer to use as it always return a value. i.e. client doesn't to process the Try
+   * @param f that will create the defalt value if not read from file.
+   * @param writes JSON forat stuff.
+   * @tparam T
+   * @return always a T
+   */
+  override def loadFromFile[T: ClassTag](f: () => T)(implicit writes: Reads[T]): T = {
+    loadFromFile[T].getOrElse(f())
   }
 }

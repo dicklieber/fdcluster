@@ -37,7 +37,7 @@ import javax.inject.Inject
 case class ImportRequest(directory: String = System.getProperty("user.home"))
 
 class ImportDialog @Inject()(persistence: Persistence) extends Dialog[ImportRequest] {
-  val blrIn: ImportRequest = persistence.loadFromFile[ImportRequest].getOrElse(ImportRequest())
+  val blrIn: ImportRequest = persistence.loadFromFile[ImportRequest](() => ImportRequest())
   title = "Import"
   headerText = "Load ADIF"
   val path: StringProperty = new StringProperty(blrIn.directory)

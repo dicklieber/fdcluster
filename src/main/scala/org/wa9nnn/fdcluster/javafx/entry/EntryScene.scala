@@ -33,6 +33,7 @@ import org.wa9nnn.fdcluster.store.{AddResult, Added, Dup}
 import org.wa9nnn.util.{StructuredLogging, WithDisposition}
 import play.api.libs.json.Json
 import scalafx.Includes._
+import scalafx.beans.binding.{Bindings, ObjectBinding}
 import scalafx.beans.property.ObjectProperty
 import scalafx.event.ActionEvent
 import scalafx.geometry.{Insets, Pos}
@@ -49,20 +50,28 @@ import scala.util.{Failure, Success, Try}
  * Create ScalaFX UI for field day entry mode.
  */
 class EntryScene @Inject()(
-                            bandModeOpPanel: BandModeOpPanel,
+                            currentStationPanel: CurrentStationPanel,
                             contestProperty: ContestProperty,
+                            nodeAddress: NodeAddress,
+                            knownOperatorsProperty: KnownOperatorsProperty,
                             @Named("qsoMetadata") qsoMetadataProperty: ObjectProperty[QsoMetadata],
-                            @Named("currentStation") currentStation: ObjectProperty[CurrentStation],
+                            currentStationProperty: CurrentStationProperty,
                             statsPane: StatsPane,
                             statusPane: StatusPane,
                             @Inject() @Named("store") store: ActorRef) extends StructuredLogging {
-  private implicit val timeout = Timeout(5, TimeUnit.SECONDS)
+  private implicit val timeout: Timeout = Timeout(5, TimeUnit.SECONDS)
 
-  var actionResult = new ActionResult(store, qsoMetadataProperty.value)
-  val qsoCallsign = new CallSignField(actionResult)
-  val qsoClass = new ClassField()
+  var actionResult: ActionResult = new ActionResult(store, qsoMetadataProperty.value)
+  val callSignField: CallSignField = new CallSignField(actionResult){
+    styleClass += "qsoCallSign"
+  }
+  val qsoClass: ClassField = new ClassField(){
+    styleClass += "qsoClass"
+  }
 
-  val qsoSection = new SectionField()
+  val qsoSection: SectionField = new SectionField(){
+    styleClass += "qsoSection"
+  }
 
   val qsoSubmit = new Button("Log") with WithDisposition
   val clearButton = new Button("Clear") with WithDisposition
@@ -82,16 +91,16 @@ class EntryScene @Inject()(
     center = new HBox(
       new VBox(
         new Label("Callsign"),
-        qsoCallsign,
-        actionResult.pane
+        callSignField,
+        actionResult.pane,
+        statsPane.pane,
       ),
       new VBox(
         new Label("Class"),
         qsoClass,
         new VBox(
           buttons,
-          statsPane.pane,
-          bandModeOpPanel
+          currentStationPanel
         )
       ),
       new VBox(
@@ -105,7 +114,7 @@ class EntryScene @Inject()(
   val scene: Scene = new Scene {
     root = pane
   }
-  qsoCallsign.onDone { next =>
+  callSignField.onDone { next =>
     if (qsoClass.text.value.isEmpty) {
       nextField(next, qsoClass)
     }
@@ -123,7 +132,7 @@ class EntryScene @Inject()(
     save()
   }
 
-  val allFields = new Compositor(qsoCallsign.validProperty, qsoClass.validProperty, qsoSection.validProperty)
+  val allFields = new Compositor(callSignField.validProperty, qsoClass.validProperty, qsoSection.validProperty)
   allFields.onChange { (_, _, state) =>
     if (state) {
       qsoSubmit.disable = false
@@ -148,7 +157,6 @@ class EntryScene @Inject()(
           case Failure(exception) =>
             logger.error(s"adding QSO: $potentialQso", exception)
           case Success(Dup(dupQso)) =>
-            val pretty = Json.prettyPrint(Json.toJson(dupQso.qso))
             actionResult.addSad(s"Duplicate:\n${dupQso.qso.callsign} ${dupQso.qso.bandMode}")
             logger.info(s"Dup: ${Json.toJson(dupQso.qso).toString()}")
           case Success(Added(qsoRecord)) =>
@@ -169,15 +177,15 @@ class EntryScene @Inject()(
   }
 
   private def clear(): Unit = {
-    qsoCallsign.reset()
+    callSignField.reset()
     qsoClass.reset()
     qsoSection.reset()
-    qsoCallsign.requestFocus()
+    callSignField.requestFocus()
   }
 
   def readQso(): Qso = {
     val exchange = Exchange(qsoClass.text.value, qsoSection.text.value)
-    model.Qso(qsoCallsign.text.value, currentStation.value.bandMode, exchange)
+    model.Qso(callSignField.text.value, currentStationProperty.bandMode, exchange)
   }
 
   /**
@@ -192,5 +200,36 @@ class EntryScene @Inject()(
   }
 
   clear()
+
+
+  val qsoMetadataBinding: ObjectBinding[QsoMetadata] = Bindings.createObjectBinding(() => {
+    val cs = currentStationProperty.value
+    QsoMetadata(operator = cs.operator,
+      rig = cs.rig,
+      ant = cs.antenna,
+      node = nodeAddress.display,
+      contestId = contestProperty.value.toId
+    )
+  }, currentStationProperty, contestProperty)
+
+  qsoMetadataProperty <== qsoMetadataBinding
+
+  currentStationProperty.onChange { (_, from, to) =>
+    println(s"currentStation: from: $from to $to")
+  }
+  contestProperty.onChange { (_, from, to) =>
+    println(s"contestProperty1: from: $from to $to")
+  }
+
+  qsoMetadataBinding.onChange { (_, _, q) =>
+    qsoMetadataProperty.value = q
+  }
+  qsoMetadataBinding.onChange { (_, from, to) =>
+    println(s"qsoMetadataProperty: from: $from to $to")
+  }
+  qsoMetadataProperty.onChange { (_, from, to) =>
+    println(s"qsoMetadataProperty: from: $from to $to")
+  }
+
 }
 

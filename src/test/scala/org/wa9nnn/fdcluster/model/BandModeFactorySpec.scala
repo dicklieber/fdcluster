@@ -9,7 +9,7 @@ class BandModeFactorySpec extends Specification with DataTables {
   "BandModeFactorySpec" should {
     val bandModeFactory = new BandModeFactory()
     "bands" in {
-      bandModeFactory.avalableBands must haveSize(10)
+      bandModeFactory.availableBands must haveSize(10)
     }
     "freq to band in" >> {
       "FreqKHz" | "Band" |

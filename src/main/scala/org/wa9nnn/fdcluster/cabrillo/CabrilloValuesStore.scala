@@ -31,7 +31,7 @@ import javax.inject.Inject
  * @param preferences
  */
 class CabrilloValuesStore @Inject()(preferences: Persistence) extends ObjectProperty[CabrilloExportRequest] with StructuredLogging {
-  value = preferences.loadFromFile[CabrilloExportRequest].getOrElse(CabrilloExportRequest())
+  value = preferences.loadFromFile[CabrilloExportRequest](() => CabrilloExportRequest())
 
   onChange { (_, _, newValue) =>
     preferences.saveToFile(newValue)
