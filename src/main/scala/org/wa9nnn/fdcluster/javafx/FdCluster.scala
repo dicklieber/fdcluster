@@ -25,13 +25,14 @@ import org.wa9nnn.fdcluster.Module
 import org.wa9nnn.fdcluster.http.Server
 import org.wa9nnn.fdcluster.javafx.cluster.ClusterScene
 import org.wa9nnn.fdcluster.javafx.data.DataScene
-import org.wa9nnn.fdcluster.javafx.entry.{EntryScene, RunningTaskPane}
+import org.wa9nnn.fdcluster.javafx.entry.{EntryScene, RunningTaskPane, StatisticsScene}
 import org.wa9nnn.fdcluster.javafx.menu.FdClusterMenu
 import org.wa9nnn.fdcluster.model.NodeAddress
-import org.wa9nnn.util.StructuredLogging
+import org.wa9nnn.util.{CommandLine, StructuredLogging}
 import scalafx.Includes._
 import scalafx.application.JFXApp.PrimaryStage
 import scalafx.application.{JFXApp, Platform}
+import scalafx.beans.property.StringProperty
 import scalafx.event.Event
 import scalafx.scene.Scene
 import scalafx.scene.control.{Tab, TabPane}
@@ -41,22 +42,24 @@ import scalafx.scene.layout.{BorderPane, VBox}
 /**
  * Main for FDLog
  */
-object FdCluster extends JFXApp  with StructuredLogging {
+object FdCluster extends JFXApp with StructuredLogging {
 
 
   private val injector = Guice.createInjector(new Module(parameters))
-//  implicit val nodeInfo: NodeInfo = new NodeInfoImpl(contest)
-//  private val storeActorRef: ActorRef = injector.getInstance(Key.get(classOf[ActorRef], Names.named("store")))
+  //  implicit val nodeInfo: NodeInfo = new NodeInfoImpl(contest)
+  //  private val storeActorRef: ActorRef = injector.getInstance(Key.get(classOf[ActorRef], Names.named("store")))
   private val entryScene = injector.instance[EntryScene]
   private val dataScene = injector.instance[DataScene]
   private val clusterScene = injector.instance[ClusterScene]
+  private val statisticsScene = injector.instance[StatisticsScene]
   private val nodeAddress: NodeAddress = injector.instance[NodeAddress]
   private val runningTaskPane: RunningTaskPane = injector.instance[RunningTaskPane]
   private val statusPane: StatusPane = injector.instance[StatusPane]
+  private val commandLine: CommandLine = injector.instance[CommandLine]
   try {
     injector.instance[Server]
   } catch {
-    case e:Throwable ⇒
+    case e: Throwable ⇒
       e.printStackTrace()
   }
   val fdlogmenu: FdClusterMenu = injector.instance[FdClusterMenu]
@@ -76,27 +79,40 @@ object FdCluster extends JFXApp  with StructuredLogging {
     content = clusterScene.pane
     closable = false
   }
+  private val statsTab: Tab = new Tab {
+    text = "Statistics"
+    content = statisticsScene.pane
+    closable = false
+  }
+  private val fdclusterTabs: Seq[Tab] = Seq(entryTab, dataTab, clusterTab, statsTab)
   val tabPane: TabPane = new TabPane {
-    tabs = Seq(entryTab, dataTab, clusterTab)
+    tabs = fdclusterTabs
+  }
+  commandLine.getString("tab").foreach { tabText =>
+val map: Map[String, Tab] = fdclusterTabs.map(t => t.text.value -> t).toMap
+    val maybeTab = map.get(tabText)
+    maybeTab.foreach((t: Tab) =>
+      tabPane.selectionModel.value.select(t)
+    )
   }
 
-//  dataTab.onSelectionChanged = (_: Event) => {
-//    if (dataTab.isSelected) {
-//      dataScene.refresh()
-//    }
-//  }
+  //  dataTab.onSelectionChanged = (_: Event) => {
+  //    if (dataTab.isSelected) {
+  //      dataScene.refresh()
+  //    }
+  //  }
   clusterTab.onSelectionChanged = (_: Event) => {
     if (clusterTab.isSelected) {
       clusterScene.refresh()
     }
   }
-//  private val statsHeader = new HBox(Label(f"QSOs:  todo "))
+  //  private val statsHeader = new HBox(Label(f"QSOs:  todo "))
   private val rootPane = new BorderPane {
     top = fdlogmenu.menuBar
     center = tabPane
-    bottom =  new VBox(
+    bottom = new VBox(
       runningTaskPane.pane,
-     statusPane.pane
+      statusPane.pane
     )
   }
   val ourScene = new Scene()
@@ -113,7 +129,7 @@ object FdCluster extends JFXApp  with StructuredLogging {
     scene = ourScene
     private val externalForm: String = getClass.getResource("/images/wfdlogo.png").toExternalForm
     icons += new Image(externalForm)
-    onCloseRequest =  {event =>
+    onCloseRequest = { event =>
       Platform.exit()
       System.exit(0)
 
