@@ -460,7 +460,7 @@ object MockSocketAdapter extends SocketAdapter {
   )
   val data: Map[String, Seq[String]] = {
     Seq(
-      ("f", Seq("7074000")),
+      ("sorter", Seq("7074000")),
       ("1", expectedCaps),
     ).toMap
   }

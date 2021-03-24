@@ -31,7 +31,7 @@ import scalafx.scene.text.Text
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 
-class StatsPane @Inject()(@Named("allQsos") allQsos: ObservableBuffer[QsoRecord]) extends Pane {
+class StatsPane @Inject()(@Named("allQsos") allQsos: ObservableBuffer[QsoRecord])  {
 
   val cw = new Kind("CW")
   val di = new Kind("DI")

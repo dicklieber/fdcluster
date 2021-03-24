@@ -30,8 +30,8 @@ class CabrilloFieldsParserSpec extends Specification with ScalafxFixture {
 //      implicit val savedValues: CabrilloValues = new CabrilloValues()
 //      val config = ConfigFactory.load()
 //      val source = new CabrilloFieldsSource(config)
-//      val f = source.cabrilloFields
-//      f must haveSize(15)
+//      val sorter = source.cabrilloFields
+//      sorter must haveSize(15)
 //    }
   }
 

@@ -24,7 +24,7 @@ import com.google.inject.Injector
 import com.google.inject.name.Named
 import com.typesafe.scalalogging.LazyLogging
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
-import org.wa9nnn.fdcluster.{FileManager, FileManagerConfig, QsoStatCollector}
+import org.wa9nnn.fdcluster.{FileManager, FileManagerConfig, QsoCountCollector}
 import org.wa9nnn.fdcluster.cabrillo.{CabrilloDialog, CabrilloExportRequest}
 import org.wa9nnn.fdcluster.javafx.debug.DebugRemoveDialog
 import org.wa9nnn.fdcluster.javafx.sync.{SyncDialog, SyncSteps}
@@ -75,7 +75,7 @@ class FdClusterMenu @Inject()(
   }
   private val dumpStatsMenuItem = new MenuItem {
     text = "Dump Stats to Console"
-    private val qsoStatCollector: QsoStatCollector = injector.instance[QsoStatCollector]
+    private val qsoStatCollector: QsoCountCollector = injector.instance[QsoCountCollector]
     onAction = { _: ActionEvent =>
       qsoStatCollector.dumpStats()
     }

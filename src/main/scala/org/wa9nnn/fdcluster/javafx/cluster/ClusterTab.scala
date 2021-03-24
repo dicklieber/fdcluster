@@ -23,30 +23,40 @@ import akka.pattern.ask
 import akka.util.Timeout
 import com.google.inject.Inject
 import com.google.inject.name.Named
-import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.store.DumpCluster
 import org.wa9nnn.fdcluster.store.network.cluster.NodeStateContainer
-import scalafx.scene.Node
+import org.wa9nnn.util.StructuredLogging
+import scalafx.scene.control.Tab
 
 import java.util.concurrent.TimeUnit
-import scala.concurrent.Await
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
  * Create JavaFX UI to view status of each node in the cluster.
  */
-class ClusterScene @Inject()(@Inject() @Named("store") store: ActorRef) extends LazyLogging {
+class ClusterTab @Inject()(@Inject() @Named("store") store: ActorRef) extends Tab with StructuredLogging {
+  implicit val timeout: Timeout = Timeout(5, TimeUnit.SECONDS)
+  selected.onChange((_, _, nv) =>
+    if (nv)
+      refresh()
+  )
 
   private val clusterTable = new ClusterTable
-  implicit val timeout = Timeout(5, TimeUnit.SECONDS)
 
- // refresh()
+  text = "Cluster"
+  content = clusterTable.tableView
+  closable = false
+  refresh()
 
   def refresh(): Unit = {
-    val future = store ? DumpCluster
-    val clusters: Iterable[NodeStateContainer] = Await.result(future, timeout.duration).asInstanceOf[Iterable[NodeStateContainer]]
-   clusterTable.refresh(clusters)
+    val future: Future[Iterable[NodeStateContainer]] = (store ? DumpCluster).mapTo[Iterable[NodeStateContainer]]
+    future.foreach { clusters: Iterable[NodeStateContainer] =>
+
+      clusterTable.refresh(clusters)
+    }
+    //    val clusters: Iterable[NodeStateContainer] = Await.result(future, timeout.duration).asInstanceOf[Iterable[NodeStateContainer]]
+    //    clusterTable.refresh(clusters)
   }
 
-
-  val pane: Node = clusterTable.tableView
 }

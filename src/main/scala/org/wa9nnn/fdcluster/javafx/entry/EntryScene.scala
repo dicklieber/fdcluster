@@ -221,9 +221,9 @@ class EntryScene @Inject()(
     println(s"contestProperty1: from: $from to $to")
   }
 
-  qsoMetadataBinding.onChange { (_, _, q) =>
-    qsoMetadataProperty.value = q
-  }
+//  qsoMetadataBinding.onChange { (_, _, q: QsoMetadata) =>
+//    qsoMetadataProperty.value = q
+//  }
   qsoMetadataBinding.onChange { (_, from, to) =>
     println(s"qsoMetadataProperty: from: $from to $to")
   }

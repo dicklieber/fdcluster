@@ -23,16 +23,15 @@ import com.google.inject.Guice
 import net.codingwell.scalaguice.InjectorExtensions._
 import org.wa9nnn.fdcluster.Module
 import org.wa9nnn.fdcluster.http.Server
-import org.wa9nnn.fdcluster.javafx.cluster.ClusterScene
+import org.wa9nnn.fdcluster.javafx.cluster.ClusterTab
 import org.wa9nnn.fdcluster.javafx.data.DataScene
-import org.wa9nnn.fdcluster.javafx.entry.{EntryScene, RunningTaskPane, StatisticsScene}
+import org.wa9nnn.fdcluster.javafx.entry.{EntryScene, RunningTaskPane, StatisticsTab}
 import org.wa9nnn.fdcluster.javafx.menu.FdClusterMenu
 import org.wa9nnn.fdcluster.model.NodeAddress
 import org.wa9nnn.util.{CommandLine, StructuredLogging}
 import scalafx.Includes._
 import scalafx.application.JFXApp.PrimaryStage
 import scalafx.application.{JFXApp, Platform}
-import scalafx.beans.property.StringProperty
 import scalafx.event.Event
 import scalafx.scene.Scene
 import scalafx.scene.control.{Tab, TabPane}
@@ -50,8 +49,8 @@ object FdCluster extends JFXApp with StructuredLogging {
   //  private val storeActorRef: ActorRef = injector.getInstance(Key.get(classOf[ActorRef], Names.named("store")))
   private val entryScene = injector.instance[EntryScene]
   private val dataScene = injector.instance[DataScene]
-  private val clusterScene = injector.instance[ClusterScene]
-  private val statisticsScene = injector.instance[StatisticsScene]
+  private val clusterTab: ClusterTab = injector.instance[ClusterTab]
+  private val statisticsTab = injector.instance[StatisticsTab]
   private val nodeAddress: NodeAddress = injector.instance[NodeAddress]
   private val runningTaskPane: RunningTaskPane = injector.instance[RunningTaskPane]
   private val statusPane: StatusPane = injector.instance[StatusPane]
@@ -74,17 +73,8 @@ object FdCluster extends JFXApp with StructuredLogging {
     content = entryScene.pane
     closable = false
   }
-  private val clusterTab: Tab = new Tab {
-    text = "Cluster"
-    content = clusterScene.pane
-    closable = false
-  }
-  private val statsTab: Tab = new Tab {
-    text = "Statistics"
-    content = statisticsScene.pane
-    closable = false
-  }
-  private val fdclusterTabs: Seq[Tab] = Seq(entryTab, dataTab, clusterTab, statsTab)
+
+  private val fdclusterTabs: Seq[Tab] = Seq(entryTab, dataTab, clusterTab, statisticsTab)
   val tabPane: TabPane = new TabPane {
     tabs = fdclusterTabs
   }
@@ -96,17 +86,7 @@ val map: Map[String, Tab] = fdclusterTabs.map(t => t.text.value -> t).toMap
     )
   }
 
-  //  dataTab.onSelectionChanged = (_: Event) => {
-  //    if (dataTab.isSelected) {
-  //      dataScene.refresh()
-  //    }
-  //  }
-  clusterTab.onSelectionChanged = (_: Event) => {
-    if (clusterTab.isSelected) {
-      clusterScene.refresh()
-    }
-  }
-  //  private val statsHeader = new HBox(Label(f"QSOs:  todo "))
+  //  private val statsHeader = new HBox(Label(sorter"QSOs:  todo "))
   private val rootPane = new BorderPane {
     top = fdlogmenu.menuBar
     center = tabPane

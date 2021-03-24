@@ -1,19 +1,68 @@
 
-
 .qsoField {
     -fx-font-weight: bold;
     -fx-font-family: monospace;
 }
+
 .qsoCallSign {
     -fx-max-width: 200;
 }
+
 .qsoClass {
     -fx-max-width: 60;
 }
+
 .qsoSection {
     -fx-max-width: 60;
 }
 
+.statPaneTitle {
+    -fx-font-weight: bold;
+    -fx-font-size: 12;
+    -fx-background-color: #d04646;
+}
+
+.statPane {
+    -fx-border-width: 1px;
+    -fx-border-color: #00a6ff;
+    -fx-border-radius: 6px;
+    -fx-background-color: #e5fff9;
+}
+
+.oneStatTilePane {
+    -fx-hgap: 4;
+}
+
+.statPaneTitleBox {
+    -fx-alignment: center;
+    -fx-background-color: #00a6ff;
+}
+
+.statPaneTitle {
+    -fx-background-color: #00a6ff;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-font-size: 13pt;
+    -fx-text-alignment: center;
+    /*-fx-pref-width: 500;*/
+    -fx-fill-width: true;
+
+}
+
+.statCell {
+
+}
+
+.statLabel {
+    -fx-font-weight: bold;
+    -fx-font-family: Monospaced;
+    -fx-min-width: 32;
+}
+
+.statValue {
+    -fx-font-family: Monospaced;
+    -fx-min-width: 32;
+}
 
 .happyQso {
     -fx-text-fill: green;
@@ -30,44 +79,55 @@
 .ourNode {
     -fx-text-fill: gray;
 }
+
 .infoPane {
     -fx-background-color: #d2e8da;
     -fx-border-color: red;
-    -fx-border-width: 2;
+    -fx-border-width: 2px;
 }
 
 .sad {
     -fx-text-fill: red;
 }
+
 .happy {
     -fx-text-fill: green;
 }
+
 .hiDick {
     -fx-text-fill: blue;
     -fx-font-weight: bold;
     -fx-font-size: 24;
 }
+
 .differentHour1 {
     -fx-background-color: lightcoral;
 }
+
 .differentHour2 {
     -fx-background-color: moccasin;
 }
+
 .differentHour3 {
     -fx-background-color: peachpuff;
 }
+
 .differentHour4 {
     -fx-background-color: orchid;
 }
+
 .differentHour5 {
     -fx-background-color: hotpink;
 }
+
 .differentHour6 {
     -fx-background-color: sandybrown;
 }
+
 .differentHour7 {
     -fx-background-color: chocolate;
 }
+
 .differentHour8 {
     -fx-background-color: tan;
 }
@@ -75,22 +135,28 @@
 .dup {
     -fx-text-fill: red;
 }
+
 .actionResult {
     -fx-font-weight: bold;
 }
+
 .sectionPrompt {
     -fx-text-fill: blue;
 }
+
 .progress {
-    -fx-pref-width: 3000
+    -fx-pref-width: 300
 }
+
 .title {
     -fx-font-weight: bold;
     -fx-font-size: 24;
 }
+
 .dateTime {
     -fx-font-family: monospace;
 }
+
 .parenthetic {
     -fx-alignment: center;
     -fx-text-alignment: center;
@@ -100,16 +166,20 @@
 .exchangeDisplay {
     -fx-alignment: center;
 }
+
 .exchangeBlock {
     -fx-background-color: rgba(17, 255, 0, 0.22);
     -fx-font-size: large;
     -fx-font-weight: bold;
     /*-fx-font: monospace;*/
 }
+
 TextArea {
     -fx-font-family: monospace;
 }
+
 TextField {
     -fx-font-family: monospace;
 }
+
  

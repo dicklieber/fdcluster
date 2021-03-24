@@ -21,7 +21,7 @@ package org.wa9nnn.fdcluster.store
 
 import com.google.inject.name.Named
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics
-import org.wa9nnn.fdcluster.{FileManager, QsoStatCollector}
+import org.wa9nnn.fdcluster.{FileManager, QsoCountCollector}
 import org.wa9nnn.fdcluster.javafx.entry.RunningTaskInfoConsumer
 import org.wa9nnn.fdcluster.javafx.runningtask.RunningTask
 import org.wa9nnn.fdcluster.model.MessageFormats._
@@ -50,7 +50,7 @@ import scala.util.Using
  */
 class JournalLoader @Inject()(@Named("allQsos") allQsos: ObservableBuffer[QsoRecord],
                               fileManager: FileManager,
-                              qsoStatCollector:QsoStatCollector,
+                              qsoStatCollector:QsoCountCollector,
                               val runningTaskInfoConsumer: RunningTaskInfoConsumer) {
   def apply(): Future[BufferReady.type] = {
     new Task(runningTaskInfoConsumer)()

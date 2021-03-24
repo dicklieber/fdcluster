@@ -31,7 +31,7 @@ class RigIo(socketAdapter: SocketAdapter) extends Rig {
   }
 
   override def frequency: Int = {
-    getInt("f")
+    getInt("sorter")
   }
 
   override def modeAndBandWidth: (String, Int) = {

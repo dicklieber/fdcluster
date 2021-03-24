@@ -19,6 +19,7 @@
 package org.wa9nnn.fdcluster.javafx.cluster
 
 import com.typesafe.scalalogging.LazyLogging
+import org.scalafx.extras.onFX
 import org.wa9nnn.fdcluster.model.NodeAddress
 import org.wa9nnn.fdcluster.model.sync.QsoHourDigest
 import org.wa9nnn.fdcluster.store.network.FdHour
@@ -140,11 +141,13 @@ class ClusterTable extends LazyLogging {
       sortable = false
     }
 
-    tableView.columns.clear()
-    tableView.columns += rowHeaderCol
-    buildColumns.foreach(tc ⇒
-      tableView.columns += tc
-    )
+    onFX{
+      tableView.columns.clear()
+      tableView.columns += rowHeaderCol
+      buildColumns.foreach(tc ⇒
+        tableView.columns += tc
+      )
+    }
   }
 }
 
