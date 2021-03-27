@@ -26,9 +26,8 @@ import org.wa9nnn.fdcluster.BuildInfo
 import org.wa9nnn.fdcluster.cabrillo.QsoFD.cabrilloDtFormat
 import org.wa9nnn.fdcluster.javafx.entry.RunningTaskInfoConsumer
 import org.wa9nnn.fdcluster.javafx.runningtask.RunningTask
-import org.wa9nnn.fdcluster.model.{Contest, ContestProperty, QsoRecord, Qso => fdQso}
+import org.wa9nnn.fdcluster.model.{ContestProperty, QsoRecord, Qso => fdQso}
 import org.wa9nnn.util.TimeHelpers
-import scalafx.beans.property.ObjectProperty
 import scalafx.collections.ObservableBuffer
 
 import java.io.PrintWriter
@@ -82,9 +81,9 @@ class CabrilloGenerator @Inject()(@Named("allQsos") allQsos: ObservableBuffer[Qs
     val datetime = ZonedDateTime.ofInstant(q.stamp, TimeHelpers.utcZoneId).format(cabrilloDtFormat)
     val ourCallSign = contestProperty.callSign
     val entryClass = contestProperty.ourExchange.entryClass
-    val section = contestProperty.ourExchange.section
+    val section = contestProperty.ourExchange.sectionCode
     //QSO: 14000 PH 2020-06-28 1647 WA9NNN        1D  IL     WA0ARM        1D  KS
-    val body = f"$band%-6s $mode $datetime $ourCallSign%-13s $entryClass%3s $section%3s     ${q.callsign}%-13s ${q.exchange.entryClass}%3s ${q.exchange.section}%3s"
+    val body = f"$band%-6s $mode $datetime $ourCallSign%-13s $entryClass%3s $section%3s     ${q.callSign}%-13s ${q.exchange.entryClass}%3s ${q.exchange.sectionCode}%3s"
     SimpleTagValue("QSO", 0, body)
   }
 }

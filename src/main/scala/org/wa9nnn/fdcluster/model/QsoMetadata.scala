@@ -25,7 +25,7 @@ import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
 
 /**
  *
- * @param operator who is using app. callsign
+ * @param operator who is using app. callSign
  * @param rig free form usually transceiver model.
  * @param ant free form antenna description.
  * @param node what node, in the cluster this came from.

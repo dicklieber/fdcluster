@@ -19,10 +19,17 @@
 package org.wa9nnn.fdcluster.javafx.entry
 
 import org.wa9nnn.fdcluster.javafx.entry.section.Section
+import scalafx.collections.ObservableBuffer
 
 import scala.language.postfixOps
 
 object Sections {
+  def forChoice(): ObservableBuffer[Section] = {
+    ObservableBuffer[Section](
+      Sections.sortedByCode
+    )
+  }
+
 
   def find(partial: String): Seq[Section] = {
     sections.filter(_.code.startsWith(partial))
@@ -113,7 +120,7 @@ object Sections {
     Section("Alberta", "AB", "CA"),
     Section("British Columbia", "BC", "CA"),
     Section("Northern Territories", "NT", "CA"),
-    Section("Outside US/Canada", "DX",  "DX")
+    Section("Outside US/Canada", "DX", "DX")
   ).sorted
 
 
@@ -128,7 +135,8 @@ object Sections {
   }
 
   val byArea: Map[String, String] = sections.map(section => section.code -> section.area).toMap
-  def callAreaForSection(sectionName:String):String = {
+
+  def callAreaForSection(sectionName: String): String = {
     byArea(sectionName)
   }
 }

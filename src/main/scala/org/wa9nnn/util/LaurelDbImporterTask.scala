@@ -63,7 +63,7 @@ class LaurelDbImporterTask @Inject()(store: Store, val runningTaskInfoConsumer: 
         val cols = line.split(",").map(_.trim)
         val callsign = cols(1)
         val qso = Qso(
-          callsign = callsign,
+          callSign = callsign,
           bandMode = BandMode(),
           exchange = exchange)
         store.add(qso) match {

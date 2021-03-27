@@ -33,5 +33,5 @@ object CallsignValidator extends FieldValidator {
       Some(errMessage)
   }
 
-  override def errMessage: String = "Not callsign!"
+  override def errMessage: String = "Not callSign!"
 }

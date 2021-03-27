@@ -64,6 +64,7 @@ class PersistenceImpl @Inject()(fileManager: FileManager) extends Persistence wi
         Json.toJson(product).toString()
 
       val path = pathForClass[T]
+      Files.createDirectories(path.getParent)
       Files.writeString(path, sJson, TRUNCATE_EXISTING, WRITE, CREATE)
       path.toAbsolutePath.toString
     }

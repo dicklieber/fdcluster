@@ -18,19 +18,27 @@
 
 package org.wa9nnn.fdcluster.model
 
+import org.wa9nnn.fdcluster.javafx.entry.Sections
 import org.wa9nnn.fdcluster.javafx.entry.section.Section
-import org.wa9nnn.fdcluster.javafx.entry.{EntryCategory, Sections}
 import org.wa9nnn.fdcluster.model.Exchange.classParser
+import org.wa9nnn.util.Mnomonics
 import play.api.libs.json._
 
 import scala.util.matching.Regex
 
-case class Exchange( entryClass: String = EntryCategory.defaultCategory.buildClass(1),
-                     section: String = Sections.defaultCode) {
-  def category: EntryCategory = EntryCategory.forDesignator(entryClass(1))
+case class FdClass(transmitters:Int, entryCategory: EntryCategory) {
+  def classString:String = s"$transmitters${entryCategory.designator}"
+}
 
-  def display: String = s"$entryClass $section"
+case class Exchange(entryClass: String = "1O",
+                    sectionCode: String = Sections.defaultCode)  {
 
+  def display: String = s"$entryClass $sectionCode"
+    lazy val mnomonics: String = Mnomonics(display)
+
+  lazy val classParser(sTransmitters, sCategory) = entryClass
+  def nTtransmitters: Int = sTransmitters.toInt
+  def category:String = sCategory
 
   //todo init with contest legal stuff
   def transmitters: Int = {
@@ -47,7 +55,7 @@ case class Exchange( entryClass: String = EntryCategory.defaultCategory.buildCla
    *
    * @return compact form
    */
-  override def toString: String = s"""$entryClass;$section"""
+  override def toString: String = s"""$entryClass;$sectionCode"""
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[Exchange]
 
@@ -55,23 +63,23 @@ case class Exchange( entryClass: String = EntryCategory.defaultCategory.buildCla
     case that: Exchange ⇒
       (that canEqual this) &&
         entryClass == that.entryClass &&
-        section == that.section
+        sectionCode == that.sectionCode
     case _ ⇒ false
   }
 
   override def hashCode(): Int = {
-    Seq(entryClass, section).map(_.hashCode()).foldLeft(0)((a, b) ⇒ 31 * a + b)
+    Seq(entryClass, sectionCode).map(_.hashCode()).foldLeft(0)((a, b) ⇒ 31 * a + b)
   }
 }
 
 object Exchange {
-  val classParser: Regex = """(\d+)([HIO])""".r
+  val classParser: Regex = """(\d+)([A-Z])""".r
 
   def apply(category: String, section: String): Exchange = {
     new Exchange(category.toUpperCase, section.toUpperCase)
   }
 
-  def apply(transmitters:Int, category: EntryCategory, section:Section):Exchange = {
+  def apply(transmitters: Int, category: EntryCategory, section: Section): Exchange = {
     new Exchange(category.buildClass(transmitters), section.code)
   }
 

@@ -41,9 +41,9 @@ trait Store {
   def addRecord(qsoRecord: QsoRecord): AddResult
 
   /**
-   * find potential matches by callsign
+   * find potential matches by callSign
    *
-   * @param search some or all of a callsign and BandMode
+   * @param search some or all of a callSign and BandMode
    * @return matches matches.
    */
   def search(search:Search): SearchResult

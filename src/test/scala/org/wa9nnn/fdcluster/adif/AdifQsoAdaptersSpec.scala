@@ -52,7 +52,7 @@ class AdifQsoAdaptersSpec extends Specification {
   "AdifQsoAdaptersSpec" should {
     "happy" in {
       val qso: Qso = AdifQsoAdapter(adifQso)
-      qso.callsign must beEqualTo("K0USA")
+      qso.callSign must beEqualTo("K0USA")
     }
     "no ARRL_Sect" in {
       val toRemove = AdifEntry("ARRL_SECT", "ENY")

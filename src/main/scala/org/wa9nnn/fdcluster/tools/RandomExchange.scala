@@ -19,17 +19,17 @@
 
 package org.wa9nnn.fdcluster.tools
 
-import org.wa9nnn.fdcluster.javafx.entry.{EntryCategory, Sections}
+import org.wa9nnn.fdcluster.javafx.entry.Sections
 import org.wa9nnn.fdcluster.javafx.entry.section.Section
-import org.wa9nnn.fdcluster.model.Exchange
+import org.wa9nnn.fdcluster.model.{EntryCategories, EntryCategory, Exchange}
 
 import java.security.SecureRandom
 
-class RandomExchange {
+class RandomExchange(entryCategories: EntryCategories) {
   private val sections: Seq[Section] = Sections.sections
   val random = new SecureRandom()
   val nSections: Int = sections.length
-  val categories: Seq[EntryCategory] = EntryCategory.categories
+  val categories: Seq[EntryCategory] = entryCategories.categories.toSeq
 
   def next(): Exchange = {
     val nTransmitters = random.nextInt(20) + 1

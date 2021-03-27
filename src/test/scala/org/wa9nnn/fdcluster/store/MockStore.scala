@@ -30,9 +30,9 @@ class MockStore extends Store {
   override def addRecord(qsoRecord: QsoRecord): AddResult = throw new NotImplementedError()
 
   /**
-   * find potential matches by callsign
+   * find potential matches by callSign
    *
-   * @param search some or all of a callsign.
+   * @param search some or all of a callSign.
    * @return potneital matches.
    */
   override def search(search: Search): SearchResult = throw new NotImplementedError()

@@ -18,10 +18,9 @@
 package org.wa9nnn.fdcluster.model
 
 import com.fasterxml.jackson.core.JsonParseException
-import org.wa9nnn.fdcluster.model.Exchange
+import org.wa9nnn.fdcluster.javafx.entry.Sections
 import play.api.libs.json.Json
-import org.wa9nnn.fdcluster.javafx.entry.{EntryCategory, Sections}
-
+import org.wa9nnn.fdcluster.model.Exchange
 class ExchangeSpec extends org.specs2.mutable.Specification {
   "Exchange" >> {
     val exchange = Exchange("10O", "WPA")
@@ -30,7 +29,7 @@ class ExchangeSpec extends org.specs2.mutable.Specification {
     }
 
     "apply" >> {
-      val e = Exchange(1, EntryCategory.defaultCategory, Sections.defaultSection)
+      val e = Exchange("1H", "AB")
       e.display must beEqualTo ("1O AB")
     }
     "round trip toString" >> {
@@ -49,7 +48,7 @@ class ExchangeSpec extends org.specs2.mutable.Specification {
     "round trip default" >> {
       val d = new Exchange()
       val json = Json.prettyPrint(Json.toJson(d))
-//      json must beEqualTo("1O;-")
+      json must beEqualTo(""""1O;AB"""")
       val backAgain = Json.parse(json).as[Exchange]
       backAgain must beEqualTo(d)
     }
@@ -62,10 +61,18 @@ class ExchangeSpec extends org.specs2.mutable.Specification {
       hash must beEqualTo (1594488)//not much of a test
     }
 
+    "mnomonics" >> {
+      val d = new Exchange()
+      d.mnomonics must beEqualTo ("1 Oscar Alpha Bravo")
+      d.nTtransmitters must beEqualTo (1)
+      d.sectionCode must beEqualTo ("AB")
+      d.category must beEqualTo ("O")
+    }
+
     "defaultApply" >> {
       val e = new Exchange()
       e.transmitters must beEqualTo (1)
-      e.section must beEqualTo ("AB")
+      e.sectionCode must beEqualTo ("AB")
       e.toString must beEqualTo ("1O;AB")
       e.display must beEqualTo ("1O AB")
     }

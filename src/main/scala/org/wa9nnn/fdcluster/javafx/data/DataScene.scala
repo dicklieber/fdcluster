@@ -100,7 +100,7 @@ class DataScene @Inject()(fileManager: FileManager,
         }
 
         cellValueFactory = { q =>
-          val wrapper = ReadOnlyStringWrapper(q.value.qso.callsign)
+          val wrapper = ReadOnlyStringWrapper(q.value.qso.callSign)
           wrapper
         }
         prefWidth = 75
@@ -129,7 +129,7 @@ class DataScene @Inject()(fileManager: FileManager,
       new TableColumn[QsoRecord, String] {
         text = "Section"
         cellValueFactory = { q =>
-          val sectionCode: String = q.value.qso.exchange.section
+          val sectionCode: String = q.value.qso.exchange.sectionCode
           val name: String = {
             try {
               Sections.byCode(sectionCode).name

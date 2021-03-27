@@ -38,8 +38,8 @@ class QsoCountCollector @Inject()(@Named("allQsos") allQsos: ObservableBuffer[Qs
   //@formatter:off
   val collectors: Seq[StatCollector] =
     Seq(
-      StatCollector("Section", "ARRL Section Worked"){_.qso.exchange.section},
-      StatCollector("Area","US callsign area, CA for Canada or DX for other places."){ q => Sections.callAreaForSection(q.qso.exchange.section)},
+      StatCollector("Section", "ARRL Section Worked"){_.qso.exchange.sectionCode},
+      StatCollector("Area","US callSign area, CA for Canada or DX for other places."){ q => Sections.callAreaForSection(q.qso.exchange.sectionCode)},
       StatCollector("Band","Worked"){_.qso.bandMode.bandName},
       StatCollector("Mode","Contest Mode"){_.qso.bandMode.modeName},
       StatCollector("Operator", "Operator's Callsign. As set on the Entry Tab."){_.qsoMetadata.operator},

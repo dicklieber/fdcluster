@@ -22,6 +22,7 @@ package org.wa9nnn.fdcluster.javafx
 import org.wa9nnn.util.InputHelper.{forceAllowed, forceCaps => ForceCaps, forceInt => ForceInt}
 import scalafx.Includes._
 import scalafx.beans.property.{IntegerProperty, ObjectProperty, StringProperty}
+import scalafx.collections.ObservableBuffer
 import scalafx.geometry.Insets
 import scalafx.scene.control._
 import scalafx.scene.layout.GridPane
@@ -107,12 +108,12 @@ class GridOfControls extends GridPane {
   }
 
   def addCombo[T](labelText: String,
-                  choices: Seq[T],
+                  choices: ObservableBuffer[T],
                   defValue: Option[T] = None,
                   tooltip: Option[String] = None,
                   converter: Option[StringConverter[T]] = None): ObjectProperty[T] = {
     val row = label(labelText)
-    val control = new ComboBox[T](choices)
+    val control: ComboBox[T] = new ComboBox[T]( ObservableBuffer[T](choices.toSeq))
     converter.foreach(control.converter = _)
     tooltip.foreach(control.tooltip = _)
 

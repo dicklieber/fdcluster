@@ -18,13 +18,15 @@
 
 package org.wa9nnn.fdcluster.model
 
+import com.typesafe.config.ConfigFactory
 import org.specs2.execute.{AsResult, Result}
 import org.specs2.mutable.Specification
 import org.specs2.specification.ForEach
+import org.wa9nnn.fdcluster.contest.Contest
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.{FileManager, MockFileManager}
-import org.wa9nnn.util.{Persistence, PersistenceImpl}
-import scalafx.beans.property.{IntegerProperty, StringProperty}
+import org.wa9nnn.util.PersistenceImpl
+import scalafx.beans.property.StringProperty
 
 trait FileManagerContext extends ForEach[FileManager] {
   private val fileManager = MockFileManager()
@@ -41,18 +43,33 @@ class ContestPropertySpec extends Specification with FileManagerContext {
     "propMap" >> { fileManger: FileManager =>
       val persistence = new PersistenceImpl(fileManger)
       val contestProperty = new ContestProperty(persistence)
-      val was: Contest = persistence.loadFromFile[Contest].get
-      was.year must beEqualTo (2021)
+      val was: Contest = persistence.loadFromFile[Contest].getOrElse(Contest())
+      was.year must beEqualTo("2021")
       val eventyear: StringProperty = contestProperty.eventYearProperty
-      eventyear.value must beEqualTo (2021) //todo mke this work net year too!
+      eventyear.value must beEqualTo("2021") //todo mke this work net year too!
       eventyear.value = "1949"
 
-      val value1 = contestProperty.b.value
-      val newContest: Contest = persistence.loadFromFile[Contest].get
+      contestProperty.save()
+
+      val triedContest = persistence.loadFromFile[Contest]
+      val newContest: Contest = triedContest.get
+      newContest.year must beEqualTo("1949")
+    }
+    "exchange properties" >> { fileManger: FileManager =>
+      val persistence = new PersistenceImpl(fileManger)
+      val contestProperty = new ContestProperty(persistence)
+      val ourExchangeProperty = contestProperty.ourExchangeProperty
+      val ourExchange = ourExchangeProperty.value
+      ourExchange.display must beEqualTo ("1A IL")
+      ourExchange.mnomonics must beEqualTo ("1 Alpha India Lima")
+
+      ourExchangeProperty.value = ourExchange.copy(sectionCode = "DX")
+      ourExchange.display must beEqualTo ("1A DX")
 
 
-      newContest.year must beEqualTo (1949)
+
 
     }
   }
+
 }

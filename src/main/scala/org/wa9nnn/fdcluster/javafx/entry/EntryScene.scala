@@ -54,6 +54,7 @@ class EntryScene @Inject()(
                             contestProperty: ContestProperty,
                             nodeAddress: NodeAddress,
                             knownOperatorsProperty: KnownOperatorsProperty,
+                            classField: ClassField,
                             @Named("qsoMetadata") qsoMetadataProperty: ObjectProperty[QsoMetadata],
                             currentStationProperty: CurrentStationProperty,
                             statsPane: StatsPane,
@@ -62,14 +63,11 @@ class EntryScene @Inject()(
   private implicit val timeout: Timeout = Timeout(5, TimeUnit.SECONDS)
 
   var actionResult: ActionResult = new ActionResult(store, qsoMetadataProperty.value)
-  val callSignField: CallSignField = new CallSignField(actionResult){
+  val callSignField: CallSignField = new CallSignField(actionResult) {
     styleClass += "qsoCallSign"
   }
-  val qsoClass: ClassField = new ClassField(){
-    styleClass += "qsoClass"
-  }
 
-  val qsoSection: SectionField = new SectionField(){
+  val qsoSection: SectionField = new SectionField() {
     styleClass += "qsoSection"
   }
 
@@ -80,6 +78,18 @@ class EntryScene @Inject()(
   }
   qsoSubmit.disable = true
   qsoSubmit.sad()
+  private val initialExchange = contestProperty.ourExchangeProperty
+  val ourExchangeLabel = new Label(initialExchange.value.display){
+    styleClass += "exchange"
+  }
+  val ourExchangeMnomicLabel = new Label(initialExchange.value.mnomonics){
+    styleClass += "exchangeMnemonics"
+  }
+  contestProperty.ourExchangeProperty.onChange { (_, _, ex) =>
+    ourExchangeLabel.text = ex.display
+    ourExchangeMnomicLabel.text = ex.mnomonics
+  }
+
   val pane: BorderPane = new BorderPane {
     padding = Insets(25)
     private val buttons = new HBox() {
@@ -97,7 +107,7 @@ class EntryScene @Inject()(
       ),
       new VBox(
         new Label("Class"),
-        qsoClass,
+        classField,
         new VBox(
           buttons,
           currentStationPanel
@@ -105,21 +115,22 @@ class EntryScene @Inject()(
       ),
       new VBox(
         new Label("Section"),
-        qsoSection,
+        new HBox( qsoSection, new Label("We are: "), ourExchangeLabel, ourExchangeMnomicLabel),
         qsoSection.sectionPrompt
       )
     )
   }
 
+
   val scene: Scene = new Scene {
     root = pane
   }
   callSignField.onDone { next =>
-    if (qsoClass.text.value.isEmpty) {
-      nextField(next, qsoClass)
+    if (classField.text.value.isEmpty) {
+      nextField(next, classField)
     }
   }
-  qsoClass.onDone { next =>
+  classField.onDone { next =>
     qsoSection.requestFocus()
     qsoSection.clear()
   }
@@ -132,7 +143,7 @@ class EntryScene @Inject()(
     save()
   }
 
-  val allFields = new Compositor(callSignField.validProperty, qsoClass.validProperty, qsoSection.validProperty)
+  val allFields = new Compositor(callSignField.validProperty, classField.validProperty, qsoSection.validProperty)
   allFields.onChange { (_, _, state) =>
     if (state) {
       qsoSubmit.disable = false
@@ -146,8 +157,8 @@ class EntryScene @Inject()(
   def save(): Unit = {
     import org.wa9nnn.fdcluster.model.MessageFormats._
     val potentialQso: Qso = readQso()
-    if (potentialQso.callsign == contestProperty.callSignProperty.value) {
-      actionResult.showSad(s"Can't work our own station: \n${potentialQso.callsign}!")
+    if (potentialQso.callSign == contestProperty.callSignProperty.value) {
+      actionResult.showSad(s"Can't work our own station: \n${potentialQso.callSign}!")
     }
     else {
       val future: Future[AddResult] = (store ? potentialQso).mapTo[AddResult]
@@ -157,12 +168,12 @@ class EntryScene @Inject()(
           case Failure(exception) =>
             logger.error(s"adding QSO: $potentialQso", exception)
           case Success(Dup(dupQso)) =>
-            actionResult.addSad(s"Duplicate:\n${dupQso.qso.callsign} ${dupQso.qso.bandMode}")
+            actionResult.addSad(s"Duplicate:\n${dupQso.qso.callSign} ${dupQso.qso.bandMode}")
             logger.info(s"Dup: ${Json.toJson(dupQso.qso).toString()}")
           case Success(Added(qsoRecord)) =>
-            actionResult.addHappy(s"Added:\n${qsoRecord.qso.callsign} ${qsoRecord.qso.exchange}") //        actionResult.happy(
+            actionResult.addHappy(s"Added:\n${qsoRecord.qso.callSign} ${qsoRecord.qso.exchange}") //        actionResult.happy(
             logger.info(s"Added: ${Json.toJson(qsoRecord).toString}")
-            if (qsoRecord.qso.callsign == "WA9NNN") {
+            if (qsoRecord.qso.callSign == "WA9NNN") {
               onFX {
                 statusPane.message(StatusMessage("Thanks for using fdcluster, from Dick Lieber WA9NNN", styleClasses = Seq("hiDick")))
               }
@@ -178,13 +189,13 @@ class EntryScene @Inject()(
 
   private def clear(): Unit = {
     callSignField.reset()
-    qsoClass.reset()
+    classField.reset()
     qsoSection.reset()
     callSignField.requestFocus()
   }
 
   def readQso(): Qso = {
-    val exchange = Exchange(qsoClass.text.value, qsoSection.text.value)
+    val exchange = Exchange(classField.text.value, qsoSection.text.value)
     model.Qso(callSignField.text.value, currentStationProperty.bandMode, exchange)
   }
 
@@ -208,7 +219,7 @@ class EntryScene @Inject()(
       rig = cs.rig,
       ant = cs.antenna,
       node = nodeAddress.display,
-      contestId = contestProperty.value.toId
+      contestId = contestProperty.event
     )
   }, currentStationProperty, contestProperty)
 
@@ -221,9 +232,9 @@ class EntryScene @Inject()(
     println(s"contestProperty1: from: $from to $to")
   }
 
-//  qsoMetadataBinding.onChange { (_, _, q: QsoMetadata) =>
-//    qsoMetadataProperty.value = q
-//  }
+  //  qsoMetadataBinding.onChange { (_, _, q: QsoMetadata) =>
+  //    qsoMetadataProperty.value = q
+  //  }
   qsoMetadataBinding.onChange { (_, from, to) =>
     println(s"qsoMetadataProperty: from: $from to $to")
   }

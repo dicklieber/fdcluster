@@ -60,6 +60,11 @@ trait NextField extends TextInputControl with WithDisposition with StructuredLog
   def reset(): Unit = {
     text = ""
   }
+
+  /**
+   * @deprecated handle within the control. Manipulate [[validProperty]]
+   * @param fieldValidator
+   */
   def setFieldValidator(fieldValidator: FieldValidator) {
     val b: BooleanBinding = Bindings.createBooleanBinding(
       () => {

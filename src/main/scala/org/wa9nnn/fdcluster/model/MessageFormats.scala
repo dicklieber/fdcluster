@@ -20,6 +20,8 @@
 package org.wa9nnn.fdcluster.model
 
 import org.wa9nnn.fdcluster.cabrillo.{CabrilloExportRequest, CabrilloValue, CabrilloValues}
+import org.wa9nnn.fdcluster.contest.Contest
+import org.wa9nnn.fdcluster.javafx.entry.section.Section
 import org.wa9nnn.fdcluster.javafx.menu.{BuildLoadRequest, ImportRequest}
 
 import java.net.URL
@@ -41,10 +43,13 @@ import scala.language.implicitConversions
  * Which makes all implicits available when invoking [[Json.parse]] and [[Json.prettyPrint()]] or [[Json.toBytes()]].
  */
 object MessageFormats {
-
   import UrlFormt.urlFormat
   import InetAddressFormat.inetAddressFormat
 
+  implicit val entcFromat: Format[EntryCategory] = Json.format[EntryCategory]
+  implicit val fdcFromat: Format[FdClass] = Json.format[FdClass]
+  implicit val sectFromat: Format[Section] = Json.format[Section]
+  implicit val excFromat: Format[Exchange] = Json.format[Exchange]
   implicit val fdHourFormat: Format[FdHour] = Json.format[FdHour]
   implicit val uuidsRequestFormat: Format[RequestUuidsForHour] = Json.format[RequestUuidsForHour]
   implicit val cf: Format[Contest] = Json.format[Contest]

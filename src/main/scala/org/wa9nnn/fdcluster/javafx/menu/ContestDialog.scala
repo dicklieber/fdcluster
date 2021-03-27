@@ -19,34 +19,33 @@
 
 package org.wa9nnn.fdcluster.javafx.menu
 
-import javafx.beans.property.ReadOnlyObjectProperty
+import org.wa9nnn.fdcluster.contest.Contest
 import org.wa9nnn.fdcluster.javafx.GridOfControls
+import org.wa9nnn.fdcluster.javafx.entry.Sections
 import org.wa9nnn.fdcluster.javafx.entry.section.Section
-import org.wa9nnn.fdcluster.javafx.entry.{EntryCategory, Sections}
-import org.wa9nnn.fdcluster.model.{Contest, ContestProperty, Exchange}
+import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.station.StationDialogLogic
 import org.wa9nnn.util.StructuredLogging
 import scalafx.Includes._
 import scalafx.beans.property.{ObjectProperty, StringProperty}
+import scalafx.collections.ObservableBuffer
 import scalafx.geometry.Pos
 import scalafx.scene.control.ButtonBar.ButtonData
 import scalafx.scene.control._
-import scalafx.scene.layout._
-import scalafx.util.StringConverter
+import scalafx.scene.layout.VBox
 
 import javax.inject.Inject
 
 /**
  * UI for things that need to be setup for the contest.
  *
- * @param contest where the data lives.
  */
-class ContestDialog @Inject()(contestProperty: ContestProperty) extends Dialog[Contest] with StructuredLogging {
+class ContestDialog @Inject()(contestProperty: ContestProperty,
+                              contestRules: AllContestRules) extends Dialog[Contest] with StructuredLogging {
   val dp: DialogPane = dialogPane()
 
   private val saveButton = new ButtonType("Save", ButtonData.OKDone)
   private val cancelButton = ButtonType.Cancel
-
 
   private val gridOfControls = new GridOfControls
   private val callSignProperty: StringProperty = gridOfControls.addText("CallSign",
@@ -54,26 +53,19 @@ class ContestDialog @Inject()(contestProperty: ContestProperty) extends Dialog[C
     forceCaps = true)
   callSignProperty <==> contestProperty.callSignProperty
 
-  private val eventProperty: ObjectProperty[String] = gridOfControls.addCombo[String](
+  private val contestCB: ObjectProperty[String] = gridOfControls.addCombo[String](
     labelText = "Contest",
-    choices = Seq("FD", "WFD"),
-    tooltip = Option(
-      """FD ARRL Field Day (June).
-        |WFD Winter Field Day (January)""".stripMargin)
+    choices = ObservableBuffer(contestRules.contestNames),
+    defValue = Some(contestProperty.event)
   )
-  private val stringStringConverter: StringConverter[String] = new StringConverter[String] {
-    override def fromString(string: String) = string
-
-    override def toString(t: String) = t
-  }
-  eventProperty <==> contestProperty.eventProperty
 
   val yearProperty: StringProperty = gridOfControls.addText(labelText = "Year",
-    regx = Some("""\d""".r)
+    regx = Some("""\d{4}""".r)
   )
   yearProperty <==> contestProperty.eventYearProperty
 
   private val currentExchange: Exchange = contestProperty.ourExchange
+
   private val transmitters = new {
   } with Spinner[Integer](1, 30, currentExchange.transmitters) {
     valueFactory().value = currentExchange.transmitters
@@ -81,29 +73,36 @@ class ContestDialog @Inject()(contestProperty: ContestProperty) extends Dialog[C
   }
   gridOfControls.add("Transmitters", transmitters)
 
-  val categoryProperty: ObjectProperty[EntryCategory] = gridOfControls.addCombo[EntryCategory](
-    labelText = "Category",
-    choices = EntryCategory.categories,
-    converter = Option(
-      StringConverter.toStringConverter {
-        case h: EntryCategory =>
-          h.category
-        case _ => "-Choose Category-"
-      }
-    )
-  )
-  categoryProperty.value = currentExchange.category
+  val categoryCB: ComboBox[EntryCategory] = new ComboBox[EntryCategory]()
+  gridOfControls.add("Category", categoryCB)
+
+  contestCB.onChange { (_, _, contestName: String) =>
+    setup(contestName)
+  }
+  setup(contestProperty.event)
+
+  def setup(contestName: String) = {
+    contestProperty.eventProperty.value = contestName
+    val rules = contestRules.byContestName(contestName)
+    categoryCB.items = rules.categories.categories
+    categoryCB.value = {
+      rules.categories.entryCategoryForDesignator(currentExchange.category)
+    }
+  }
 
   val sectionProperty: ObjectProperty[Section] = gridOfControls.addCombo[Section](
     labelText = "Section",
-    tooltip = Option("ARRL section for exchange sent."),
-    choices = Sections.sortedByCode)
+    defValue = Some(Sections.byCode(currentExchange.sectionCode)),
+    tooltip = Option("ARRL sectionCode for exchange sent."),
+    choices = Sections.forChoice())
 
-  sectionProperty.value = Sections.byCode( currentExchange.section)
-
-  private val exchangeDisplay: Label = new Label() {
-    style = ""
+  val exchangeText: Label = new Label()
+  val exchangeMnemonics: Label = new Label() {
+    styleClass += "exchangeMnemonics"
   }
+  private val exchangeDisplay: VBox = new VBox(
+    exchangeText, exchangeMnemonics
+  )
   private val exchangePane = new VBox(
     new Label("Exchange:"),
     exchangeDisplay
@@ -121,9 +120,10 @@ class ContestDialog @Inject()(contestProperty: ContestProperty) extends Dialog[C
   resultConverter = {
     button: ButtonType ⇒
       if (button == saveButton) {
-        stationDialogLogic.exchange.foreach { exchange =>
-          contestProperty.ourExchangeProperty.value = exchange
-          contestProperty.save()
+        stationDialogLogic.exchange.foreach {
+          exchange =>
+            contestProperty.ourExchangeProperty.value = exchange
+            contestProperty.save()
         }
       }
       null
@@ -138,9 +138,10 @@ class ContestDialog @Inject()(contestProperty: ContestProperty) extends Dialog[C
   val stationDialogLogic = new StationDialogLogic(
     callSignProperty,
     transmitters.valueFactory.value,
-    categoryProperty,
+    categoryCB.value,
     sectionProperty,
-    exchangeDisplay.text,
+    exchangeMnemonics.text,
+    exchangeText.text,
     dp.lookupButton(saveButton).disableProperty()
   )
 

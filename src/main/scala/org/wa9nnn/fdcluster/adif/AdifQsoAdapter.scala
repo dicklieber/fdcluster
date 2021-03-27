@@ -69,7 +69,7 @@ object AdifQsoAdapter {
         LocalTime.parse(m"TIME_ON", timeFormat),
         utcZoneId).toInstant
     }
-    model.Qso(callsign = m"CALL",
+    model.Qso(callSign = m"CALL",
       bandMode = bandMode,
       exchange = exchange,
       stamp = stamp
@@ -86,11 +86,11 @@ object AdifQsoAdapter {
     entries += "APP_FDC_UUID" -> qso.uuid
     entries += "QSO_DATE" -> zdt.toLocalDate.format(BASIC_ISO_DATE)
     entries += "TIME_ON" -> zdt.toLocalTime.format(timeFormat)
-    entries += "CALL" -> qso.callsign
+    entries += "CALL" -> qso.callSign
     entries += "BAND" -> qso.bandMode.bandName
     entries += "MODE" -> qso.bandMode.modeName
     entries += "CLASS" -> qso.exchange.entryClass
-    entries += "ARRL_SECT" -> qso.exchange.section
+    entries += "ARRL_SECT" -> qso.exchange.sectionCode
 
     adif.AdifQso(entries.result())
   }

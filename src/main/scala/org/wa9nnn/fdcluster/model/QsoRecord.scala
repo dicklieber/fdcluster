@@ -30,15 +30,15 @@ import java.util.UUID
  * * One contact with another station.
  * * Things that are relevant for the contest plus a UUID.
  *
- * @param callsign of the worked station.
+ * @param callSign of the worked station.
  * @param bandMode that was used.
  * @param exchange from the worked station.
  * @param stamp    when QSO occurred.
  * @param uuid     id unique QSO id in time & space.
  */
-case class Qso(callsign: CallSign, bandMode: BandMode, exchange: Exchange, stamp: Instant = Instant.now(), uuid: String = UUID.randomUUID.toString) {
+case class Qso(callSign: CallSign, bandMode: BandMode, exchange: Exchange, stamp: Instant = Instant.now(), uuid: String = UUID.randomUUID.toString) {
   def isDup(that: Qso): Boolean = {
-    this.callsign == that.callsign &&
+    this.callSign == that.callSign &&
       this.bandMode == that.bandMode
   }
 }
@@ -51,7 +51,7 @@ case class Qso(callsign: CallSign, bandMode: BandMode, exchange: Exchange, stamp
  * @param qsoMetadata   info about ur station.
  */
 case class QsoRecord(qso: Qso, qsoMetadata: QsoMetadata) extends Ordered[QsoRecord] {
-  def callsign: CallSign = qso.callsign
+  def callsign: CallSign = qso.callSign
 
   lazy val display: String = s"$callsign on ${qso.bandMode} in $fdHour"
 

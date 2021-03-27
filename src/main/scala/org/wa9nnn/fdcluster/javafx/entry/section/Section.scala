@@ -20,12 +20,12 @@
 package org.wa9nnn.fdcluster.javafx.entry.section
 
 /**
-  * One ARRL section
+  * One ARRL sectionCode
   * @param name user friendly name.
   * @param code actual code
-  * @param area callsign area
+  * @param area callSign area
   */
-case class Section(name: String, code: String, area: String) extends Ordered[Section] {
+case class Section(name: String = "Illinois", code: String = "IL", area: String ="9") extends Ordered[Section] {
   override def compare(that: Section): Int = this.code compareTo that.code
 
   override def toString: String = s"$code: $name"

@@ -29,10 +29,8 @@ import org.wa9nnn.fdcluster.javafx.entry.{EntryScene, RunningTaskPane, Statistic
 import org.wa9nnn.fdcluster.javafx.menu.FdClusterMenu
 import org.wa9nnn.fdcluster.model.NodeAddress
 import org.wa9nnn.util.{CommandLine, StructuredLogging}
-import scalafx.Includes._
 import scalafx.application.JFXApp.PrimaryStage
 import scalafx.application.{JFXApp, Platform}
-import scalafx.event.Event
 import scalafx.scene.Scene
 import scalafx.scene.control.{Tab, TabPane}
 import scalafx.scene.image.Image

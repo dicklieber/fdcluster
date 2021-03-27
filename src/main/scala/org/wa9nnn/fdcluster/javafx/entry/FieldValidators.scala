@@ -22,20 +22,10 @@ package org.wa9nnn.fdcluster.javafx.entry
 import scalafx.beans.property.StringProperty
 import scalafx.scene.control.TextInputControl
 
+import scala.util.matching.Regex
 
-object ContestClassValidator extends FieldValidator {
 
-  private val regx = """(\d+)([IOH])""".r
 
-  def valid(value: String): Option[String] = {
-    if (regx.findFirstIn(value).isDefined)
-      None
-    else
-      Option(errMessage)
-  }
-
-  override def errMessage = "e.g. 1H, 3O 2I"
-}
 
 object ContestSectionValidator extends FieldValidator {
 
@@ -85,27 +75,3 @@ trait FieldValidator {
     valid(stringProperty.value)
   }
 }
-
-case class EntryCategory(category: String) {
-  val designator: Char = category.head
-
-  def buildClass(transmitters: Int): String = s"$transmitters$designator"
-}
-
-object EntryCategory {
-  def fromEntryClass(entryClass: String): EntryCategory = {
-    forDesignator(entryClass.head)
-  }
-
-  val categories = Seq(
-    EntryCategory("Home"),
-    EntryCategory("Indoor"),
-    EntryCategory("Outdoor"),
-  )
-  val defaultCategory: EntryCategory = categories(2)
-
-  def forDesignator(designator: Char): EntryCategory = {
-    categories.find(_.designator == designator).getOrElse(defaultCategory)
-  }
-}
-

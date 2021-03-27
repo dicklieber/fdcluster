@@ -49,7 +49,7 @@ class ActionResult(storeActor: ActorRef, qsoMetadata: QsoMetadata)(implicit time
           clear()
           searchResult.qsos.foreach { qsoRecord =>
 //            val qsoBandMode = qsoRecord.qso.bandMode
-            add(new Label(s"${qsoRecord.qso.callsign}") {
+            add(new Label(s"${qsoRecord.qso.callSign}") {
               styleClass.addAll("qsoField", "sadQso", "sad")
             })
           }

@@ -19,6 +19,34 @@
 
 package org.wa9nnn.fdcluster.model
 
-trait ContestRules {
+import com.typesafe.config.{Config, ConfigFactory}
+
+import javax.inject.{Inject, Singleton}
+import scala.jdk.CollectionConverters._
+
+/**
+ * fixed (i.e. from application.conf)
+ */
+case class ContestRules(contestName: String, appConfig: Config) {
+  def validDesignator(designator: String): Boolean = {
+    categories.valid(designator)
+
+  }
+
+  private val configPath = s"/contests/$contestName.conf"
+  val contestConfig: Config = ConfigFactory.parseURL(getClass.getResource(configPath)).withFallback(appConfig).getConfig("contest")
+
+  val categories: EntryCategories = new EntryCategories(contestConfig)
 
 }
+
+@Singleton
+class AllContestRules @Inject()(config: Config) {
+
+
+   val contestNames: Seq[String] = config.getStringList("contest.contestNames").asScala.toList
+
+   val byContestName: Map[String, ContestRules] = contestNames.map(ContestRules(_, config)).map(cr => cr.contestName -> cr).toMap
+
+}
+

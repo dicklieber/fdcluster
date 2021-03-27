@@ -6,10 +6,10 @@ import org.wa9nnn.fdcluster.javafx.CallsignValidator
 class CallsignSpec extends Specification {
 
   "CallsignSpec" should {
-    "Full callsign" in {
+    "Full callSign" in {
       CallsignValidator.valid("WA9NNN") must beNone
     }
-    val notCallsignError = beSome("Not callsign!")
+    val notCallsignError = beSome("Not callSign!")
     "No Suffix" in {
       CallsignValidator.valid("WA9") must notCallsignError
     }

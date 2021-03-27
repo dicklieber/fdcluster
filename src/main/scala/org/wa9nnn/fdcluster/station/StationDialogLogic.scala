@@ -20,9 +20,9 @@
 package org.wa9nnn.fdcluster.station
 
 import org.wa9nnn.fdcluster.javafx.CallsignValidator
-import org.wa9nnn.fdcluster.javafx.entry.EntryCategory
 import org.wa9nnn.fdcluster.javafx.entry.section.Section
-import org.wa9nnn.fdcluster.model.Exchange
+import org.wa9nnn.fdcluster.model.{EntryCategory, Exchange, FdClass}
+import org.wa9nnn.util.Mnomonics
 import scalafx.beans.property._
 import scalafx.scene.control.SpinnerValueFactory
 
@@ -31,26 +31,28 @@ import scala.util.{Failure, Try}
 /**
  * Handles interaction between [[org.wa9nnn.fdcluster.javafx.menu.ContestDialog]] controls
  *
- * Given values for: callsign, transmitters, category & section
+ * Given values for: callSign, transmitters, category & sectionCode
  * Set exchangeLabel to Exchange
- * if exchange is ok and callsign is valid, then enable Save button
+ * if exchange is ok and callSign is valid, then enable Save button
  *
- * @param callsign                value of callsign control.
- * @param transmitters            val of transmitters spinner.
- * @param category                combobox
- * @param section                 combobox
- * @param exchangeLabel           val so unit tests can easily access.
- * @param saveButtonDisable       val so unit tests can easily access.
+ * @param callsign          value of callSign control.
+ * @param transmitters      val of transmitters spinner.
+ * @param category          combobox
+ * @param section           combobox
+ * @param exchangeLabel     val so unit tests can easily access.
+ * @param saveButtonDisable val so unit tests can easily access.
  */
 class StationDialogLogic(
                           val callsign: StringProperty,
                           val transmitters: SpinnerValueFactory[Integer],
                           val category: ObjectProperty[EntryCategory],
                           val section: ObjectProperty[Section],
-                          val exchangeLabel: StringProperty,
+                          val exchangeTextProperty: StringProperty,
+                          val exchangeMnemonicsProperty: StringProperty,
                           val saveButtonDisable: BooleanProperty) {
 
- exchangeLabel.value = ""
+  exchangeMnemonicsProperty.value = ""
+  exchangeTextProperty.value = ""
   saveButtonDisable.value = true
 
   var exchange: Try[Exchange] = new Failure[Exchange](new IllegalStateException())
@@ -60,21 +62,21 @@ class StationDialogLogic(
     exchange = Try {
       val nTransmitters: Int = transmitters.value.value
       val entryCategory: EntryCategory = category.value
-      val clas = entryCategory.buildClass(nTransmitters)
-      Exchange(clas, section.value.code)
+      Exchange(nTransmitters, entryCategory, section.value)
     }
   }
 
   def fireChange(): Unit = {
     buildExchange()
     exchange.foreach { exchange =>
-      exchangeLabel.value = exchange.display
+      exchangeMnemonicsProperty.value = exchange.display
+      exchangeTextProperty.value =  Mnomonics(exchange.display)
     }
-    saveButtonDisable.value = exchange.isFailure ||  CallsignValidator.valid(callsign.value).isDefined
+    saveButtonDisable.value = exchange.isFailure || CallsignValidator.valid(callsign.value).isDefined
 
   }
 
-  callsign.onChange{
+  callsign.onChange {
     fireChange()
   }
 

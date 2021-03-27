@@ -98,8 +98,9 @@ class StoreSyncSpec extends Specification with BeforeAfterEach with DebugTimer w
         mockSyncSteps, fileManager
       )
     }
-
-    val randomQsoGenerator = new RandomQsoGenerator()
+    val allContestRules = mock[AllContestRules]
+    val contestProperty = mock[ContestProperty]
+    val randomQsoGenerator = new RandomQsoGenerator(allContestRules, contestProperty)
     val builder = List.newBuilder[QsoRecord]
     randomQsoGenerator.apply(GenerateRandomQsos()) {builder += QsoRecord(_, QsoMetadata())
     }

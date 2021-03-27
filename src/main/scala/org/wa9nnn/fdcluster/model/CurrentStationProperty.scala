@@ -69,7 +69,7 @@ object CurrentStation {
  *
  * @param bandName band name limited to whats allow for contest
  * @param modeName CW,DI,PH
- * @param operator callsign of operator. must be a callsign
+ * @param operator callSign of operator. must be a callSign
  * @param rig      using this rig free form.
  * @param antenna  and this antenna free form.
  */

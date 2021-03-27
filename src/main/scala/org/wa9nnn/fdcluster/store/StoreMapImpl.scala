@@ -114,7 +114,7 @@ class StoreMapImpl @Inject()( na: NodeAddress,
     val maybeExisting = byUuid.putIfAbsent(qsoRecord.qso.uuid, qsoRecord)
     if (maybeExisting.isEmpty) {
       allQsos.add(qsoRecord)
-      val callsign = qsoRecord.qso.callsign
+      val callsign = qsoRecord.qso.callSign
       val qsoRecords: Set[QsoRecord] = byCallsign.getOrElse(callsign, Set.empty) + qsoRecord
       byCallsign.put(callsign, qsoRecords)
     }
@@ -132,7 +132,7 @@ class StoreMapImpl @Inject()( na: NodeAddress,
       case Some(_) =>
         logger.error(s"Already have uuid of $qsoRecord")
       case None =>
-        val callsign = qsoRecord.qso.callsign
+        val callsign = qsoRecord.qso.callSign
         val qsoRecords: Set[QsoRecord] = byCallsign.getOrElse(callsign, Set.empty) + qsoRecord
         byCallsign.put(callsign, qsoRecords)
     }
@@ -181,7 +181,7 @@ class StoreMapImpl @Inject()( na: NodeAddress,
 
   def findDup(potentialQso: Qso): Option[QsoRecord] = {
     for {
-      contacts <- byCallsign.get(potentialQso.callsign)
+      contacts <- byCallsign.get(potentialQso.callSign)
       dup ← contacts.find(_.dup(potentialQso))
     } yield {
       dup
@@ -191,7 +191,7 @@ class StoreMapImpl @Inject()( na: NodeAddress,
   override def search(search: Search): SearchResult = {
     val max = search.max
     val matching = byUuid.values.filter { qsoRecord => {
-      qsoRecord.qso.callsign.contains(search.partial) && search.bandMode == qsoRecord.qso.bandMode
+      qsoRecord.qso.callSign.contains(search.partial) && search.bandMode == qsoRecord.qso.bandMode
     }
     }.toSeq
 

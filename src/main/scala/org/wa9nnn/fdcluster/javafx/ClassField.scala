@@ -20,21 +20,47 @@
 package org.wa9nnn.fdcluster.javafx
 
 
-import org.wa9nnn.fdcluster.javafx.entry.ContestClassValidator
+import org.wa9nnn.fdcluster.model.{AllContestRules, ContestProperty, ContestRules, EntryCategories, EntryCategory}
 import org.wa9nnn.util.WithDisposition
+import scalafx.Includes._
+import scalafx.collections.ObservableBuffer
 import scalafx.scene.control.TextField
+import scalafx.scene.input.KeyEvent
 
+import javax.inject.{Inject, Singleton}
+import scala.util.matching.Regex
 /**
  * Callsign entry field
  * sad or happy as validated while typing.
  *
  */
-class ClassField extends TextField with WithDisposition with NextField {
-  setFieldValidator(ContestClassValidator)
+@Singleton
+class ClassField @Inject()(allContestRules: AllContestRules, contestProperty: ContestProperty) extends TextField with WithDisposition with NextField {
+  styleClass += "qsoClass"
+
+  var entryCategories: ContestRules = _
+
+  contestProperty.eventProperty.onChange{(_,_,contestName) =>
+    entryCategories = allContestRules.byContestName(contestName)
+  }
+
+
+  text.onChange{(_,_,nv) =>
+    try {
+      val p(sTransmitters, designator) = nv
+      validProperty.value = entryCategories.validDesignator(designator)
+    } catch {
+      case _ =>
+        validProperty.value = false
+    }
+  }
+
+  val p: Regex = """(\d+)([A-Z])""".r
+
 
   validProperty.onChange{(_,_,nv) =>
     if(nv) {
-      // move to next field as soon as class is vallid.
+      // move to next field as soon as class is valid.
       onDoneFunction("")
     }
   }

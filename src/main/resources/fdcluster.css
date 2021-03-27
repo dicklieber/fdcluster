@@ -16,6 +16,15 @@
     -fx-max-width: 60;
 }
 
+.exchange {
+    -fx-background-insets: 3;
+}
+.exchangeMnemonics {
+    -fx-background-insets: 3;
+    -fx-font-size: smaller;
+    /*-fx-text-fill: darkgrey*/
+}
+
 .statPaneTitle {
     -fx-font-weight: bold;
     -fx-font-size: 12;

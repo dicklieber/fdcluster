@@ -18,13 +18,14 @@
 
 package org.wa9nnn.fdcluster.tools
 
+import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
 import org.wa9nnn.fdcluster.javafx.entry.{RunningTaskInfo, RunningTaskInfoConsumer}
 import org.wa9nnn.fdcluster.model.MessageFormats._
-import org.wa9nnn.fdcluster.model.Qso
+import org.wa9nnn.fdcluster.model.{AllContestRules, ContestProperty, EntryCategories, Qso}
 import play.api.libs.json.Json
 
-class RandomQsoSpec extends Specification {
+class RandomQsoSpec extends Specification with Mockito{
 
   "RandomQso" should {
    val rtc =  new RunningTaskInfoConsumer {
@@ -33,7 +34,9 @@ class RandomQsoSpec extends Specification {
       override def done(): Unit = {}
     }
 
-    val randomQso = new RandomQsoGenerator(rtc)
+   val entryCategories =  mock[AllContestRules]
+   val contestProperty =  mock[ContestProperty]
+    val randomQso = new RandomQsoGenerator(entryCategories,contestProperty, rtc)
     "nextQso" in {
       val b = Array.newBuilder[Qso]
       for (_ <-  0 to 10) {
