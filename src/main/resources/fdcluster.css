@@ -58,6 +58,8 @@
 
 }
 
+
+
 .statCell {
 
 }
@@ -72,7 +74,12 @@
     -fx-font-family: Monospaced;
     -fx-min-width: 32;
 }
-
+.taskAndStatus{
+    -fx-pref-width: 400;
+}
+.contestLogo{
+    -fx-alignment: left
+}
 .happyQso {
     -fx-text-fill: green;
 }

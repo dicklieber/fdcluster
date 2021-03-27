@@ -18,7 +18,7 @@ class EntryCategories(contestConfig: Config) {
   //  designators = values.map(_.designator)
   val categories: ObservableBuffer[EntryCategory] = ObservableBuffer[EntryCategory](ec).sorted
 
-  var designators: Set[String] = Set.empty
+  var designators: Set[String] = ec.map(_.designator).toSet
 
 
   def entryCategoryForDesignator(designator: String): EntryCategory = {

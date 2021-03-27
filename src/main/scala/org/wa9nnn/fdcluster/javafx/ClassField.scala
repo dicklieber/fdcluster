@@ -20,12 +20,9 @@
 package org.wa9nnn.fdcluster.javafx
 
 
-import org.wa9nnn.fdcluster.model.{AllContestRules, ContestProperty, ContestRules, EntryCategories, EntryCategory}
+import org.wa9nnn.fdcluster.model.{AllContestRules, ContestProperty, ContestRules}
 import org.wa9nnn.util.WithDisposition
-import scalafx.Includes._
-import scalafx.collections.ObservableBuffer
 import scalafx.scene.control.TextField
-import scalafx.scene.input.KeyEvent
 
 import javax.inject.{Inject, Singleton}
 import scala.util.matching.Regex
@@ -40,10 +37,10 @@ class ClassField @Inject()(allContestRules: AllContestRules, contestProperty: Co
 
   var entryCategories: ContestRules = _
 
+  entryCategories = allContestRules.byContestName(contestProperty.event)
   contestProperty.eventProperty.onChange{(_,_,contestName) =>
     entryCategories = allContestRules.byContestName(contestName)
   }
-
 
   text.onChange{(_,_,nv) =>
     try {
@@ -56,7 +53,6 @@ class ClassField @Inject()(allContestRules: AllContestRules, contestProperty: Co
   }
 
   val p: Regex = """(\d+)([A-Z])""".r
-
 
   validProperty.onChange{(_,_,nv) =>
     if(nv) {

@@ -20,6 +20,7 @@
 package org.wa9nnn.fdcluster.model
 
 import com.typesafe.config.{Config, ConfigFactory}
+import scalafx.scene.image.Image
 
 import javax.inject.{Inject, Singleton}
 import scala.jdk.CollectionConverters._
@@ -30,7 +31,6 @@ import scala.jdk.CollectionConverters._
 case class ContestRules(contestName: String, appConfig: Config) {
   def validDesignator(designator: String): Boolean = {
     categories.valid(designator)
-
   }
 
   private val configPath = s"/contests/$contestName.conf"
@@ -38,15 +38,11 @@ case class ContestRules(contestName: String, appConfig: Config) {
 
   val categories: EntryCategories = new EntryCategories(contestConfig)
 
-}
+ }
 
 @Singleton
 class AllContestRules @Inject()(config: Config) {
-
-
-   val contestNames: Seq[String] = config.getStringList("contest.contestNames").asScala.toList
-
-   val byContestName: Map[String, ContestRules] = contestNames.map(ContestRules(_, config)).map(cr => cr.contestName -> cr).toMap
-
+  val contestNames: Seq[String] = config.getStringList("contest.contestNames").asScala.toList
+  val byContestName: Map[String, ContestRules] = contestNames.map(ContestRules(_, config)).map(cr => cr.contestName -> cr).toMap
 }
 

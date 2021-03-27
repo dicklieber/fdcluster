@@ -27,14 +27,14 @@ import org.wa9nnn.fdcluster.javafx.cluster.ClusterTab
 import org.wa9nnn.fdcluster.javafx.data.DataScene
 import org.wa9nnn.fdcluster.javafx.entry.{EntryScene, RunningTaskPane, StatisticsTab}
 import org.wa9nnn.fdcluster.javafx.menu.FdClusterMenu
-import org.wa9nnn.fdcluster.model.NodeAddress
+import org.wa9nnn.fdcluster.model.{AllContestRules, ContestProperty, NodeAddress}
 import org.wa9nnn.util.{CommandLine, StructuredLogging}
 import scalafx.application.JFXApp.PrimaryStage
 import scalafx.application.{JFXApp, Platform}
 import scalafx.scene.Scene
 import scalafx.scene.control.{Tab, TabPane}
-import scalafx.scene.image.Image
-import scalafx.scene.layout.{BorderPane, VBox}
+import scalafx.scene.image.{Image, ImageView}
+import scalafx.scene.layout.{BorderPane, GridPane, HBox, VBox}
 
 /**
  * Main for FDLog
@@ -43,8 +43,6 @@ object FdCluster extends JFXApp with StructuredLogging {
 
 
   private val injector = Guice.createInjector(new Module(parameters))
-  //  implicit val nodeInfo: NodeInfo = new NodeInfoImpl(contest)
-  //  private val storeActorRef: ActorRef = injector.getInstance(Key.get(classOf[ActorRef], Names.named("store")))
   private val entryScene = injector.instance[EntryScene]
   private val dataScene = injector.instance[DataScene]
   private val clusterTab: ClusterTab = injector.instance[ClusterTab]
@@ -53,6 +51,8 @@ object FdCluster extends JFXApp with StructuredLogging {
   private val runningTaskPane: RunningTaskPane = injector.instance[RunningTaskPane]
   private val statusPane: StatusPane = injector.instance[StatusPane]
   private val commandLine: CommandLine = injector.instance[CommandLine]
+  private val allContestRules: AllContestRules = injector.instance[AllContestRules]
+  private val contestProperty: ContestProperty = injector.instance[ContestProperty]
   try {
     injector.instance[Server]
   } catch {
@@ -84,15 +84,26 @@ val map: Map[String, Tab] = fdclusterTabs.map(t => t.text.value -> t).toMap
     )
   }
 
+  contestProperty.logotypeImageProperty.onChange{(_,_,newImage: Image) =>
+    imageView.image = newImage
+  }
+  private val imageView = new ImageView(contestProperty.logotypeImageProperty.value){
+    styleClass += "contestLogo"
+  }
+  val bottomPane: GridPane = {
+
+    new GridPane(){
+      prefWidth = 400
+      add(imageView, 0,0,1,2)
+      add(runningTaskPane.pane, 1,0)
+      add(statusPane.pane, 1,0)
+    }
+  }
   //  private val statsHeader = new HBox(Label(sorter"QSOs:  todo "))
   private val rootPane = new BorderPane {
     top = fdlogmenu.menuBar
     center = tabPane
-    bottom = new VBox(
-      runningTaskPane.pane,
-      statusPane.pane
-    )
-  }
+    bottom = bottomPane  }
   val ourScene = new Scene()
 
   ourScene.getStylesheets.add(getClass.getResource("/com/sun/javafx/scene/control/skin/modena/modena.css").toExternalForm)
@@ -105,7 +116,7 @@ val map: Map[String, Tab] = fdclusterTabs.map(t => t.text.value -> t).toMap
   stage = new PrimaryStage() {
     title = "FDCluster @ " + nodeAddress.display
     scene = ourScene
-    private val externalForm: String = getClass.getResource("/images/wfdlogo.png").toExternalForm
+    private val externalForm: String = getClass.getResource("/images/FieldDay.png").toExternalForm
     icons += new Image(externalForm)
     onCloseRequest = { event =>
       Platform.exit()
