@@ -219,7 +219,7 @@ class EntryScene @Inject()(
       rig = cs.rig,
       ant = cs.antenna,
       node = nodeAddress.display,
-      contestId = contestProperty.event
+      contestId = contestProperty.contest.qsoId
     )
   }, currentStationProperty, contestProperty)
 

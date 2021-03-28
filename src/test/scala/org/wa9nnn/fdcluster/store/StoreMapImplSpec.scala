@@ -24,8 +24,8 @@ import org.specs2.specification.After
 import org.wa9nnn.fdcluster.javafx.sync.SyncSteps
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
-import org.wa9nnn.fdcluster.{FileManager, FileManagerConfig, MockFileManager}
-import org.wa9nnn.util.{CommandLine, Persistence, PersistenceImpl}
+import org.wa9nnn.fdcluster.{FileManager, MockFileManager}
+import org.wa9nnn.util.{CommandLine, PersistenceImpl}
 import scalafx.beans.property.ObjectProperty
 import scalafx.collections.ObservableBuffer
 

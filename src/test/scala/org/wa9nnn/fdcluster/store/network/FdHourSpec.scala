@@ -19,14 +19,14 @@ class FdHourSpec extends Specification {
     "from epoch hours" >> {
       val fdHour1 = FdHour(403489)
       fdHour1.epochHours must beEqualTo(403489)
-      fdHour1.toString must beEqualTo("utc date: 12 hour: 1")
+      fdHour1.toString must beEqualTo("12:1")
       fdHour1.display must beEqualTo("12:01")
     }
     "happy path" >> {
       fdHour.epochHours must beEqualTo(403489)
       val string = fdHour.toString
-      string must beEqualTo("12:0")
-      fdHour.toolTip must beEqualTo("utc date: 12 hour: 0")
+      string must beEqualTo("12:1")
+      fdHour.toolTip must beEqualTo("utc date: 12 hour: 1")
     }
     "zero hour in epoch" >> {
       val fdh = FdHour(Instant.EPOCH)

@@ -40,7 +40,7 @@ import org.wa9nnn.fdcluster.model.sync.NodeStatus
 import org.wa9nnn.fdcluster.store.network.cluster.ClusterState
 import org.wa9nnn.fdcluster.store.network.{FdHour, MultcastSenderActor, MulticastListenerActor}
 import org.wa9nnn.fdcluster.tools.{GenerateRandomQsos, RandomQsoGenerator}
-import org.wa9nnn.util.{ImportTask, LaurelDbImporterTask}
+import org.wa9nnn.util.ImportTask
 import play.api.libs.json.Json
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -144,10 +144,6 @@ class StoreActor(injector: Injector,
 
     case DebugKillRandom(nToKill) ⇒
       store.debugKillRandom(nToKill)
-
-    case blr: BuildLoadRequest =>
-      val laurelDbImporterTask = injector.instance[LaurelDbImporterTask]
-      laurelDbImporterTask(blr)
 
     case cer: CabrilloExportRequest =>
       val cabrilloGenerator: CabrilloGenerator = injector.instance[CabrilloGenerator]

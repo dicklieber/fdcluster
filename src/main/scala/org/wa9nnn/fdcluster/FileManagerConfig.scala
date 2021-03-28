@@ -19,39 +19,27 @@
 
 package org.wa9nnn.fdcluster
 
-import com.typesafe.config.Config
+import com.github.racc.tscg.TypesafeConfig
 import org.wa9nnn.fdcluster.model.{ContestProperty, ExportFile}
 
-import java.nio.file.{Files, Path, Paths}
+import java.nio.file.{Path, Paths}
+import javax.inject.{Inject, Singleton}
 
 /**
  * All access to various files should go through this.
  */
-class FileManagerConfig(config: Config) extends FileManager {
-  override def directory: Path = Paths.get(config.getString("directory"))
+@Singleton
+class FileManager @Inject()(@TypesafeConfig("directory") dir: String) {
 
-  {
-    // this just set "log.file.path" system property so logback .xml doesn't need explicit file key.
-    val path = directory.resolve("logs").resolve("fdcluster.log")
-    Files.createDirectories(path.getParent)
-    val logFile = path.toAbsolutePath.toString
-    System.setProperty("log.file.path", logFile)
-    path
-  }
-}
+  val directory = Paths.get(dir)
 
-trait FileManager {
-  /**
-   * Should be the only directory that FDCluster writes to. (by default)
-   * @return
-   */
-  def directory: Path
   /**
    *
    * @return where to keep settings
    */
-  def varDirectory:Path = directory.resolve("var")
-  def journalFile:Path = directory.resolve("journal.json")
+  def varDirectory: Path = directory.resolve("var")
+
+  def journalFile: Path = directory.resolve("journal.json")
 
   /**
    *
