@@ -24,25 +24,32 @@ class PersistenceSpec extends Specification with PreferencesContext {
     "save" >> { persistence: Persistence =>
       val exchange = new CurrentStation("20M", "DI")
       val triedString = persistence.saveToFile(exchange, pretty = false)
-      triedString must beASuccessfulTry[String].which(_.endsWith("BandModeOperator.json"))
+      triedString must beASuccessfulTry[String].which(_.endsWith("CurrentStation.json"))
     }
    "save pretty" >> { persistence: Persistence =>
       val exchange = new CurrentStation("20M", "DI")
       val triedString = persistence.saveToFile(exchange)
-      triedString must beASuccessfulTry[String].which(_.endsWith("BandModeOperator.json"))
+      triedString must beASuccessfulTry[String].which(_.endsWith("CurrentStation.json"))
      val path = Paths.get(triedString.get)
      Files.readString(path) must beEqualTo ("""{
                                               |  "bandName" : "20M",
                                               |  "modeName" : "DI",
-                                              |  "operator" : ""
+                                              |  "operator" : "",
+                                              |  "rig" : "",
+                                              |  "antenna" : ""
                                               |}""".stripMargin)
     }
 
     "roundTrip" >> { persistence: Persistence =>
-      val currentStation = new CurrentStation("20M", "DI")
+      val currentStation = new CurrentStation(
+        "20M",
+        "DI",
+        rig = "IC-705",
+        operator = "WA9NNN",
+        antenna = "Wold River Coils")
       persistence.saveToFile(currentStation, pretty = false)
       val backAgain: CurrentStation = persistence.loadFromFile[CurrentStation](() => CurrentStation())
-      backAgain must be(currentStation)
+      backAgain must beEqualTo(currentStation)
     }
 
     "nofile" >> { persistence: Persistence =>

@@ -60,15 +60,10 @@ class ContestPropertySpec extends Specification with FileManagerContext {
       val contestProperty = new ContestProperty(persistence)
       val ourExchangeProperty = contestProperty.ourExchangeProperty
       val ourExchange = ourExchangeProperty.value
-      ourExchange.display must beEqualTo ("1A IL")
-      ourExchange.mnomonics must beEqualTo ("1 Alpha India Lima")
+      ourExchange.display must beEqualTo ("1O AB")
 
       ourExchangeProperty.value = ourExchange.copy(sectionCode = "DX")
-      ourExchange.display must beEqualTo ("1A DX")
-
-
-
-
+      ourExchange.display must beEqualTo ("1O AB")
     }
   }
 

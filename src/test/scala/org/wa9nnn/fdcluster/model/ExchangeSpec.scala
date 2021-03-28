@@ -30,7 +30,7 @@ class ExchangeSpec extends org.specs2.mutable.Specification {
 
     "apply" >> {
       val e = Exchange("1H", "AB")
-      e.display must beEqualTo ("1O AB")
+      e.display must beEqualTo ("1H AB")
     }
     "round trip toString" >> {
       val backAgain = Exchange(exchange.toString)

@@ -31,7 +31,7 @@ class RequestUuidsForHourSpec extends Specification {
       val uuids = UuidsAtHost(NodeAddress(), List("111"))
       val res = Json.toJson(uuids)
       val ess = res.toString()
-      ess must beEqualTo ("{\"nodeAddress\":{\"instance\":0,\"nodeAddress\":\"localhost\"},\"uuids\":[\"111\"]}")
+      ess must beEqualTo ("{\"nodeAddress\":{\"host\":\"localhost\",\"instance\":0,\"httpPort\":8000},\"uuids\":[\"111\"]}")
     }
 
   }

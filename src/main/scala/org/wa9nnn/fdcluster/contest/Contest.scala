@@ -18,7 +18,7 @@ import java.time.LocalDate
  */
 case class Contest(callSign: CallSign = "",
                    ourExchange: Exchange = new Exchange(),
-                   event: String = "FD",
+                   event: String = "FieldDay",
                    year: String = {
                      LocalDate.now().getYear.toString
                    }) {
@@ -27,8 +27,9 @@ case class Contest(callSign: CallSign = "",
     s"$event-$year"
   }
 
-  def toId: String = {
-    f"$event$year$callSign"
+  val id:String = event.filter(_.isUpper)
+  def qsoId: String = {
+    f"$id$year$callSign"
   }
 }
 

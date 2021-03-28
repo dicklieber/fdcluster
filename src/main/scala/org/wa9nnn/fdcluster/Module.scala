@@ -30,7 +30,7 @@ import org.wa9nnn.fdcluster.metrics.Reporter
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.store._
 import org.wa9nnn.fdcluster.tools.RandomQsoGenerator
-import org.wa9nnn.util.{CommandLine, CommandLineScalaFxImpl, Persistence, PersistenceImpl}
+import org.wa9nnn.util.{CommandLine, CommandLineScalaFxImpl, LogFilePath, Persistence, PersistenceImpl}
 import scalafx.application.JFXApp.Parameters
 import scalafx.beans.property.ObjectProperty
 import scalafx.collections.ObservableBuffer
@@ -49,10 +49,9 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
   override def configure(): Unit = {
     try {
       val config = ConfigFactory.load
-      val fileManager = new FileManagerConfig(config)
+      LogFilePath(config)
       // File manager must be invoked before any logging is done as logback.xml uses the system property  "log.file.path"
       // which gets set by th3 FileManager.
-      bind[FileManager].toInstance(fileManager)
       bind[CommandLine].toInstance(new CommandLineScalaFxImpl(parameters))
       val actorSystem = ActorSystem("default", config)
       bind[NodeAddress]

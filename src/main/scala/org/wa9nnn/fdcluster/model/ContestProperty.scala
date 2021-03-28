@@ -76,7 +76,8 @@ class ContestProperty @Inject()(persistence: Persistence) extends ObjectProperty
    */
   val b: ObjectBinding[Contest] = Bindings.createObjectBinding(
     () => {
-      val externalForm: String = getClass.getResource(s"/images/${eventProperty.value}.png").toExternalForm
+      val imagePath = s"/images/${eventProperty.value}.png"
+      val externalForm: String = getClass.getResource(imagePath).toExternalForm
       val image = new Image(externalForm, 150.0, 150.0, true, true)
       logotypeImageProperty.setValue(image)
 
