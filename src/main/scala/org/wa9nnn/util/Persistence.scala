@@ -20,7 +20,7 @@
 package org.wa9nnn.util
 
 import org.wa9nnn.fdcluster.FileManager
-import play.api.libs.json.{Json, Reads, Writes}
+import play.api.libs.json._
 
 import java.nio.file.StandardOpenOption._
 import java.nio.file.{Files, Path}
@@ -29,10 +29,18 @@ import scala.reflect.ClassTag
 import scala.util.{Failure, Success, Try}
 
 trait Persistence {
-  def saveToFile[T: ClassTag](product: T, pretty: Boolean = true)(implicit writes: Writes[T]): Try[String]
-//  def loadFromFile[T: ClassTag]()(implicit writes: Reads[T]): Try[T]
-  def loadFromFile[T: ClassTag](f:() => T)(implicit writes: Reads[T]): T
+  /**
+   *
+   * @param product a case class that has [[play.api.libs.json.Format]] implicit. Usually in [[org.wa9nnn.fdcluster.model.MessageFormats]]
+   * @param writes [[play.api.libs.json.Format]]
+   * @tparam T must be a case class
+   * @return
+   */
+  def saveToFile[T: ClassTag](product: T = true)(implicit writes: Writes[T]): Try[String]
+
+  def loadFromFile[T: ClassTag](f: () => T)(implicit writes: Reads[T]): T
 }
+
 /**
  * A simple persistence engine that between case classes and files
  * Files are persisted in the basePath directory using a file name that is the class name (without path)
@@ -50,21 +58,16 @@ class PersistenceImpl @Inject()(fileManager: FileManager) extends Persistence wi
   /**
    *
    * @param product a case class to be saved
-   * @param pretty  true: pretty (formatted multi-line) false: one-line
    * @param writes  from [[org.wa9nnn.fdcluster.model.MessageFormats]]
    * @tparam T of case class product.
    * @return file path or error
    */
-  override def saveToFile[T: ClassTag](product: T, pretty: Boolean = true)(implicit writes: Writes[T]): Try[String] = {
+  override def saveToFile[T: ClassTag](product: T)(implicit writes: Writes[T]): Try[String] = {
+    assert(product.isInstanceOf[Product], s"$product is not a case class!")
     Try {
-      if (!product.isInstanceOf[Product]) throw new IllegalArgumentException(s"$product is not a case class!")
-      val sJson = if (pretty)
-        Json.prettyPrint(Json.toJson(product))
-      else
-        Json.toJson(product).toString()
-
       val path = pathForClass[T]
       Files.createDirectories(path.getParent)
+      val sJson = Json.prettyPrint(Json.toJson(product))
       Files.writeString(path, sJson, TRUNCATE_EXISTING, WRITE, CREATE)
       path.toAbsolutePath.toString
     }
@@ -75,11 +78,11 @@ class PersistenceImpl @Inject()(fileManager: FileManager) extends Persistence wi
    *
    * @tparam T of case class saved via [[saveToFile()]]
    */
-  def loadFromFile[T: ClassTag]()(implicit writes: Reads[T]): Try[T] = {
+  private def loadFromFile[T: ClassTag]()(implicit writes: Reads[T]): Try[T] = {
     val path1 = pathForClass[T]
     logger.debug(s"Trying $path1")
     val r = Try {
-       Json.parse(Files.readString(path1)).as[T]
+      Json.parse(Files.readString(path1)).as[T]
     }
     r match {
       case Failure(exception) =>
@@ -103,9 +106,10 @@ class PersistenceImpl @Inject()(fileManager: FileManager) extends Persistence wi
 
   /**
    * A bit nicer to use as it always return a value. i.e. client doesn't to process the Try
-   * @param f that will create the defalt value if not read from file.
-   * @param writes JSON forat stuff.
-   * @tparam T
+   *
+   * @param f      that will create the default value if not read from the file.
+   * @param writes JSON format stuff.
+   * @tparam T a case class.
    * @return always a T
    */
   override def loadFromFile[T: ClassTag](f: () => T)(implicit writes: Reads[T]): T = {

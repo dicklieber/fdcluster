@@ -44,7 +44,7 @@ trait RunningTask extends StructuredLogging{
     def run(): Unit = {
       runningTaskInfoConsumer.update(info)
     }
-  }, 250, 300)
+  }, 15, 300)
 
 
   def addOne(): Unit = {

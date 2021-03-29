@@ -24,23 +24,28 @@ import com.google.inject.Injector
 import com.google.inject.name.Named
 import com.typesafe.scalalogging.LazyLogging
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
-import org.wa9nnn.fdcluster.{FileManager, QsoCountCollector}
 import org.wa9nnn.fdcluster.cabrillo.{CabrilloDialog, CabrilloExportRequest}
+import org.wa9nnn.fdcluster.dupsheet.GenerateDupSheet
 import org.wa9nnn.fdcluster.javafx.debug.DebugRemoveDialog
 import org.wa9nnn.fdcluster.javafx.sync.{SyncDialog, SyncSteps}
+import org.wa9nnn.fdcluster.model.{ContestProperty, ExportFile}
 import org.wa9nnn.fdcluster.rig.RigDialog
 import org.wa9nnn.fdcluster.store.{DebugClearStore, Sync}
 import org.wa9nnn.fdcluster.tools.RandomQsoDialog
+import org.wa9nnn.fdcluster.{FileManager, QsoCountCollector}
 import scalafx.Includes._
 import scalafx.application.Platform
 import scalafx.event.ActionEvent
 import scalafx.scene.control._
 
 import java.awt.Desktop
+import java.io.PrintWriter
+import java.nio.file.Files
 import javax.inject.Inject
 import scala.concurrent.duration.DurationInt
 import scala.jdk.CollectionConverters._
 import scala.language.postfixOps
+import scala.util.{Failure, Success, Try, Using}
 
 class FdClusterMenu @Inject()(
                                injector: Injector,
@@ -48,6 +53,8 @@ class FdClusterMenu @Inject()(
                                syncSteps: SyncSteps,
                                syncDialog: SyncDialog,
                                fileManager: FileManager,
+                               generateDupSheet: GenerateDupSheet,
+                               contestProperty: ContestProperty,
                                debugRemoveDialog: DebugRemoveDialog) extends LazyLogging {
   private implicit val timeout = Timeout(5 seconds)
   private val desktop = Desktop.getDesktop
@@ -174,10 +181,27 @@ class FdClusterMenu @Inject()(
     }
   }
 
-  private val generateTimed = new MenuItem{
-    text ="Generate Timed"
-    onAction =  { _ =>
-      new RandomQsoDialog().showAndWait().foreach{grq =>
+  private val dupSheetMenuItem = new MenuItem {
+    text = "Dup Sheet"
+    onAction = { _ =>
+
+      val dupFile: ExportFile = fileManager.defaultExportFile("dup")(contestProperty)
+      val r: Try[Unit] = Using(new PrintWriter(Files.newBufferedWriter(dupFile.path))) { pw =>
+        generateDupSheet(pw)
+      }
+      r match {
+        case Failure(exception) =>
+          logger.error("Generating Dup", exception)
+        case Success(value) =>
+          Desktop.getDesktop.open(dupFile.path.toFile)
+      }
+    }
+  }
+
+  private val generateTimed = new MenuItem {
+    text = "Generate Timed"
+    onAction = { _ =>
+      new RandomQsoDialog().showAndWait().foreach { grq =>
         store ! grq
       }
     }
@@ -193,6 +217,7 @@ class FdClusterMenu @Inject()(
           importMenuItem,
           exportMenuItem,
           exportCabrillo,
+          dupSheetMenuItem,
           filesMenuItem,
           exitMenuItem,
         )

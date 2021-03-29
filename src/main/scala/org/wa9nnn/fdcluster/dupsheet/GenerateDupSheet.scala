@@ -21,16 +21,16 @@ package org.wa9nnn.fdcluster.dupsheet
 
 import com.google.inject.name.Named
 import org.wa9nnn.fdcluster.contest.Contest
-import org.wa9nnn.fdcluster.model.QsoRecord
+import org.wa9nnn.fdcluster.model.{ContestProperty, QsoRecord}
 import org.wa9nnn.util.StructuredLogging
 import scalafx.beans.property.ObjectProperty
 import scalafx.collections.ObservableBuffer
 
 import java.io.PrintWriter
-import javax.inject.Inject
-
+import javax.inject.{Inject, Singleton}
+@Singleton
 class GenerateDupSheet @Inject()(@Named("allQsos") allQsos: ObservableBuffer[QsoRecord],
-                                 contestProperty:ObjectProperty[Contest]) extends StructuredLogging {
+                                 contestProperty:ContestProperty) extends StructuredLogging {
 
   def apply(pw: PrintWriter): Unit = {
     val contest = contestProperty.value

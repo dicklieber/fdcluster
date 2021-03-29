@@ -67,6 +67,7 @@ libraryDependencies ++= Seq(
   "net.codingwell" %% "scala-guice" % "4.2.6",
   "com.github.racc" % "typesafeconfig-guice" % "0.1.0",
   "com.typesafe.akka" %% "akka-actor" % "2.6.0-M7",
+  "com.github.kxbmap" %% "configs" % "0.6.0",
   "com.typesafe.akka" %% "akka-http" % "10.1.10",
   "com.typesafe.akka" %% "akka-stream" % "2.6.0-M7",
   "ch.qos.logback" % "logback-classic" % logbackVersion,

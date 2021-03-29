@@ -18,7 +18,6 @@
 
 package org.wa9nnn.fdcluster.model
 
-import com.typesafe.config.ConfigFactory
 import org.specs2.execute.{AsResult, Result}
 import org.specs2.mutable.Specification
 import org.specs2.specification.ForEach
@@ -43,16 +42,15 @@ class ContestPropertySpec extends Specification with FileManagerContext {
     "propMap" >> { fileManger: FileManager =>
       val persistence = new PersistenceImpl(fileManger)
       val contestProperty = new ContestProperty(persistence)
-      val was: Contest = persistence.loadFromFile[Contest].getOrElse(Contest())
+      val was: Contest = persistence.loadFromFile[Contest]( () => Contest())
       was.year must beEqualTo("2021")
-      val eventyear: StringProperty = contestProperty.eventYearProperty
-      eventyear.value must beEqualTo("2021") //todo mke this work net year too!
-      eventyear.value = "1949"
+      val eventyearProperty: StringProperty = contestProperty.eventYearProperty
+      eventyearProperty.value must beEqualTo("2021") //todo mke this work net year too!
+      eventyearProperty.value = "1949"
 
       contestProperty.save()
 
-      val triedContest = persistence.loadFromFile[Contest]
-      val newContest: Contest = triedContest.get
+      val newContest = persistence.loadFromFile[Contest]( () => Contest())
       newContest.year must beEqualTo("1949")
     }
     "exchange properties" >> { fileManger: FileManager =>

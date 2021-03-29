@@ -19,15 +19,15 @@
 
 package org.wa9nnn.fdcluster.model
 
+import _root_.scalafx.beans.binding.{Bindings, ObjectBinding}
+import _root_.scalafx.scene.image.Image
 import org.wa9nnn.fdcluster.contest.Contest
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.util.{Persistence, StructuredLogging}
-import scalafx.beans.binding.{Bindings, ObjectBinding}
-import scalafx.beans.property.{ObjectProperty, StringProperty}
-import scalafx.scene.image.Image
+import scalafx.beans.property._
 
 import javax.inject.{Inject, Singleton}
-import scala.util.{Failure, Success}
+import scala.util.{Failure, Success, Using}
 
 /**
  * Provides access and persistence of a single [[Contest]] instance.
@@ -38,21 +38,24 @@ import scala.util.{Failure, Success}
 class ContestProperty @Inject()(persistence: Persistence) extends ObjectProperty[Contest] with StructuredLogging {
 
 
-  val contest: Contest = persistence.loadFromFile[Contest](() => Contest())
+  private val initContest: Contest = persistence.loadFromFile[Contest](() => Contest())
+  value = initContest
 
-  val callSignProperty: StringProperty = StringProperty(contest.callSign)
+  def contest: Contest = value
+
+  val callSignProperty: StringProperty = StringProperty(initContest.callSign)
 
   def callSign: String = callSignProperty.value
 
-  val eventProperty: StringProperty = StringProperty(contest.event)
+  val eventProperty: StringProperty = StringProperty(initContest.eventName)
 
   def event: String = eventProperty.value
 
-  val ourExchangeProperty: ObjectProperty[Exchange] = ObjectProperty[Exchange](contest.ourExchange)
+  val ourExchangeProperty: ObjectProperty[Exchange] = ObjectProperty[Exchange](initContest.ourExchange)
 
   def ourExchange: Exchange = ourExchangeProperty.value
 
-  val eventYearProperty: StringProperty = StringProperty(contest.year)
+  val eventYearProperty: StringProperty = StringProperty(initContest.year)
 
   def eventYear: String = eventYearProperty.value
 
@@ -63,8 +66,9 @@ class ContestProperty @Inject()(persistence: Persistence) extends ObjectProperty
   callSignProperty.onChange { (_, old, nv) =>
     println(s"callSignProperty changed from : $old to: $nv ")
   }
-  onChange { (_, old, nv) =>
-    println(s"contestProperty changed from : $old to: $nv ")
+  onChange { (_, old, contest) =>
+    setUpImage(contest.eventName)
+    whenTraceEnabled(() => s"contestProperty changed from : $old to: $contest ")
   }
 
   logotypeImageProperty.onChange { (_, _, ni) =>
@@ -76,11 +80,6 @@ class ContestProperty @Inject()(persistence: Persistence) extends ObjectProperty
    */
   val b: ObjectBinding[Contest] = Bindings.createObjectBinding(
     () => {
-      val imagePath = s"/images/${eventProperty.value}.png"
-      val externalForm: String = getClass.getResource(imagePath).toExternalForm
-      val image = new Image(externalForm, 150.0, 150.0, true, true)
-      logotypeImageProperty.setValue(image)
-
       val newContest = Contest(callSignProperty.value, ourExchangeProperty.value, eventProperty.value, eventYearProperty.value)
       newContest
     }
@@ -88,8 +87,20 @@ class ContestProperty @Inject()(persistence: Persistence) extends ObjectProperty
     callSignProperty, eventProperty, ourExchangeProperty, eventYearProperty
   )
 
+  def setUpImage(eventName: String): Unit = {
+    val imagePath = s"/images/$eventName.png"
+    Using(getClass.getResourceAsStream(imagePath)) { is =>
+      new Image(is, 150.0, 150.0, true, true)
+    } match {
+      case Failure(exception) =>
+        logger.error(s"loading: $imagePath", exception)
+      case Success(image) =>
+        logotypeImageProperty.setValue(image)
+    }
+  }
+
   b.onChange {
-    (_, _, nv) =>
+    (_, _, nv: Contest) =>
       value = nv
   }
 
@@ -97,7 +108,10 @@ class ContestProperty @Inject()(persistence: Persistence) extends ObjectProperty
     persistence.saveToFile(value) match {
       case Failure(exception) =>
         logger.error("Saving ContestProperty", exception)
-      case Success(value) =>
+      case Success(path) =>
+        whenDebugEnabled { () =>
+          s"Saved $value to $path."
+        }
     }
   }
 

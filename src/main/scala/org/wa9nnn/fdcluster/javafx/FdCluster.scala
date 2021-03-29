@@ -40,8 +40,6 @@ import scalafx.scene.layout.{BorderPane, GridPane, HBox, VBox}
  * Main for FDLog
  */
 object FdCluster extends JFXApp with StructuredLogging {
-
-
   private val injector = Guice.createInjector(new Module(parameters))
   private val entryScene = injector.instance[EntryScene]
   private val dataScene = injector.instance[DataScene]

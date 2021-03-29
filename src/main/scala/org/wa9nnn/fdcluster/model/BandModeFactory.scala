@@ -43,7 +43,7 @@ class BandModeFactory @Inject()(config: Config = ConfigFactory.load()) extends L
    * Currently all bands for WFD and ARRL Field day.
    *
    */
-  val availableBands: List[AvailableBand] = config.getStringList("contest.bandMode.bands").asScala.toList.map { s =>
+  val availableBands: List[AvailableBand] = config.getStringList("contest.bands").asScala.toList.map { s =>
     val availaBandRegx(band, from, to) = s
     AvailableBand(band, from.toInt, to.toInt)
   }.sorted
@@ -61,7 +61,7 @@ class BandModeFactory @Inject()(config: Config = ConfigFactory.load()) extends L
 
   val modes: List[AvailableMode] = {
 
-    val config1 = config.getConfig("contest.bandMode.modes")
+    val config1 = config.getConfig("contest.modes")
     config1
       .entrySet
       .asScala

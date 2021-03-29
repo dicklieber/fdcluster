@@ -34,12 +34,16 @@ import scala.reflect.ClassTag
  */
 trait StructuredLogging {
 
-  def whenDebugEnabled(body: Unit): Unit = {
-
+  def whenDebugEnabled(body:() => String): Unit = {
+    if(logger.isDebugEnabled()){
+      logger.debug(body())
+    }
   }
 
-  def whenTraceEnabled(body: Unit): Unit = {
-
+  def whenTraceEnabled(body:() => String): Unit = {
+    if(logger.isTraceEnabled()){
+      logger.trace(body())
+    }
   }
 
   /**
