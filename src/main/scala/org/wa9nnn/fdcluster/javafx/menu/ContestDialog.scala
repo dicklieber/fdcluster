@@ -49,7 +49,7 @@ class ContestDialog @Inject()(contestProperty: ContestProperty,
 
   private val gridOfControls = new GridOfControls
   private val callSignProperty: StringProperty = gridOfControls.addText("CallSign",
-    tooltip = Some("""Callsign of the club or individual entrant."""),
+    tooltip = Some("""CallSign of the club or individual entrant."""),
     forceCaps = true)
   callSignProperty <==> contestProperty.callSignProperty
 
@@ -81,7 +81,7 @@ class ContestDialog @Inject()(contestProperty: ContestProperty,
   }
   setup(contestProperty.event)
 
-  def setup(contestName: String) = {
+  private def setup(contestName: String): Unit = {
     contestProperty.eventProperty.value = contestName
     val rules = contestRules.byContestName(contestName)
     categoryCB.items = rules.categories.categories
@@ -145,7 +145,7 @@ class ContestDialog @Inject()(contestProperty: ContestProperty,
     dp.lookupButton(saveButton).disableProperty()
   )
 
-  gridOfControls.add(exchangePane, 2, 3, 1, 3)
+  gridOfControls.add(exchangePane, 1, 6, 1, 1)
   dialogPane().setContent(gridOfControls)
 }
 
