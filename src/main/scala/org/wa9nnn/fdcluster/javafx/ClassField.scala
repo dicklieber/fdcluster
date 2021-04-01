@@ -47,7 +47,7 @@ class ClassField @Inject()(allContestRules: AllContestRules, contestProperty: Co
       val p(sTransmitters, designator) = nv
       validProperty.value = entryCategories.validDesignator(designator)
     } catch {
-      case _ =>
+      case _:Throwable =>
         validProperty.value = false
     }
   }

@@ -87,18 +87,18 @@ class StatsPane @Inject()(@Named("allQsos") allQsos: ObservableBuffer[QsoRecord]
 trait StatLine {
   val mode: String
   val countCell: Label = new Label("--"){
-    styleClass += "qsoField"
+    styleClass += "statValue"
   }
   val pointsCell: Label = new Label("--"){
-    styleClass += "qsoField"
+    styleClass += "statValue"
   }
   var count = 0
   var points = 0
 
   def update(): Unit = {
     onFX {
-      countCell.text = f"$count%,6d"
-      pointsCell.text = f"$points%,6d"
+      countCell.text = f"$count%,-6d"
+      pointsCell.text = f"$points%,-6d"
     }
   }
 }

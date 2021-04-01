@@ -72,13 +72,14 @@
 
 .statValue {
     -fx-font-family: Monospaced;
-    -fx-min-width: 32;
+    -fx-min-width: 62;
+    -fx-text-alignment: right;
 }
 .taskAndStatus{
     -fx-pref-width: 400;
 }
 .contestLogo{
-    -fx-alignment: left
+    -fx-text-alignment: left
 }
 .happyQso {
     -fx-text-fill: green;

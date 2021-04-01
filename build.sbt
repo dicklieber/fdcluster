@@ -4,7 +4,7 @@ maintainer := "wa9nnn@u505.com"
 
 
 lazy val `fdcluster` = (project in file("."))
-  .enablePlugins(JavaAppPackaging, GitPlugin, BuildInfoPlugin).settings(
+  .enablePlugins(JavaAppPackaging, GitPlugin, BuildInfoPlugin, SbtTwirl).settings(
     buildInfoKeys ++= Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion,
       git.gitCurrentTags, git.gitCurrentBranch, git.gitHeadCommit, git.gitHeadCommitDate, git.baseVersion,
       BuildInfoKey.action("buildTime") {
@@ -21,7 +21,7 @@ lazy val `fdcluster` = (project in file("."))
 
 //resolvers += "Akka Snapshot Repository" at "http://repo.akka.io/snapshots/"
 
-scalaVersion := "2.13.0"
+scalaVersion := "2.13.5"
 
 mainClass in(Compile, run) := Some("org.wa9nnn.fdcluster.javafx.entry.FdCluster")
 
@@ -33,12 +33,8 @@ scalacOptions in(Compile, doc) ++= Seq("-verbose", "-Ymacro-annotations")
 import scala.util.Properties
 
 
-//lazy val root = (project in file(".")).
-//  enablePlugins(BuildInfoPlugin).
-//  settings(
-//    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
-//    buildInfoPackage := "hello"
-//  )
+sourceDirectories in (Compile, TwirlKeys.compileTemplates) := (unmanagedSourceDirectories in Compile).value
+
 val osType: SettingKey[String] = SettingKey[String]("osType")
 
 osType := {

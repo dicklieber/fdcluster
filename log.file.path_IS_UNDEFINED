@@ -14406,3 +14406,235 @@ java.nio.file.NoSuchFileException: /var/folders/40/32_wnrm92fg5crlxcy6c4rmw0000g
 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
 	at java.base/java.lang.Thread.run(Thread.java:835)
+2021-03-30 10:58:40,296 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:272] Initializing Velocity, Calling init()...
+2021-03-30 10:58:40,313 TRACE [specs2-1] o.a.velocity [RuntimeInstance.java:275] *****************************
+2021-03-30 10:58:40,315 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:276] Starting Apache Velocity v2.3
+2021-03-30 10:58:40,316 TRACE [specs2-1] o.a.velocity [RuntimeInstance.java:277] RuntimeInstance initializing.
+2021-03-30 10:58:40,372 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:522] Default Properties resource: org/apache/velocity/runtime/defaults/velocity.properties
+2021-03-30 10:58:40,449 TRACE [specs2-1] o.a.v.loader [ResourceManagerImpl.java:109] ResourceManager initializing: class org.apache.velocity.runtime.resource.ResourceManagerImpl
+2021-03-30 10:58:40,475 DEBUG [specs2-1] o.a.velocity [ResourceLoaderFactory.java:48] ResourceLoader instantiated: org.apache.velocity.runtime.resource.loader.FileResourceLoader
+2021-03-30 10:58:40,488 TRACE [specs2-1] o.a.v.l.file [FileResourceLoader.java:75] FileResourceLoader: initialization starting.
+2021-03-30 10:58:40,490 DEBUG [specs2-1] o.a.v.l.file [FileResourceLoader.java:84] FileResourceLoader: adding path '.'
+2021-03-30 10:58:40,491 TRACE [specs2-1] o.a.v.l.file [FileResourceLoader.java:86] FileResourceLoader: initialization complete.
+2021-03-30 10:58:40,500 DEBUG [specs2-1] o.a.velocity [ResourceCacheImpl.java:119] initialized (class org.apache.velocity.runtime.resource.ResourceCacheImpl) with class java.util.Collections$SynchronizedMap cache map.
+2021-03-30 10:58:40,501 TRACE [specs2-1] o.a.v.loader [ResourceManagerImpl.java:205] Default ResourceManager initialization complete.
+2021-03-30 10:58:40,545 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Stop
+2021-03-30 10:58:40,557 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Define
+2021-03-30 10:58:40,564 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Break
+2021-03-30 10:58:40,571 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Evaluate
+2021-03-30 10:58:40,578 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Macro
+2021-03-30 10:58:40,590 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Parse
+2021-03-30 10:58:40,602 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Include
+2021-03-30 10:58:40,610 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Foreach
+2021-03-30 10:58:40,759 DEBUG [specs2-1] o.a.v.parser [ParserPoolImpl.java:57] Created '20' parsers.
+2021-03-30 10:58:41,013 TRACE [specs2-1] o.a.v.macro [VelocimacroFactory.java:129] initialization starting.
+2021-03-30 10:58:41,015 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:152] "velocimacro.library.path" is not set. Trying default library: velocimacros.vtl
+2021-03-30 10:58:41,025 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:162] Default library velocimacros.vtl not found. Trying old default library: VM_global_library.vm
+2021-03-30 10:58:41,027 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:169] Old default library VM_global_library.vm not found.
+2021-03-30 10:58:41,029 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:253] allowInline = true: VMs can be defined inline in templates
+2021-03-30 10:58:41,030 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:274] allowInlineToOverride = false: VMs defined inline may NOT replace previous VM definitions
+2021-03-30 10:58:41,032 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:297] allowInlineLocal = false: VMs defined inline will be global in scope if allowed.
+2021-03-30 10:58:41,033 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:315] autoload off: VM system will not automatically reload global library macros
+2021-03-30 10:58:41,035 TRACE [specs2-1] o.a.v.macro [VelocimacroFactory.java:319] Velocimacro: initialization complete.
+2021-03-30 10:58:41,036 TRACE [specs2-1] o.a.velocity [RuntimeInstance.java:295] RuntimeInstance successfully initialized.
+2021-03-30 10:58:41,045 ERROR [specs2-1] o.a.v.loader [ResourceManagerImpl.java:355] ResourceManager: unable to find resource 'FieldDaySummary.vsl' in any resource loader.
+2021-03-30 11:02:03,018 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:272] Initializing Velocity, Calling init()...
+2021-03-30 11:02:03,020 TRACE [specs2-1] o.a.velocity [RuntimeInstance.java:275] *****************************
+2021-03-30 11:02:03,020 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:276] Starting Apache Velocity v2.3
+2021-03-30 11:02:03,021 TRACE [specs2-1] o.a.velocity [RuntimeInstance.java:277] RuntimeInstance initializing.
+2021-03-30 11:02:03,025 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:522] Default Properties resource: org/apache/velocity/runtime/defaults/velocity.properties
+2021-03-30 11:02:03,038 TRACE [specs2-1] o.a.v.loader [ResourceManagerImpl.java:109] ResourceManager initializing: class org.apache.velocity.runtime.resource.ResourceManagerImpl
+2021-03-30 11:02:03,040 DEBUG [specs2-1] o.a.velocity [ResourceLoaderFactory.java:48] ResourceLoader instantiated: org.apache.velocity.runtime.resource.loader.FileResourceLoader
+2021-03-30 11:02:03,041 TRACE [specs2-1] o.a.v.l.file [FileResourceLoader.java:75] FileResourceLoader: initialization starting.
+2021-03-30 11:02:03,042 DEBUG [specs2-1] o.a.v.l.file [FileResourceLoader.java:84] FileResourceLoader: adding path '.'
+2021-03-30 11:02:03,042 TRACE [specs2-1] o.a.v.l.file [FileResourceLoader.java:86] FileResourceLoader: initialization complete.
+2021-03-30 11:02:03,043 DEBUG [specs2-1] o.a.velocity [ResourceCacheImpl.java:119] initialized (class org.apache.velocity.runtime.resource.ResourceCacheImpl) with class java.util.Collections$SynchronizedMap cache map.
+2021-03-30 11:02:03,043 TRACE [specs2-1] o.a.v.loader [ResourceManagerImpl.java:205] Default ResourceManager initialization complete.
+2021-03-30 11:02:03,045 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Stop
+2021-03-30 11:02:03,046 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Define
+2021-03-30 11:02:03,047 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Break
+2021-03-30 11:02:03,047 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Evaluate
+2021-03-30 11:02:03,048 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Macro
+2021-03-30 11:02:03,049 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Parse
+2021-03-30 11:02:03,050 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Include
+2021-03-30 11:02:03,050 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Foreach
+2021-03-30 11:02:03,070 DEBUG [specs2-1] o.a.v.parser [ParserPoolImpl.java:57] Created '20' parsers.
+2021-03-30 11:02:03,085 TRACE [specs2-1] o.a.v.macro [VelocimacroFactory.java:129] initialization starting.
+2021-03-30 11:02:03,086 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:152] "velocimacro.library.path" is not set. Trying default library: velocimacros.vtl
+2021-03-30 11:02:03,087 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:162] Default library velocimacros.vtl not found. Trying old default library: VM_global_library.vm
+2021-03-30 11:02:03,088 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:169] Old default library VM_global_library.vm not found.
+2021-03-30 11:02:03,088 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:253] allowInline = true: VMs can be defined inline in templates
+2021-03-30 11:02:03,088 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:274] allowInlineToOverride = false: VMs defined inline may NOT replace previous VM definitions
+2021-03-30 11:02:03,088 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:297] allowInlineLocal = false: VMs defined inline will be global in scope if allowed.
+2021-03-30 11:02:03,088 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:315] autoload off: VM system will not automatically reload global library macros
+2021-03-30 11:02:03,088 TRACE [specs2-1] o.a.v.macro [VelocimacroFactory.java:319] Velocimacro: initialization complete.
+2021-03-30 11:02:03,089 TRACE [specs2-1] o.a.velocity [RuntimeInstance.java:295] RuntimeInstance successfully initialized.
+2021-03-30 11:02:03,090 ERROR [specs2-1] o.a.v.loader [ResourceManagerImpl.java:355] ResourceManager: unable to find resource 'FieldDaySummary.vsl' in any resource loader.
+2021-03-30 11:03:01,269 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:272] Initializing Velocity, Calling init()...
+2021-03-30 11:03:01,271 TRACE [specs2-1] o.a.velocity [RuntimeInstance.java:275] *****************************
+2021-03-30 11:03:01,272 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:276] Starting Apache Velocity v2.3
+2021-03-30 11:03:01,272 TRACE [specs2-1] o.a.velocity [RuntimeInstance.java:277] RuntimeInstance initializing.
+2021-03-30 11:03:01,276 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:522] Default Properties resource: org/apache/velocity/runtime/defaults/velocity.properties
+2021-03-30 11:03:01,288 TRACE [specs2-1] o.a.v.loader [ResourceManagerImpl.java:109] ResourceManager initializing: class org.apache.velocity.runtime.resource.ResourceManagerImpl
+2021-03-30 11:03:01,291 DEBUG [specs2-1] o.a.velocity [ResourceLoaderFactory.java:48] ResourceLoader instantiated: org.apache.velocity.runtime.resource.loader.FileResourceLoader
+2021-03-30 11:03:01,291 TRACE [specs2-1] o.a.v.l.file [FileResourceLoader.java:75] FileResourceLoader: initialization starting.
+2021-03-30 11:03:01,292 DEBUG [specs2-1] o.a.v.l.file [FileResourceLoader.java:84] FileResourceLoader: adding path '.'
+2021-03-30 11:03:01,292 TRACE [specs2-1] o.a.v.l.file [FileResourceLoader.java:86] FileResourceLoader: initialization complete.
+2021-03-30 11:03:01,293 DEBUG [specs2-1] o.a.velocity [ResourceCacheImpl.java:119] initialized (class org.apache.velocity.runtime.resource.ResourceCacheImpl) with class java.util.Collections$SynchronizedMap cache map.
+2021-03-30 11:03:01,293 TRACE [specs2-1] o.a.v.loader [ResourceManagerImpl.java:205] Default ResourceManager initialization complete.
+2021-03-30 11:03:01,296 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Stop
+2021-03-30 11:03:01,297 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Define
+2021-03-30 11:03:01,297 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Break
+2021-03-30 11:03:01,298 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Evaluate
+2021-03-30 11:03:01,299 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Macro
+2021-03-30 11:03:01,300 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Parse
+2021-03-30 11:03:01,301 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Include
+2021-03-30 11:03:01,301 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Foreach
+2021-03-30 11:03:01,324 DEBUG [specs2-1] o.a.v.parser [ParserPoolImpl.java:57] Created '20' parsers.
+2021-03-30 11:03:01,339 TRACE [specs2-1] o.a.v.macro [VelocimacroFactory.java:129] initialization starting.
+2021-03-30 11:03:01,339 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:152] "velocimacro.library.path" is not set. Trying default library: velocimacros.vtl
+2021-03-30 11:03:01,341 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:162] Default library velocimacros.vtl not found. Trying old default library: VM_global_library.vm
+2021-03-30 11:03:01,341 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:169] Old default library VM_global_library.vm not found.
+2021-03-30 11:03:01,341 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:253] allowInline = true: VMs can be defined inline in templates
+2021-03-30 11:03:01,341 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:274] allowInlineToOverride = false: VMs defined inline may NOT replace previous VM definitions
+2021-03-30 11:03:01,341 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:297] allowInlineLocal = false: VMs defined inline will be global in scope if allowed.
+2021-03-30 11:03:01,341 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:315] autoload off: VM system will not automatically reload global library macros
+2021-03-30 11:03:01,342 TRACE [specs2-1] o.a.v.macro [VelocimacroFactory.java:319] Velocimacro: initialization complete.
+2021-03-30 11:03:01,342 TRACE [specs2-1] o.a.velocity [RuntimeInstance.java:295] RuntimeInstance successfully initialized.
+2021-03-30 11:16:32,692 WARN [specs2-1] o.a.v.deprecation [DeprecationAwareExtProperties.java:62] configuration key 'resource.loader' has been deprecated in favor of 'resource.loaders'
+2021-03-30 11:16:33,439 WARN [specs2-1] o.a.v.deprecation [DeprecationAwareExtProperties.java:62] configuration key 'classpath.resource.loader.class' has been deprecated in favor of 'resource.loader.classpath.class'
+2021-03-30 11:16:34,858 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:272] Initializing Velocity, Calling init()...
+2021-03-30 11:16:34,860 TRACE [specs2-1] o.a.velocity [RuntimeInstance.java:275] *****************************
+2021-03-30 11:16:34,861 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:276] Starting Apache Velocity v2.3
+2021-03-30 11:16:34,863 TRACE [specs2-1] o.a.velocity [RuntimeInstance.java:277] RuntimeInstance initializing.
+2021-03-30 11:16:34,920 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:522] Default Properties resource: org/apache/velocity/runtime/defaults/velocity.properties
+2021-03-30 11:16:34,977 TRACE [specs2-1] o.a.v.loader [ResourceManagerImpl.java:109] ResourceManager initializing: class org.apache.velocity.runtime.resource.ResourceManagerImpl
+2021-03-30 11:16:34,989 DEBUG [specs2-1] o.a.velocity [ResourceLoaderFactory.java:48] ResourceLoader instantiated: org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+2021-03-30 11:16:35,000 TRACE [specs2-1] o.a.v.l.classpath [ClasspathResourceLoader.java:89] ClasspathResourceLoader: initialization complete.
+2021-03-30 11:16:35,008 DEBUG [specs2-1] o.a.velocity [ResourceCacheImpl.java:119] initialized (class org.apache.velocity.runtime.resource.ResourceCacheImpl) with class java.util.Collections$SynchronizedMap cache map.
+2021-03-30 11:16:35,010 TRACE [specs2-1] o.a.v.loader [ResourceManagerImpl.java:205] Default ResourceManager initialization complete.
+2021-03-30 11:16:35,048 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Stop
+2021-03-30 11:16:35,058 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Define
+2021-03-30 11:16:35,064 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Break
+2021-03-30 11:16:35,070 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Evaluate
+2021-03-30 11:16:35,077 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Macro
+2021-03-30 11:16:35,089 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Parse
+2021-03-30 11:16:35,100 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Include
+2021-03-30 11:16:35,106 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Foreach
+2021-03-30 11:16:35,241 DEBUG [specs2-1] o.a.v.parser [ParserPoolImpl.java:57] Created '20' parsers.
+2021-03-30 11:16:35,417 TRACE [specs2-1] o.a.v.macro [VelocimacroFactory.java:129] initialization starting.
+2021-03-30 11:16:35,418 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:152] "velocimacro.library.path" is not set. Trying default library: velocimacros.vtl
+2021-03-30 11:16:35,437 DEBUG [specs2-1] o.a.v.l.classpath [ResourceLoader.java:249] Could not load resource 'velocimacros.vtl' from ResourceLoader org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+2021-03-30 11:16:35,438 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:162] Default library velocimacros.vtl not found. Trying old default library: VM_global_library.vm
+2021-03-30 11:16:35,461 DEBUG [specs2-1] o.a.v.l.classpath [ResourceLoader.java:249] Could not load resource 'VM_global_library.vm' from ResourceLoader org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+2021-03-30 11:16:35,463 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:169] Old default library VM_global_library.vm not found.
+2021-03-30 11:16:35,464 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:253] allowInline = true: VMs can be defined inline in templates
+2021-03-30 11:16:35,466 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:274] allowInlineToOverride = false: VMs defined inline may NOT replace previous VM definitions
+2021-03-30 11:16:35,467 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:297] allowInlineLocal = false: VMs defined inline will be global in scope if allowed.
+2021-03-30 11:16:35,469 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:315] autoload off: VM system will not automatically reload global library macros
+2021-03-30 11:16:35,470 TRACE [specs2-1] o.a.v.macro [VelocimacroFactory.java:319] Velocimacro: initialization complete.
+2021-03-30 11:16:35,471 TRACE [specs2-1] o.a.velocity [RuntimeInstance.java:295] RuntimeInstance successfully initialized.
+2021-03-30 11:16:38,778 ERROR [specs2-1] o.a.v.loader [ResourceManagerImpl.java:355] ResourceManager: unable to find resource 'FieldDaySummary.vsl' in any resource loader.
+2021-03-30 11:17:30,146 WARN [specs2-1] o.a.v.deprecation [DeprecationAwareExtProperties.java:62] configuration key 'resource.loader' has been deprecated in favor of 'resource.loaders'
+2021-03-30 11:17:30,151 WARN [specs2-1] o.a.v.deprecation [DeprecationAwareExtProperties.java:62] configuration key 'classpath.resource.loader.class' has been deprecated in favor of 'resource.loader.classpath.class'
+2021-03-30 11:17:31,522 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:272] Initializing Velocity, Calling init()...
+2021-03-30 11:17:31,524 TRACE [specs2-1] o.a.velocity [RuntimeInstance.java:275] *****************************
+2021-03-30 11:17:31,525 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:276] Starting Apache Velocity v2.3
+2021-03-30 11:17:31,527 TRACE [specs2-1] o.a.velocity [RuntimeInstance.java:277] RuntimeInstance initializing.
+2021-03-30 11:17:31,583 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:522] Default Properties resource: org/apache/velocity/runtime/defaults/velocity.properties
+2021-03-30 11:17:31,643 TRACE [specs2-1] o.a.v.loader [ResourceManagerImpl.java:109] ResourceManager initializing: class org.apache.velocity.runtime.resource.ResourceManagerImpl
+2021-03-30 11:17:31,655 DEBUG [specs2-1] o.a.velocity [ResourceLoaderFactory.java:48] ResourceLoader instantiated: org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+2021-03-30 11:17:31,667 TRACE [specs2-1] o.a.v.l.classpath [ClasspathResourceLoader.java:89] ClasspathResourceLoader: initialization complete.
+2021-03-30 11:17:31,674 DEBUG [specs2-1] o.a.velocity [ResourceCacheImpl.java:119] initialized (class org.apache.velocity.runtime.resource.ResourceCacheImpl) with class java.util.Collections$SynchronizedMap cache map.
+2021-03-30 11:17:31,676 TRACE [specs2-1] o.a.v.loader [ResourceManagerImpl.java:205] Default ResourceManager initialization complete.
+2021-03-30 11:17:31,714 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Stop
+2021-03-30 11:17:31,724 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Define
+2021-03-30 11:17:31,730 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Break
+2021-03-30 11:17:31,737 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Evaluate
+2021-03-30 11:17:31,744 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Macro
+2021-03-30 11:17:31,754 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Parse
+2021-03-30 11:17:31,765 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Include
+2021-03-30 11:17:31,771 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Foreach
+2021-03-30 11:17:31,911 DEBUG [specs2-1] o.a.v.parser [ParserPoolImpl.java:57] Created '20' parsers.
+2021-03-30 11:17:32,088 TRACE [specs2-1] o.a.v.macro [VelocimacroFactory.java:129] initialization starting.
+2021-03-30 11:17:32,089 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:152] "velocimacro.library.path" is not set. Trying default library: velocimacros.vtl
+2021-03-30 11:17:32,106 DEBUG [specs2-1] o.a.v.l.classpath [ResourceLoader.java:249] Could not load resource 'velocimacros.vtl' from ResourceLoader org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+2021-03-30 11:17:32,108 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:162] Default library velocimacros.vtl not found. Trying old default library: VM_global_library.vm
+2021-03-30 11:17:32,127 DEBUG [specs2-1] o.a.v.l.classpath [ResourceLoader.java:249] Could not load resource 'VM_global_library.vm' from ResourceLoader org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+2021-03-30 11:17:32,128 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:169] Old default library VM_global_library.vm not found.
+2021-03-30 11:17:32,129 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:253] allowInline = true: VMs can be defined inline in templates
+2021-03-30 11:17:32,131 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:274] allowInlineToOverride = false: VMs defined inline may NOT replace previous VM definitions
+2021-03-30 11:17:32,132 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:297] allowInlineLocal = false: VMs defined inline will be global in scope if allowed.
+2021-03-30 11:17:32,133 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:315] autoload off: VM system will not automatically reload global library macros
+2021-03-30 11:17:32,134 TRACE [specs2-1] o.a.v.macro [VelocimacroFactory.java:319] Velocimacro: initialization complete.
+2021-03-30 11:17:32,135 TRACE [specs2-1] o.a.velocity [RuntimeInstance.java:295] RuntimeInstance successfully initialized.
+2021-03-30 11:17:36,188 DEBUG [specs2-1] o.a.v.loader [ResourceManagerImpl.java:442] ResourceManager: found /contests/FieldDaySummary.vsl with loader org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+2021-03-30 11:20:15,201 WARN [specs2-1] o.a.v.deprecation [DeprecationAwareExtProperties.java:62] configuration key 'resource.loader' has been deprecated in favor of 'resource.loaders'
+2021-03-30 11:20:15,205 WARN [specs2-1] o.a.v.deprecation [DeprecationAwareExtProperties.java:62] configuration key 'classpath.resource.loader.class' has been deprecated in favor of 'resource.loader.classpath.class'
+2021-03-30 11:20:22,335 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:272] Initializing Velocity, Calling init()...
+2021-03-30 11:20:22,336 TRACE [specs2-1] o.a.velocity [RuntimeInstance.java:275] *****************************
+2021-03-30 11:20:22,336 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:276] Starting Apache Velocity v2.3
+2021-03-30 11:20:22,336 TRACE [specs2-1] o.a.velocity [RuntimeInstance.java:277] RuntimeInstance initializing.
+2021-03-30 11:20:22,343 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:522] Default Properties resource: org/apache/velocity/runtime/defaults/velocity.properties
+2021-03-30 11:20:22,357 TRACE [specs2-1] o.a.v.loader [ResourceManagerImpl.java:109] ResourceManager initializing: class org.apache.velocity.runtime.resource.ResourceManagerImpl
+2021-03-30 11:20:22,358 DEBUG [specs2-1] o.a.velocity [ResourceLoaderFactory.java:48] ResourceLoader instantiated: org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+2021-03-30 11:20:22,359 TRACE [specs2-1] o.a.v.l.classpath [ClasspathResourceLoader.java:89] ClasspathResourceLoader: initialization complete.
+2021-03-30 11:20:22,360 DEBUG [specs2-1] o.a.velocity [ResourceCacheImpl.java:119] initialized (class org.apache.velocity.runtime.resource.ResourceCacheImpl) with class java.util.Collections$SynchronizedMap cache map.
+2021-03-30 11:20:22,361 TRACE [specs2-1] o.a.v.loader [ResourceManagerImpl.java:205] Default ResourceManager initialization complete.
+2021-03-30 11:20:22,363 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Stop
+2021-03-30 11:20:22,364 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Define
+2021-03-30 11:20:22,365 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Break
+2021-03-30 11:20:22,366 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Evaluate
+2021-03-30 11:20:22,366 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Macro
+2021-03-30 11:20:22,368 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Parse
+2021-03-30 11:20:22,369 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Include
+2021-03-30 11:20:22,369 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Foreach
+2021-03-30 11:20:22,389 DEBUG [specs2-1] o.a.v.parser [ParserPoolImpl.java:57] Created '20' parsers.
+2021-03-30 11:20:22,403 TRACE [specs2-1] o.a.v.macro [VelocimacroFactory.java:129] initialization starting.
+2021-03-30 11:20:22,403 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:152] "velocimacro.library.path" is not set. Trying default library: velocimacros.vtl
+2021-03-30 11:20:22,404 DEBUG [specs2-1] o.a.v.l.classpath [ResourceLoader.java:249] Could not load resource 'velocimacros.vtl' from ResourceLoader org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+2021-03-30 11:20:22,404 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:162] Default library velocimacros.vtl not found. Trying old default library: VM_global_library.vm
+2021-03-30 11:20:22,405 DEBUG [specs2-1] o.a.v.l.classpath [ResourceLoader.java:249] Could not load resource 'VM_global_library.vm' from ResourceLoader org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+2021-03-30 11:20:22,405 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:169] Old default library VM_global_library.vm not found.
+2021-03-30 11:20:22,405 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:253] allowInline = true: VMs can be defined inline in templates
+2021-03-30 11:20:22,405 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:274] allowInlineToOverride = false: VMs defined inline may NOT replace previous VM definitions
+2021-03-30 11:20:22,405 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:297] allowInlineLocal = false: VMs defined inline will be global in scope if allowed.
+2021-03-30 11:20:22,406 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:315] autoload off: VM system will not automatically reload global library macros
+2021-03-30 11:20:22,406 TRACE [specs2-1] o.a.v.macro [VelocimacroFactory.java:319] Velocimacro: initialization complete.
+2021-03-30 11:20:22,406 TRACE [specs2-1] o.a.velocity [RuntimeInstance.java:295] RuntimeInstance successfully initialized.
+2021-03-30 11:20:23,955 DEBUG [specs2-1] o.a.v.loader [ResourceManagerImpl.java:442] ResourceManager: found /contests/FieldDaySummary.vsl with loader org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+2021-03-30 11:20:24,011 DEBUG [specs2-1] o.a.v.rendering [ASTReference.java:608] Null reference [template '/contests/FieldDaySummary.vsl', line 3, column 25]: $contest.callSign cannot be resolved.
+2021-03-30 11:21:50,894 WARN [specs2-1] o.a.v.deprecation [DeprecationAwareExtProperties.java:62] configuration key 'resource.loader' has been deprecated in favor of 'resource.loaders'
+2021-03-30 11:21:50,898 WARN [specs2-1] o.a.v.deprecation [DeprecationAwareExtProperties.java:62] configuration key 'classpath.resource.loader.class' has been deprecated in favor of 'resource.loader.classpath.class'
+2021-03-30 11:21:50,898 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:272] Initializing Velocity, Calling init()...
+2021-03-30 11:21:50,898 TRACE [specs2-1] o.a.velocity [RuntimeInstance.java:275] *****************************
+2021-03-30 11:21:50,899 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:276] Starting Apache Velocity v2.3
+2021-03-30 11:21:50,899 TRACE [specs2-1] o.a.velocity [RuntimeInstance.java:277] RuntimeInstance initializing.
+2021-03-30 11:21:50,902 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:522] Default Properties resource: org/apache/velocity/runtime/defaults/velocity.properties
+2021-03-30 11:21:50,912 TRACE [specs2-1] o.a.v.loader [ResourceManagerImpl.java:109] ResourceManager initializing: class org.apache.velocity.runtime.resource.ResourceManagerImpl
+2021-03-30 11:21:50,914 DEBUG [specs2-1] o.a.velocity [ResourceLoaderFactory.java:48] ResourceLoader instantiated: org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+2021-03-30 11:21:50,914 TRACE [specs2-1] o.a.v.l.classpath [ClasspathResourceLoader.java:89] ClasspathResourceLoader: initialization complete.
+2021-03-30 11:21:50,915 DEBUG [specs2-1] o.a.velocity [ResourceCacheImpl.java:119] initialized (class org.apache.velocity.runtime.resource.ResourceCacheImpl) with class java.util.Collections$SynchronizedMap cache map.
+2021-03-30 11:21:50,915 TRACE [specs2-1] o.a.v.loader [ResourceManagerImpl.java:205] Default ResourceManager initialization complete.
+2021-03-30 11:21:50,917 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Stop
+2021-03-30 11:21:50,918 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Define
+2021-03-30 11:21:50,918 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Break
+2021-03-30 11:21:50,919 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Evaluate
+2021-03-30 11:21:50,919 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Macro
+2021-03-30 11:21:50,920 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Parse
+2021-03-30 11:21:50,921 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Include
+2021-03-30 11:21:50,922 DEBUG [specs2-1] o.a.velocity [RuntimeInstance.java:1081] Loaded System Directive: org.apache.velocity.runtime.directive.Foreach
+2021-03-30 11:21:50,938 DEBUG [specs2-1] o.a.v.parser [ParserPoolImpl.java:57] Created '20' parsers.
+2021-03-30 11:21:50,957 TRACE [specs2-1] o.a.v.macro [VelocimacroFactory.java:129] initialization starting.
+2021-03-30 11:21:50,957 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:152] "velocimacro.library.path" is not set. Trying default library: velocimacros.vtl
+2021-03-30 11:21:50,958 DEBUG [specs2-1] o.a.v.l.classpath [ResourceLoader.java:249] Could not load resource 'velocimacros.vtl' from ResourceLoader org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+2021-03-30 11:21:50,958 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:162] Default library velocimacros.vtl not found. Trying old default library: VM_global_library.vm
+2021-03-30 11:21:50,958 DEBUG [specs2-1] o.a.v.l.classpath [ResourceLoader.java:249] Could not load resource 'VM_global_library.vm' from ResourceLoader org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+2021-03-30 11:21:50,958 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:169] Old default library VM_global_library.vm not found.
+2021-03-30 11:21:50,958 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:253] allowInline = true: VMs can be defined inline in templates
+2021-03-30 11:21:50,959 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:274] allowInlineToOverride = false: VMs defined inline may NOT replace previous VM definitions
+2021-03-30 11:21:50,959 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:297] allowInlineLocal = false: VMs defined inline will be global in scope if allowed.
+2021-03-30 11:21:50,959 DEBUG [specs2-1] o.a.v.macro [VelocimacroFactory.java:315] autoload off: VM system will not automatically reload global library macros
+2021-03-30 11:21:50,959 TRACE [specs2-1] o.a.v.macro [VelocimacroFactory.java:319] Velocimacro: initialization complete.
+2021-03-30 11:21:50,959 TRACE [specs2-1] o.a.velocity [RuntimeInstance.java:295] RuntimeInstance successfully initialized.
+2021-03-30 11:21:50,966 DEBUG [specs2-1] o.a.v.loader [ResourceManagerImpl.java:442] ResourceManager: found /contests/FieldDaySummary.vsl with loader org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader

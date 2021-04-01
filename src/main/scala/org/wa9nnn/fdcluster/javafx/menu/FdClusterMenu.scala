@@ -22,7 +22,6 @@ import akka.actor.ActorRef
 import akka.util.Timeout
 import com.google.inject.Injector
 import com.google.inject.name.Named
-import com.typesafe.scalalogging.LazyLogging
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import org.wa9nnn.fdcluster.cabrillo.{CabrilloDialog, CabrilloExportRequest}
 import org.wa9nnn.fdcluster.dupsheet.GenerateDupSheet
@@ -33,6 +32,7 @@ import org.wa9nnn.fdcluster.rig.RigDialog
 import org.wa9nnn.fdcluster.store.{DebugClearStore, Sync}
 import org.wa9nnn.fdcluster.tools.RandomQsoDialog
 import org.wa9nnn.fdcluster.{FileManager, QsoCountCollector}
+import org.wa9nnn.util.StructuredLogging
 import scalafx.Includes._
 import scalafx.application.Platform
 import scalafx.event.ActionEvent
@@ -43,7 +43,6 @@ import java.io.PrintWriter
 import java.nio.file.Files
 import javax.inject.Inject
 import scala.concurrent.duration.DurationInt
-import scala.jdk.CollectionConverters._
 import scala.language.postfixOps
 import scala.util.{Failure, Success, Try, Using}
 
@@ -55,25 +54,9 @@ class FdClusterMenu @Inject()(
                                fileManager: FileManager,
                                generateDupSheet: GenerateDupSheet,
                                contestProperty: ContestProperty,
-                               debugRemoveDialog: DebugRemoveDialog) extends LazyLogging {
+                               debugRemoveDialog: DebugRemoveDialog) extends StructuredLogging {
   private implicit val timeout = Timeout(5 seconds)
   private val desktop = Desktop.getDesktop
-  private val environmentMenuItem = new MenuItem {
-    text = "Environment"
-    onAction = { _: ActionEvent =>
-      val d: Dialog[Nothing] = new Dialog() {
-        title = "Information Dialog"
-        private val keys = System.getProperties.keySet().asScala.map(_.toString)
-        contentText =
-          keys.toList
-            .sorted
-            .map(key ⇒
-              s"$key: \t${System.getProperty(key).take(35)}").mkString("\n")
-      }
-      d.dialogPane().buttonTypes = Seq(ButtonType.Close)
-      d.showAndWait()
-    }
-  }
   private val currentStationMenuItem = new MenuItem {
     text = "Current Station"
     onAction = { _: ActionEvent =>
@@ -158,11 +141,11 @@ class FdClusterMenu @Inject()(
   private val exportCabrillo = new MenuItem {
     text = "export Cabrillo"
     onAction = { _: ActionEvent =>
-      val cg = injector.instance[CabrilloDialog]
-      cg.showAndWait() match {
+      val cabrilloDialog: CabrilloDialog = injector.instance[CabrilloDialog]
+      cabrilloDialog.showAndWait() match {
         case Some(cabrilloExportRequest: CabrilloExportRequest) =>
           store ! cabrilloExportRequest
-        case None =>
+        case _ =>
       }
     }
   }
@@ -186,14 +169,18 @@ class FdClusterMenu @Inject()(
     onAction = { _ =>
 
       val dupFile: ExportFile = fileManager.defaultExportFile("dup")(contestProperty)
-      val r: Try[Unit] = Using(new PrintWriter(Files.newBufferedWriter(dupFile.path))) { pw =>
+      val r: Try[Int] = Using(new PrintWriter(Files.newBufferedWriter(dupFile.path))) { pw =>
         generateDupSheet(pw)
       }
       r match {
         case Failure(exception) =>
           logger.error("Generating Dup", exception)
-        case Success(value) =>
+        case Success(qsoCount) =>
           Desktop.getDesktop.open(dupFile.path.toFile)
+          logJson("Dup Write")
+            .++("path" -> dupFile.path)
+            .++("qsoCount" -> qsoCount)
+          .info()
       }
     }
   }
@@ -246,8 +233,8 @@ class FdClusterMenu @Inject()(
       new Menu("_Help") {
         mnemonicParsing = true
         items = List(
-          environmentMenuItem,
-          //          aboutMenuItem,
+          //          environmentMenuItem,
+          aboutMenuItem,
         )
       }
     )

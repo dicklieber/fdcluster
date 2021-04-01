@@ -31,24 +31,32 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class GenerateDupSheet @Inject()(@Named("allQsos") allQsos: ObservableBuffer[QsoRecord],
                                  contestProperty:ContestProperty) extends StructuredLogging {
-
-  def apply(pw: PrintWriter): Unit = {
+  /**
+   *
+   * @param pw where to write to.
+   * @return number of QSOs writer to Dup.
+   */
+  def apply(pw: PrintWriter): Int = {
     val contest = contestProperty.value
     pw.print(s"Call Used: ${contest.callSign}  Class: ${contest.ourExchange.entryClass}  ARRL Section: ${contest.ourExchange.sectionCode}\r\n")
     pw.print("\r\n")
     pw.print("Dupe Sheet\r\n")
 
+    var count = 0
     allQsos.groupBy(qsoRecord =>
       qsoRecord.qso.bandMode)
       .foreach { case (bandMode, ob) =>
         val head = s"$bandMode"
-        pw.print(head + "\r\n")
-        val callSigns = ob.map(qsoRecord =>
+        pw.print("\r\n" + head + "\r\n")
+        val callSigns = ob.map((qsoRecord: QsoRecord) =>
           qsoRecord.qso.callSign
         )
-        callSigns.foreach(cs => pw.print(s"$cs\r\n"))
-        pw.print(s"$head  Total Contacts ${callSigns.size}\r\n")
+        callSigns.sorted.foreach(cs => {
+          pw.print(s"$cs\r\n")
+          count += 1
+        })
+        pw.print(f"\r\n$head  Total Contacts ${callSigns.size}%,d\r\n")
       }
-
+    count
   }
 }

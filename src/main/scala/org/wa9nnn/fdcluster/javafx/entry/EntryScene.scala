@@ -206,12 +206,10 @@ class EntryScene @Inject()(
    */
   def nextField(nextText: String, destination: TextField): Unit = {
     destination.requestFocus()
-    //    destination.setText(nextText) todo I don't understand how the class field works without this! Uncomment doubles number!
     destination.positionCaret(1)
   }
 
   clear()
-
 
   val qsoMetadataBinding: ObjectBinding[QsoMetadata] = Bindings.createObjectBinding(() => {
     val cs = currentStationProperty.value
@@ -232,9 +230,6 @@ class EntryScene @Inject()(
     println(s"contestProperty1: from: $from to $to")
   }
 
-  //  qsoMetadataBinding.onChange { (_, _, q: QsoMetadata) =>
-  //    qsoMetadataProperty.value = q
-  //  }
   qsoMetadataBinding.onChange { (_, from, to) =>
     println(s"qsoMetadataProperty: from: $from to $to")
   }

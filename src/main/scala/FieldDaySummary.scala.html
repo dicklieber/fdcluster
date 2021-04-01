@@ -1,0 +1,52 @@
+@import org.wa9nnn.fdcluster.contest.Contest
+@import org.wa9nnn.fdcluster.contest.fieldday.WinterFieldDaySettings
+@import org.wa9nnn.fdcluster.javafx.entry.Sections.byCode
+@import org.wa9nnn.fdcluster.model.EntryCategory
+@import play.twirl.api.TwirlFeatureImports.defining
+@(contest: Contest, wfd: WinterFieldDaySettings, categories: Seq[EntryCategory])
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+        <title>Field Day Entry Summary</title>
+        <style>
+                body {
+                    font-family: verdana, arial, sans-serif;
+                    font-size: 87.5%;
+                }
+
+                a {
+                    background-color: #e2e9ff;
+                    border: 1px solid #cccccc
+                }
+        </style>
+
+    </head>
+    <body>
+
+        <p>Call Used: <a>@contest.callSign</a> GOTA Station Call: <a>@wfd.gotaCallSign</a>
+            Location: <a>@byCode.get(contest.ourExchange.sectionCode)</a></p>
+        <p>Club or Group Name: <a>@wfd.club</a></p>
+        <p>Number of Participants: <a>@wfd.nParticipants</a>
+            Number of Transmitters in simultaneous operation:<a>@contest.ourExchange.sTransmitters</a></p>
+
+        <p>Entry Class (check only one): </p>
+        @defining(contest.ourExchange.category) { selectedCatagory =>
+            <table>
+                @for(category <- categories) {
+                    <tr>
+                        <td>
+                            @if(category.designator ==selectedCatagory){
+                                X
+                            } else {
+                                &nbsp;
+                            }
+                        </td>
+                        <td>@category.designator. </td>
+                        <td>@category.category</td>
+                    </tr>
+                }
+            </table>
+        }
+    </body>
+</html>

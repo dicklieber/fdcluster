@@ -51,7 +51,7 @@ object AdifQsoAdapter {
         } catch {
           case e: NoSuchElementException =>
             throw new MissingRequiredTag(tagName)
-          case x =>
+          case x:Throwable =>
             throw x
         }
       }

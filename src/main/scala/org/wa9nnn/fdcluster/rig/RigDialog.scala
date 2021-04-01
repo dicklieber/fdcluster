@@ -82,21 +82,22 @@ class RigDialog @Inject()(rigStore: RigStore) extends Dialog[RigSettings] with S
     )
     center = catControlPanel
   }
+  private val pane: control.DialogPane = dialogPane()
+  private val saveButton = new ButtonType("Save")
 
-  resultConverter = {
-    case saveButton =>
+  resultConverter = { button =>
+    if( button ==  saveButton ) {
       val model: RigModel = modelSelect.value.apply()
       val serialPort: SerialPortSettings = catControlPanel.result
       //todo handle not set Option
       val settings = RigSettings(model, serialPort)
       rigStore.rigSettings.value = settings
       settings
-    case _ =>
+    }else {
       logger.trace("No change to rig")
       null //todo
+    }
   }
-  private val pane: control.DialogPane = dialogPane()
-  private val saveButton = new ButtonType("Save")
 
   pane.setContent(borderPane)
   private val buttonTypes: ObservableList[control.ButtonType] = pane.getButtonTypes

@@ -30,7 +30,7 @@ trait StationDialogLogicContext extends ForEach[StationDialogLogic] {
       saveButton
     )
 
-    try AsResult(r(stationDialogLogic))
+     AsResult(r(stationDialogLogic))
   }
 }
 

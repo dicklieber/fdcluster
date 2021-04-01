@@ -40,7 +40,6 @@ class ContestProperty @Inject()(persistence: Persistence) extends ObjectProperty
 
   private val initContest: Contest = persistence.loadFromFile[Contest](() => Contest())
   value = initContest
-
   def contest: Contest = value
 
   val callSignProperty: StringProperty = StringProperty(initContest.callSign)
@@ -60,6 +59,7 @@ class ContestProperty @Inject()(persistence: Persistence) extends ObjectProperty
   def eventYear: String = eventYearProperty.value
 
   val logotypeImageProperty: ObjectProperty[Image] = new ObjectProperty[Image]()
+  setUpImage(initContest.eventName)
 
   def fileBase: String = event
 

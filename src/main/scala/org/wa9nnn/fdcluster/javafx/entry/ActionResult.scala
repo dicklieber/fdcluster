@@ -40,7 +40,7 @@ class ActionResult(storeActor: ActorRef, qsoMetadata: QsoMetadata)(implicit time
 
   def potentiaDup(partial: CallSign): Unit = {
     val bm=BandMode()//todo when we re do station panel in EntryScene
-    val future: Future[Any] = storeActor ? Search(partial, bm)
+    val future: Future[SearchResult] = (storeActor ? Search(partial, bm)).mapTo[SearchResult]
     future.onComplete {
       case Failure(exception) =>
         logger.error(s"Search for dup: $partial", exception)
