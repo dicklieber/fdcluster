@@ -5,4 +5,5 @@ import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
 
 case class WinterFieldDaySettings(gotaCallSign:CallSign,
                                   club:String,
-                                  nParticipants:Int)
+                                  nParticipants:Int,
+                                  power:String = "150")

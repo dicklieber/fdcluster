@@ -75,6 +75,7 @@
     -fx-min-width: 62;
     -fx-text-alignment: right;
 }
+
 .taskAndStatus{
     -fx-pref-width: 400;
 }

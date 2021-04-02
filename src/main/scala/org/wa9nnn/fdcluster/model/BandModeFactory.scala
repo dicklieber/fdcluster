@@ -25,7 +25,7 @@ import org.wa9nnn.fdcluster.model.AvailableBand.availaBandRegx
 import org.wa9nnn.fdcluster.model.CurrentStation._
 import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.jdk.CollectionConverters._
 
 /**
@@ -33,6 +33,7 @@ import scala.jdk.CollectionConverters._
  *
  * @param config access to application.conf.
  */
+@Singleton
 class BandModeFactory @Inject()(config: Config = ConfigFactory.load()) extends LazyLogging {
   def modeForRig(rig: String): Option[String] = {
     modes.find(_.rigModes.contains(rig)).map(_.mode)
