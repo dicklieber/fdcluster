@@ -24,6 +24,7 @@ import com.google.inject.Injector
 import com.google.inject.name.Named
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import org.wa9nnn.fdcluster.cabrillo.{CabrilloDialog, CabrilloExportRequest}
+import org.wa9nnn.fdcluster.contest.fieldday.{SummaryEngine, WinterFieldDaySettings}
 import org.wa9nnn.fdcluster.dupsheet.GenerateDupSheet
 import org.wa9nnn.fdcluster.javafx.debug.DebugRemoveDialog
 import org.wa9nnn.fdcluster.javafx.sync.{SyncDialog, SyncSteps}
@@ -39,14 +40,14 @@ import scalafx.event.ActionEvent
 import scalafx.scene.control._
 
 import java.awt.Desktop
-import java.io.PrintWriter
+import java.io.{PrintWriter, StringWriter}
 import java.nio.file.Files
 import javax.inject.Inject
 import scala.concurrent.duration.DurationInt
 import scala.language.postfixOps
 import scala.util.{Failure, Success, Try, Using}
 
-class FdClusterMenu @Inject()(
+class FdClusterMenu @Inject()(implicit
                                injector: Injector,
                                @Named("store") store: ActorRef,
                                syncSteps: SyncSteps,
@@ -54,6 +55,7 @@ class FdClusterMenu @Inject()(
                                fileManager: FileManager,
                                generateDupSheet: GenerateDupSheet,
                                contestProperty: ContestProperty,
+                               summaryEngine: SummaryEngine,
                                debugRemoveDialog: DebugRemoveDialog) extends StructuredLogging {
   private implicit val timeout = Timeout(5 seconds)
   private val desktop = Desktop.getDesktop
@@ -149,6 +151,23 @@ class FdClusterMenu @Inject()(
       }
     }
   }
+  private val fieldDaySummary = new MenuItem{
+    text = "FieldDay Entry Summary"
+    onAction = {_ =>
+      val writer = new StringWriter
+
+      val wfd = WinterFieldDaySettings()
+      summaryEngine(writer, contestProperty.contest, wfd)
+      writer.close()
+
+      fileManager.defaultExportFile(".html")
+      val path = Files.createTempFile("SummaryEngineSpec", ".html")
+      Files.writeString(path, writer.toString)
+      val uri = path.toUri
+      Desktop.getDesktop.browse(uri)
+    }
+  }
+
   private val filesMenuItem = new MenuItem {
     text = "FdCluster Files"
     onAction = { _ =>
@@ -204,7 +223,10 @@ class FdClusterMenu @Inject()(
           importMenuItem,
           exportMenuItem,
           exportCabrillo,
+          new SeparatorMenuItem(),
           dupSheetMenuItem,
+          fieldDaySummary,
+          new SeparatorMenuItem(),
           filesMenuItem,
           exitMenuItem,
         )

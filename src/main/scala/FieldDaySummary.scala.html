@@ -3,7 +3,10 @@
 @import org.wa9nnn.fdcluster.javafx.entry.Sections.byCode
 @import org.wa9nnn.fdcluster.model.EntryCategory
 @import play.twirl.api.TwirlFeatureImports.defining
-@(contest: Contest, wfd: WinterFieldDaySettings, categories: Seq[EntryCategory])
+@import com.wa9nnn.util.tableui.Table
+@import com.wa9nnn.util.tableui.html.renderTable
+
+@(contest: Contest, wfd: WinterFieldDaySettings, categories: Seq[EntryCategory], bandModeTable: Table)
 
 <html lang="en">
     <head>
@@ -24,11 +27,13 @@
                     font-style: italic;
                     text-align: right;
                 }
-                .sumCell{
+
+                .sumCell {
                     background-color: #e2e9ff;
                     text-align: right;
                     white-space: nowrap;
                 }
+
                 th {
                     border: 3px solid white;
                     padding: 2px;
@@ -40,6 +45,7 @@
                     font-size: 14px;
 
                 }
+
                 .cornerCell {
                     background: white;
                 }
@@ -62,11 +68,11 @@
                 @for(category <- categories) {
                     <tr>
                         <td>
-                            @if(category.designator ==selectedCatagory){
-                                X
-                            } else {
-                                &nbsp;
-                            }
+                        @if(category.designator == selectedCatagory) {
+                            X
+                        } else {
+                            &nbsp;
+                        }
                         </td>
                         <td>@category.designator. </td>
                         <td>@category.category</td>
@@ -74,5 +80,8 @@
                 }
             </table>
         }
+        <p>Band/Mode QSO Breakdown:</p>
+        @renderTable(bandModeTable)
+
     </body>
 </html>

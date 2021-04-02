@@ -11,7 +11,6 @@ import java.io.StringWriter
 import java.nio.file.Files
 
 class SummaryEngineSpec extends Specification {
-
   "SummaryEngine" should {
     "apply" in {
       val config = ConfigFactory.load()
@@ -33,7 +32,7 @@ class SummaryEngineSpec extends Specification {
         QsoRecord(Qso("W9BBQ", BandMode(modeName = "DI"), new Exchange()), QsoMetadata()),
       )
 
-      val summaryEngine = new SummaryEngine(allContestRules, allQsos, new BandModeFactory())
+      val summaryEngine = new SummaryEngine(allContestRules, new BandModeBreakDown(allQsos, new BandModeFactory()))
       val writer = new StringWriter
       summaryEngine(writer, contest, wfd)
       writer.close()
