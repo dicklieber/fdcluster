@@ -31,7 +31,7 @@ import scala.util.{Failure, Success, Try}
 trait Persistence {
   /**
    *
-   * @param product a case class that has [[play.api.libs.json.Format]] implicit. Usually in [[org.wa9nnn.fdcluster.model.MessageFormats]]
+   * @param product a case class that has Format implicit. Usually in [[org.wa9nnn.fdcluster.model.MessageFormats]]
    * @param writes [[play.api.libs.json.Format]]
    * @tparam T must be a case class
    * @return
@@ -44,7 +44,6 @@ trait Persistence {
 /**
  * A simple persistence engine that between case classes and files
  * Files are persisted in the basePath directory using a file name that is the class name (without path)
- * so e.g. [[org.wa9nnn.fdcluster.model.CurrentStation#BandMode(java.lang.String, java.lang.String)]] is saved as <basePath>/BandMode
  *
  * @param fileManager where to write files
  */

@@ -90,12 +90,6 @@ jlinkModules := {
   jlinkModules.value :+ "jdk.unsupported"
 }
 
-jlinkOptions := {
-  jpackage {
-    imageOptions = listOf("--icon", "src/main/resources/java.icns")
-  }
-}
-
 jlinkIgnoreMissingDependency := JlinkIgnore.only(
   "afu.org.checkerframework.checker.formatter" -> "afu.org.checkerframework.checker.formatter.qual",
   "afu.org.checkerframework.checker.nullness" -> "afu.org.checkerframework.checker.nullness.qual",

@@ -50,7 +50,7 @@ class ClusterTable extends LazyLogging {
     /**
      *
      * @param rowHeader string for 1st column
-     * @param callback  how to extract body cell from a NodeStateContainer. Will be called for each [[NodeStateContainer]]
+     * @param callback  how to extract body cell from a NodeStateContainer. Will be called for each [[org.wa9nnn.fdcluster.store.network.cluster.NodeStateContainer]]
      * @return a row for the table
      */
     def buildRow(rowHeader: String, callback: NodeStateContainer ⇒ Any): Row = {

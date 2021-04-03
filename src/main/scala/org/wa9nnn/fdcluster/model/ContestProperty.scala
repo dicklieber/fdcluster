@@ -23,7 +23,6 @@ import _root_.scalafx.beans.binding.{Bindings, ObjectBinding}
 import _root_.scalafx.scene.image.Image
 import com.apple.eawt.Application
 import org.wa9nnn.fdcluster.contest.Contest
-import org.wa9nnn.fdcluster.javafx.FdCluster.url
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.util.{Persistence, StructuredLogging}
 import scalafx.beans.property._
