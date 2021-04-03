@@ -4,7 +4,7 @@ maintainer := "wa9nnn@u505.com"
 
 
 lazy val `fdcluster` = (project in file("."))
-  .enablePlugins(JavaAppPackaging, GitPlugin, BuildInfoPlugin, SbtTwirl).settings(
+  .enablePlugins(JlinkPlugin, GitPlugin, BuildInfoPlugin, SbtTwirl).settings(
     buildInfoKeys ++= Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion,
       git.gitCurrentTags, git.gitCurrentBranch, git.gitHeadCommit, git.gitHeadCommitDate, git.baseVersion,
       BuildInfoKey.action("buildTime") {
@@ -86,3 +86,67 @@ libraryDependencies ++= Seq(
   //  "com.github.jvican" %% "xmlrpc" % "1.2.1"
 )
 
+jlinkModules := {
+  jlinkModules.value :+ "jdk.unsupported"
+}
+
+jlinkOptions := {
+  jpackage {
+    imageOptions = listOf("--icon", "src/main/resources/java.icns")
+  }
+}
+
+jlinkIgnoreMissingDependency := JlinkIgnore.only(
+  "afu.org.checkerframework.checker.formatter" -> "afu.org.checkerframework.checker.formatter.qual",
+  "afu.org.checkerframework.checker.nullness" -> "afu.org.checkerframework.checker.nullness.qual",
+  "afu.org.checkerframework.checker.regex" -> "afu.org.checkerframework.dataflow.qual",
+  "afu.org.checkerframework.checker.regex" -> "afu.org.checkerframework.framework.qual",
+  "ch.qos.logback.classic" -> "javax.servlet.http",
+  "ch.qos.logback.classic.boolex" -> "groovy.lang",
+  "ch.qos.logback.classic.boolex" -> "org.codehaus.groovy.control",
+  "ch.qos.logback.classic.boolex" -> "org.codehaus.groovy.reflection",
+  "ch.qos.logback.classic.boolex" -> "org.codehaus.groovy.runtime",
+  "ch.qos.logback.classic.boolex" -> "org.codehaus.groovy.runtime.callsite",
+  "ch.qos.logback.classic.boolex" -> "org.codehaus.groovy.runtime.typehandling",
+  "ch.qos.logback.classic.gaffer" -> "groovy.lang",
+  "ch.qos.logback.classic.gaffer" -> "org.codehaus.groovy.control",
+  "ch.qos.logback.classic.gaffer" -> "org.codehaus.groovy.control.customizers",
+  "ch.qos.logback.classic.gaffer" -> "org.codehaus.groovy.reflection",
+  "ch.qos.logback.classic.gaffer" -> "org.codehaus.groovy.runtime",
+  "ch.qos.logback.classic.gaffer" -> "org.codehaus.groovy.runtime.callsite",
+  "ch.qos.logback.classic.gaffer" -> "org.codehaus.groovy.runtime.typehandling",
+  "ch.qos.logback.classic.gaffer" -> "org.codehaus.groovy.runtime.wrappers",
+  "ch.qos.logback.classic.gaffer" -> "org.codehaus.groovy.transform",
+  "ch.qos.logback.classic.helpers" -> "javax.servlet",
+  "ch.qos.logback.classic.helpers" -> "javax.servlet.http",
+  "ch.qos.logback.classic.selector.servlet" -> "javax.servlet",
+  "ch.qos.logback.classic.servlet" -> "javax.servlet",
+  "ch.qos.logback.core.boolex" -> "org.codehaus.janino",
+  "ch.qos.logback.core.joran.conditional" -> "org.codehaus.commons.compiler",
+  "ch.qos.logback.core.joran.conditional" -> "org.codehaus.janino",
+  "ch.qos.logback.core.net" -> "javax.mail",
+  "ch.qos.logback.core.net" -> "javax.mail.internet",
+  "ch.qos.logback.core.status" -> "javax.servlet",
+  "ch.qos.logback.core.status" -> "javax.servlet.http",
+  "com.codahale.metrics.health.jvm" -> "com.codahale.metrics.jvm",
+  "com.rabbitmq.client.impl" -> "io.micrometer.core.instrument",
+  "com.sun.media.jfxmediaimpl.platform" -> "com.sun.media.jfxmediaimpl.platform.ios",
+  "org.checkerframework.checker.formatter" -> "org.checkerframework.checker.formatter.qual",
+  "org.checkerframework.checker.nullness" -> "org.checkerframework.checker.nullness.qual",
+  "org.checkerframework.checker.regex" -> "org.checkerframework.dataflow.qual",
+  "org.checkerframework.checker.regex" -> "org.checkerframework.framework.qual",
+  "org.joda.time" -> "org.joda.convert",
+  "org.joda.time.base" -> "org.joda.convert",
+  "org.reflections.serializers" -> "com.google.gson",
+  "org.reflections.serializers" -> "org.dom4j",
+  "org.reflections.serializers" -> "org.dom4j.io",
+  "org.reflections.util" -> "javax.servlet",
+  "org.reflections.vfs" -> "org.apache.commons.vfs2",
+  "org.scalafx.extras" -> "javafx.embed.swing",
+  "scalafx" -> "javafx.embed.swing",
+  "scalafx" -> "javafx.scene.web",
+  "scalafx.embed.swing" -> "javafx.embed.swing",
+  "scalafx.scene.web" -> "javafx.scene.web",
+  "scalafxml.core" -> "javafx.fxml",
+
+)

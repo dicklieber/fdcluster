@@ -11,7 +11,7 @@ trait ScalafxFixture extends BeforeAfter{
     // control creation need it to work.
     Platform.startup(new Runnable {
       override def run(): Unit = {
-        // don't need to actuall run anytin, but javafx gets started/
+        // don't need to actuall run anyting, but javafx gets started/
       }
     })
   }

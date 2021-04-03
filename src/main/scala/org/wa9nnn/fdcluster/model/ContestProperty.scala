@@ -21,7 +21,9 @@ package org.wa9nnn.fdcluster.model
 
 import _root_.scalafx.beans.binding.{Bindings, ObjectBinding}
 import _root_.scalafx.scene.image.Image
+import com.apple.eawt.Application
 import org.wa9nnn.fdcluster.contest.Contest
+import org.wa9nnn.fdcluster.javafx.FdCluster.url
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.util.{Persistence, StructuredLogging}
 import scalafx.beans.property._
@@ -40,6 +42,7 @@ class ContestProperty @Inject()(persistence: Persistence) extends ObjectProperty
 
   private val initContest: Contest = persistence.loadFromFile[Contest](() => Contest())
   value = initContest
+
   def contest: Contest = value
 
   val callSignProperty: StringProperty = StringProperty(initContest.callSign)
@@ -96,6 +99,19 @@ class ContestProperty @Inject()(persistence: Persistence) extends ObjectProperty
         logger.error(s"loading: $imagePath", exception)
       case Success(image) =>
         logotypeImageProperty.setValue(image)
+    }
+
+    try {
+      {
+        val application: Application = Application.getApplication
+        import java.awt.{Image, Toolkit}
+
+        val image: Image = Toolkit.getDefaultToolkit.getImage(getClass.getResource(imagePath))
+        application.setDockIconImage(image)
+      }
+    } catch {
+      case e:Exception =>
+        logger.error("Icon switch", e)
     }
   }
 
