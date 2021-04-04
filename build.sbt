@@ -2,6 +2,7 @@ name := "fdcluster"
 
 maintainer := "wa9nnn@u505.com"
 
+resolvers += "Artifactory" at "https://wa9nnn.jfrog.io/artifactory/wa9nnn"
 
 lazy val `fdcluster` = (project in file("."))
   .enablePlugins(JlinkPlugin, GitPlugin, BuildInfoPlugin, SbtTwirl).settings(
@@ -53,7 +54,7 @@ lazy val akkaHttpVersion = "10.1.9"
 val logbackVersion = "1.2.3"
 
 libraryDependencies ++= Seq(
-  "com.wa9nnn" %% "util" % "0.0.1-SNAPSHOT",
+  "com.wa9nnn" %% "util" % "0.0.1",
   "com.wa9nnn" %% "cabrillo-lib" % "1.0.2-SNAPSHOT",
   "com.typesafe.play" %% "play-json" % "2.8.0-M4",
   "org.specs2" %% "specs2-core" % "4.6.0" % "test",
