@@ -185,6 +185,10 @@
     -fx-alignment: center;
 }
 
+.alignedLine {
+     -fx-alignment: center
+ }
+
 .exchangeBlock {
     -fx-background-color: rgba(17, 255, 0, 0.22);
     -fx-font-size: large;

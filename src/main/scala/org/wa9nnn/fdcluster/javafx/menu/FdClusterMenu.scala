@@ -111,7 +111,7 @@ class FdClusterMenu @Inject()(implicit
   private val aboutMenuItem = new MenuItem {
     text = "_About"
     onAction = { _: ActionEvent =>
-      AboutDialog()
+      AboutDialog(fileManager)
     }
   }
   private val rigMenuItem = new MenuItem {
@@ -218,7 +218,6 @@ class FdClusterMenu @Inject()(implicit
       new Menu("_File") {
         mnemonicParsing = true
         items = List(
-          aboutMenuItem,
           rigMenuItem,
           importMenuItem,
           exportMenuItem,

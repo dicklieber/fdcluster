@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2021  Dick Lieber, WA9NNN
  *
@@ -19,41 +18,80 @@
 
 package org.wa9nnn.fdcluster.javafx.menu
 
+import com.typesafe.scalalogging.LazyLogging
+import org.wa9nnn.fdcluster.javafx.FdCluster.{getClass, ourScene}
+import org.wa9nnn.fdcluster.{BuildInfo, FileManager}
+import org.wa9nnn.fdcluster.javafx.GridOfControls
+import scalafx.scene.control.{Hyperlink, _}
+import scalafx.scene.layout.{HBox, VBox}
+
+import java.awt.Desktop
+import java.lang.management.ManagementFactory
+import java.net.URI
 import java.time.Instant
 
-import com.typesafe.scalalogging.LazyLogging
-import org.wa9nnn.fdcluster.BuildInfo
-import scalafx.geometry.Insets
-import scalafx.scene.control._
-import scalafx.scene.layout.GridPane
+object AboutDialog extends Dialog with LazyLogging {
+  title = s"About ${BuildInfo.name}"
 
-object AboutDialog  extends Dialog with LazyLogging {
-  def apply(): Unit = {
-     val gridPane: GridPane = new GridPane() {
-      hgap = 10
-      vgap = 10
-      padding = Insets(20, 100, 10, 10)
+  private val cssUrl: String = getClass.getResource("/fdcluster.css").toExternalForm
 
-      add(new Label("Application:"), 0, 0)
-      add(new Label("fdcluster"), 1, 0)
 
-      add(new Label("Version"), 0, 1)
-      add(new Label(BuildInfo.version), 1, 1)
+  def apply(fileManager: FileManager): Unit = {
+    val desktop = Desktop.getDesktop
 
-      add(new Label("Git Branch"), 0, 2)
-      add(new Label(BuildInfo.gitCurrentBranch), 1, 2)
+    val goc = new GridOfControls()
 
-      add(new Label("Git commit"), 0, 3)
-      add(new Label(BuildInfo.gitHeadCommit.getOrElse("--")), 1, 3)
+    goc.add("Application", BuildInfo.name)
+    goc.add("Version", BuildInfo.version)
+    goc.add("Git Branch", BuildInfo.gitCurrentBranch)
+    goc.add("Git commit", BuildInfo.gitHeadCommit.getOrElse("--"))
+    goc.add("Built", Instant.ofEpochMilli(BuildInfo.buildTime.toLong).toString)
+    goc.add("Java Home", new Hyperlink(System.getenv("JAVA_HOME")) {
+      onAction = event => {
+        desktop.open(fileManager.directory.toFile)
+      }
+    })
+    goc.add("Java Version", ManagementFactory.getRuntimeMXBean.getVmVersion)
+    goc.add("App Directory", new Hyperlink(fileManager.directory.toString) {
+      onAction = event => {
+        desktop.open(fileManager.directory.toFile)
+      }
+    })
+    goc.add("Source Code", new Hyperlink("https://github.com/dicklieber/fdcluster") {
+      onAction = event => {
+        desktop.browse(new URI("https://github.com/dicklieber/fdcluster"))
+      }
+    })
+    goc.add("Blame this guy", new Hyperlink("Dick Lieber WA9NNN") {
+      onAction = event => {
+        if (desktop.isSupported(Desktop.Action.MAIL)) {
+          val uri = s"mailto:${BuildInfo.maintainer}?subject=${BuildInfo.name}%20 version:${BuildInfo.version}"
+          val mailto = new URI(uri)
+          desktop.mail(mailto)
+        }
+      }
+    })
+    val dialogPane1 = dialogPane()
+    dialogPane1.getStylesheets.add(cssUrl)
 
-      add(new Label("Built"), 0, 4)
-      val buildStamp = Instant.ofEpochMilli(BuildInfo.buildTime.toLong).toString
+    dialogPane1.setContent(new VBox(goc,
+      new HBox(
+        new Label("© 2021  Dick Lieber, WA9NNN") {
+          styleClass += "parenthetic"
 
-      add(new Label(buildStamp), 1, 4)
-
-    }
-    dialogPane().setContent(gridPane)
-    dialogPane().getButtonTypes.add(ButtonType.Close)
+        },
+        new Hyperlink("Licensed under gpl-3.0") {
+          styleClass += "parenthetic"
+          onAction = event => {
+            desktop.browse(new URI("http://www.gnu.org/licenses/gpl-3.0.html"))
+          }
+        }
+      ){
+        styleClass += "alignedLine"
+      }
+    )
+    )
+    dialogPane1.getButtonTypes.add(ButtonType.Close)
 
     showAndWait()
   }

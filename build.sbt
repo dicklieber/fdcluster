@@ -6,7 +6,7 @@ resolvers += "Artifactory" at "https://wa9nnn.jfrog.io/artifactory/wa9nnn"
 
 lazy val `fdcluster` = (project in file("."))
   .enablePlugins(JlinkPlugin, GitPlugin, BuildInfoPlugin, SbtTwirl).settings(
-    buildInfoKeys ++= Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion,
+    buildInfoKeys ++= Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion,maintainer,
       git.gitCurrentTags, git.gitCurrentBranch, git.gitHeadCommit, git.gitHeadCommitDate, git.baseVersion,
       BuildInfoKey.action("buildTime") {
         System.currentTimeMillis

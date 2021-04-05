@@ -48,7 +48,7 @@ class GridOfControls extends GridPane {
     r
   }
 
-  def addText(labelText: String, defValue: String = "",
+   def addText(labelText: String, defValue: String = "",
               forceCaps: Boolean = false,
               regx: Option[Regex] = None,
               tooltip: Option[String] = None): StringProperty = {
@@ -128,5 +128,9 @@ class GridOfControls extends GridPane {
   def add(labelText: String, control:Control):Unit = {
     val row = label(labelText)
     add(control, 1, row)
+  }
+  def add(labelText: String, value:String):Unit = {
+    val row = label(labelText)
+    add(Label(value), 1, row)
   }
 }

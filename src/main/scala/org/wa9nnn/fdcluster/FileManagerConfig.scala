@@ -31,7 +31,7 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class FileManager @Inject()(@TypesafeConfig("directory") dir: String) {
 
-  val directory = Paths.get(dir)
+  val directory = Paths.get(dir).toAbsolutePath
 
   /**
    *
