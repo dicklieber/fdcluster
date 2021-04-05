@@ -55,7 +55,7 @@ val logbackVersion = "1.2.3"
 
 libraryDependencies ++= Seq(
   "com.wa9nnn" %% "util" % "0.0.1",
-  "com.wa9nnn" %% "cabrillo-lib" % "1.0.2-SNAPSHOT",
+  "com.wa9nnn" %% "cabrillo-lib" % "1.0.2",
   "com.typesafe.play" %% "play-json" % "2.8.0-M4",
   "org.specs2" %% "specs2-core" % "4.6.0" % "test",
   "org.specs2" %% "specs2-mock" % "4.6.0" % "test",
