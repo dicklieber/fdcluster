@@ -21,7 +21,7 @@ package org.wa9nnn.fdcluster.model
 
 import _root_.scalafx.beans.binding.{Bindings, ObjectBinding}
 import _root_.scalafx.scene.image.Image
-import com.apple.eawt.Application
+import com.wa9nnn.util.macos.DockIcon
 import org.wa9nnn.fdcluster.contest.Contest
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.util.{Persistence, StructuredLogging}
@@ -90,7 +90,7 @@ class ContestProperty @Inject()(persistence: Persistence) extends ObjectProperty
   )
 
   def setUpImage(eventName: String): Unit = {
-    val imagePath = s"/images/$eventName.png"
+    val imagePath: String = s"/images/$eventName.png"
     Using(getClass.getResourceAsStream(imagePath)) { is =>
       new Image(is, 150.0, 150.0, true, true)
     } match {
@@ -102,11 +102,7 @@ class ContestProperty @Inject()(persistence: Persistence) extends ObjectProperty
 
     try {
       {
-        val application: Application = Application.getApplication
-        import java.awt.{Image, Toolkit}
-
-        val image: Image = Toolkit.getDefaultToolkit.getImage(getClass.getResource(imagePath))
-        application.setDockIconImage(image)
+        DockIcon(imagePath)
       }
     } catch {
       case e:Exception =>
