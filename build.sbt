@@ -5,7 +5,7 @@ maintainer := "wa9nnn@u505.com"
 resolvers += "Artifactory" at "https://wa9nnn.jfrog.io/artifactory/wa9nnn"
 
 lazy val `fdcluster` = (project in file("."))
-  .enablePlugins(JlinkPlugin, GitPlugin, BuildInfoPlugin, SbtTwirl).settings(
+  .enablePlugins(JlinkPlugin, GitPlugin, BuildInfoPlugin, SbtTwirl, WindowsPlugin).settings(
     buildInfoKeys ++= Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion,maintainer,
       git.gitCurrentTags, git.gitCurrentBranch, git.gitHeadCommit, git.gitHeadCommitDate, git.baseVersion,
       BuildInfoKey.action("buildTime") {
@@ -16,11 +16,11 @@ lazy val `fdcluster` = (project in file("."))
     buildInfoPackage := "org.wa9nnn.fdcluster"
   )
 
-//resolvers += ("example-releases" at "http://repo.example.com/releases/")
+  // wix build information
+wixProductId := "268963af-6f14-445a-bcc7-21775b5bdcc5"
+wixProductUpgradeId := "6b10420e-df5b-4c6c-9ca0-c12daf4b239d"
 
-//resolvers += ("scalaz-bintray" at "http://dl.bintray.com/scalaz/releases").withAllowInsecureProtocol(true)
-
-//resolvers += "Akka Snapshot Repository" at "http://repo.akka.io/snapshots/"
+sources in doc in Compile := List()
 
 scalaVersion := "2.13.5"
 
@@ -28,8 +28,6 @@ mainClass in(Compile, run) := Some("org.wa9nnn.fdcluster.javafx.entry.FdCluster"
 
 
 scalacOptions in(Compile, doc) ++= Seq("-verbose", "-Ymacro-annotations")
-
-//unmanagedJars in (Compile, run) += Attributed.blank(file(System.getenv("JAVA_HOME") + "/lib/ext/jfxrt.jar"))
 
 import scala.util.Properties
 
@@ -84,7 +82,6 @@ libraryDependencies ++= Seq(
   "com.fazecast" % "jSerialComm" % "2.6.2",
   "commons-io" % "commons-io" % "2.8.0",
   "org.apache.commons" % "commons-math3" % "3.6.1",
-  //  "com.github.jvican" %% "xmlrpc" % "1.2.1"
 )
 
 jlinkModules := {

@@ -105,8 +105,8 @@ class ContestProperty @Inject()(persistence: Persistence) extends ObjectProperty
         DockIcon(imagePath)
       }
     } catch {
-      case e:Exception =>
-        logger.error("Icon switch", e)
+      case e: java.lang.NoClassDefFoundError =>
+        logger.debug("Icon switch", e)
     }
   }
 

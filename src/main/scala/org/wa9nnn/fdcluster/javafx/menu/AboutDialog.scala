@@ -65,7 +65,7 @@ object AboutDialog extends Dialog with LazyLogging {
     goc.add("Blame this guy", new Hyperlink("Dick Lieber WA9NNN") {
       onAction = event => {
         if (desktop.isSupported(Desktop.Action.MAIL)) {
-          val uri = s"mailto:${BuildInfo.maintainer}?subject=${BuildInfo.name}%20 version:${BuildInfo.version}"
+          val uri = s"mailto:${BuildInfo.maintainer}?subject=${BuildInfo.name}%20version:${BuildInfo.version}"
           val mailto = new URI(uri)
           desktop.mail(mailto)
         }
