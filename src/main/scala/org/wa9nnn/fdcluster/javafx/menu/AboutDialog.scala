@@ -19,8 +19,7 @@
 package org.wa9nnn.fdcluster.javafx.menu
 
 import com.typesafe.scalalogging.LazyLogging
-import org.wa9nnn.fdcluster.javafx.FdCluster.{getClass, ourScene}
-import org.wa9nnn.fdcluster.{BuildInfo, FileManager}
+import org.wa9nnn.fdcluster.{AppInfo, BuildInfo, FileManager}
 import org.wa9nnn.fdcluster.javafx.GridOfControls
 import scalafx.scene.control.{Hyperlink, _}
 import scalafx.scene.layout.{HBox, VBox}
@@ -28,21 +27,26 @@ import scalafx.scene.layout.{HBox, VBox}
 import java.awt.Desktop
 import java.lang.management.ManagementFactory
 import java.net.URI
-import java.time.Instant
+import java.time.{Duration, Instant}
+import org.wa9nnn.fdcluster.javafx.FdCluster
+import org.wa9nnn.util.DurationFormat
 
-object AboutDialog extends Dialog with LazyLogging {
+import javax.inject.{Inject, Singleton}
+@Singleton
+class  AboutDialog @Inject()(appInfo: AppInfo, fileManager: FileManager) extends Dialog with LazyLogging {
   title = s"About ${BuildInfo.name}"
 
   private val cssUrl: String = getClass.getResource("/fdcluster.css").toExternalForm
 
 
-  def apply(fileManager: FileManager): Unit = {
+  def apply(): Unit = {
     val desktop = Desktop.getDesktop
 
     val goc = new GridOfControls()
 
     goc.add("Application", BuildInfo.name)
     goc.add("Version", BuildInfo.version)
+    goc.add("UpTime", DurationFormat(Duration.between(appInfo.started, Instant.now())))
     goc.add("Git Branch", BuildInfo.gitCurrentBranch)
     goc.add("Git commit", BuildInfo.gitHeadCommit.getOrElse("--"))
     goc.add("Built", Instant.ofEpochMilli(BuildInfo.buildTime.toLong).toString)

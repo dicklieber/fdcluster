@@ -28,7 +28,7 @@ import org.wa9nnn.util.{StructuredLogging, TimeHelpers}
 import scalafx.collections.ObservableBuffer
 
 import java.io.PrintWriter
-import java.nio.file.{Files, Paths}
+import java.nio.file.Files
 import java.time.Instant
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject

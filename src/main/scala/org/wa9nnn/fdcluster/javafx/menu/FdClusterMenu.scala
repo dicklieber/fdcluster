@@ -48,15 +48,16 @@ import scala.language.postfixOps
 import scala.util.{Failure, Success, Try, Using}
 
 class FdClusterMenu @Inject()(implicit
-                               injector: Injector,
-                               @Named("store") store: ActorRef,
-                               syncSteps: SyncSteps,
-                               syncDialog: SyncDialog,
-                               fileManager: FileManager,
-                               generateDupSheet: GenerateDupSheet,
-                               contestProperty: ContestProperty,
-                               summaryEngine: SummaryEngine,
-                               debugRemoveDialog: DebugRemoveDialog) extends StructuredLogging {
+                              injector: Injector,
+                              @Named("store") store: ActorRef,
+                              syncSteps: SyncSteps,
+                              syncDialog: SyncDialog,
+                              aboutDialog: AboutDialog,
+                              fileManager: FileManager,
+                              generateDupSheet: GenerateDupSheet,
+                              contestProperty: ContestProperty,
+                              summaryEngine: SummaryEngine,
+                              debugRemoveDialog: DebugRemoveDialog) extends StructuredLogging {
   private implicit val timeout = Timeout(5 seconds)
   private val desktop = Desktop.getDesktop
   private val currentStationMenuItem = new MenuItem {
@@ -111,7 +112,7 @@ class FdClusterMenu @Inject()(implicit
   private val aboutMenuItem = new MenuItem {
     text = "_About"
     onAction = { _: ActionEvent =>
-      AboutDialog(fileManager)
+      aboutDialog()
     }
   }
   private val rigMenuItem = new MenuItem {
@@ -151,9 +152,9 @@ class FdClusterMenu @Inject()(implicit
       }
     }
   }
-  private val fieldDaySummary = new MenuItem{
+  private val fieldDaySummary = new MenuItem {
     text = "FieldDay Entry Summary"
-    onAction = {_ =>
+    onAction = { _ =>
       val writer = new StringWriter
 
       val wfd = WinterFieldDaySettings()
@@ -199,7 +200,7 @@ class FdClusterMenu @Inject()(implicit
           logJson("Dup Write")
             .++("path" -> dupFile.path)
             .++("qsoCount" -> qsoCount)
-          .info()
+            .info()
       }
     }
   }

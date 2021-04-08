@@ -19,10 +19,14 @@ object UdpMulticastListner {
 //    s.send(hi);
     // get their responses!
     var buf = new Array[Byte](1000);
-    var recv = new DatagramPacket(buf, buf.length);
-    s.receive(recv);
 
-    println(s"Got: ${recv.getAddress} ")
+    do {
+      val recv: DatagramPacket = new DatagramPacket(buf, buf.length);
+      s.receive(recv);
+      val data: Array[Byte] = recv.getData
+      val sData = new String(data)
+      println(s"Got: $sData from  ${recv.getAddress} ")
+    } while (true)
     // OK, I'm done talking - leave the group...
     s.leaveGroup(group);
 
