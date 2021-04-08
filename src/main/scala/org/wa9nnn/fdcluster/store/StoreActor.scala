@@ -94,9 +94,9 @@ class StoreActor(injector: Injector,
 
     case d: DistributedQsoRecord ⇒
       val qsoRecord = d.qsoRecord
-      val nodeAddress = qsoRecord.qsoMetadata.node
-      if (nodeAddress != nodeAddress) {
-        logger.debug(s"Ingesting ${qsoRecord.qso} from $nodeAddress")
+      val remoteNodeAddress = qsoRecord.qsoMetadata.node
+      if (remoteNodeAddress != nodeAddress) {
+        logger.debug(s"Ingesting ${qsoRecord.qso} from $remoteNodeAddress")
         store.addRecord(qsoRecord)
       } else {
         logger.debug(s"Ignoring our own QsoRecord: ${qsoRecord.qso}")
