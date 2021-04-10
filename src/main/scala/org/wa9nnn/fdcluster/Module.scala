@@ -26,7 +26,7 @@ import com.typesafe.config.{Config, ConfigFactory}
 import net.codingwell.scalaguice.ScalaModule
 import org.wa9nnn.fdcluster.javafx.entry.{RunningTaskInfoConsumer, RunningTaskPane}
 import org.wa9nnn.fdcluster.javafx.sync.{ProgressStep, SyncSteps}
-import org.wa9nnn.fdcluster.metrics.Reporter
+import org.wa9nnn.fdcluster.metrics.MetricsReporter
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.store._
 import org.wa9nnn.fdcluster.store.network.MulticastListener
@@ -79,7 +79,7 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
       bind[ActorSystem].toInstance(actorSystem)
       bind[Config].toInstance(actorSystem.settings.config)
       install(TypesafeConfigModule.fromConfigWithPackage(config, "org.wa9nnn"))
-      bind[Reporter].asEagerSingleton()
+      bind[MetricsReporter].asEagerSingleton()
       bind[Store].to[StoreMapImpl]
     }
     catch {

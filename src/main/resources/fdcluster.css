@@ -76,6 +76,10 @@
     -fx-text-alignment: right;
 }
 
+.metrics {
+    -fx-font-family: Monospaced;
+}
+
 .taskAndStatus{
     -fx-pref-width: 400;
 }

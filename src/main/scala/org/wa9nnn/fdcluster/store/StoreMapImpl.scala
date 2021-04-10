@@ -40,7 +40,7 @@ import scala.collection.concurrent.TrieMap
  *
  */
 @Singleton
-class StoreMapImpl @Inject()( na: NodeAddress,
+class StoreMapImpl @Inject()(na: NodeAddress,
                              @Named("qsoMetadata") qsoMetadata: ObjectProperty[QsoMetadata],
                              @Named("allQsos") allQsos: ObservableBuffer[QsoRecord],
                              syncSteps: SyncSteps = new SyncSteps,
@@ -54,7 +54,6 @@ class StoreMapImpl @Inject()( na: NodeAddress,
    */
   private val byUuid = new TrieMap[Uuid, QsoRecord]()
   private val byCallsign = new TrieMap[CallSign, Set[QsoRecord]]
-
 
 
   //   override lazy val metricBaseName = MetricName("Store")
@@ -77,6 +76,9 @@ class StoreMapImpl @Inject()( na: NodeAddress,
   }
 
   private val qsoMeter = metrics.meter("qso")
+  metrics.gauge("qso count") {
+    allQsos.size
+  }
   private val qsosDigestTimer = metrics.timer("qsos digest")
   private val hourDigestsTimer = metrics.timer("hours digest")
   private var loadingIndicesFlag = false
@@ -271,44 +273,45 @@ class StoreMapImpl @Inject()( na: NodeAddress,
     sync.NodeStatus(nodeAddress, byUuid.size, sDigest, hourDigests, qsoMetadata.value, currentStation, rate)
 
   }
-    /**
-     *
-     * @param fdHours [[List.empty]] returns all Uuids for all QSPOs.
-     */
-    override def uuidForHours(fdHours: Set[FdHour]): List[Uuid] = {
-      if (fdHours.isEmpty) {
-        byUuid.keys.toList
-      } else {
-        allQsos.flatMap { qr ⇒
-          if (fdHours.contains(qr.fdHour)) {
-            Seq(qr.qso.uuid)
-          } else {
-            Seq.empty
-          }
+
+  /**
+   *
+   * @param fdHours [[List.empty]] returns all Uuids for all QSPOs.
+   */
+  override def uuidForHours(fdHours: Set[FdHour]): List[Uuid] = {
+    if (fdHours.isEmpty) {
+      byUuid.keys.toList
+    } else {
+      allQsos.flatMap { qr ⇒
+        if (fdHours.contains(qr.fdHour)) {
+          Seq(qr.qso.uuid)
+        } else {
+          Seq.empty
         }
-      }.toList
-    }
-
-
-    def get(fdHour: FdHour): List[QsoHour] = {
-      byUuid.values
-        .toList
-        .sorted.groupBy(_.fdHour).values.map(QsoHour(_))
-        .filter(_.fdHour == fdHour)
-        .toList
-    }
-
-    override def debugClear(): Unit = {
-      logger.info(s"Clearing this nodes store for debugging!")
-      byUuid.clear()
-      byCallsign.clear()
-      allQsos.clear()
-    }
-
-    override def missingUuids(uuidsAtOtherHost: List[Uuid]): List[Uuid] = {
-      uuidsAtOtherHost.filter(otherUuid ⇒
-        !byUuid.contains(otherUuid)
-      )
-    }
+      }
+    }.toList
   }
+
+
+  def get(fdHour: FdHour): List[QsoHour] = {
+    byUuid.values
+      .toList
+      .sorted.groupBy(_.fdHour).values.map(QsoHour(_))
+      .filter(_.fdHour == fdHour)
+      .toList
+  }
+
+  override def debugClear(): Unit = {
+    logger.info(s"Clearing this nodes store for debugging!")
+    byUuid.clear()
+    byCallsign.clear()
+    allQsos.clear()
+  }
+
+  override def missingUuids(uuidsAtOtherHost: List[Uuid]): List[Uuid] = {
+    uuidsAtOtherHost.filter(otherUuid ⇒
+      !byUuid.contains(otherUuid)
+    )
+  }
+}
 

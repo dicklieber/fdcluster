@@ -28,6 +28,7 @@ import org.wa9nnn.fdcluster.contest.fieldday.{SummaryEngine, WinterFieldDaySetti
 import org.wa9nnn.fdcluster.dupsheet.GenerateDupSheet
 import org.wa9nnn.fdcluster.javafx.debug.DebugRemoveDialog
 import org.wa9nnn.fdcluster.javafx.sync.{SyncDialog, SyncSteps}
+import org.wa9nnn.fdcluster.metrics.MetricsReporter
 import org.wa9nnn.fdcluster.model.{ContestProperty, ExportFile}
 import org.wa9nnn.fdcluster.rig.RigDialog
 import org.wa9nnn.fdcluster.store.{DebugClearStore, Sync}
@@ -57,6 +58,7 @@ class FdClusterMenu @Inject()(implicit
                               generateDupSheet: GenerateDupSheet,
                               contestProperty: ContestProperty,
                               summaryEngine: SummaryEngine,
+                              metricsReporter: MetricsReporter,
                               debugRemoveDialog: DebugRemoveDialog) extends StructuredLogging {
   private implicit val timeout = Timeout(5 seconds)
   private val desktop = Desktop.getDesktop
@@ -184,6 +186,13 @@ class FdClusterMenu @Inject()(implicit
     }
   }
 
+  private val metricsMenuItem = new MenuItem{
+    text = "Metrics"
+    onAction = {_ =>
+      metricsReporter.report()
+    }
+  }
+
   private val dupSheetMenuItem = new MenuItem {
     text = "Dup Sheet"
     onAction = { _ =>
@@ -237,7 +246,8 @@ class FdClusterMenu @Inject()(implicit
           debugClearStoreMenuItem,
           debugRandomKillerMenuItem,
           debugDemoBulkMenuItem,
-          generateTimed
+          generateTimed,
+          metricsMenuItem
         )
       },
       new Menu("_Edit") {

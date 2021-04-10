@@ -20,11 +20,12 @@
 package org.wa9nnn.fdcluster.store.network.cluster
 
 import java.net.URL
-
 import com.typesafe.scalalogging.LazyLogging
+import nl.grons.metrics4.scala.DefaultInstrumented
 import org.wa9nnn.fdcluster.model.NodeAddress
 import org.wa9nnn.fdcluster.model.sync.NodeStatus
 import org.wa9nnn.fdcluster.store.network.FdHour
+import org.wa9nnn.util.StructuredLogging
 
 import scala.collection.concurrent.TrieMap
 import scala.collection.immutable
@@ -35,8 +36,11 @@ import scala.collection.immutable
  *
  * @param ourNodeAddress who we are.
  */
-class ClusterState(ourNodeAddress: NodeAddress) extends LazyLogging {
+class ClusterState(ourNodeAddress: NodeAddress) extends StructuredLogging with DefaultInstrumented {
   private val nodes: TrieMap[NodeAddress, NodeStateContainer] = TrieMap.empty
+  metrics.gauge("node count"){
+    nodes.size
+  }
 
   def update(nodeStatus: NodeStatus): Unit = {
     val nodeAddress = nodeStatus.nodeAddress
