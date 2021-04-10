@@ -38,6 +38,7 @@ trait FileManagerContext extends ForEach[FileManager] {
 }
 
 class ContestPropertySpec extends Specification with FileManagerContext {
+  sequential
   "ContestProperty" should {
     "propMap" >> { fileManger: FileManager =>
       val persistence = new PersistenceImpl(fileManger)

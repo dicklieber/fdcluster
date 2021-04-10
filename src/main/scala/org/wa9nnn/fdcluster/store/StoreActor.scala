@@ -22,7 +22,7 @@ package org.wa9nnn.fdcluster.store
 import akka.actor.Status.Failure
 import akka.actor.{Actor, ActorRef}
 import akka.pattern.pipe
-import akka.util.{ByteString, Timeout}
+import akka.util.Timeout
 import com.google.inject.Injector
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
@@ -32,16 +32,15 @@ import org.wa9nnn.fdcluster.Markers.syncMarker
 import org.wa9nnn.fdcluster.adif.AdiExporter
 import org.wa9nnn.fdcluster.cabrillo.{CabrilloExportRequest, CabrilloGenerator}
 import org.wa9nnn.fdcluster.http.{ClientActor, FetchQsos}
-import org.wa9nnn.fdcluster.javafx.menu.{BuildLoadRequest, ImportRequest}
+import org.wa9nnn.fdcluster.javafx.menu.ImportRequest
 import org.wa9nnn.fdcluster.javafx.sync.{RequestUuidsForHour, SyncSteps, UuidsAtHost}
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.model.sync.NodeStatus
 import org.wa9nnn.fdcluster.store.network.cluster.ClusterState
-import org.wa9nnn.fdcluster.store.network.{FdHour, MultcastSenderActor, MulticastListenerActor}
+import org.wa9nnn.fdcluster.store.network.{FdHour, MultcastSenderActor}
 import org.wa9nnn.fdcluster.tools.{GenerateRandomQsos, RandomQsoGenerator}
 import org.wa9nnn.util.ImportTask
-import play.api.libs.json.Json
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
@@ -62,7 +61,6 @@ class StoreActor(injector: Injector,
 
   logger.info(s"StoreActor: ${self.path}")
 
-  context.actorOf(MulticastListenerActor.props(nodeAddress.inetAddress, config), "MulticastListener")
   private val senderActor: ActorRef = context.actorOf(MultcastSenderActor.props(config), "MulticastSender")
   private val clientActor = context.actorOf(ClientActor.props(syncSteps))
 
@@ -79,7 +77,7 @@ class StoreActor(injector: Injector,
       addResult match {
         case Added(addedQsoRecord) ⇒
           val record = DistributedQsoRecord(addedQsoRecord, nodeAddress, store.size)
-          senderActor ! JsonContainer(record.getClass.getSimpleName, record)
+          senderActor ! JsonContainer(record)
         case unexpected ⇒
           println(s"Received: $unexpected")
       }
@@ -108,7 +106,7 @@ class StoreActor(injector: Injector,
     case StatusPing ⇒
       val nodeStatus = store.nodeStatus
 
-      senderActor ! JsonContainer(nodeStatus.getClass.getSimpleName, nodeStatus)
+      senderActor ! JsonContainer(nodeStatus)
 
     /**
      * Start a sync operation
@@ -204,19 +202,6 @@ case object DumpCluster
 
 case object Sync
 
-case class JsonContainer(className: String, json: String) extends Codec {
-  def toByteString: ByteString = {
-    ByteString(Json.toBytes(Json.toJson(this)))
-  }
-
-}
-
-object JsonContainer {
-  def apply(className: String, codec: Codec): JsonContainer = {
-    val str = codec.toByteString.decodeString("UTF-8")
-    JsonContainer(className, str)
-  }
-}
 
 case object StatusPing
 

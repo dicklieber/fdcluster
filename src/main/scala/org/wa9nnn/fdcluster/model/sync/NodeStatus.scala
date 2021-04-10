@@ -19,13 +19,10 @@
 
 package org.wa9nnn.fdcluster.model.sync
 
-import akka.util.ByteString
 import org.wa9nnn.fdcluster.model.MessageFormats._
-import org.wa9nnn.fdcluster.model.{Codec, CurrentStation, NodeAddress, QsoMetadata}
+import org.wa9nnn.fdcluster.model.{CurrentStation, NodeAddress, QsoMetadata}
 import org.wa9nnn.fdcluster.store.network.FdHour
-import play.api.libs.json.Json
 
-import java.net.URL
 import java.time.LocalDateTime
 
 /**
@@ -47,16 +44,13 @@ case class NodeStatus(nodeAddress: NodeAddress,
                       qsoMetadata: QsoMetadata,
                       bandModeOperator: CurrentStation,
                       qsoRate: Double,
-                      stamp: LocalDateTime = LocalDateTime.now()) extends Codec {
+                      stamp: LocalDateTime = LocalDateTime.now())  {
   assert(bandModeOperator != null, "null BandModeOperator")
 
   def digestForHour(fdHour: FdHour): Option[QsoHourDigest] = {
     qsoHourDigests.find(_.startOfHour == fdHour)
   }
 
-  def toByteString: ByteString = {
-    ByteString(Json.toBytes(Json.toJson(this)))
-  }
 }
 
 case class DigestAndCount(digest: Digest, count: Int)

@@ -12,7 +12,8 @@ object UdpMulticastListner {
     var msg = "Hello";
     var group = InetAddress.getByName("239.73.88.0");
     val port = 1174
-    var s = new MulticastSocket(port);
+    var s: MulticastSocket = new MulticastSocket(port);
+    s.setReuseAddress(true)
     s.joinGroup(group);
 //    var hi = new DatagramPacket(msg.getBytes(), msg.length(),
 //      group, port);

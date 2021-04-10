@@ -20,15 +20,18 @@
 package org.wa9nnn.fdcluster.store.network
 
 import java.net.InetSocketAddress
-
-import akka.actor.{ActorRef, Props}
+import akka.actor.{Actor, ActorRef, Props}
 import akka.io.{IO, Udp}
+import akka.util.ByteString
 import com.typesafe.config.Config
+import nl.grons.metrics4.scala.DefaultInstrumented
+import org.apache.commons.math3.stat.descriptive.SynchronizedDescriptiveStatistics
 import org.wa9nnn.fdcluster.store.JsonContainer
 
-class MultcastSenderActor(val config: Config) extends MulticastActor {
+class MultcastSenderActor(val config: Config) extends Actor with MulticastActor with DefaultInstrumented {
 
   import context.system
+  private val descriptiveStatistics = new SynchronizedDescriptiveStatistics()
 
   IO(Udp) ! Udp.SimpleSender
 
@@ -39,16 +42,20 @@ class MultcastSenderActor(val config: Config) extends MulticastActor {
 
   def ready(send: ActorRef): Receive = {
     case something: JsonContainer =>
-      val byteString = something.toByteString
-      send ! Udp.Send(byteString, new InetSocketAddress(multicastGroup, port))
+      val bytes: Array[Byte] = something.bytes
+      whenTraceEnabled { () =>
+        val str = new String(bytes)
+        s"Sending: $something to $multicastGroup:$port"
+      }
+      send ! Udp.Send(ByteString(bytes), new InetSocketAddress(multicastGroup, port))
 
     case x ⇒
-      println(s"MultcastSenderActor: Unexpected: $x")
+      logger.error(s"MulticastSenderActor: Unexpected: $x")
   }
 }
 
 object MultcastSenderActor {
   def props(config: Config): Props = {
-    Props(new MultcastSenderActor(config) )
+    Props(new MultcastSenderActor(config))
   }
 }

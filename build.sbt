@@ -6,17 +6,17 @@ resolvers += "Artifactory" at "https://wa9nnn.jfrog.io/artifactory/wa9nnn"
 
 lazy val `fdcluster` = (project in file("."))
   .enablePlugins(JlinkPlugin, GitPlugin, BuildInfoPlugin, SbtTwirl, WindowsPlugin).settings(
-    buildInfoKeys ++= Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion,maintainer,
-      git.gitCurrentTags, git.gitCurrentBranch, git.gitHeadCommit, git.gitHeadCommitDate, git.baseVersion,
-      BuildInfoKey.action("buildTime") {
-        System.currentTimeMillis
-      } // re-computed each time at compile)
-    ),
-//    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, git.gitCurrentTags, git.gitCurrentBranch),
-    buildInfoPackage := "org.wa9nnn.fdcluster"
-  )
+  buildInfoKeys ++= Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, maintainer,
+    git.gitCurrentTags, git.gitCurrentBranch, git.gitHeadCommit, git.gitHeadCommitDate, git.baseVersion,
+    BuildInfoKey.action("buildTime") {
+      System.currentTimeMillis
+    } // re-computed each time at compile)
+  ),
+  //    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, git.gitCurrentTags, git.gitCurrentBranch),
+  buildInfoPackage := "org.wa9nnn.fdcluster"
+)
 
-  // wix build information
+// wix build information
 wixProductId := "268963af-6f14-445a-bcc7-21775b5bdcc5"
 wixProductUpgradeId := "6b10420e-df5b-4c6c-9ca0-c12daf4b239d"
 
@@ -32,7 +32,7 @@ scalacOptions in(Compile, doc) ++= Seq("-verbose", "-Ymacro-annotations")
 import scala.util.Properties
 
 
-sourceDirectories in (Compile, TwirlKeys.compileTemplates) := (unmanagedSourceDirectories in Compile).value
+sourceDirectories in(Compile, TwirlKeys.compileTemplates) := (unmanagedSourceDirectories in Compile).value
 
 val osType: SettingKey[String] = SettingKey[String]("osType")
 
@@ -50,6 +50,7 @@ osType := {
 val javafxLib = file(sys.env.get("JAVAFX_LIB").getOrElse("Environmental variable JAVAFX_LIB is not set"))
 lazy val akkaHttpVersion = "10.1.9"
 val logbackVersion = "1.2.3"
+val jettyVersion = "9.4.39.v20210325"
 
 libraryDependencies ++= Seq(
   "com.wa9nnn" %% "util" % "0.0.2-SNAPSHOT",
@@ -75,13 +76,15 @@ libraryDependencies ++= Seq(
   "org.openjfx" % "javafx-graphics" % "11.0.1" classifier osType.value,
   "org.openjfx" % "javafx-media" % "11.0.1" classifier osType.value,
   "org.openjfx" % "javafx-base" % "11.0.1" classifier osType.value,
-  "nl.grons" %% "metrics4-scala" % "4.1.5",
+  "nl.grons" %% "metrics4-scala" % "4.1.19",
   "de.heikoseeberger" %% "akka-http-play-json" % "1.29.1",
   "io.dropwizard.metrics" % "metrics-core" % "4.1.2",
   "io.dropwizard.metrics" % "metrics-graphite" % "4.1.2",
+  "io.dropwizard.metrics" % "metrics-servlets" % "4.1.19",
   "com.fazecast" % "jSerialComm" % "2.6.2",
   "commons-io" % "commons-io" % "2.8.0",
   "org.apache.commons" % "commons-math3" % "3.6.1",
+  "javax.servlet" % "javax.servlet-api" % "3.0.1",
 )
 
 jlinkModules := {

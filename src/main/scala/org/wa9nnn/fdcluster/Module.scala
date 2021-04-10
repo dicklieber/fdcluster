@@ -24,13 +24,14 @@ import com.github.racc.tscg.TypesafeConfigModule
 import com.google.inject.{AbstractModule, Injector, Provides}
 import com.typesafe.config.{Config, ConfigFactory}
 import net.codingwell.scalaguice.ScalaModule
-import org.wa9nnn.fdcluster.javafx.entry.{BandModeQsoMetadata, RunningTaskInfoConsumer, RunningTaskPane}
+import org.wa9nnn.fdcluster.javafx.entry.{RunningTaskInfoConsumer, RunningTaskPane}
 import org.wa9nnn.fdcluster.javafx.sync.{ProgressStep, SyncSteps}
 import org.wa9nnn.fdcluster.metrics.Reporter
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.store._
+import org.wa9nnn.fdcluster.store.network.MulticastListener
 import org.wa9nnn.fdcluster.tools.RandomQsoGenerator
-import org.wa9nnn.util.{CommandLine, CommandLineScalaFxImpl, LogFilePath, Persistence, PersistenceImpl}
+import org.wa9nnn.util._
 import scalafx.application.JFXApp.Parameters
 import scalafx.beans.property.ObjectProperty
 import scalafx.collections.ObservableBuffer
@@ -53,6 +54,7 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
       // File manager must be invoked before any logging is done as logback.xml uses the system property  "log.file.path"
       // which gets set by th3 FileManager.
       bind[CommandLine].toInstance(new CommandLineScalaFxImpl(parameters))
+      bind[MulticastListener].asEagerSingleton()
       val actorSystem = ActorSystem("default", config)
       bind[NodeAddress]
         .toInstance(NodeAddress.apply(config))

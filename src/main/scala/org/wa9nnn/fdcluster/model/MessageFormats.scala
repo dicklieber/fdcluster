@@ -43,10 +43,18 @@ import scala.language.implicitConversions
  * Which makes all implicits available when invoking [[Json.parse]] and [[Json.prettyPrint()]] or [[Json.toBytes()]].
  */
 object MessageFormats {
+
   import UrlFormt.urlFormat
   import InetAddressFormat.inetAddressFormat
 
-  implicit val entcFromat: Format[EntryCategory] = Json.format[EntryCategory]
+  val builder = Array.newBuilder[Format[_]]
+  def c[T](f: Format[T]): Format[T] = {
+    val str: Node = f.toString
+    builder += f
+    f
+  }
+
+  implicit val entcFromat: Format[EntryCategory] = c(Json.format[EntryCategory])
   implicit val fdcFromat: Format[FdClass] = Json.format[FdClass]
   implicit val sectFromat: Format[Section] = Json.format[Section]
   implicit val excFromat: Format[Exchange] = Json.format[Exchange]
@@ -75,11 +83,12 @@ object MessageFormats {
   implicit val knownOperatorsFormat: Format[KnownOperators] = Json.format[KnownOperators]
   implicit val buildLoadRequestFormat: Format[BuildLoadRequest] = Json.format[BuildLoadRequest]
   implicit val importRequestFormat: Format[ImportRequest] = Json.format[ImportRequest]
-  implicit val exportFileFormat: Format[ExportFile]= Json.format[ExportFile]
+  implicit val exportFileFormat: Format[ExportFile] = Json.format[ExportFile]
   implicit val exportRequestFormat: Format[AdifExportRequest] = Json.format[AdifExportRequest]
   implicit val cabriloFormat: Format[CabrilloValue] = Json.format[CabrilloValue]
   implicit val cabrilosFormat: Format[CabrilloValues] = Json.format[CabrilloValues]
   implicit val CabrilloExportRequestFormat: Format[CabrilloExportRequest] = Json.format[CabrilloExportRequest]
+
 
   type CallSign = String
   type Uuid = String

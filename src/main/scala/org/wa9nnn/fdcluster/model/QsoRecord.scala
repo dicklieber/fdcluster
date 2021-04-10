@@ -47,8 +47,8 @@ case class Qso(callSign: CallSign, bandMode: BandMode, exchange: Exchange, stamp
 /**
  * This is what's in the store and journal.log.
  *
- * @param qso           info from worked station.
- * @param qsoMetadata   info about ur station.
+ * @param qso         info from worked station.
+ * @param qsoMetadata info about ur station.
  */
 case class QsoRecord(qso: Qso, qsoMetadata: QsoMetadata) extends Ordered[QsoRecord] {
   def callsign: CallSign = qso.callSign
@@ -85,34 +85,13 @@ case class QsosFromNode(nodeAddress: NodeAddress, qsos: List[QsoRecord]) {
  * @param nodeAddress where this came from.
  * @param size        number of QSOs in the database on this node. (Includes the new QSO)
  */
-case class DistributedQsoRecord(qsoRecord: QsoRecord, nodeAddress: NodeAddress, size: Int) extends Codec {
-  def toByteString: ByteString = {
-    import MessageFormats._
-    ByteString(Json.toBytes(Json.toJson(this)))
-  }
-}
+case class DistributedQsoRecord(qsoRecord: QsoRecord, nodeAddress: NodeAddress, size: Int)
 
 object DistributedQsoRecord {
   val qsoVersion = "1:"
 
-  def apply(byteString: ByteString): DistributedQsoRecord = {
-    val sJson = byteString.decodeString("UTF-8")
-    val jsValue = Json.parse(sJson)
-    try {
-      jsValue.as[DistributedQsoRecord]
-    } catch {
-      case e: Exception =>
-        e.printStackTrace()
-        throw e
-    }
-  }
 }
 
-/**
- * Something that can be rendered as a JSON string.
- */
-trait Codec {
-  def toByteString: ByteString
-}
+
 
 

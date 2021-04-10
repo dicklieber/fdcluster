@@ -19,6 +19,7 @@
     <logger name="org.wa9nnn.fdcluster.javafx.entry.EntryScene" level="INFO"/>
     <logger name="org.wa9nnn" level="INFO"/>
     <logger name="org.wa9nnn.fdcluster.javafx.entry.StatisticsTab" level="INFO"/>
+    <logger name="org.wa9nnn.fdcluster.store.network" level="DEBUG"/>
 
 
     <root level="TRACE">
