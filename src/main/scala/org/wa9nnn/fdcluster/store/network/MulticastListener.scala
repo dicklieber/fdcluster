@@ -1,10 +1,8 @@
 package org.wa9nnn.fdcluster.store.network
 
 import akka.actor.ActorRef
-import com.codahale.metrics.Meter
 import com.google.inject.name.Named
 import com.typesafe.config.Config
-import jdk.internal.platform.Container.metrics
 import nl.grons.metrics4.scala
 import nl.grons.metrics4.scala.DefaultInstrumented
 import org.apache.commons.math3.stat.descriptive.SynchronizedDescriptiveStatistics
@@ -37,6 +35,14 @@ class MulticastListener @Inject()(@Named("store") val store: ActorRef,
     logger.debug("Starting MulticastListener thread.")
     multicastSocket.setReuseAddress(true)
     multicastSocket.joinGroup(multicastGroup)
+
+    val thread = new Thread(() => {
+      logger.info("Running MulticastListener shutdown hook.")
+      shutdown()
+    }, "MulticastListener Shutdown")
+    Runtime.getRuntime.addShutdownHook(thread)
+
+
     var buf = new Array[Byte](8000)
 
     val recv: DatagramPacket = new DatagramPacket(buf, buf.length)
@@ -50,7 +56,7 @@ class MulticastListener @Inject()(@Named("store") val store: ActorRef,
         } {
           descriptiveStatistics.addValue(1.0)
           messagesMeter.mark()
-          whenTraceEnabled{() =>
+          whenTraceEnabled { () =>
             s"Got: $jc from  ${recv.getAddress}"
           }
           store ! rec
@@ -61,13 +67,12 @@ class MulticastListener @Inject()(@Named("store") val store: ActorRef,
           logger.error("MulticastListener", e)
       }
     }
-
     while (true)
-
   }
 
   def shutdown(): Unit = {
     multicastSocket.leaveGroup(multicastGroup)
     multicastSocket.close()
+    logger.info("MulticastListener shutdown.")
   }
 }
