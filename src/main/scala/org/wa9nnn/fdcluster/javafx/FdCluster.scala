@@ -75,33 +75,34 @@ object FdCluster extends JFXApp with StructuredLogging {
     tabs = fdclusterTabs
   }
   commandLine.getString("tab").foreach { tabText =>
-val map: Map[String, Tab] = fdclusterTabs.map(t => t.text.value -> t).toMap
+    val map: Map[String, Tab] = fdclusterTabs.map(t => t.text.value -> t).toMap
     val maybeTab = map.get(tabText)
     maybeTab.foreach((t: Tab) =>
       tabPane.selectionModel.value.select(t)
     )
   }
 
-  contestProperty.logotypeImageProperty.onChange{(_,_,newImage: Image) =>
+  contestProperty.logotypeImageProperty.onChange { (_, _, newImage: Image) =>
     imageView.image = newImage
   }
-  private val imageView = new ImageView(contestProperty.logotypeImageProperty.value){
+  private val imageView = new ImageView(contestProperty.logotypeImageProperty.value) {
     styleClass += "contestLogo"
   }
   val bottomPane: GridPane = {
 
-    new GridPane(){
+    new GridPane() {
       prefWidth = 400
-      add(imageView, 0,0,1,2)
-      add(runningTaskPane.pane, 1,0)
-      add(statusPane.pane, 1,0)
+      add(imageView, 0, 0, 1, 2)
+      add(runningTaskPane.pane, 1, 0)
+      add(statusPane.pane, 1, 0)
     }
   }
   //  private val statsHeader = new HBox(Label(sorter"QSOs:  todo "))
   private val rootPane = new BorderPane {
     top = fdlogmenu.menuBar
     center = tabPane
-    bottom = bottomPane  }
+    bottom = bottomPane
+  }
   val ourScene = new Scene()
 
   ourScene.getStylesheets.add(getClass.getResource("/com/sun/javafx/scene/control/skin/modena/modena.css").toExternalForm)
@@ -111,14 +112,17 @@ val map: Map[String, Tab] = fdclusterTabs.map(t => t.text.value -> t).toMap
 
   ourScene.root = rootPane
 
+
+
   stage = new PrimaryStage() {
     title = "FDCluster @ " + nodeAddress.display
     scene = ourScene
     private val externalForm: String = getClass.getResource("/images/FieldDay.png").toExternalForm
     icons += new Image(externalForm)
-    onCloseRequest = { event =>
-      Platform.exit()
-      System.exit(0)
+    onCloseRequest = {
+      event =>
+        Platform.exit()
+        System.exit(0)
 
     }
   }

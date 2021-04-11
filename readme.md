@@ -10,12 +10,15 @@ Goals:
 * Free open-source
 * Runs on Linux, Mac or Microsoft Windows
 * Raspberry Pi Support (download image, copy to SD card)
-
+e
 `sbt:
 `stage
 `universal:packageBin`
 
 Creates target/universal/fdcluster-1.0.zip
+
+### MACOS
+universal:packageOsxDmg
 
 ### Building for Microsoft Windows
 (Must be on Windows)

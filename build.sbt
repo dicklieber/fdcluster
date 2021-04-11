@@ -12,7 +12,6 @@ lazy val `fdcluster` = (project in file("."))
       System.currentTimeMillis
     } // re-computed each time at compile)
   ),
-  //    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, git.gitCurrentTags, git.gitCurrentBranch),
   buildInfoPackage := "org.wa9nnn.fdcluster"
 )
 
@@ -24,7 +23,8 @@ sources in doc in Compile := List()
 
 scalaVersion := "2.13.5"
 
-mainClass in(Compile, run) := Some("org.wa9nnn.fdcluster.javafx.entry.FdCluster")
+//mainClass in(Compile, run) := Some("org.wa9nnn.fdcluster.javafx.entry.FdCluster")
+mainClass in Compile := Some("org.wa9nnn.fdcluster.javafx.entry.FdCluster")
 
 
 scalacOptions in(Compile, doc) ++= Seq("-verbose", "-Ymacro-annotations")
@@ -87,6 +87,7 @@ libraryDependencies ++= Seq(
   "javax.servlet" % "javax.servlet-api" % "3.0.1",
 )
 
+
 jlinkModules := {
   jlinkModules.value :+ "jdk.unsupported"
 }
@@ -143,5 +144,6 @@ jlinkIgnoreMissingDependency := JlinkIgnore.only(
   "scalafx.embed.swing" -> "javafx.embed.swing",
   "scalafx.scene.web" -> "javafx.scene.web",
   "scalafxml.core" -> "javafx.fxml",
+  "com.papertrail.profiler.jaxrs" -> "javax.ws.rs"
 
 )
