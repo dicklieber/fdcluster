@@ -22,7 +22,7 @@ import akka.util.ByteString
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.store.network.FdHour
 import play.api.libs.json.Json
-
+import MessageFormats._
 import java.time.Instant
 import java.util.UUID
 
@@ -70,6 +70,20 @@ case class QsoRecord(qso: Qso, qsoMetadata: QsoMetadata) extends Ordered[QsoReco
 
   def toByteString: ByteString = {
     ByteString(Json.toBytes(Json.toJson(this)))
+  }
+
+  def toJsonLine: String = {
+    Json.toJson(this).toString()
+  }
+
+  def toJsonPretty: String = {
+    Json.prettyPrint(Json.toJson(this))
+  }
+}
+
+object QsoRecord {
+  def apply(json: String): QsoRecord = {
+    Json.parse(json).as[QsoRecord]
   }
 }
 

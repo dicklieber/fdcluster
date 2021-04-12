@@ -85,6 +85,7 @@ libraryDependencies ++= Seq(
   "commons-io" % "commons-io" % "2.8.0",
   "org.apache.commons" % "commons-math3" % "3.6.1",
   "javax.servlet" % "javax.servlet-api" % "3.0.1",
+  "commons-codec" % "commons-codec" % "1.15",
 )
 
 

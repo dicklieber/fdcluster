@@ -20,11 +20,12 @@ package org.wa9nnn.fdcluster.tools
 
 import org.specs2.mutable.Specification
 
-class RandomCallsignGeneratorSpec extends Specification {
+class CallsignGeneratorSpec extends Specification {
 
   "RandomCallsignGenerator" should {
     val callsignGenerator = new RandomCallsign
     "next" in {
+      println("RandomCallsignGenerator")
       for(_ <- 0 to 100) {
         val next = callsignGenerator.next
       println(next)

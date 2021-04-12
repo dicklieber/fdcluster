@@ -21,6 +21,9 @@ package org.wa9nnn.fdcluster.tools
 
 import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
 
+import java.util.concurrent.{ArrayBlockingQueue, BlockingQueue}
+import scala.language.implicitConversions
+
 class RandomCallsign {
   val p1 = new RandomChar("AKNW")
   val p2 = new RandomChar() // may be space
@@ -42,5 +45,10 @@ class RandomCallsign {
   }
 
 }
+
+
+
+
+
 
 

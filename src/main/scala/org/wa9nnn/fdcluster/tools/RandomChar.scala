@@ -19,11 +19,13 @@
 
 package org.wa9nnn.fdcluster.tools
 
+import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
+
 import java.security.SecureRandom
+import scala.collection.{AbstractIterable, IterableFactoryDefaults}
 
 class RandomChar(val values: String = " ABCDEFGHIJKLMNOPQRSTUVWXYZ") {
-
-  val secureRandom = new SecureRandom()
+  private val secureRandom = new SecureRandom()
 
   def nextChar: Char = {
     val n = secureRandom.nextInt(values.length)
@@ -31,3 +33,6 @@ class RandomChar(val values: String = " ABCDEFGHIJKLMNOPQRSTUVWXYZ") {
     ch
   }
 }
+
+
+
