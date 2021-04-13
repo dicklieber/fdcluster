@@ -22,7 +22,6 @@ package org.wa9nnn.fdcluster.javafx.entry
 import scalafx.application.Platform
 import scalafx.scene.control.{Label, ProgressBar}
 import scalafx.scene.layout.{BorderPane, VBox}
-import javax.inject.{Inject, Singleton}
 
 import java.time.Instant
 
