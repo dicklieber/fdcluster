@@ -65,7 +65,7 @@ case class FdHour(epochHours: Long) extends Ordered[FdHour] with LabelSource {
   }
 
   override def setLabel(labeled: Labeled): Unit = {
-    labeled.tooltip = s"utc date: $day hour: $hour"
+    labeled.tooltip = s"utc date: $day hour: $hour ($dt)"
 
     labeled.text = toString
   }
