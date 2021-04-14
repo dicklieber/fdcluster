@@ -1,9 +1,9 @@
-package org.wa9nnn.fdcluster.store;
+package org.wa9nnn.util;
 
 import java.nio.ByteBuffer;
 import java.util.UUID;
 
-public class UuidUtils {
+public class UuidUtilJava {
     public static UUID asUuid(byte[] bytes) {
 
         ByteBuffer bb = ByteBuffer.wrap(bytes);

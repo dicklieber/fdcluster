@@ -36,7 +36,7 @@ import java.util.UUID
  * @param stamp    when QSO occurred.
  * @param uuid     id unique QSO id in time & space.
  */
-case class Qso(callSign: CallSign, bandMode: BandMode, exchange: Exchange, stamp: Instant = Instant.now(), uuid: String = UUID.randomUUID.toString) {
+case class Qso(callSign: CallSign, bandMode: BandMode, exchange: Exchange, stamp: Instant = Instant.now(), uuid: UUID = UUID.randomUUID) {
   def isDup(that: Qso): Boolean = {
     this.callSign == that.callSign &&
       this.bandMode == that.bandMode

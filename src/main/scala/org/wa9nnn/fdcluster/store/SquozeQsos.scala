@@ -42,7 +42,8 @@ class SquozeQsos @Inject()(nodeAddress: NodeAddress, @Named("allQsos") allQsos: 
       //      os.close()
       val byteBuffer = ByteBuffer.allocate(allQsos.size * 16)
       allQsos.foreach(qr => {
-        val uuid = UUID.fromString(qr.qso.uuid)
+//        val uuid = UUID.fromString(qr.qso.uuid)
+        val uuid = qr.qso.uuid
         byteBuffer.putLong(uuid.getLeastSignificantBits)
         byteBuffer.putLong(uuid.getMostSignificantBits)
       })

@@ -2,12 +2,13 @@ package org.wa9nnn.fdcluster.javafx.sync
 
 import java.net.URL
 import java.time.LocalDateTime
-
 import org.specs2.mutable.Specification
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.NodeAddress
 import org.wa9nnn.fdcluster.store.network.FdHour
 import play.api.libs.json.Json
+
+import java.util.UUID
 
 class RequestUuidsForHourSpec extends Specification {
 
@@ -28,7 +29,7 @@ class RequestUuidsForHourSpec extends Specification {
       val str1 = jsValue1.toString()
 
 
-      val uuids = UuidsAtHost(NodeAddress(), List("111"))
+      val uuids = UuidsAtHost(NodeAddress(), List(UUID.randomUUID()))
       val res = Json.toJson(uuids)
       val ess = res.toString()
       ess must beEqualTo ("{\"nodeAddress\":{\"host\":\"localhost\",\"instance\":0,\"httpPort\":8000},\"uuids\":[\"111\"]}")

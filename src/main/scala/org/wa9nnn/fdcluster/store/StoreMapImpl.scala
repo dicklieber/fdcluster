@@ -251,7 +251,8 @@ class StoreMapImpl @Inject()(na: NodeAddress,
 
     val sDigest = qsosDigestTimer.time {
       val messageDigest: MessageDigest = MessageDigest.getInstance("SHA-256")
-      byUuid.values.foreach(qr ⇒ messageDigest.update(qr.qso.uuid.getBytes()))
+      import org.wa9nnn.util.UuidUtil.u2bytes
+      byUuid.values.foreach(qr ⇒ messageDigest.update(qr.qso.uuid))
       val bytes = messageDigest.digest()
       val encoder = java.util.Base64.getEncoder
       val bytes1 = encoder.encode(bytes)

@@ -27,7 +27,7 @@ import org.wa9nnn.fdcluster.javafx.menu.{BuildLoadRequest, ImportRequest}
 import java.net.URL
 import java.time.{Instant, LocalDateTime, ZoneId}
 import java.time.format.{DateTimeFormatter, FormatStyle}
-import java.util.Locale
+import java.util.{Locale, UUID}
 import org.wa9nnn.fdcluster.javafx.sync.{RequestUuidsForHour, UuidsAtHost}
 import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHour, QsoHourDigest, QsoHourIds}
 import org.wa9nnn.fdcluster.rig.{RigModel, RigSettings, SerialPortSettings}
@@ -91,7 +91,7 @@ object MessageFormats {
 
 
   type CallSign = String
-  type Uuid = String
+  type Uuid = UUID
   type Digest = String
   type Node = String
 

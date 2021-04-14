@@ -83,7 +83,7 @@ object AdifQsoAdapter {
 
     val zdt = ZonedDateTime.ofInstant(qso.stamp, utcZoneId)
     val entries = Set.newBuilder[AdifEntry]
-    entries += "APP_FDC_UUID" -> qso.uuid
+    entries += "APP_FDC_UUID" -> qso.uuid.toString
     entries += "QSO_DATE" -> zdt.toLocalDate.format(BASIC_ISO_DATE)
     entries += "TIME_ON" -> zdt.toLocalTime.format(timeFormat)
     entries += "CALL" -> qso.callSign

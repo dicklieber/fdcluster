@@ -16,6 +16,7 @@ import scalafx.beans.property.ObjectProperty
 import scalafx.collections.ObservableBuffer
 
 import java.nio.file.{Files, Path}
+import java.util.UUID
 
 
 class StoreSyncSpec extends Specification with BeforeAfterEach with DebugTimer with Mockito {
@@ -27,6 +28,10 @@ class StoreSyncSpec extends Specification with BeforeAfterEach with DebugTimer w
   private var storeMapImpl: StoreMapImpl = _
   private var records: List[QsoRecord] = _
 
+  val other1 = UUID.randomUUID()
+  val other2 = UUID.randomUUID()
+
+  
   "nodeStats" should {
     "do good" in {
       val status: NodeStatus = storeMapImpl.nodeStatus
@@ -66,16 +71,17 @@ class StoreSyncSpec extends Specification with BeforeAfterEach with DebugTimer w
 
     "missing Uuids" >> {
       "all missing" >> {
-        val missing = storeMapImpl.missingUuids(List("other1", "other2"))
-        missing must contain("other1")
-        missing must contain("other2")
+        
+        val missing = storeMapImpl.missingUuids(List(other1, other2))
+        missing must contain(other1)
+        missing must contain(other2)
         missing must haveSize(2)
       }
       "some already in store" >> {
         val alreadyInNode = records(10).qso.uuid
-        val missing = storeMapImpl.missingUuids(List("other1", alreadyInNode, "other2"))
-        missing must contain("other1")
-        missing must contain("other2")
+        val missing = storeMapImpl.missingUuids(List(other1, alreadyInNode, other2))
+        missing must contain(other1)
+        missing must contain(other2)
         missing must not contain alreadyInNode
         missing must haveSize(2)
       }
