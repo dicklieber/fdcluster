@@ -20,7 +20,7 @@
     <logger name="org.wa9nnn" level="INFO"/>
     <logger name="org.wa9nnn.fdcluster.javafx.entry.StatisticsTab" level="INFO"/>
     <logger name="org.wa9nnn.fdcluster.store.network" level="DEBUG"/>
-
+    <logger name="com.codahale.metrics.graphite.GraphiteReporter" level="ERROR"/>
 
     <root level="TRACE">
         <appender-ref ref="STDOUT"/>
