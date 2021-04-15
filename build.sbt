@@ -48,7 +48,7 @@ osType := {
 }
 
 val javafxLib = file(sys.env.get("JAVAFX_LIB").getOrElse("Environmental variable JAVAFX_LIB is not set"))
-lazy val akkaHttpVersion = "10.1.9"
+lazy val akkaHttpVersion = "10.2.4"
 val logbackVersion = "1.2.3"
 val jettyVersion = "9.4.39.v20210325"
 
@@ -65,8 +65,8 @@ libraryDependencies ++= Seq(
   "com.github.racc" % "typesafeconfig-guice" % "0.1.0",
   "com.typesafe.akka" %% "akka-actor" % "2.6.0-M7",
   "com.github.kxbmap" %% "configs" % "0.6.0",
-  "com.typesafe.akka" %% "akka-http" % "10.1.10",
-  "com.typesafe.akka" %% "akka-stream" % "2.6.0-M7",
+  "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
+  "com.typesafe.akka" %% "akka-stream" % "2.6.4",
   "ch.qos.logback" % "logback-classic" % logbackVersion,
   "ch.qos.logback" % "logback-core" % logbackVersion,
   "com.github.andyglow" %% "typesafe-config-scala" % "1.1.0" % Compile,
@@ -77,7 +77,6 @@ libraryDependencies ++= Seq(
   "org.openjfx" % "javafx-media" % "11.0.1" classifier osType.value,
   "org.openjfx" % "javafx-base" % "11.0.1" classifier osType.value,
   "nl.grons" %% "metrics4-scala" % "4.1.19",
-  "de.heikoseeberger" %% "akka-http-play-json" % "1.29.1",
   "io.dropwizard.metrics" % "metrics-core" % "4.1.2",
   "io.dropwizard.metrics" % "metrics-graphite" % "4.1.2",
   "io.dropwizard.metrics" % "metrics-servlets" % "4.1.19",

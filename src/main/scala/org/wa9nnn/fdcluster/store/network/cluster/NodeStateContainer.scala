@@ -19,9 +19,10 @@
 
 package org.wa9nnn.fdcluster.store.network.cluster
 
+import akka.http.scaladsl.model.Uri
+
 import java.net.URL
 import java.time.LocalDateTime
-
 import org.wa9nnn.fdcluster.javafx.cluster.StyledAny
 import org.wa9nnn.fdcluster.model.NodeAddress
 import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHourDigest}
@@ -65,6 +66,7 @@ class NodeStateContainer(initialNodeStatus: NodeStatus, ourNodeAddress: NodeAddr
   def url: URL = {
     nodeStatus.nodeAddress.url
   }
+
 
   def forHour(fdHour: FdHour): Option[NodeFdHourDigest] = {
     nodeStatus

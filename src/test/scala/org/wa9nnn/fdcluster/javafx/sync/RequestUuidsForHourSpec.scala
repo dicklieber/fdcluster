@@ -16,7 +16,7 @@ class RequestUuidsForHourSpec extends Specification {
     "UuidRequest" in {
 
       val url = new URL("http://127.0.0.0")
-      val uuidRequest = RequestUuidsForHour(url)
+      val uuidRequest = RequestUuidsForHour()
       val jsValue = Json.toJson(uuidRequest)
       val str = jsValue.toString()
 
@@ -24,7 +24,7 @@ class RequestUuidsForHourSpec extends Specification {
       val fdh1 = FdHour( 4)
       val fdh2 = FdHour( 23)
       val fdhours = List(fdh1, fdh2)
-      val uuidRequest1 = RequestUuidsForHour(url, fdhours)
+      val uuidRequest1 = RequestUuidsForHour(fdhours)
       val jsValue1 = Json.toJson(uuidRequest1)
       val str1 = jsValue1.toString()
 

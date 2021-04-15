@@ -25,10 +25,10 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.directives.MethodDirectives.get
 import akka.http.scaladsl.server.directives.RouteDirectives.complete
+import akka.http.scaladsl.unmarshalling.{FromRequestUnmarshaller, Unmarshaller}
 import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
-import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport._
 import org.wa9nnn.fdcluster.javafx.sync.{RequestUuidsForHour, UuidsAtHost}
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.sync.QsoHour
@@ -41,6 +41,10 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 
 trait UserRoutes extends LazyLogging {
+//  import Directives._
+  import PlayJsonSupport._
+
+
   val nodeAddress: NodeAddress
   /**
    * Automatically applied to convert the JsValue, e.g. {{Json.toJson(qsoHours)}} to what complete() needs.
@@ -82,9 +86,10 @@ trait UserRoutes extends LazyLogging {
           )
         },
 
-        path(FetchQsos.path) {
+        path("RequestUuidsForHour") {
           post {
-            entity(as[RequestUuidsForHour]) { uuidRequest ⇒
+            val um = as[RequestUuidsForHour]
+            entity(um) { uuidRequest ⇒
               onSuccess((
                 store ? uuidRequest
                 ).mapTo[UuidsAtHost]) { uuids: UuidsAtHost ⇒

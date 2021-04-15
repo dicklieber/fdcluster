@@ -26,10 +26,11 @@ import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import org.wa9nnn.fdcluster.cabrillo.{CabrilloDialog, CabrilloExportRequest}
 import org.wa9nnn.fdcluster.contest.fieldday.{SummaryEngine, WinterFieldDaySettings}
 import org.wa9nnn.fdcluster.dupsheet.GenerateDupSheet
+import org.wa9nnn.fdcluster.http.Sendable
 import org.wa9nnn.fdcluster.javafx.debug.DebugRemoveDialog
-import org.wa9nnn.fdcluster.javafx.sync.{SyncDialog, SyncSteps}
+import org.wa9nnn.fdcluster.javafx.sync.{RequestUuidsForHour, SyncDialog, SyncSteps}
 import org.wa9nnn.fdcluster.metrics.MetricsReporter
-import org.wa9nnn.fdcluster.model.{ContestProperty, ExportFile}
+import org.wa9nnn.fdcluster.model.{ContestProperty, ExportFile, NodeAddress}
 import org.wa9nnn.fdcluster.rig.RigDialog
 import org.wa9nnn.fdcluster.store.{DebugClearStore, Sync}
 import org.wa9nnn.fdcluster.tools.RandomQsoDialog
@@ -39,7 +40,7 @@ import scalafx.Includes._
 import scalafx.application.Platform
 import scalafx.event.ActionEvent
 import scalafx.scene.control._
-
+import org.wa9nnn.fdcluster.model.MessageFormats._
 import java.awt.Desktop
 import java.io.{PrintWriter, StringWriter}
 import java.nio.file.Files
@@ -54,6 +55,7 @@ class FdClusterMenu @Inject()(implicit
                               syncSteps: SyncSteps,
                               syncDialog: SyncDialog,
                               aboutDialog: AboutDialog,
+                              nodeAddress: NodeAddress,
                               fileManager: FileManager,
                               generateDupSheet: GenerateDupSheet,
                               contestProperty: ContestProperty,
@@ -73,6 +75,12 @@ class FdClusterMenu @Inject()(implicit
     private val qsoStatCollector: QsoCountCollector = injector.instance[QsoCountCollector]
     onAction = { _: ActionEvent =>
       qsoStatCollector.dumpStats()
+    }
+  }
+  private val requestUuidForHour = new MenuItem {
+    text = "RequestUuidsForHour"
+    onAction = { _: ActionEvent =>
+      store ! Sendable(RequestUuidsForHour(), nodeAddress.uri)
     }
   }
   private val syncNowMenuItem = new MenuItem {
@@ -247,7 +255,8 @@ class FdClusterMenu @Inject()(implicit
           debugRandomKillerMenuItem,
           debugDemoBulkMenuItem,
           generateTimed,
-          metricsMenuItem
+          metricsMenuItem,
+          requestUuidForHour
         )
       },
       new Menu("_Edit") {

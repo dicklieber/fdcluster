@@ -19,6 +19,7 @@
 
 package org.wa9nnn.fdcluster.model
 
+import akka.http.scaladsl.model.Uri
 import com.typesafe.config.Config
 
 import java.net.{Inet4Address, InetAddress, NetworkInterface, URL}
@@ -30,11 +31,11 @@ import scala.jdk.CollectionConverters._
  * For testing there can be more than one node at an IP address. So the instance is used to qualify them.
  * This is not suitable to send messages to a node. That's in org.wa9nnn.fdcluster.model.sync.NodeStatus#apiUrl()
  *
- * @param host ip address of this node.
- * @param instance    from application.conf or command line e.g -Dinstance=2
- * @param httpPort    as opposed to the multicast port.
+ * @param host     ip address of this node.
+ * @param instance from application.conf or command line e.g -Dinstance=2
+ * @param httpPort as opposed to the multicast port.
  */
-case class NodeAddress @Inject()(host:String = "localhost", instance: Int=0, httpPort: Int=8000) extends Ordered[NodeAddress] {
+case class NodeAddress @Inject()(host: String = "localhost", instance: Int = 0, httpPort: Int = 8000) extends Ordered[NodeAddress] {
   val display: String = {
     s"$host:$instance"
   }
@@ -46,7 +47,14 @@ case class NodeAddress @Inject()(host:String = "localhost", instance: Int=0, htt
     new URL("http", host, httpPort, "")
   }
 
-  val inetAddress:InetAddress = InetAddress.getByName(host)
+  def uri: Uri = {
+    Uri()
+      .withHost(host)
+      .withPort(httpPort)
+  }
+
+  val inetAddress: InetAddress = InetAddress.getByName(host)
+
   override def compare(that: NodeAddress): Int = {
     that match {
       case address: NodeAddress =>

@@ -19,22 +19,30 @@
 
 package org.wa9nnn.fdcluster.javafx.sync
 
-import java.net.URL
+import akka.http.javadsl.model.HttpMethod
+import akka.http.scaladsl.model.{HttpRequest, Uri}
+import akka.http.scaladsl.model.Uri.Path
+import org.wa9nnn.fdcluster.http.Sendable
 
-import org.wa9nnn.fdcluster.http.HttpRequestGenerator
+import java.net.URL
 import org.wa9nnn.fdcluster.model.MessageFormats.Uuid
 import org.wa9nnn.fdcluster.model.{NodeAddress, QsoRecord}
 import org.wa9nnn.fdcluster.store.network.FdHour
+import play.api.libs.json.{JsValue, Json}
+
+import scala.reflect.{ClassTag, classTag}
+import org.wa9nnn.fdcluster.model.MessageFormats._
 
 /**
  *
  * @param fdHours empty for all FdHours
  */
-case class RequestUuidsForHour(url: URL, fdHours:List[FdHour] = List.empty,  path: String = "qsos") extends HttpRequestGenerator
+case class RequestUuidsForHour(fdHours: List[FdHour] = List.empty)
+
 /**
  *
  * @param nodeAddress where this came from. //TODO do we need this
- * @param uuids on this node for requested FdHours (or all)
+ * @param uuids       on this node for requested FdHours (or all)
  */
 case class UuidsAtHost(nodeAddress: NodeAddress, uuids: List[Uuid])
 
@@ -43,3 +51,9 @@ case class UuidsAtHost(nodeAddress: NodeAddress, uuids: List[Uuid])
  * @param uuids for which we would like [[QsoRecord]]s
  */
 case class QsoRequest(uuids: List[Uuid])
+
+import org.wa9nnn.fdcluster.model.MessageFormats
+
+
+
+

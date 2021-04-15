@@ -31,7 +31,7 @@ import nl.grons.metrics4.scala.DefaultInstrumented
 import org.wa9nnn.fdcluster.Markers.syncMarker
 import org.wa9nnn.fdcluster.adif.AdiExporter
 import org.wa9nnn.fdcluster.cabrillo.{CabrilloExportRequest, CabrilloGenerator}
-import org.wa9nnn.fdcluster.http.{ClientActor, FetchQsos}
+import org.wa9nnn.fdcluster.http.{ClientActor, FetchQsos, Sendable}
 import org.wa9nnn.fdcluster.javafx.menu.ImportRequest
 import org.wa9nnn.fdcluster.javafx.sync.{RequestUuidsForHour, SyncSteps, UuidsAtHost}
 import org.wa9nnn.fdcluster.model.MessageFormats._
@@ -83,10 +83,13 @@ class StoreActor(injector: Injector,
       }
       sender ! addResult // send back to caller with all info allows UI to show what was recorded or dup
 
+    case s:Sendable[_] =>
+      clientActor ! s
+
     case DumpQsos ⇒
       sender ! store.dump
 
-    case RequestUuidsForHour(_, fdHours, _) ⇒
+    case RequestUuidsForHour(fdHours) ⇒
       val uuids = store.uuidForHours(fdHours.toSet)
       sender ! UuidsAtHost(nodeAddress, uuids)
 
