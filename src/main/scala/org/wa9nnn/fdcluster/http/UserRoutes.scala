@@ -25,7 +25,6 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.directives.MethodDirectives.get
 import akka.http.scaladsl.server.directives.RouteDirectives.complete
-import akka.http.scaladsl.unmarshalling.{FromRequestUnmarshaller, Unmarshaller}
 import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
@@ -41,11 +40,13 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 
 trait UserRoutes extends LazyLogging {
-//  import Directives._
+  //  import Directives._
+
   import PlayJsonSupport._
 
 
   val nodeAddress: NodeAddress
+
   /**
    * Automatically applied to convert the JsValue, e.g. {{Json.toJson(qsoHours)}} to what complete() needs.
    * complete(Json.toJson(qsoHours))
@@ -61,8 +62,8 @@ trait UserRoutes extends LazyLogging {
   implicit lazy val timeout: Timeout = Timeout(5 seconds) // usually we'd obtain the timeout from the system's configuration
 
   lazy val userRoutes: Route =
+  //          DebuggingDirectives.logRequestResult(
     encodeResponse(
-
       concat(
         get {
           concat(
@@ -82,24 +83,36 @@ trait UserRoutes extends LazyLogging {
                 complete(qsos)
               }
             },
-
           )
         },
-
-        path("RequestUuidsForHour") {
-          post {
-            val um = as[RequestUuidsForHour]
-            entity(um) { uuidRequest ⇒
-              onSuccess((
-                store ? uuidRequest
-                ).mapTo[UuidsAtHost]) { uuids: UuidsAtHost ⇒
-                logger.debug(s"qsoUuids:  $uuids")
-                complete {
-                  uuids
+        post {
+          concat(
+            path("requestUuidsForHour") {
+              val um = as[RequestUuidsForHour]
+              entity(um) { uuidRequest ⇒
+                onSuccess((
+                  store ? uuidRequest
+                  ).mapTo[UuidsAtHost]) { uuids: UuidsAtHost ⇒
+                  complete {
+                    uuids
+                  }
                 }
               }
             }
-          }
+            ,
+            path(ClassToPath(classOf[RequestQsosForUuids])) {
+              val um = as[RequestQsosForUuids]
+              entity(um) { uuidRequest ⇒
+                onSuccess((
+                  store ? uuidRequest
+                  ).mapTo[QsosFromNode]) { qsosFromNode ⇒
+                  complete {
+                    qsosFromNode
+                  }
+                }
+              }
+            }
+          )
         }
       )
     )

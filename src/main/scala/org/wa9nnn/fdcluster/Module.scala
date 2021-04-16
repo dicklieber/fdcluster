@@ -28,6 +28,7 @@ import org.wa9nnn.fdcluster.javafx.entry.{RunningTaskInfoConsumer, RunningTaskPa
 import org.wa9nnn.fdcluster.javafx.sync.{ProgressStep, SyncSteps}
 import org.wa9nnn.fdcluster.metrics.MetricsReporter
 import org.wa9nnn.fdcluster.model._
+import org.wa9nnn.fdcluster.model.sync.ClusterActor
 import org.wa9nnn.fdcluster.store._
 import org.wa9nnn.fdcluster.store.network.MulticastListener
 import org.wa9nnn.fdcluster.tools.RandomQsoGenerator
@@ -92,7 +93,7 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
   @Provides
   @Singleton
   @Named("store")
-  def getMyActor(actorSystem: ActorSystem,
+  def storeActor(actorSystem: ActorSystem,
                  injector: Injector,
                  nodeAddress: NodeAddress,
                  config: Config,
@@ -101,7 +102,33 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
                  journalLoader: JournalLoader,
                  randomQsoGenerator: RandomQsoGenerator
                 ): ActorRef = {
-    actorSystem.actorOf(Props(new StoreActor(injector, nodeAddress, config, syncSteps, storeMapImpl, journalLoader, randomQsoGenerator)))
+    actorSystem.actorOf(Props(new StoreActor(injector, nodeAddress, config, syncSteps, storeMapImpl, journalLoader, randomQsoGenerator)),
+      "store")
+  }
+
+//  @Provides
+//  @Singleton
+//  @Named("httpClient")
+//  def httpClientActor(actorSystem: ActorSystem,
+//                      @Named("store") store: ActorRef,
+//                      @Named("cluster") cluster: ActorRef
+//                     ): ActorRef = {
+//    actorSystem.actorOf(Props(classOf[HttpClientActor],store, cluster))
+//  }
+
+  @Provides
+  @Singleton
+  @Named("cluster")
+  def clusterStoreActor(actorSystem: ActorSystem,
+                        nodeAddress: NodeAddress,
+                        syncSteps: SyncSteps,
+                        @Named("store") storeActor: ActorRef,
+                       ): ActorRef = {
+    actorSystem.actorOf(Props(
+      new ClusterActor(nodeAddress,
+        syncSteps,
+        storeActor,
+      )), "cluster")
   }
 
 

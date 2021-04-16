@@ -62,11 +62,11 @@ object QsoHour {
 /**
  * Used to quickly compare one node's hour with another.
  *
- * @param startOfHour truncated to the hour.
+ * @param fdHour truncated to the hour.
  * @param digest      of all the QsoIDs in this hour.
  * @param size        number of Qsos in this hour.  //todo Do we actually need this? isn't the digest sufficient?
  */
-case class QsoHourDigest(startOfHour: FdHour, digest: Digest, size: Int) extends LabelSource {
+case class QsoHourDigest(fdHour: FdHour, digest: Digest, size: Int) extends LabelSource {
   override def setLabel(labeled: Labeled): Unit = {
     if (size == 0) {
       labeled.text = "--"

@@ -19,14 +19,14 @@
 
 package org.wa9nnn.fdcluster.store.network.cluster
 
-import java.net.URL
-import com.typesafe.scalalogging.LazyLogging
+import akka.http.scaladsl.model.Uri
 import nl.grons.metrics4.scala.DefaultInstrumented
 import org.wa9nnn.fdcluster.model.NodeAddress
 import org.wa9nnn.fdcluster.model.sync.NodeStatus
 import org.wa9nnn.fdcluster.store.network.FdHour
 import org.wa9nnn.util.StructuredLogging
 
+import java.net.URL
 import scala.collection.concurrent.TrieMap
 import scala.collection.immutable
 
@@ -90,7 +90,7 @@ class ClusterState(ourNodeAddress: NodeAddress) extends StructuredLogging with D
     List.empty
   }
 
-  def otherNodeWithMostThanUs(): Option[URL] = {
+  def otherNodeWithMostThanUs(): Option[NodeStateContainer] = {
     val us: Option[NodeStatus] = nodes.get(ourNodeAddress).map(_.nodeStatus)
     us match {
       case Some(ourStatus: NodeStatus) ⇒
@@ -101,7 +101,6 @@ class ClusterState(ourNodeAddress: NodeAddress) extends StructuredLogging with D
           .toList
           .sortBy(_.qsoCount)
           .lastOption
-          .map(_.url)
       case None ⇒
         None
     }

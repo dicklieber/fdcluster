@@ -44,11 +44,11 @@ case class NodeStatus(nodeAddress: NodeAddress,
                       qsoMetadata: QsoMetadata,
                       bandModeOperator: CurrentStation,
                       qsoRate: Double,
-                      stamp: LocalDateTime = LocalDateTime.now())  {
+                      stamp: LocalDateTime = LocalDateTime.now()) extends ClusterMessage{
   assert(bandModeOperator != null, "null BandModeOperator")
 
   def digestForHour(fdHour: FdHour): Option[QsoHourDigest] = {
-    qsoHourDigests.find(_.startOfHour == fdHour)
+    qsoHourDigests.find(_.fdHour == fdHour)
   }
 
 }

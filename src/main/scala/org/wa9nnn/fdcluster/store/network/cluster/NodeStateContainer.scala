@@ -63,15 +63,15 @@ class NodeStateContainer(initialNodeStatus: NodeStatus, ourNodeAddress: NodeAddr
     this.nodeStatus = nodeStatus
   }
 
-  def url: URL = {
-    nodeStatus.nodeAddress.url
+  def uri: Uri = {
+    nodeStatus.nodeAddress.uri
   }
 
 
   def forHour(fdHour: FdHour): Option[NodeFdHourDigest] = {
     nodeStatus
       .qsoHourDigests
-      .find(_.startOfHour == fdHour)
+      .find(_.fdHour == fdHour)
       .map(qhd ⇒ cluster.NodeFdHourDigest(nodeAddress, qhd))
   }
 
@@ -80,7 +80,7 @@ class NodeStateContainer(initialNodeStatus: NodeStatus, ourNodeAddress: NodeAddr
    * @return [[FdHour]]s in the node
    */
   def knownHours: Set[FdHour] = {
-    nodeStatus.qsoHourDigests.map(_.startOfHour).toSet
+    nodeStatus.qsoHourDigests.map(_.fdHour).toSet
   }
 
 

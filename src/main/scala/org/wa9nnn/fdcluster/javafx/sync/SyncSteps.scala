@@ -21,13 +21,13 @@ package org.wa9nnn.fdcluster.javafx.sync
 
 import java.time.{Duration, Instant}
 import java.util.concurrent.TimeUnit
-
 import javax.inject.Singleton
 import nl.grons.metrics4.scala.{DefaultInstrumented, MetricName, Timer}
+import org.wa9nnn.util.StructuredLogging
 import scalafx.collections.ObservableBuffer
 
 @Singleton
-class SyncSteps extends DefaultInstrumented {
+class SyncSteps extends DefaultInstrumented  with StructuredLogging{
   override lazy val metricBaseName: MetricName = MetricName("Sync")
 
   private val syncTimer: Timer = metrics.timer("Sync")
@@ -48,7 +48,8 @@ class SyncSteps extends DefaultInstrumented {
   def start(): Unit = {
     observableBuffer.clear()
     step("Start", "")
-    assert(startStamp.isEmpty, "starting already stated sync operation.")
+    if(startStamp.isDefined)
+      logger.error("Starting already stated sync operation.")
     startStamp = Some(Instant.now)
   }
 

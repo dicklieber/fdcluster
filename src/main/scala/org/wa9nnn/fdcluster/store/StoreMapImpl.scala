@@ -47,6 +47,11 @@ class StoreMapImpl @Inject()(na: NodeAddress,
                              fileManager: FileManager
                             )
   extends Store with StructuredLogging with DefaultInstrumented {
+
+  def filterAlreadyPresent(iterator: Iterator[Uuid]): Iterator[Uuid] = {
+    iterator.filterNot(uuid => byUuid.contains(uuid))
+  }
+
   implicit val nodeAddress: NodeAddress = na
 
   /**
@@ -266,7 +271,7 @@ class StoreMapImpl @Inject()(na: NodeAddress,
         .groupBy(_.fdHour)
         .values.map(QsoHour(_))
         .map(_.hourDigest).toList
-        .sortBy(_.startOfHour)
+        .sortBy(_.fdHour)
     }
     val rate = qsoMeter.fifteenMinuteRate
     val currentStation = CurrentStation()
@@ -300,6 +305,9 @@ class StoreMapImpl @Inject()(na: NodeAddress,
       .sorted.groupBy(_.fdHour).values.map(QsoHour(_))
       .filter(_.fdHour == fdHour)
       .toList
+  }
+  def get(uuid: Uuid): Option[QsoRecord] ={
+    byUuid.get(uuid)
   }
 
   override def debugClear(): Unit = {

@@ -37,13 +37,13 @@ import javax.inject.Inject
  * @param fileManager     knows all about FDCluster files.
  * @param contestProperty so can make contest-specific files.
  */
-class ExportDialog @Inject()(implicit
+class ExportDialog @Inject()(
                              persistence: Persistence,
                              fileManager: FileManager,
                              contestProperty: ContestProperty) extends Dialog[AdifExportRequest] {
   private val adifExportRequest: AdifExportRequest =
     persistence.loadFromFile[AdifExportRequest] { () =>
-      AdifExportRequest(fileManager.defaultExportFile("adif"))
+      AdifExportRequest(fileManager.defaultExportFile("adif", contestProperty))
     }
 
   private val dp: DialogPane = dialogPane()

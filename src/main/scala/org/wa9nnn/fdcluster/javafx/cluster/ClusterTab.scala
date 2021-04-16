@@ -35,7 +35,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 /**
  * Create JavaFX UI to view status of each node in the cluster.
  */
-class ClusterTab @Inject()(@Inject() @Named("store") store: ActorRef) extends Tab with StructuredLogging {
+class ClusterTab @Inject()(@Inject() @Named("cluster") store: ActorRef) extends Tab with StructuredLogging {
   implicit val timeout: Timeout = Timeout(5, TimeUnit.SECONDS)
   selected.onChange((_, _, nv) =>
     if (nv)

@@ -38,11 +38,11 @@ class StoreSyncSpec extends Specification with BeforeAfterEach with DebugTimer w
       status.qsoCount must beEqualTo(nQsos)
       status.nodeAddress must beEqualTo(expectedNodeAddress)
 
-      val startOfContest: FdHour = status.qsoHourDigests.head.startOfHour
+      val startOfContest: FdHour = status.qsoHourDigests.head.fdHour
       var currentExpectedHour = startOfContest
 
       status.qsoHourDigests.foreach { qsoIds: QsoHourDigest ⇒
-        currentExpectedHour must beEqualTo(qsoIds.startOfHour)
+        currentExpectedHour must beEqualTo(qsoIds.fdHour)
         //        println(qsoIds.startOfHour)
 
         currentExpectedHour = currentExpectedHour.plus(1)

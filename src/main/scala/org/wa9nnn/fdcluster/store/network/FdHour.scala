@@ -26,17 +26,14 @@ import scalafx.scene.control.Labeled
 
 import java.time.{Instant, ZonedDateTime}
 import scala.collection.concurrent.TrieMap
+import scala.collection.mutable
 
 /**
  * Id of a collection of QSOs in a calendar hour.
  * Its just a LocalDateTime with only any hour.
  *
  */
-case class FdHour(epochHours: Long) extends Ordered[FdHour] with LabelSource {
-  val instant = Instant.ofEpochMilli(epochHours * msHour)
-  val dt: ZonedDateTime = ZonedDateTime.ofInstant(instant, utcZoneId)
-  val day: Int = dt.getDayOfMonth
-  val hour: Int = dt.getHour
+case class FdHour private(day: Int, hour: Int) extends Ordered[FdHour] with LabelSource {
 
   val display: String = f"$day:$hour%02d"
   override val toolTip = s"utc date: $day hour: $hour"
@@ -48,24 +45,26 @@ case class FdHour(epochHours: Long) extends Ordered[FdHour] with LabelSource {
    * Used for testing
    */
   def plus(addedHours: Int): FdHour = {
-    FdHour(epochHours + addedHours)
-  }
-
-  override def compare(that: FdHour): Int = {
-    this.epochHours compareTo that.epochHours
-  }
-
-  override def equals(obj: Any): Boolean = {
-    obj match {
-      case that: FdHour =>
-        this.epochHours == that.epochHours
-      case _ =>
-        false
+    val maybeHours = hour + addedHours
+    if (maybeHours > 23) {
+      FdHour(day + 1, maybeHours - 24)
+    }
+    else {
+      copy(hour = maybeHours)
     }
   }
 
+  override def compare(that: FdHour): Int = {
+    val ret = this.day compareTo that.day
+    if (ret == 0) {
+      this.hour compareTo that.hour
+    } else
+      ret
+  }
+
+
   override def setLabel(labeled: Labeled): Unit = {
-    labeled.tooltip = s"utc date: $day hour: $hour ($dt)"
+    labeled.tooltip = s"utc date: $day hour: $hour"
 
     labeled.text = toString
   }
@@ -75,11 +74,23 @@ object FdHour extends LazyLogging {
   /**
    * Used to match any FdHour in [[FdHour.equals()]]
    */
-  val allHours: FdHour = FdHour(Long.MinValue)
-  val knownHours = new TrieMap[Long, FdHour]()
+  val allHours: FdHour = FdHour(0, 0)
+  lazy val knownHours: TrieMap[FdHour, FdHour] = new TrieMap[FdHour, FdHour]()
 
-  def apply(instant: Instant): FdHour = {
-    val epochHours = instant.toEpochMilli / msHour
-    knownHours.getOrElseUpdate(epochHours, new FdHour(epochHours))
+  def apply(day: Int, hour: Int): FdHour = {
+    val candidate = new FdHour(day, hour)
+    done(candidate)
+  }
+
+  def apply(instant: Instant = Instant.now()): FdHour = {
+    val dt: ZonedDateTime = ZonedDateTime.ofInstant(instant, utcZoneId)
+    val day: Int = dt.getDayOfMonth
+    val hour: Int = dt.getHour
+    val candidate = new FdHour(day, hour)
+    done(candidate)
+  }
+
+  private def done(candidate: FdHour): FdHour = {
+    knownHours.getOrElseUpdate(candidate, candidate)
   }
 }

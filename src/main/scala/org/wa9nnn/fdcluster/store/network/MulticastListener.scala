@@ -6,24 +6,26 @@ import com.typesafe.config.Config
 import nl.grons.metrics4.scala
 import nl.grons.metrics4.scala.DefaultInstrumented
 import org.apache.commons.math3.stat.descriptive.SynchronizedDescriptiveStatistics
+import org.wa9nnn.fdcluster.model.sync.{ClusterMessage, StoreMessage}
 import org.wa9nnn.fdcluster.store.JsonContainer
 
 import java.net.{DatagramPacket, MulticastSocket}
 import javax.inject.{Inject, Singleton}
 
 /**
- * Listens for multicast messages, decoddes and send to the Store Actor.
+ * Listens for multicast messages, decodes and send to the Store Actor.
  *
- * @param store store Actor.
+ * @param cluster Actor.
+ * @param store   Actor.
  * @param config
  */
 @Singleton
-class MulticastListener @Inject()(@Named("store") val store: ActorRef,
-                                  val config: Config) extends MulticastActor with Runnable with DefaultInstrumented {
-
+class MulticastListener @Inject()(
+                                   @Named("cluster") val cluster: ActorRef,
+                                   @Named("store") val store: ActorRef,
+                                   val config: Config) extends MulticastActor with Runnable with DefaultInstrumented {
   private val messagesMeter: scala.Meter = metrics.meter("messages")
   private val descriptiveStatistics = new SynchronizedDescriptiveStatistics()
-
 
   private var multicastSocket = new MulticastSocket(port)
 
@@ -59,7 +61,12 @@ class MulticastListener @Inject()(@Named("store") val store: ActorRef,
           whenTraceEnabled { () =>
             s"Got: $jc from  ${recv.getAddress}"
           }
-          store ! rec
+          rec match {
+            case sm: StoreMessage =>
+              store ! sm
+            case cm: ClusterMessage =>
+              cluster ! cm
+          }
         }
       }
       catch {

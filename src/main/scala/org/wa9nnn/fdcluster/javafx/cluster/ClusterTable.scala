@@ -41,7 +41,7 @@ class ClusterTable extends LazyLogging {
     nodes.foreach { nodeStateContainer ⇒
       byAddress.put(nodeStateContainer.nodeAddress, nodeStateContainer)
       nodeStateContainer.nodeStatus.qsoHourDigests.foreach(qsoHourDigest ⇒
-        hours add qsoHourDigest.startOfHour
+        hours add qsoHourDigest.fdHour
       )
     }
 

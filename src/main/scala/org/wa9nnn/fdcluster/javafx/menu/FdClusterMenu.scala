@@ -41,6 +41,8 @@ import scalafx.application.Platform
 import scalafx.event.ActionEvent
 import scalafx.scene.control._
 import org.wa9nnn.fdcluster.model.MessageFormats._
+import org.wa9nnn.fdcluster.store.network.FdHour
+
 import java.awt.Desktop
 import java.io.{PrintWriter, StringWriter}
 import java.nio.file.Files
@@ -49,20 +51,21 @@ import scala.concurrent.duration.DurationInt
 import scala.language.postfixOps
 import scala.util.{Failure, Success, Try, Using}
 
-class FdClusterMenu @Inject()(implicit
-                              injector: Injector,
-                              @Named("store") store: ActorRef,
-                              syncSteps: SyncSteps,
-                              syncDialog: SyncDialog,
-                              aboutDialog: AboutDialog,
-                              nodeAddress: NodeAddress,
-                              fileManager: FileManager,
-                              generateDupSheet: GenerateDupSheet,
-                              contestProperty: ContestProperty,
-                              summaryEngine: SummaryEngine,
-                              metricsReporter: MetricsReporter,
-                              debugRemoveDialog: DebugRemoveDialog) extends StructuredLogging {
-  private implicit val timeout = Timeout(5 seconds)
+class FdClusterMenu @Inject()(
+                               injector: Injector,
+                               @Named("store") store: ActorRef,
+                               @Named("cluster") cluster: ActorRef,
+                               syncSteps: SyncSteps,
+                               syncDialog: SyncDialog,
+                               aboutDialog: AboutDialog,
+                               nodeAddress: NodeAddress,
+                               fileManager: FileManager,
+                               generateDupSheet: GenerateDupSheet,
+                               contestProperty: ContestProperty,
+                               summaryEngine: SummaryEngine,
+                               metricsReporter: MetricsReporter,
+                               debugRemoveDialog: DebugRemoveDialog) extends StructuredLogging {
+  private implicit val timeout: Timeout = Timeout(5 seconds)
   private val desktop = Desktop.getDesktop
   private val currentStationMenuItem = new MenuItem {
     text = "Current Station"
@@ -77,12 +80,6 @@ class FdClusterMenu @Inject()(implicit
       qsoStatCollector.dumpStats()
     }
   }
-  private val requestUuidForHour = new MenuItem {
-    text = "RequestUuidsForHour"
-    onAction = { _: ActionEvent =>
-      store ! Sendable(RequestUuidsForHour(), nodeAddress.uri)
-    }
-  }
   private val syncNowMenuItem = new MenuItem {
     text = "Sync with other nodes"
     onAction = { _: ActionEvent =>
@@ -91,7 +88,7 @@ class FdClusterMenu @Inject()(implicit
       scalafx.application.Platform.runLater {
         syncDialog.showAndWait()
       }
-      store ! Sync
+      cluster ! Sync
     }
   }
 
@@ -171,7 +168,7 @@ class FdClusterMenu @Inject()(implicit
       summaryEngine(writer, contestProperty.contest, wfd)
       writer.close()
 
-      fileManager.defaultExportFile(".html")
+      fileManager.defaultExportFile(".html",contestProperty)
       val path = Files.createTempFile("SummaryEngineSpec", ".html")
       Files.writeString(path, writer.toString)
       val uri = path.toUri
@@ -194,9 +191,9 @@ class FdClusterMenu @Inject()(implicit
     }
   }
 
-  private val metricsMenuItem = new MenuItem{
+  private val metricsMenuItem = new MenuItem {
     text = "Metrics"
-    onAction = {_ =>
+    onAction = { _ =>
       metricsReporter.report()
     }
   }
@@ -205,7 +202,7 @@ class FdClusterMenu @Inject()(implicit
     text = "Dup Sheet"
     onAction = { _ =>
 
-      val dupFile: ExportFile = fileManager.defaultExportFile("dup")(contestProperty)
+      val dupFile: ExportFile = fileManager.defaultExportFile("dup",contestProperty)
       val r: Try[Int] = Using(new PrintWriter(Files.newBufferedWriter(dupFile.path))) { pw =>
         generateDupSheet(pw)
       }
@@ -256,7 +253,6 @@ class FdClusterMenu @Inject()(implicit
           debugDemoBulkMenuItem,
           generateTimed,
           metricsMenuItem,
-          requestUuidForHour
         )
       },
       new Menu("_Edit") {

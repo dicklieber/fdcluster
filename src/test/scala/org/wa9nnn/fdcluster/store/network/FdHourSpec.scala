@@ -15,26 +15,9 @@ class FdHourSpec extends Specification {
       TimeHelpers.utcZoneId)
     val instant: Instant = zdt.toInstant
 
-    val fdHour = FdHour(instant)
-    "from epoch hours" >> {
-      val fdHour1 = FdHour(403489)
-      fdHour1.epochHours must beEqualTo(403489)
-      fdHour1.toString must beEqualTo("12:1")
-      fdHour1.display must beEqualTo("12:01")
-    }
-    "happy path" >> {
-      fdHour.epochHours must beEqualTo(403489)
-      val string = fdHour.toString
-      string must beEqualTo("12:1")
-      fdHour.toolTip must beEqualTo("utc date: 12 hour: 1")
-    }
-    "zero hour in epoch" >> {
-      val fdh = FdHour(Instant.EPOCH)
-      fdh.epochHours must beEqualTo(0)
-    }
     "hour one in epoch" >> {
       val fdh = FdHour(Instant.EPOCH.plusMillis(msHour + 20))
-      fdh.epochHours must beEqualTo(1)
+      fdh.day must beEqualTo(1)
     }
     "same instances of singleton" >> {
       val fdh1 = FdHour(Instant.EPOCH.plusMillis(msHour + 20))
@@ -45,21 +28,11 @@ class FdHourSpec extends Specification {
       b4 must beEqualTo(after)
       fdh1 must beTheSameAs(fdh2)
     }
-    "ordered" >> {
-      val fdh4 = FdHour(4)
-      val fdh2 = FdHour(200)
-      val fdh1 = FdHour(1)
-      val unordered = Seq(fdh4, fdh2, fdh1)
-      val ordered = unordered.sorted
-      unordered must not be equalTo(ordered)
-      ordered.head must beEqualTo(fdh1)
-      ordered.last must beEqualTo(fdh2)
-    }
 
     "plus" >> {
-      val fdh1 = FdHour(1)
+      val fdh1 = FdHour(1,10)
       val fdh2 = fdh1.plus(10)
-      fdh2.epochHours must beEqualTo(11)
+      fdh2.toString must beEqualTo("1:20")
     }
   }
   "known" >> {

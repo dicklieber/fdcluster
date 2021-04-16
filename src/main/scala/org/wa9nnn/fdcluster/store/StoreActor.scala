@@ -31,13 +31,11 @@ import nl.grons.metrics4.scala.DefaultInstrumented
 import org.wa9nnn.fdcluster.Markers.syncMarker
 import org.wa9nnn.fdcluster.adif.AdiExporter
 import org.wa9nnn.fdcluster.cabrillo.{CabrilloExportRequest, CabrilloGenerator}
-import org.wa9nnn.fdcluster.http.{ClientActor, FetchQsos, Sendable}
+import org.wa9nnn.fdcluster.http.RequestQsosForUuids
 import org.wa9nnn.fdcluster.javafx.menu.ImportRequest
-import org.wa9nnn.fdcluster.javafx.sync.{RequestUuidsForHour, SyncSteps, UuidsAtHost}
+import org.wa9nnn.fdcluster.javafx.sync.{QsoContainer, RequestUuidsForHour, SyncSteps, UuidContainer, UuidsAtHost}
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
-import org.wa9nnn.fdcluster.model.sync.NodeStatus
-import org.wa9nnn.fdcluster.store.network.cluster.ClusterState
 import org.wa9nnn.fdcluster.store.network.{FdHour, MultcastSenderActor}
 import org.wa9nnn.fdcluster.tools.{GenerateRandomQsos, RandomQsoGenerator}
 import org.wa9nnn.util.ImportTask
@@ -53,7 +51,6 @@ class StoreActor(injector: Injector,
                  journalLoader: JournalLoader,
                  randomQso: RandomQsoGenerator
                 ) extends Actor with LazyLogging with DefaultInstrumented {
-  private val clusterState = new ClusterState(nodeAddress)
   private implicit val timeout: Timeout = Timeout(5 seconds)
 
 
@@ -62,7 +59,6 @@ class StoreActor(injector: Injector,
   logger.info(s"StoreActor: ${self.path}")
 
   private val senderActor: ActorRef = context.actorOf(MultcastSenderActor.props(config), "MulticastSender")
-  private val clientActor = context.actorOf(ClientActor.props(syncSteps))
 
   context.system.scheduler.scheduleAtFixedRate(2 seconds, 17 seconds, self, StatusPing)
 
@@ -83,15 +79,36 @@ class StoreActor(injector: Injector,
       }
       sender ! addResult // send back to caller with all info allows UI to show what was recorded or dup
 
-    case s:Sendable[_] =>
-      clientActor ! s
+    //    case s:Sendable[_] =>
+    //      clientActor ! s
 
     case DumpQsos ⇒
       sender ! store.dump
 
     case RequestUuidsForHour(fdHours) ⇒
-      val uuids = store.uuidForHours(fdHours.toSet)
-      sender ! UuidsAtHost(nodeAddress, uuids)
+      val uuids: List[Uuid] = store.uuidForHours(fdHours.toSet)
+      sender ! UuidsAtHost(nodeAddress, uuids) //to asking host.
+
+    case uuidsAtHost: UuidsAtHost =>
+      logger.debug(uuidsAtHost.toString)
+      val missing: Iterator[Uuid] = store.filterAlreadyPresent(uuidsAtHost.iterator)
+      val requestQsosForUuids = RequestQsosForUuids(missing.toList)
+      logger.debug(requestQsosForUuids.toString)
+      sender ! requestQsosForUuids // send to cluster on this host
+
+    case rqfu: RequestQsosForUuids =>
+      logger.debug(rqfu.toString)
+
+      val qsos: List[QsoRecord] = rqfu.uuids.flatMap(uuid =>
+        store.get(uuid)
+      )
+      val qsosFromNode = QsosFromNode(nodeAddress, qsos)
+      logger.debug(qsosFromNode.toString)
+
+      sender ! qsosFromNode
+
+    case qc: QsoContainer => qc.iterator.foreach(store.addRecord)
+
 
     case d: DistributedQsoRecord ⇒
       val qsoRecord = d.qsoRecord
@@ -111,19 +128,6 @@ class StoreActor(injector: Injector,
 
       senderActor ! JsonContainer(nodeStatus)
 
-    /**
-     * Start a sync operation
-     */
-    case Sync ⇒
-      syncSteps.step("Sync Request", "Start")
-
-      clusterState.otherNodeWithMostThanUs() match {
-        case Some(bestNode) ⇒
-          syncSteps.step("Best Node", bestNode)
-          clientActor ! FetchQsos(bestNode)
-        case None ⇒
-          syncSteps.step("No Best Node", "Done")
-      }
 
     /**
      * Finish up sync with data from another node
@@ -133,12 +137,6 @@ class StoreActor(injector: Injector,
       logger.debug(syncMarker, s"got ${qsosFromNode.size}")
       store.merge(qsosFromNode.qsos)
 
-    case ns: NodeStatus ⇒
-      logger.trace(s"Got NodeStatus from ${ns.nodeAddress}")
-      clusterState.update(ns)
-
-    case DumpCluster ⇒
-      sender ! clusterState.dump
 
     case DebugClearStore ⇒
       store.debugClear()

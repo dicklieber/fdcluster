@@ -21,6 +21,7 @@ package org.wa9nnn.fdcluster.model
 
 import org.wa9nnn.fdcluster.cabrillo.{CabrilloExportRequest, CabrilloValue, CabrilloValues}
 import org.wa9nnn.fdcluster.contest.Contest
+import org.wa9nnn.fdcluster.http.{RequestQsosForHours, RequestQsosForUuids}
 import org.wa9nnn.fdcluster.javafx.entry.section.Section
 import org.wa9nnn.fdcluster.javafx.menu.{BuildLoadRequest, ImportRequest}
 
@@ -59,6 +60,8 @@ object MessageFormats {
   implicit val sectFromat: Format[Section] = Json.format[Section]
   implicit val excFromat: Format[Exchange] = Json.format[Exchange]
   implicit val fdHourFormat: Format[FdHour] = Json.format[FdHour]
+  implicit val rqfrFormat: Format[RequestQsosForHours] = Json.format[RequestQsosForHours]
+  implicit val rqfuFormat: Format[RequestQsosForUuids] = Json.format[RequestQsosForUuids]
   implicit val uuidsRequestFormat: Format[RequestUuidsForHour] = Json.format[RequestUuidsForHour]
   implicit val cf: Format[Contest] = Json.format[Contest]
   implicit val bandFormat: Format[AvailableBand] = Json.format[AvailableBand]

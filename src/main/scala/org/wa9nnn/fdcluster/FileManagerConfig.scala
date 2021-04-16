@@ -47,7 +47,7 @@ class FileManager @Inject()(@TypesafeConfig("directory") dir: String) {
    * @param contestProperty to make contest-specific names.
    * @return with default directory and filename.
    */
-  def defaultExportFile(extension: String)(implicit contestProperty: ContestProperty): ExportFile = {
+  def defaultExportFile(extension: String, contestProperty: ContestProperty): ExportFile = {
     val fileBase = contestProperty.fileBase
     val dir: String = directory.resolve(fileBase).toAbsolutePath.toString
     ExportFile(dir, s"$fileBase.$extension")
