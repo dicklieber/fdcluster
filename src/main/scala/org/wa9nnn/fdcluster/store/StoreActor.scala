@@ -33,7 +33,7 @@ import org.wa9nnn.fdcluster.adif.AdiExporter
 import org.wa9nnn.fdcluster.cabrillo.{CabrilloExportRequest, CabrilloGenerator}
 import org.wa9nnn.fdcluster.http.RequestQsosForUuids
 import org.wa9nnn.fdcluster.javafx.menu.ImportRequest
-import org.wa9nnn.fdcluster.javafx.sync.{QsoContainer, RequestUuidsForHour, SyncSteps, UuidContainer, UuidsAtHost}
+import org.wa9nnn.fdcluster.javafx.sync.{QsoContainer, RequestUuidsForHour, UuidContainer, UuidsAtHost}
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.store.network.{FdHour, MultcastSenderActor}
@@ -44,15 +44,16 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-class StoreActor(injector: Injector,
-                 nodeAddress: NodeAddress, config: Config,
-                 syncSteps: SyncSteps,
-                 store: StoreMapImpl,
-                 journalLoader: JournalLoader,
-                 randomQso: RandomQsoGenerator
-                ) extends Actor with LazyLogging with DefaultInstrumented {
+class StoreActor(injector: Injector) extends Actor with LazyLogging with DefaultInstrumented {
   private implicit val timeout: Timeout = Timeout(5 seconds)
 
+  val nodeAddress: NodeAddress = injector.instance[NodeAddress]
+  val config: Config = injector.instance[Config]
+  val journalLoader: JournalLoader = injector.instance[JournalLoader]
+  val randomQso: RandomQsoGenerator = injector.instance[RandomQsoGenerator]
+  println(randomQso)
+  val store: StoreLogic = injector.instance[StoreLogic]
+  println(store)
 
   //  private val ourNode = nodeInfo.nodeAddress
 
@@ -133,7 +134,6 @@ class StoreActor(injector: Injector,
      * Finish up sync with data from another node
      */
     case qsosFromNode: QsosFromNode ⇒
-      syncSteps.step("Records", s"Received: ${qsosFromNode.size} qsos from ${qsosFromNode.nodeAddress}")
       logger.debug(syncMarker, s"got ${qsosFromNode.size}")
       store.merge(qsosFromNode.qsos)
 

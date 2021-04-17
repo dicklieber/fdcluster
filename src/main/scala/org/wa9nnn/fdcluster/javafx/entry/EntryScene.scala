@@ -42,6 +42,7 @@ import scalafx.scene.control._
 import scalafx.scene.layout.{BorderPane, HBox, VBox}
 
 import java.util.concurrent.TimeUnit
+import javax.inject.Singleton
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}
@@ -49,6 +50,7 @@ import scala.util.{Failure, Success, Try}
 /**
  * Create ScalaFX UI for field day entry mode.
  */
+@Singleton
 class EntryScene @Inject()(
                             currentStationPanel: CurrentStationPanel,
                             contestProperty: ContestProperty,
@@ -59,7 +61,7 @@ class EntryScene @Inject()(
                             currentStationProperty: CurrentStationProperty,
                             statsPane: StatsPane,
                             statusPane: StatusPane,
-                            @Inject() @Named("store") store: ActorRef) extends StructuredLogging {
+                            @Named("store") store: ActorRef) extends StructuredLogging {
   private implicit val timeout: Timeout = Timeout(5, TimeUnit.SECONDS)
 
   var actionResult: ActionResult = new ActionResult(store, qsoMetadataProperty.value)

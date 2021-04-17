@@ -26,9 +26,7 @@ import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import org.wa9nnn.fdcluster.cabrillo.{CabrilloDialog, CabrilloExportRequest}
 import org.wa9nnn.fdcluster.contest.fieldday.{SummaryEngine, WinterFieldDaySettings}
 import org.wa9nnn.fdcluster.dupsheet.GenerateDupSheet
-import org.wa9nnn.fdcluster.http.Sendable
 import org.wa9nnn.fdcluster.javafx.debug.DebugRemoveDialog
-import org.wa9nnn.fdcluster.javafx.sync.{RequestUuidsForHour, SyncDialog, SyncSteps}
 import org.wa9nnn.fdcluster.metrics.MetricsReporter
 import org.wa9nnn.fdcluster.model.{ContestProperty, ExportFile, NodeAddress}
 import org.wa9nnn.fdcluster.rig.RigDialog
@@ -40,8 +38,6 @@ import scalafx.Includes._
 import scalafx.application.Platform
 import scalafx.event.ActionEvent
 import scalafx.scene.control._
-import org.wa9nnn.fdcluster.model.MessageFormats._
-import org.wa9nnn.fdcluster.store.network.FdHour
 
 import java.awt.Desktop
 import java.io.{PrintWriter, StringWriter}
@@ -55,8 +51,6 @@ class FdClusterMenu @Inject()(
                                injector: Injector,
                                @Named("store") store: ActorRef,
                                @Named("cluster") cluster: ActorRef,
-                               syncSteps: SyncSteps,
-                               syncDialog: SyncDialog,
                                aboutDialog: AboutDialog,
                                nodeAddress: NodeAddress,
                                fileManager: FileManager,
@@ -83,11 +77,6 @@ class FdClusterMenu @Inject()(
   private val syncNowMenuItem = new MenuItem {
     text = "Sync with other nodes"
     onAction = { _: ActionEvent =>
-      syncSteps.start()
-      syncSteps.step("Start", "Request")
-      scalafx.application.Platform.runLater {
-        syncDialog.showAndWait()
-      }
       cluster ! Sync
     }
   }

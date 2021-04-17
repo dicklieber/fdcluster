@@ -19,7 +19,6 @@ package org.wa9nnn.fdcluster.store
 
 import com.google.inject.name.Named
 import nl.grons.metrics4.scala.DefaultInstrumented
-import org.wa9nnn.fdcluster.javafx.sync.SyncSteps
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHour}
@@ -40,11 +39,10 @@ import scala.collection.concurrent.TrieMap
  *
  */
 @Singleton
-class StoreMapImpl @Inject()(na: NodeAddress,
-                             @Named("qsoMetadata") qsoMetadata: ObjectProperty[QsoMetadata],
-                             @Named("allQsos") allQsos: ObservableBuffer[QsoRecord],
-                             syncSteps: SyncSteps = new SyncSteps,
-                             fileManager: FileManager
+class StoreLogic @Inject()(na: NodeAddress,
+                           @Named("qsoMetadata") qsoMetadata: ObjectProperty[QsoMetadata],
+                           @Named("allQsos") allQsos: ObservableBuffer[QsoRecord],
+                           fileManager: FileManager
                             )
   extends Store with StructuredLogging with DefaultInstrumented {
 
@@ -227,7 +225,6 @@ class StoreMapImpl @Inject()(na: NodeAddress,
   }
 
   def merge(qsoRecords: Seq[QsoRecord]): Unit = {
-    syncSteps.step("Considering", qsoRecords.size)
 
     try {
       var mergeCount = 0
@@ -241,7 +238,6 @@ class StoreMapImpl @Inject()(na: NodeAddress,
         }
       }
       }
-      syncSteps.finish("Merge Done", s"Merged: $mergeCount Already: $existedCount")
     } catch {
       case eT: Throwable ⇒
         logger.error("merge", eT)

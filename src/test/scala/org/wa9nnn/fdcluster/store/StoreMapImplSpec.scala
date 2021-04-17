@@ -21,7 +21,6 @@ import org.apache.commons.io.FileUtils._
 import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
 import org.specs2.specification.After
-import org.wa9nnn.fdcluster.javafx.sync.SyncSteps
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.{FileManager, MockFileManager}
@@ -41,10 +40,9 @@ class StoreMapImplSpec extends Specification with After with Mockito {
 
   val commandLine: CommandLine = mock[CommandLine].is("skipJournal") returns false
 
-  private val storeMapImpl = new StoreMapImpl(na = NodeAddress(),
+  private val storeMapImpl = new StoreLogic(na = NodeAddress(),
     ObjectProperty(QsoMetadata()),
     allQsos = ObservableBuffer[QsoRecord](Seq.empty),
-    syncSteps = new SyncSteps(),
     fileManager = MockFileManager()
   )
 

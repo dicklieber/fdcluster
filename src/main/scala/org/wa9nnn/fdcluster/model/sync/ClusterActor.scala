@@ -1,16 +1,12 @@
 package org.wa9nnn.fdcluster.model.sync
 
 import akka.actor.{Actor, ActorRef, Props}
-import akka.http.scaladsl.model.Uri
 import akka.pattern.ask
 import akka.util.Timeout
 import com.google.inject.name.Named
-import org.wa9nnn.fdcluster.http.{HttpClientActor, RequestQsosForHours, RequestQsosForUuids, Sendable}
-import org.wa9nnn.fdcluster.javafx.sync
-import org.wa9nnn.fdcluster.javafx.sync.{RequestUuidsForHour, SyncSteps, UuidContainer, UuidsAtHost}
-import org.wa9nnn.fdcluster.model.MessageFormats.{Uuid, qsoHourDigestFormat}
+import org.wa9nnn.fdcluster.http.{HttpClientActor, RequestQsosForUuids, Sendable}
+import org.wa9nnn.fdcluster.javafx.sync.{RequestUuidsForHour, UuidsAtHost}
 import org.wa9nnn.fdcluster.model.NodeAddress
-import org.wa9nnn.fdcluster.store.network.FdHour
 import org.wa9nnn.fdcluster.store.network.cluster.{ClusterState, NodeStateContainer}
 import org.wa9nnn.fdcluster.store.{DumpCluster, Sync}
 import org.wa9nnn.util.StructuredLogging
@@ -20,7 +16,6 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 
 class ClusterActor(nodeAddress: NodeAddress,
-                   syncSteps: SyncSteps,
                    @Named("store") store: ActorRef,
                   ) extends Actor with StructuredLogging {
   private val clusterState = new ClusterState(nodeAddress)
@@ -36,11 +31,8 @@ class ClusterActor(nodeAddress: NodeAddress,
      * Start a sync operation
      */
     case Sync ⇒
-      syncSteps.step("Sync Request", "Start")
-
       clusterState.otherNodeWithMostThanUs() match {
         case Some(bestNode: NodeStateContainer) ⇒
-          syncSteps.step("Best Node", bestNode.nodeAddress)
           bestNode.nodeStatus.qsoHourDigests
 //            .take(1)
             .foreach(qsoHourDigest => {
@@ -56,7 +48,6 @@ class ClusterActor(nodeAddress: NodeAddress,
         //          val value = Sendable(RequestQsosForHours.apply(), bestNode, context.self)
         //          httpClient ! value
         case None ⇒
-          syncSteps.step("No Best Node", "Done")
       }
     case ns: NodeStatus ⇒
       logger.trace(s"Got NodeStatus from ${ns.nodeAddress}")

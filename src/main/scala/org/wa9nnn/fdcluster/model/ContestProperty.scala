@@ -102,11 +102,14 @@ class ContestProperty @Inject()(persistence: Persistence) extends ObjectProperty
 
     try {
       {
-        DockIcon(imagePath)
+//        DockIcon(imagePath)
       }
     } catch {
       case e: java.lang.NoClassDefFoundError =>
         logger.debug("Icon switch", e)
+      case et:Throwable =>
+        logger.debug("Icon switch", et)
+
     }
   }
 

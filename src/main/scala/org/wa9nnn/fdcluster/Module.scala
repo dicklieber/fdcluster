@@ -25,7 +25,6 @@ import com.google.inject.{AbstractModule, Injector, Provides}
 import com.typesafe.config.{Config, ConfigFactory}
 import net.codingwell.scalaguice.ScalaModule
 import org.wa9nnn.fdcluster.javafx.entry.{RunningTaskInfoConsumer, RunningTaskPane}
-import org.wa9nnn.fdcluster.javafx.sync.{ProgressStep, SyncSteps}
 import org.wa9nnn.fdcluster.metrics.MetricsReporter
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.model.sync.ClusterActor
@@ -42,7 +41,7 @@ import javax.inject.{Named, Singleton}
 /**
  * This is where dependency injection (Guice) is managed.
  * Note not all objects are specifically configured here. Many, (most) are simply annotated with @Inject() and
- * scala guice magic does automatically addsa them as required.
+ * scala guice magic does automatically adds them as required.
  *
  * @param parameters command line args
  */
@@ -71,9 +70,6 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
       bind[ObservableBuffer[QsoRecord]]
         .annotatedWithName("allQsos")
         .toInstance(new ObservableBuffer[QsoRecord])
-      bind[ObservableBuffer[ProgressStep]]
-        .annotatedWithName("stepsData")
-        .toInstance(new ObservableBuffer[ProgressStep])
       val runningTaskPane = new RunningTaskPane
       bind[RunningTaskPane].toInstance(runningTaskPane)
       bind[RunningTaskInfoConsumer].toInstance(runningTaskPane)
@@ -81,7 +77,6 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
       bind[Config].toInstance(actorSystem.settings.config)
       install(TypesafeConfigModule.fromConfigWithPackage(config, "org.wa9nnn"))
       bind[MetricsReporter].asEagerSingleton()
-      bind[Store].to[StoreMapImpl]
     }
     catch {
       case e: Throwable ⇒
@@ -93,40 +88,20 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
   @Provides
   @Singleton
   @Named("store")
-  def storeActor(actorSystem: ActorSystem,
-                 injector: Injector,
-                 nodeAddress: NodeAddress,
-                 config: Config,
-                 syncSteps: SyncSteps,
-                 storeMapImpl: StoreMapImpl,
-                 journalLoader: JournalLoader,
-                 randomQsoGenerator: RandomQsoGenerator
-                ): ActorRef = {
-    actorSystem.actorOf(Props(new StoreActor(injector, nodeAddress, config, syncSteps, storeMapImpl, journalLoader, randomQsoGenerator)),
+  def storeActor(actorSystem: ActorSystem, injector: Injector): ActorRef = {
+    actorSystem.actorOf(Props(new StoreActor(injector)),
       "store")
   }
-
-//  @Provides
-//  @Singleton
-//  @Named("httpClient")
-//  def httpClientActor(actorSystem: ActorSystem,
-//                      @Named("store") store: ActorRef,
-//                      @Named("cluster") cluster: ActorRef
-//                     ): ActorRef = {
-//    actorSystem.actorOf(Props(classOf[HttpClientActor],store, cluster))
-//  }
 
   @Provides
   @Singleton
   @Named("cluster")
   def clusterStoreActor(actorSystem: ActorSystem,
                         nodeAddress: NodeAddress,
-                        syncSteps: SyncSteps,
                         @Named("store") storeActor: ActorRef,
                        ): ActorRef = {
     actorSystem.actorOf(Props(
       new ClusterActor(nodeAddress,
-        syncSteps,
         storeActor,
       )), "cluster")
   }
