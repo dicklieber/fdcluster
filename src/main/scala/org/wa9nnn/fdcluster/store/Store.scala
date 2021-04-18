@@ -20,7 +20,7 @@ package org.wa9nnn.fdcluster.store
 
 import org.wa9nnn.fdcluster.model.MessageFormats.Uuid
 import org.wa9nnn.fdcluster.model.sync.NodeStatus
-import org.wa9nnn.fdcluster.model.{Qso, QsoRecord, QsosFromNode}
+import org.wa9nnn.fdcluster.model.{Qso, QsoRecord}
 import org.wa9nnn.fdcluster.store.network.FdHour
 
 trait Store {
@@ -52,8 +52,6 @@ trait Store {
    * @return ids of all [[NodeDatabase]] known to this node.
    */
   def contactIds: NodeQsoIds
-
-  def dump: QsosFromNode
 
   /**
    *

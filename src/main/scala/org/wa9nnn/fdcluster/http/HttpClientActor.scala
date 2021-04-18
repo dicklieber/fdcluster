@@ -19,26 +19,22 @@
 
 package org.wa9nnn.fdcluster.http
 
-import akka.actor.{Actor, ActorRef, ActorSystem, Props}
+import akka.actor.{Actor, ActorRef, ActorSystem}
+import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.{Http, model}
-import akka.stream.Materializer
+import akka.stream.{Materializer, StreamTcpException}
 import akka.stream.scaladsl.Source
 import akka.util.ByteString
 import com.google.inject.name.Named
 import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.Markers.syncMarker
-import org.wa9nnn.fdcluster.javafx.sync.{ResponseMessage, UuidsAtHost}
-import org.wa9nnn.fdcluster.model.MessageFormats._
-import org.wa9nnn.fdcluster.model.QsosFromNode
-import org.wa9nnn.fdcluster.store.network.FdHour
-import play.api.libs.json.{JsObject, JsValue, Json}
+import org.wa9nnn.fdcluster.javafx.sync.{ResponseMessage, SendContainer}
+import play.api.libs.json.{JsObject, Json}
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
-/**
- * send messages to another routes responce to a specfied actor i.e. Store or Cluster
- */
 class HttpClientActor(@Named("store") store: ActorRef,
                       @Named("cluster") cluster: ActorRef,
                      ) extends Actor with LazyLogging {
@@ -49,11 +45,10 @@ class HttpClientActor(@Named("store") store: ActorRef,
 
 
   override def receive: Receive = {
-    case sendable: Sendable ⇒
-      logger.debug(syncMarker, s"Sending: $sendable")
+    case sendContainer: SendContainer ⇒
 
-      val request = sendable.httpRequest
-      val responseFuture = Http().singleRequest(request)
+      val request = sendContainer.httpRequest
+      val responseFuture: Future[HttpResponse] = Http().singleRequest(request)
       responseFuture
         .onComplete {
           case Success(httpResponse: model.HttpResponse) =>
@@ -63,7 +58,7 @@ class HttpClientActor(@Named("store") store: ActorRef,
                 val string = body.utf8String
                 val js: JsObject = Json.parse(string).asInstanceOf[JsObject]
 
-                val responseMessage: ResponseMessage = sendable.message.parseResponse(js)
+                val responseMessage: ResponseMessage = sendContainer.message.parseResponse(js)
                 logger.debug(s"Response: $responseMessage dest: ${responseMessage.destination}")
                 dispatch(responseMessage)
               }
@@ -72,8 +67,14 @@ class HttpClientActor(@Named("store") store: ActorRef,
             }
 
           case Failure(et) =>
+            et match {
+              case es:StreamTcpException =>
+                val json = sendContainer.transactionId.toPrettyJson
+                logger.error(es.getMessage + "\n" + json)
+            }
             logger.error(syncMarker, s"Failure", et)
         }
+
 
     //    case req: RequestUuidsForHour ⇒
     //      logger.debug(s"ClientActor got: $req")
@@ -97,33 +98,6 @@ class HttpClientActor(@Named("store") store: ActorRef,
   }
 }
 
-
-/**
- *
- * @param fdHours empty gets all.
- */
-case class RequestQsosForHours(fdHours: List[FdHour] = List.empty) extends JsonRequestResponse {
-  override def toJson: JsObject = Json.toJson(this).as[JsObject]
-
-  override def parseResponse(jsObject: JsObject): ResponseMessage = {
-    jsObject.as[QsosFromNode]
-
-  }
-}
-
-/**
- *
- * @param uuids empty gets all/
- */
-case class RequestQsosForUuids(uuids: List[Uuid] = List.empty) extends JsonRequestResponse {
-  override def toJson: JsObject = Json.toJson(this).as[JsObject]
-
-  override def parseResponse(jsObject: JsObject): ResponseMessage = {
-    jsObject.as[QsosFromNode]
-  }
-
-  override def toString: Node = s"RequestQsosForUuids for ${uuids.length} uuids"
-}
 
 
 

@@ -20,11 +20,9 @@ package org.wa9nnn.fdcluster.model
 
 import akka.util.ByteString
 import org.wa9nnn.fdcluster.model.MessageFormats._
+import org.wa9nnn.fdcluster.model.sync.StoreMessage
 import org.wa9nnn.fdcluster.store.network.FdHour
 import play.api.libs.json.Json
-import MessageFormats._
-import org.wa9nnn.fdcluster.javafx.sync.{QsoContainer, ResponseMessage}
-import org.wa9nnn.fdcluster.model.sync.StoreMessage
 
 import java.time.Instant
 import java.util.UUID
@@ -90,12 +88,6 @@ object QsoRecord {
   }
 }
 
-case class QsosFromNode(nodeAddress: NodeAddress, qsos: List[QsoRecord]) extends QsoContainer{
-  def size: Int = qsos.size
-
-  override def toString: Node = s"QsosFromNode for ${qsos.length} qsos"
-
-}
 
 /**
  * This is what gets multi-casted to cluster.

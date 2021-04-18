@@ -28,11 +28,10 @@ import akka.http.scaladsl.server.directives.RouteDirectives.complete
 import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
-import org.wa9nnn.fdcluster.javafx.sync.{RequestUuidsForHour, UuidsAtHost}
+import org.wa9nnn.fdcluster.javafx.sync.{ClassToPath, QsosFromNode, RequestQsosForUuids, RequestUuidsForHour, UuidsAtHost}
 import org.wa9nnn.fdcluster.model.MessageFormats._
+import org.wa9nnn.fdcluster.model.NodeAddress
 import org.wa9nnn.fdcluster.model.sync.QsoHour
-import org.wa9nnn.fdcluster.model.{NodeAddress, QsosFromNode}
-import org.wa9nnn.fdcluster.store.DumpQsos
 import org.wa9nnn.fdcluster.store.network.FdHour
 import play.api.libs.json.JsValue
 
@@ -70,24 +69,14 @@ trait UserRoutes extends LazyLogging {
             pathSingleSlash {
               complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<html><body>todo add help for API!</body></html>"))
             },
-            path("qsoHours") {
-              val dummyFdHour = FdHour.allHours
-              onSuccess((store ? dummyFdHour).mapTo[Seq[QsoHour]]) { qsoHours: Seq[QsoHour] ⇒
-                complete(qsoHours)
-              }
-            },
-            path("qsos") {
-              onSuccess((
-                store ? DumpQsos
-                ).mapTo[QsosFromNode]) { qsos: QsosFromNode ⇒
-                complete(qsos)
-              }
-            },
           )
         },
         post {
           concat(
-            path("requestUuidsForHour") {
+            path({
+              val str = ClassToPath(classOf[RequestUuidsForHour])
+              str
+            }) {
               val um = as[RequestUuidsForHour]
               entity(um) { uuidRequest ⇒
                 onSuccess((

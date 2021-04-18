@@ -21,21 +21,18 @@ package org.wa9nnn.fdcluster.model
 
 import org.wa9nnn.fdcluster.cabrillo.{CabrilloExportRequest, CabrilloValue, CabrilloValues}
 import org.wa9nnn.fdcluster.contest.Contest
-import org.wa9nnn.fdcluster.http.{RequestQsosForHours, RequestQsosForUuids}
 import org.wa9nnn.fdcluster.javafx.entry.section.Section
 import org.wa9nnn.fdcluster.javafx.menu.{BuildLoadRequest, ImportRequest}
-
-import java.net.URL
-import java.time.{Instant, LocalDateTime, ZoneId}
-import java.time.format.{DateTimeFormatter, FormatStyle}
-import java.util.{Locale, UUID}
-import org.wa9nnn.fdcluster.javafx.sync.{RequestUuidsForHour, UuidsAtHost}
+import org.wa9nnn.fdcluster.javafx.sync._
 import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHour, QsoHourDigest, QsoHourIds}
 import org.wa9nnn.fdcluster.rig.{RigModel, RigSettings, SerialPortSettings}
 import org.wa9nnn.fdcluster.store.JsonContainer
 import org.wa9nnn.fdcluster.store.network.FdHour
 import play.api.libs.json.{Format, Json}
 
+import java.time.LocalDateTime
+import java.time.format.{DateTimeFormatter, FormatStyle}
+import java.util.UUID
 import scala.language.implicitConversions
 
 /**
@@ -44,9 +41,6 @@ import scala.language.implicitConversions
  * Which makes all implicits available when invoking [[Json.parse]] and [[Json.prettyPrint()]] or [[Json.toBytes()]].
  */
 object MessageFormats {
-
-  import UrlFormt.urlFormat
-  import InetAddressFormat.inetAddressFormat
 
   val builder = Array.newBuilder[Format[_]]
   def c[T](f: Format[T]): Format[T] = {
@@ -60,7 +54,10 @@ object MessageFormats {
   implicit val sectFromat: Format[Section] = Json.format[Section]
   implicit val excFromat: Format[Exchange] = Json.format[Exchange]
   implicit val fdHourFormat: Format[FdHour] = Json.format[FdHour]
-  implicit val rqfrFormat: Format[RequestQsosForHours] = Json.format[RequestQsosForHours]
+  implicit val nodeAddressFormat: Format[NodeAddress] = Json.format[NodeAddress]
+  implicit val stepFormat: Format[Step] = Json.format[Step]
+  implicit val tidFormat: Format[TransactionId] = Json.format[TransactionId]
+  implicit val rqfhFormat: Format[RequestQsosForHours] = Json.format[RequestQsosForHours]
   implicit val rqfuFormat: Format[RequestQsosForUuids] = Json.format[RequestQsosForUuids]
   implicit val uuidsRequestFormat: Format[RequestUuidsForHour] = Json.format[RequestUuidsForHour]
   implicit val cf: Format[Contest] = Json.format[Contest]
@@ -68,7 +65,6 @@ object MessageFormats {
   implicit val bandModeFormat: Format[BandMode] = Json.format[BandMode]
   implicit val bandModeOpFormat: Format[CurrentStation] = Json.format[CurrentStation]
   implicit val qsoFormat: Format[Qso] = Json.format[Qso]
-  implicit val nodeAddressFormat: Format[NodeAddress] = Json.format[NodeAddress]
   implicit val uuidsFormat: Format[UuidsAtHost] = Json.format[UuidsAtHost]
   implicit val qmd: Format[QsoMetadata] = Json.format[QsoMetadata]
   implicit val qsoRecordFormat: Format[QsoRecord] = Json.format[QsoRecord]

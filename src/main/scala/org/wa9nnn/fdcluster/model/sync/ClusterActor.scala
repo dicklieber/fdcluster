@@ -4,8 +4,9 @@ import akka.actor.{Actor, ActorRef, Props}
 import akka.pattern.ask
 import akka.util.Timeout
 import com.google.inject.name.Named
-import org.wa9nnn.fdcluster.http.{HttpClientActor, RequestQsosForUuids, Sendable}
-import org.wa9nnn.fdcluster.javafx.sync.{RequestUuidsForHour, UuidsAtHost}
+import org.wa9nnn.fdcluster.http.HttpClientActor
+import org.wa9nnn.fdcluster.javafx.sync
+import org.wa9nnn.fdcluster.javafx.sync._
 import org.wa9nnn.fdcluster.model.NodeAddress
 import org.wa9nnn.fdcluster.store.network.cluster.{ClusterState, NodeStateContainer}
 import org.wa9nnn.fdcluster.store.{DumpCluster, Sync}
@@ -25,7 +26,7 @@ class ClusterActor(nodeAddress: NodeAddress,
 
   override def receive: Receive = {
 
-    case s: Sendable => httpClient ! s
+    case s: SendContainer => httpClient ! s
 
     /**
      * Start a sync operation
@@ -34,20 +35,19 @@ class ClusterActor(nodeAddress: NodeAddress,
       clusterState.otherNodeWithMostThanUs() match {
         case Some(bestNode: NodeStateContainer) ⇒
           bestNode.nodeStatus.qsoHourDigests
-//            .take(1)
             .foreach(qsoHourDigest => {
-            val msg = RequestUuidsForHour(List(qsoHourDigest.fdHour))
-            val requestUuidsForHour = Sendable(msg,bestNode.nodeAddress.uri, context.self)
-            whenTraceEnabled {
-              requestUuidsForHour.toString
-            }
-            httpClient ! requestUuidsForHour
-          }
-          )
+              val msg = RequestUuidsForHour(
+                List(qsoHourDigest.fdHour),
+                TransactionId(bestNode.nodeAddress,
+                  nodeAddress,
+                  qsoHourDigest.fdHour,
+                  List(Step(getClass))))
 
-        //          val value = Sendable(RequestQsosForHours.apply(), bestNode, context.self)
-        //          httpClient ! value
+              httpClient ! SendContainer(msg, bestNode.nodeAddress)
+            }
+            )
         case None ⇒
+          logger.debug(s"No better node found. Cluster size: clusterState.size")
       }
     case ns: NodeStatus ⇒
       logger.trace(s"Got NodeStatus from ${ns.nodeAddress}")
@@ -61,15 +61,20 @@ class ClusterActor(nodeAddress: NodeAddress,
     //
 
 
+
+     case done:Done =>
+
+
     case rufh: RequestUuidsForHour =>
       httpClient ! rufh
 
     case uc: UuidsAtHost =>
       (store ? uc).mapTo[RequestQsosForUuids].map(requestQsosForUuids =>
-        httpClient ! Sendable(requestQsosForUuids, uc.nodeAddress.uri, store)
+        httpClient ! SendContainer(requestQsosForUuids, uc.nodeAddress)
       )
 
     case x =>
       logger.error(s"Unexpected message: $x")
   }
 }
+

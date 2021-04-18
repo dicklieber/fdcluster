@@ -19,6 +19,7 @@ package org.wa9nnn.fdcluster.store
 
 import com.google.inject.name.Named
 import nl.grons.metrics4.scala.DefaultInstrumented
+import org.wa9nnn.fdcluster.javafx.sync.QsosFromNode
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHour}
@@ -203,8 +204,6 @@ class StoreLogic @Inject()(na: NodeAddress,
     val limited = matching.take(max)
     SearchResult(limited, matching.length)
   }
-
-  override def dump: QsosFromNode = QsosFromNode(nodeAddress, byUuid.values.toList.sorted)
 
   /**
    *

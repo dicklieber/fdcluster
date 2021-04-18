@@ -31,9 +31,8 @@ import nl.grons.metrics4.scala.DefaultInstrumented
 import org.wa9nnn.fdcluster.Markers.syncMarker
 import org.wa9nnn.fdcluster.adif.AdiExporter
 import org.wa9nnn.fdcluster.cabrillo.{CabrilloExportRequest, CabrilloGenerator}
-import org.wa9nnn.fdcluster.http.RequestQsosForUuids
 import org.wa9nnn.fdcluster.javafx.menu.ImportRequest
-import org.wa9nnn.fdcluster.javafx.sync.{QsoContainer, RequestUuidsForHour, UuidContainer, UuidsAtHost}
+import org.wa9nnn.fdcluster.javafx.sync.{QsosFromNode, RequestQsosForUuids, RequestUuidsForHour, UuidsAtHost}
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.store.network.{FdHour, MultcastSenderActor}
@@ -80,20 +79,14 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
       }
       sender ! addResult // send back to caller with all info allows UI to show what was recorded or dup
 
-    //    case s:Sendable[_] =>
-    //      clientActor ! s
-
-    case DumpQsos ⇒
-      sender ! store.dump
-
-    case RequestUuidsForHour(fdHours) ⇒
-      val uuids: List[Uuid] = store.uuidForHours(fdHours.toSet)
-      sender ! UuidsAtHost(nodeAddress, uuids) //to asking host.
+    case request:RequestUuidsForHour =>
+      val uuids: List[Uuid] = store.uuidForHours(request.fdHours.toSet)
+      sender ! UuidsAtHost(nodeAddress, uuids, request.transactionId.addStep(getClass) ) //to asking host.
 
     case uuidsAtHost: UuidsAtHost =>
       logger.debug(uuidsAtHost.toString)
       val missing: Iterator[Uuid] = store.filterAlreadyPresent(uuidsAtHost.iterator)
-      val requestQsosForUuids = RequestQsosForUuids(missing.toList)
+      val requestQsosForUuids = RequestQsosForUuids(missing.toList, uuidsAtHost.transactionId.addStep(getClass))
       logger.debug(requestQsosForUuids.toString)
       sender ! requestQsosForUuids // send to cluster on this host
 
@@ -103,12 +96,12 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
       val qsos: List[QsoRecord] = rqfu.uuids.flatMap(uuid =>
         store.get(uuid)
       )
-      val qsosFromNode = QsosFromNode(nodeAddress, qsos)
+      val qsosFromNode = QsosFromNode(qsos, rqfu.transactionId.addStep(getClass))
       logger.debug(qsosFromNode.toString)
-
       sender ! qsosFromNode
 
-    case qc: QsoContainer => qc.iterator.foreach(store.addRecord)
+    case qc: QsosFromNode =>
+      qc.qsos.foreach(store.addRecord)
 
 
     case d: DistributedQsoRecord ⇒
@@ -197,7 +190,6 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
   }
 }
 
-case object DumpQsos
 
 case object DumpCluster
 

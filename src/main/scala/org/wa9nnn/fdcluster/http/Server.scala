@@ -72,7 +72,7 @@ class Server @Inject()(@Inject() @Named("store") val store: ActorRef,
 
   serverBinding.onComplete {
     case Success(bound) =>
-      println(s"Server online at http://${bound.localAddress.getHostString}:${bound.localAddress.getPort}/")
+      println(s"HTTP server online at http://${bound.localAddress.getHostString}:${bound.localAddress.getPort}/")
     case Failure(e) =>
       Console.err.println(s"Server could not start!")
       e.printStackTrace()

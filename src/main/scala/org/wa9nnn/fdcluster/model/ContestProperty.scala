@@ -61,7 +61,6 @@ class ContestProperty @Inject()(persistence: Persistence) extends ObjectProperty
   def eventYear: String = eventYearProperty.value
 
   val logotypeImageProperty: ObjectProperty[Image] = new ObjectProperty[Image]()
-  setUpImage(initContest.eventName)
 
   def fileBase: String = event
 
@@ -102,7 +101,10 @@ class ContestProperty @Inject()(persistence: Persistence) extends ObjectProperty
 
     try {
       {
-//        DockIcon(imagePath)
+        val thread = Thread.currentThread()
+        val name1 = thread.getName
+        println(name1)
+        DockIcon(imagePath)
       }
     } catch {
       case e: java.lang.NoClassDefFoundError =>

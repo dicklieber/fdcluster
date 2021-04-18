@@ -36,11 +36,10 @@ import scala.collection.immutable
  *
  * @param ourNodeAddress who we are.
  */
-class ClusterState(ourNodeAddress: NodeAddress) extends StructuredLogging with DefaultInstrumented {
+class ClusterState(ourNodeAddress: NodeAddress) extends StructuredLogging  {
+
   private val nodes: TrieMap[NodeAddress, NodeStateContainer] = TrieMap.empty
-  metrics.gauge("node count"){
-    nodes.size
-  }
+  def size: Int = nodes.size
 
   def update(nodeStatus: NodeStatus): Unit = {
     val nodeAddress = nodeStatus.nodeAddress

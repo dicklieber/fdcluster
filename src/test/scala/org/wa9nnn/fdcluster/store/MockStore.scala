@@ -42,8 +42,6 @@ class MockStore extends Store {
    */
   override def contactIds: NodeQsoIds = throw new NotImplementedError()
 
-  override def dump: QsosFromNode = throw new NotImplementedError()
-
   /**
    *
    * @param fdHours [[List.empty]] returns all Uuids for all QSPOs.
