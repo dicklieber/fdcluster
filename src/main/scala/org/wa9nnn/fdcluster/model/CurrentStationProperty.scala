@@ -4,6 +4,7 @@ package org.wa9nnn.fdcluster.model
 import org.wa9nnn.fdcluster.model.CurrentStation.{Band, Mode}
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.util.Persistence
+import play.api.libs.json.{Format, JsError, JsResult, JsString, JsSuccess, JsValue}
 import scalafx.beans.binding.Bindings
 import scalafx.beans.property.{ObjectProperty, StringProperty}
 
@@ -80,6 +81,4 @@ case class CurrentStation(bandName: Band = "20m", modeName: Mode = "PH",
   lazy val bandMode: BandMode = BandMode(bandName, modeName)
 }
 
-case class BandMode(bandName: Band = "20m", modeName: Mode = "PH") {
-  override def toString: CallSign = s"$bandName, $modeName"
-}
+

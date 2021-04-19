@@ -23,13 +23,15 @@ import akka.actor.{ActorRef, ActorSystem, Props}
 import com.github.racc.tscg.TypesafeConfigModule
 import com.google.inject.{AbstractModule, Injector, Provides}
 import com.typesafe.config.{Config, ConfigFactory}
+import configs.Config
 import net.codingwell.scalaguice.ScalaModule
 import org.wa9nnn.fdcluster.javafx.entry.{RunningTaskInfoConsumer, RunningTaskPane}
 import org.wa9nnn.fdcluster.metrics.MetricsReporter
 import org.wa9nnn.fdcluster.model._
-import org.wa9nnn.fdcluster.model.sync.ClusterActor
+import org.wa9nnn.fdcluster.model.sync.{ClusterActor, NodeStatusQueueActor}
 import org.wa9nnn.fdcluster.store._
 import org.wa9nnn.fdcluster.store.network.MulticastListener
+import org.wa9nnn.fdcluster.store.network.cluster.ClusterState
 import org.wa9nnn.fdcluster.tools.RandomQsoGenerator
 import org.wa9nnn.util._
 import scalafx.application.JFXApp.Parameters
@@ -99,11 +101,19 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
   def clusterStoreActor(actorSystem: ActorSystem,
                         nodeAddress: NodeAddress,
                         @Named("store") storeActor: ActorRef,
+                        @Named("nodeStatusQueue") nodestatusQueue: ActorRef,
+                        clusterState: ClusterState
                        ): ActorRef = {
     actorSystem.actorOf(Props(
-      new ClusterActor(nodeAddress,
-        storeActor,
-      )), "cluster")
+      new ClusterActor(nodeAddress, storeActor, nodestatusQueue, clusterState)),
+      "cluster")
+  }
+
+  @Provides
+  @Singleton
+  @Named("nodeStatusQueue")
+  def clusterStoreActor(actorSystem: ActorSystem): ActorRef = {
+    actorSystem.actorOf(Props(new NodeStatusQueueActor()))
   }
 
 

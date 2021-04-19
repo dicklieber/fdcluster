@@ -17,7 +17,7 @@ import java.time.LocalDate
  * @param year        which one.
  */
 case class Contest(callSign: CallSign = "",
-                   ourExchange: Exchange = new Exchange(),
+                   ourExchange: Exchange =  Exchange(),
                    eventName: String = "FieldDay",
                    year: String = {
                      LocalDate.now().getYear.toString

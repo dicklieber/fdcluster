@@ -25,10 +25,15 @@ import org.wa9nnn.fdcluster.model.NodeAddress
 import org.wa9nnn.fdcluster.model.sync.NodeStatus
 import org.wa9nnn.fdcluster.store.network.FdHour
 import org.wa9nnn.util.StructuredLogging
+import com.github.andyglow.config._
+import com.typesafe.config.Config
 
 import java.net.URL
+import java.time.{Duration, Instant, LocalDateTime}
+import javax.inject.{Inject, Singleton}
 import scala.collection.concurrent.TrieMap
 import scala.collection.immutable
+import scala.concurrent.duration.FiniteDuration
 
 /**
  * Mutable state of all nodes in the cluster, including this one.
@@ -36,16 +41,38 @@ import scala.collection.immutable
  *
  * @param ourNodeAddress who we are.
  */
-class ClusterState(ourNodeAddress: NodeAddress) extends StructuredLogging  {
+@Singleton
+class ClusterState @Inject()(ourNodeAddress: NodeAddress, config: Config) extends StructuredLogging with DefaultInstrumented {
+
+  private val nodeStatusLife: Duration = config.get[Duration]("fdcluster.cluster.nodeStatusLife")
 
   private val nodes: TrieMap[NodeAddress, NodeStateContainer] = TrieMap.empty
+
   def size: Int = nodes.size
+
+  metrics.gauge[Int]("Cluster Size") {
+    size
+  }
 
   def update(nodeStatus: NodeStatus): Unit = {
     val nodeAddress = nodeStatus.nodeAddress
     val nodeState = nodes.getOrElseUpdate(nodeAddress, new NodeStateContainer(nodeStatus, ourNodeAddress))
     nodeState.update(nodeStatus)
   }
+
+  def purge(): Unit = {
+    val tooOldStamp = Instant.now().minus(nodeStatusLife)
+    nodes.values
+      .filter(_.nodeStatus.stamp.isBefore(tooOldStamp))
+      .foreach(nsc => {
+        val nodeStatus = nsc.nodeStatus
+        val nodeAddress = nodeStatus.nodeAddress
+        logJson("Node")
+          .++("node" -> nodeAddress, "last" -> nodeStatus.stamp)
+        nodes.remove(nodeAddress)
+      })
+  }
+
 
   def dump: Iterable[NodeStateContainer] = {
     nodes.values
@@ -93,7 +120,7 @@ class ClusterState(ourNodeAddress: NodeAddress) extends StructuredLogging  {
     val us: Option[NodeStatus] = nodes.get(ourNodeAddress).map(_.nodeStatus)
     us match {
       case Some(ourStatus: NodeStatus) ⇒
-        val ourDigest = ourStatus.digest
+        val ourDigest = ourStatus.digestDisplay
         val ourCount = ourStatus.qsoCount
         nodes.values
           .filter(nsc ⇒ nsc.nodeAddress != ourNodeAddress && (nsc.qsoCount > ourCount | nsc.nodeStatus.digest != ourDigest))

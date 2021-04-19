@@ -8,11 +8,16 @@ lazy val `fdcluster` = (project in file("."))
   .enablePlugins(JlinkPlugin, GitPlugin, BuildInfoPlugin, SbtTwirl, WindowsPlugin).settings(
   buildInfoKeys ++= Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, maintainer,
     git.gitCurrentTags, git.gitCurrentBranch, git.gitHeadCommit, git.gitHeadCommitDate, git.baseVersion,
-    BuildInfoKey.action("buildTime") {
+    BuildInfoKey.action("buildTimexxx") {
       System.currentTimeMillis
     } // re-computed each time at compile)
   ),
   buildInfoPackage := "org.wa9nnn.fdcluster"
+)
+buildInfoOptions ++= Seq(
+  BuildInfoOption.ToJson,
+  BuildInfoOption.BuildTime,
+  BuildInfoOption.Traits("org.wa9nnn.fdcluster.BuildInfoBase")
 )
 
 // wix build information

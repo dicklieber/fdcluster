@@ -23,7 +23,7 @@ import org.wa9nnn.fdcluster.adif
 import org.wa9nnn.fdcluster.adif.{AdifCollector, AdifFile, AdifQsoAdapter}
 import org.wa9nnn.fdcluster.javafx.entry.RunningTaskInfoConsumer
 import org.wa9nnn.fdcluster.javafx.runningtask.RunningTask
-import org.wa9nnn.fdcluster.store.Store
+import org.wa9nnn.fdcluster.store.StoreLogic
 
 import javax.inject.Inject
 import scala.io.Source
@@ -34,7 +34,7 @@ import scala.io.Source
  * @param store where to put
  * @param runningTaskInfoConsumer progress UI
  */
-class ImportTask @Inject()(store: Store, val runningTaskInfoConsumer: RunningTaskInfoConsumer) extends RunningTask {
+class ImportTask @Inject()(store: StoreLogic, val runningTaskInfoConsumer: RunningTaskInfoConsumer) extends RunningTask {
   override val taskName: String = "Import"
 
   def apply(sPath: String) {

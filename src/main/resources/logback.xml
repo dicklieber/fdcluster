@@ -21,12 +21,14 @@
     <logger name="org.wa9nnn.fdcluster.http.HttpClientActor" level="TRACE"/>
     <logger name="org.wa9nnn.fdcluster.javafx.entry.EntryScene" level="INFO"/>
     <logger name="org.wa9nnn.fdcluster.javafx.entry.StatisticsTab" level="INFO"/>
-    <logger name="org.wa9nnn.fdcluster.model.sync.ClusterActor" level="DEBUG"/>
+    <logger name="org.wa9nnn.fdcluster.model.sync.ClusterActor" level="TRACE"/>
     <logger name="org.wa9nnn.fdcluster.store.StoreActor" level="TRACE"/>
     <logger name="org.wa9nnn.fdcluster.store.network" level="DEBUG"/>
+    <logger name="org.wa9nnn.fdcluster.model.sync.NodeStatusQueueActor" level="DEBUG"/>
+    <logger name="org.wa9nnn.fdcluster.javafx.entry.StatisticsTab" level="INFO"/>
 
 
-    <root level="INFO">
+    <root level="DEBUG">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE"/>
     </root>

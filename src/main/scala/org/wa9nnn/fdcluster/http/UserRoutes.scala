@@ -28,7 +28,7 @@ import akka.http.scaladsl.server.directives.RouteDirectives.complete
 import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
-import org.wa9nnn.fdcluster.javafx.sync.{ClassToPath, QsosFromNode, RequestQsosForUuids, RequestUuidsForHour, UuidsAtHost}
+import org.wa9nnn.fdcluster.javafx.sync.{ClassToPath, QsosFromNode, RequestQsosForHour, RequestQsosForUuids, RequestUuidsForHour, UuidsAtHost}
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.NodeAddress
 import org.wa9nnn.fdcluster.model.sync.QsoHour
@@ -94,6 +94,18 @@ trait UserRoutes extends LazyLogging {
               entity(um) { uuidRequest ⇒
                 onSuccess((
                   store ? uuidRequest
+                  ).mapTo[QsosFromNode]) { qsosFromNode ⇒
+                  complete {
+                    qsosFromNode
+                  }
+                }
+              }
+            },
+            path(ClassToPath(classOf[RequestQsosForHour])) {
+              val um = as[RequestQsosForHour]
+              entity(um) { qsoRequest ⇒
+                onSuccess((
+                  store ? qsoRequest
                   ).mapTo[QsosFromNode]) { qsosFromNode ⇒
                   complete {
                     qsosFromNode

@@ -25,7 +25,7 @@ class ExchangeSpec extends org.specs2.mutable.Specification {
   "Exchange" >> {
     val exchange = Exchange("10O", "WPA")
     "toString" >> {
-      exchange.toString must beEqualTo("10O;WPA")
+      exchange.toString must beEqualTo("10O WPA")
     }
 
     "apply" >> {
@@ -41,14 +41,14 @@ class ExchangeSpec extends org.specs2.mutable.Specification {
     }
     "round trip json" >> {
       val json = Json.prettyPrint(Json.toJson(exchange))
-      json must beEqualTo(""""10O;WPA"""")
+      json must beEqualTo(""""10O WPA"""")
       val backAgain = Json.parse(json).as[Exchange]
       backAgain must beEqualTo(exchange)
     }
     "round trip default" >> {
-      val d = new Exchange()
+      val d =  Exchange()
       val json = Json.prettyPrint(Json.toJson(d))
-      json must beEqualTo(""""1O;AB"""")
+      json must beEqualTo(""""1O AB"""")
       val backAgain = Json.parse(json).as[Exchange]
       backAgain must beEqualTo(d)
     }
@@ -62,7 +62,7 @@ class ExchangeSpec extends org.specs2.mutable.Specification {
     }
 
     "mnomonics" >> {
-      val d = new Exchange()
+      val d =  Exchange()
       d.mnomonics must beEqualTo ("1 Oscar Alpha Bravo")
       d.nTtransmitters must beEqualTo (1)
       d.sectionCode must beEqualTo ("AB")
@@ -70,10 +70,10 @@ class ExchangeSpec extends org.specs2.mutable.Specification {
     }
 
     "defaultApply" >> {
-      val e = new Exchange()
+      val e =  Exchange()
       e.transmitters must beEqualTo (1)
       e.sectionCode must beEqualTo ("AB")
-      e.toString must beEqualTo ("1O;AB")
+      e.toString must beEqualTo ("1O AB")
       e.display must beEqualTo ("1O AB")
     }
   }

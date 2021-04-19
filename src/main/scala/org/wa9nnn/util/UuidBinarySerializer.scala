@@ -47,14 +47,4 @@ object Compressor {
     baos.toString
   }
 
-  /**
-   * decompress
-   */
-  def apply(string: String): Try[Array[Byte]] = {
-    Using {
-      new GZIPInputStream(new Base64InputStream(new ByteArrayInputStream(string.getBytes)))
-    } { gzis =>
-      gzis.readAllBytes()
-    }
-  }
 }

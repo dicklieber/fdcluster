@@ -46,27 +46,27 @@ class  AboutDialog @Inject()(appInfo: AppInfo, fileManager: FileManager) extends
 
     goc.add("Application", BuildInfo.name)
     goc.add("Version", BuildInfo.version)
-    goc.add("UpTime", DurationFormat(Duration.between(appInfo.started, Instant.now())))
+    goc.add("UpTime", Duration.between(appInfo.started, Instant.now()))
     goc.add("Git Branch", BuildInfo.gitCurrentBranch)
     goc.add("Git commit", BuildInfo.gitHeadCommit.getOrElse("--"))
-    goc.add("Built", Instant.ofEpochMilli(BuildInfo.buildTime.toLong).toString)
-    goc.add("Java Home", new Hyperlink(System.getenv("JAVA_HOME")) {
+    goc.add("Built", BuildInfo.buildInstant)
+    goc.addControl("Java Home", new Hyperlink(System.getenv("JAVA_HOME")) {
       onAction = event => {
         desktop.open(fileManager.directory.toFile)
       }
     })
     goc.add("Java Version", ManagementFactory.getRuntimeMXBean.getVmVersion)
-    goc.add("App Directory", new Hyperlink(fileManager.directory.toString) {
+    goc.addControl("App Directory", new Hyperlink(fileManager.directory.toString) {
       onAction = event => {
         desktop.open(fileManager.directory.toFile)
       }
     })
-    goc.add("Source Code", new Hyperlink("https://github.com/dicklieber/fdcluster") {
+    goc.addControl("Source Code", new Hyperlink("https://github.com/dicklieber/fdcluster") {
       onAction = event => {
         desktop.browse(new URI("https://github.com/dicklieber/fdcluster"))
       }
     })
-    goc.add("Blame this guy", new Hyperlink("Dick Lieber WA9NNN") {
+    goc.addControl("Blame this guy", new Hyperlink("Dick Lieber WA9NNN") {
       onAction = event => {
         if (desktop.isSupported(Desktop.Action.MAIL)) {
           val uri = s"mailto:${BuildInfo.maintainer}?subject=${BuildInfo.name}%20version:${BuildInfo.version}"

@@ -125,12 +125,13 @@ class GridOfControls extends GridPane {
     control.value
   }
 
-  def add(labelText: String, control:Control):Unit = {
+  def addControl(labelText: String, control:Control):Unit = {
     val row = label(labelText)
     add(control, 1, row)
   }
-  def add(labelText: String, value:String):Unit = {
+  def add(labelText: String, value:Any):Unit = {
     val row = label(labelText)
-    add(Label(value), 1, row)
+    val cell = com.wa9nnn.util.tableui.Cell(value)
+    add(Label(cell.value), 1, row)
   }
 }

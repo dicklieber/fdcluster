@@ -71,10 +71,10 @@ class ContestDialog @Inject()(contestProperty: ContestProperty,
     valueFactory().value = currentExchange.transmitters
     tooltip = "Number of simultaneous transmitters. Combined with category to produce exchange class."
   }
-  gridOfControls.add("Transmitters", transmitters)
+  gridOfControls.addControl("Transmitters", transmitters)
 
   val categoryCB: ComboBox[EntryCategory] = new ComboBox[EntryCategory]()
-  gridOfControls.add("Category", categoryCB)
+  gridOfControls.addControl("Category", categoryCB)
 
   contestCB.onChange { (_, _, contestName: String) =>
     setup(contestName)

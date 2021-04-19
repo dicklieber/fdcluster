@@ -29,6 +29,8 @@ import org.wa9nnn.fdcluster.rig.{RigModel, RigSettings, SerialPortSettings}
 import org.wa9nnn.fdcluster.store.JsonContainer
 import org.wa9nnn.fdcluster.store.network.FdHour
 import play.api.libs.json.{Format, Json}
+import org.wa9nnn.fdcluster.model.BandMode.bmFormat
+import org.wa9nnn.fdcluster.model.Exchange.exFormat
 
 import java.time.LocalDateTime
 import java.time.format.{DateTimeFormatter, FormatStyle}
@@ -52,17 +54,17 @@ object MessageFormats {
   implicit val entcFromat: Format[EntryCategory] = c(Json.format[EntryCategory])
   implicit val fdcFromat: Format[FdClass] = Json.format[FdClass]
   implicit val sectFromat: Format[Section] = Json.format[Section]
-  implicit val excFromat: Format[Exchange] = Json.format[Exchange]
+//  implicit val excFromat: Format[Exchange] = Json.format[Exchange]
   implicit val fdHourFormat: Format[FdHour] = Json.format[FdHour]
   implicit val nodeAddressFormat: Format[NodeAddress] = Json.format[NodeAddress]
   implicit val stepFormat: Format[Step] = Json.format[Step]
   implicit val tidFormat: Format[TransactionId] = Json.format[TransactionId]
-  implicit val rqfhFormat: Format[RequestQsosForHours] = Json.format[RequestQsosForHours]
+  implicit val rqfhFormat: Format[RequestQsosForHour] = Json.format[RequestQsosForHour]
   implicit val rqfuFormat: Format[RequestQsosForUuids] = Json.format[RequestQsosForUuids]
   implicit val uuidsRequestFormat: Format[RequestUuidsForHour] = Json.format[RequestUuidsForHour]
   implicit val cf: Format[Contest] = Json.format[Contest]
   implicit val bandFormat: Format[AvailableBand] = Json.format[AvailableBand]
-  implicit val bandModeFormat: Format[BandMode] = Json.format[BandMode]
+//  implicit val bandModeFormat: Format[BandMode] = Json.format[BandMode]
   implicit val bandModeOpFormat: Format[CurrentStation] = Json.format[CurrentStation]
   implicit val qsoFormat: Format[Qso] = Json.format[Qso]
   implicit val uuidsFormat: Format[UuidsAtHost] = Json.format[UuidsAtHost]

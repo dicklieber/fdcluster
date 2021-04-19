@@ -30,7 +30,7 @@ import org.wa9nnn.fdcluster.javafx.debug.DebugRemoveDialog
 import org.wa9nnn.fdcluster.metrics.MetricsReporter
 import org.wa9nnn.fdcluster.model.{ContestProperty, ExportFile, NodeAddress}
 import org.wa9nnn.fdcluster.rig.RigDialog
-import org.wa9nnn.fdcluster.store.{DebugClearStore, Sync}
+import org.wa9nnn.fdcluster.store.DebugClearStore
 import org.wa9nnn.fdcluster.tools.RandomQsoDialog
 import org.wa9nnn.fdcluster.{FileManager, QsoCountCollector}
 import org.wa9nnn.util.StructuredLogging
@@ -72,12 +72,6 @@ class FdClusterMenu @Inject()(
     private val qsoStatCollector: QsoCountCollector = injector.instance[QsoCountCollector]
     onAction = { _: ActionEvent =>
       qsoStatCollector.dumpStats()
-    }
-  }
-  private val syncNowMenuItem = new MenuItem {
-    text = "Sync with other nodes"
-    onAction = { _: ActionEvent =>
-      cluster ! Sync
     }
   }
 
@@ -248,12 +242,6 @@ class FdClusterMenu @Inject()(
         mnemonicParsing = true
         items = List(
           currentStationMenuItem,
-        )
-      },
-      new Menu("_Sync") {
-        mnemonicParsing = true
-        items = List(
-          syncNowMenuItem,
         )
       },
       new Menu("_Help") {

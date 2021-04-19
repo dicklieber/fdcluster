@@ -57,11 +57,11 @@ class ClusterTable extends LazyLogging {
       MetadataRow(StyledAny(rowHeader), orderedNodes.map(nodeAddress ⇒ {
         val container = byAddress(nodeAddress)
         val value = callback(container)
-        val fv = if (value.toString == "usOrOther") {
+        val fv: Any = if (value.toString == "usOrOther") {
           if (container.isUs) {
             "Us"
           } else {
-            "Other"
+            ""
           }
         } else {
           value
@@ -78,7 +78,7 @@ class ClusterTable extends LazyLogging {
         val digestAndContainers = orderedNodes.map { nodeAddress ⇒
           val container = byAddress(nodeAddress)
           val maybeDigest: Option[QsoHourDigest] = container.digestForHour(fdHour)
-          val qhd = maybeDigest match {
+          val qhd: QsoHourDigest = maybeDigest match {
             case Some(qhd: QsoHourDigest) ⇒
               qhd
             case None ⇒
@@ -97,7 +97,7 @@ class ClusterTable extends LazyLogging {
       buildRow("Last", _.nodeStatus.stamp),
       buildRow("QSOs", _.nodeStatus.qsoCount),
       buildRow("QSO/Minute", _.nodeStatus.qsoRate),
-      buildRow("Digest", _.nodeStatus.digest),
+      buildRow("Digest", _.nodeStatus.digestDisplay),
       buildRow("Band", _.nodeStatus.bandModeOperator.bandName),
       buildRow("Mode", _.nodeStatus.bandModeOperator.modeName),
       buildRow("Operator", _.nodeStatus.bandModeOperator.operator),

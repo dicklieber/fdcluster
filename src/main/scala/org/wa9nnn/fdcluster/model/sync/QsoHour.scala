@@ -73,7 +73,7 @@ case class QsoHourDigest(fdHour: FdHour, digest: Digest, size: Int) extends Labe
       labeled.tooltip = "No QSOs for this hour."
     } else {
       labeled.tooltip = "Qso Count: ${qsoHourDigest.size}\ndigest: ${qsoHourDigest.digest}\nDigest is based on all the QSO UUIDs in the hour."
-      labeled.text = s"$size: ${digest.take(10)}..."
+      labeled.text = s"$size: ${DigestFormat(digest)}"
     }
 
   }
@@ -81,3 +81,9 @@ case class QsoHourDigest(fdHour: FdHour, digest: Digest, size: Int) extends Labe
 }
 
 case class QsoHourIds(startOfHour: FdHour, qsiIds: List[Uuid])
+
+object DigestFormat {
+  def apply(digest:Digest):String = {
+    digest.take(10) + "..."
+  }
+}

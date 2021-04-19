@@ -26,19 +26,21 @@ import play.api.libs.json._
 
 import scala.util.matching.Regex
 
-case class FdClass(transmitters:Int, entryCategory: EntryCategory) {
-  def classString:String = s"$transmitters${entryCategory.designator}"
+case class FdClass(transmitters: Int, entryCategory: EntryCategory) {
+  def classString: String = s"$transmitters${entryCategory.designator}"
 }
 
-case class Exchange(entryClass: String = "1O",
-                    sectionCode: String = Sections.defaultCode)  {
+case class Exchange private(entryClass: String, sectionCode: String) {
 
   def display: String = s"$entryClass $sectionCode"
-    lazy val mnomonics: String = Mnomonics(display)
+
+  lazy val mnomonics: String = Mnomonics(display)
 
   lazy val classParser(sTransmitters, sCategory) = entryClass
+
   def nTtransmitters: Int = sTransmitters.toInt
-  def category:String = sCategory
+
+  def category: String = sCategory
 
   //todo init with contest legal stuff
   def transmitters: Int = {
@@ -55,7 +57,7 @@ case class Exchange(entryClass: String = "1O",
    *
    * @return compact form
    */
-  override def toString: String = s"""$entryClass;$sectionCode"""
+  override def toString: String = s"""$entryClass $sectionCode"""
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[Exchange]
 
@@ -75,6 +77,10 @@ case class Exchange(entryClass: String = "1O",
 object Exchange {
   val classParser: Regex = """(\d+)([A-Z])""".r
 
+  def apply(): Exchange = {
+    new Exchange("1O", Sections.defaultCode)
+  }
+
   def apply(category: String, section: String): Exchange = {
     new Exchange(category.toUpperCase, section.toUpperCase)
   }
@@ -92,11 +98,11 @@ object Exchange {
     }
   }
 
-  private val Parse = """(\d*\p{Upper});(.*)""".r
+  private val Parse = """(\d*\p{Upper}) (.*)""".r
   /**
    * to make JSON a bit more compact
    */
-  implicit val sessionKeyFormat: Format[Exchange] = new Format[Exchange] {
+  implicit val exFormat: Format[Exchange] = new Format[Exchange] {
     override def reads(json: JsValue): JsResult[Exchange] = {
       val ss = json.as[String]
       try {

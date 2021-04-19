@@ -18,29 +18,24 @@
 
 package org.wa9nnn.fdcluster.javafx.cluster
 
-import akka.actor.ActorRef
+import akka.actor.{ActorRef, ActorSystem}
 import akka.pattern.ask
 import akka.util.Timeout
 import com.google.inject.Inject
 import com.google.inject.name.Named
+import org.wa9nnn.fdcluster.javafx.entry.AutoRefreshTab
 import org.wa9nnn.fdcluster.store.DumpCluster
 import org.wa9nnn.fdcluster.store.network.cluster.NodeStateContainer
-import org.wa9nnn.util.StructuredLogging
-import scalafx.scene.control.Tab
 
 import java.util.concurrent.TimeUnit
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
  * Create JavaFX UI to view status of each node in the cluster.
  */
-class ClusterTab @Inject()(@Inject() @Named("cluster") store: ActorRef) extends Tab with StructuredLogging {
+class ClusterTab @Inject()(@Inject() @Named("cluster") store: ActorRef, val actorSystem: ActorSystem) extends AutoRefreshTab {
   implicit val timeout: Timeout = Timeout(5, TimeUnit.SECONDS)
-  selected.onChange((_, _, nv) =>
-    if (nv)
-      refresh()
-  )
+
 
   private val clusterTable = new ClusterTable
 
@@ -55,8 +50,5 @@ class ClusterTab @Inject()(@Inject() @Named("cluster") store: ActorRef) extends 
 
       clusterTable.refresh(clusters)
     }
-    //    val clusters: Iterable[NodeStateContainer] = Await.result(future, timeout.duration).asInstanceOf[Iterable[NodeStateContainer]]
-    //    clusterTable.refresh(clusters)
   }
-
 }

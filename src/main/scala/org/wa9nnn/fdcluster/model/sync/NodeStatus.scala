@@ -19,23 +19,26 @@
 
 package org.wa9nnn.fdcluster.model.sync
 
+import org.wa9nnn.fdcluster.BuildInfo
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.{CurrentStation, NodeAddress, QsoMetadata}
 import org.wa9nnn.fdcluster.store.network.FdHour
 
-import java.time.LocalDateTime
+import java.time.{Instant, LocalDateTime}
 
 /**
  *
- * @param nodeAddress       our IP and instance.
- * @param apiUrl            how to talk to this node. URL of the API.
- * @param qsoCount          of QSOs in db.
- * @param digest            over all QSO UUIDs
- * @param qsoHourDigests    for quickly determining what we have.
- * @param qsoMetadata        band, mode, operator etc.
- * @param bandModeOperator          band mode and current operator
- * @param qsoRate           qsos per minute
- * @param stamp             when this message was generated.
+ * @param nodeAddress      our IP and instance.
+ * @param apiUrl           how to talk to this node. URL of the API.
+ * @param qsoCount         of QSOs in db.
+ * @param digest           over all QSO UUIDs
+ * @param qsoHourDigests   for quickly determining what we have.
+ * @param qsoMetadata      band, mode, operator etc.
+ * @param bandModeOperator band mode and current operator
+ * @param qsoRate          qsos per minute
+ * @param stamp            when this message was generated.
+ * @param v                FDCLuster Version that built this so we can detect mismatched versions.
+ *
  */
 case class NodeStatus(nodeAddress: NodeAddress,
                       qsoCount: Int,
@@ -44,7 +47,10 @@ case class NodeStatus(nodeAddress: NodeAddress,
                       qsoMetadata: QsoMetadata,
                       bandModeOperator: CurrentStation,
                       qsoRate: Double,
-                      stamp: LocalDateTime = LocalDateTime.now()) extends ClusterMessage{
+                      stamp: Instant = Instant.now(),
+                      v: String = BuildInfo.canonicalVersion) extends ClusterMessage {
+  def digestDisplay: String = DigestFormat(digest)
+
   assert(bandModeOperator != null, "null BandModeOperator")
 
   def digestForHour(fdHour: FdHour): Option[QsoHourDigest] = {

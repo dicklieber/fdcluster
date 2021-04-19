@@ -35,14 +35,18 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
+/**
+ * HTTP client.  Sends messages, wrapped in a [[SendContainer]] to another node in the cluster.
+ * @param store actor that manages QSOs
+ * @param cluster actor that handles custer stuff.
+ */
 class HttpClientActor(@Named("store") store: ActorRef,
                       @Named("cluster") cluster: ActorRef,
                      ) extends Actor with LazyLogging {
 
-  private implicit val materializer = Materializer.apply(context)
+  private implicit val materializer: Materializer = Materializer.apply(context)
 
   private implicit val system: ActorSystem = context.system
-
 
   override def receive: Receive = {
     case sendContainer: SendContainer ⇒
@@ -75,10 +79,6 @@ class HttpClientActor(@Named("store") store: ActorRef,
             logger.error(syncMarker, s"Failure", et)
         }
 
-
-    //    case req: RequestUuidsForHour ⇒
-    //      logger.debug(s"ClientActor got: $req")
-    //      val responseFuture = Http().singleRequest(req.httpRequest)
     case x ⇒
       logger.error(s"Unexpected Message $x from $sender")
   }

@@ -19,7 +19,6 @@ package org.wa9nnn.fdcluster.store
 
 import com.google.inject.name.Named
 import nl.grons.metrics4.scala.DefaultInstrumented
-import org.wa9nnn.fdcluster.javafx.sync.QsosFromNode
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHour}
@@ -44,8 +43,8 @@ class StoreLogic @Inject()(na: NodeAddress,
                            @Named("qsoMetadata") qsoMetadata: ObjectProperty[QsoMetadata],
                            @Named("allQsos") allQsos: ObservableBuffer[QsoRecord],
                            fileManager: FileManager
-                            )
-  extends Store with StructuredLogging with DefaultInstrumented {
+                          )
+  extends StructuredLogging with DefaultInstrumented {
 
   def filterAlreadyPresent(iterator: Iterator[Uuid]): Iterator[Uuid] = {
     iterator.filterNot(uuid => byUuid.contains(uuid))
@@ -173,7 +172,7 @@ class StoreLogic @Inject()(na: NodeAddress,
    * @param potentialQso that may be added.
    * @return None if added, otherwise [[MessageFormats]] that this is a dup of.
    */
-  override def add(potentialQso: Qso): AddResult = {
+  def add(potentialQso: Qso): AddResult = {
     findDup(potentialQso) match {
       case Some(duplicateRecord) =>
         Dup(duplicateRecord)
@@ -194,7 +193,7 @@ class StoreLogic @Inject()(na: NodeAddress,
     }
   }
 
-  override def search(search: Search): SearchResult = {
+  def search(search: Search): SearchResult = {
     val max = search.max
     val matching = byUuid.values.filter { qsoRecord => {
       qsoRecord.qso.callSign.contains(search.partial) && search.bandMode == qsoRecord.qso.bandMode
@@ -244,9 +243,9 @@ class StoreLogic @Inject()(na: NodeAddress,
     }
   }
 
-  override def size: Int = byUuid.size
+  def size: Int = byUuid.size
 
-  override def nodeStatus: NodeStatus = {
+  def nodeStatus: NodeStatus = {
     //todo Needs some serious caching. Past hours don't usually change (unless syncing)
 
     val sDigest = qsosDigestTimer.time {
@@ -279,18 +278,10 @@ class StoreLogic @Inject()(na: NodeAddress,
    *
    * @param fdHours [[List.empty]] returns all Uuids for all QSPOs.
    */
-  override def uuidForHours(fdHours: Set[FdHour]): List[Uuid] = {
-    if (fdHours.isEmpty) {
-      byUuid.keys.toList
-    } else {
-      allQsos.flatMap { qr ⇒
-        if (fdHours.contains(qr.fdHour)) {
-          Seq(qr.qso.uuid)
-        } else {
-          Seq.empty
-        }
-      }
-    }.toList
+  def uuidForHour(fdHour: FdHour): List[Uuid] = {
+    allQsos.filter((qsr: QsoRecord) => qsr.fdHour == fdHour)
+      .map(_.qso.uuid)
+      .toList
   }
 
 
@@ -301,21 +292,33 @@ class StoreLogic @Inject()(na: NodeAddress,
       .filter(_.fdHour == fdHour)
       .toList
   }
-  def get(uuid: Uuid): Option[QsoRecord] ={
+  def getQsos(fdHour: FdHour): List[QsoRecord] = {
+    byUuid.values.filter(_.fdHour == fdHour).toList
+  }
+
+
+
+  def get(uuid: Uuid): Option[QsoRecord] = {
     byUuid.get(uuid)
   }
 
-  override def debugClear(): Unit = {
+  def debugClear(): Unit = {
     logger.info(s"Clearing this nodes store for debugging!")
     byUuid.clear()
     byCallsign.clear()
     allQsos.clear()
   }
 
-  override def missingUuids(uuidsAtOtherHost: List[Uuid]): List[Uuid] = {
+  def missingUuids(uuidsAtOtherHost: List[Uuid]): List[Uuid] = {
     uuidsAtOtherHost.filter(otherUuid ⇒
       !byUuid.contains(otherUuid)
     )
   }
 }
+
+sealed trait AddResult
+
+case class Added(qsoRecord: QsoRecord) extends AddResult
+
+case class Dup(qsoRecord: QsoRecord) extends AddResult
 

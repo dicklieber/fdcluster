@@ -15,36 +15,36 @@ import java.time.Duration
 import javax.inject.Singleton
 
 @Singleton
-class StatisticsTab @Inject()(qsoCountCollector: QsoCountCollector, actorSystem: ActorSystem) extends Tab with StructuredLogging {
+class StatisticsTab @Inject()(qsoCountCollector: QsoCountCollector, val actorSystem: ActorSystem) extends AutoRefreshTab {
   //todo elapsed/remaining time in contest.
-  implicit val executor = actorSystem.dispatcher
+//  implicit val executor = actorSystem.dispatcher
 
-  private val task = new Runnable {
-    def run() {
-      logger.trace("Refresh:scheduled")
-      onFX {
-        refresh()
-      }
-    }
-  }
-  var timer: Option[Cancellable] = None
-
-  selected.onChange { (_, _, isSelectd) =>
-    if (isSelectd) {
-      logger.trace("Refresh:selected")
-      refresh()
-      timer = Some(actorSystem.scheduler.scheduleAtFixedRate(
-        initialDelay = Duration.ofSeconds(5),
-        interval = Duration.ofSeconds(5),
-        runnable = task,
-        executor = executor)
-      )
-    } else {
-      logger.trace("Cancel Timer")
-      timer.foreach(_.cancel())
-    }
-  }
-
+//  private val task = new Runnable {
+//    def run() {
+//      logger.trace("Refresh:scheduled")
+//      onFX {
+//        refresh()
+//      }
+//    }
+//  }
+//  var timer: Option[Cancellable] = None
+//
+//  selected.onChange { (_, _, isSelectd) =>
+//    if (isSelectd) {
+//      logger.trace("Refresh:selected")
+//      refresh()
+//      timer = Some(actorSystem.scheduler.scheduleAtFixedRate(
+//        initialDelay = Duration.ofSeconds(5),
+//        interval = Duration.ofSeconds(5),
+//        runnable = task,
+//        executor = executor)
+//      )
+//    } else {
+//      logger.trace("Cancel Timer")
+//      timer.foreach(_.cancel())
+//    }
+//  }
+//
 
   private var sorter: Sorter = FieldCount.byCount.sorter
 
@@ -77,7 +77,7 @@ class StatisticsTab @Inject()(qsoCountCollector: QsoCountCollector, actorSystem:
   }
   closable = false
 
-  private def refresh(): Unit = {
+   def refresh(): Unit = {
     allStats.children = qsoCountCollector.collectors.map(new CollectorPane(_, sorter))
   }
 }

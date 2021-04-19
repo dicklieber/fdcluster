@@ -25,11 +25,11 @@ class SummaryEngineSpec extends Specification {
 
       val allContestRules = new AllContestRules(config)
       val allQsos: ObservableBuffer[QsoRecord] = ObservableBuffer(
-        QsoRecord(Qso("KD9BYW", BandMode(), new Exchange()), QsoMetadata()),
-        QsoRecord(Qso("KD9BYW", BandMode("160m"), new Exchange()), QsoMetadata()),
-        QsoRecord(Qso("KD9BYW", BandMode(modeName = "DI"), new Exchange()), QsoMetadata()),
-        QsoRecord(Qso("NE9A", BandMode(modeName = "DI"), new Exchange()), QsoMetadata()),
-        QsoRecord(Qso("W9BBQ", BandMode(modeName = "DI"), new Exchange()), QsoMetadata()),
+        QsoRecord(Qso("KD9BYW", BandMode(), Exchange()), QsoMetadata()),
+        QsoRecord(Qso("KD9BYW", BandMode("160m"), Exchange()), QsoMetadata()),
+        QsoRecord(Qso("KD9BYW", BandMode(modeName = "DI"),  Exchange()), QsoMetadata()),
+        QsoRecord(Qso("NE9A", BandMode(modeName = "DI"), Exchange()), QsoMetadata()),
+        QsoRecord(Qso("W9BBQ", BandMode(modeName = "DI"), Exchange()), QsoMetadata()),
       )
 
       val summaryEngine = new SummaryEngine(allContestRules, new BandModeBreakDown(allQsos, new BandModeFactory()))

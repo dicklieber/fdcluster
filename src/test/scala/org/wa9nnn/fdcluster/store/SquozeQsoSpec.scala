@@ -1,12 +1,10 @@
 package org.wa9nnn.fdcluster.store
 
-import akka.util.ByteString
 import org.specs2.mutable.Specification
-import org.wa9nnn.fdcluster.model.{BandMode, Exchange, NodeAddress, Qso, QsoMetadata, QsoRecord}
+import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.tools.SequentialCallsigns
 import scalafx.collections.ObservableBuffer
 
-import java.nio.ByteBuffer
 import scala.collection.mutable.ArrayBuffer
 
 class SquozeQsoSpec extends Specification {
@@ -14,10 +12,10 @@ class SquozeQsoSpec extends Specification {
   "SquozeQsoSpec" >> {
     "encodeUuids" >> {
       val nodeAddress = NodeAddress()
-      val callsigns = new SequentialCallsigns()
+      val callSigns = new SequentialCallsigns()
       val allQsos = ObservableBuffer[QsoRecord](
-        List.tabulate(100000) { n =>
-          QsoRecord(Qso(callsigns.next(), BandMode(), new Exchange()), QsoMetadata())
+        List.tabulate(100000) { _ =>
+          QsoRecord(Qso(callSigns.next(), BandMode(),  Exchange()), QsoMetadata())
         }
       )
 
@@ -28,7 +26,7 @@ class SquozeQsoSpec extends Specification {
       val nodeQsos = sq.encodeUuids()
       val compressedBase64Length = nodeQsos.blob.length
 
-      compressedBase64Length must be lessThan (justRawUuidsLength)
+      compressedBase64Length must be lessThan justRawUuidsLength
 
       nodeQsos.nodeInfo must beEqualTo(nodeAddress)
 
@@ -36,11 +34,11 @@ class SquozeQsoSpec extends Specification {
     }
     "encodeQso" >> {
       val nodeAddress = NodeAddress()
-      val callsigns = new SequentialCallsigns()
+      val callSigns = new SequentialCallsigns()
       val qsosBin = new ArrayBuffer[Byte]()
       val allQsos = ObservableBuffer[QsoRecord](
-        List.tabulate(100000) { n =>
-          val qsoRecord = QsoRecord(Qso(callsigns.next(), BandMode(), new Exchange()), QsoMetadata())
+        List.tabulate(100000) { _ =>
+          val qsoRecord = QsoRecord(Qso(callSigns.next(), BandMode(),  Exchange()), QsoMetadata())
           val byteString = qsoRecord.toByteString
           qsosBin.addAll(byteString.toArray)
           qsosBin.addOne('\n'.toByte)
@@ -54,7 +52,7 @@ class SquozeQsoSpec extends Specification {
       val nodeQsos = sq.encodeQsos()
       val compressedBase64Length = nodeQsos.blob.length
 
-      compressedBase64Length must be lessThan (justRawQsosBinLength)
+      compressedBase64Length must be lessThan justRawQsosBinLength
 
       nodeQsos.nodeInfo must beEqualTo(nodeAddress)
 

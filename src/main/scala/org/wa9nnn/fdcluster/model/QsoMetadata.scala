@@ -19,19 +19,21 @@
 
 package org.wa9nnn.fdcluster.model
 
+import org.wa9nnn.fdcluster.BuildInfo
 import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
-
 
 
 /**
  *
- * @param operator who is using app. callSign
- * @param rig free form usually transceiver model.
- * @param ant free form antenna description.
- * @param node what node, in the cluster this came from.
- * @param contestId so old data can't accident be mised with current.
+ * @param operator  who is using app. callSign
+ * @param rig       free form usually transceiver model.
+ * @param ant       free form antenna description.
+ * @param node      what node, in the cluster this came from.
+ * @param contestId so old data can't accident be missed with current.
+ * @param v         FDCLuster Version that built this so we can detect mismatched versions.
  */
-case class QsoMetadata(operator: CallSign="", rig: String = "", ant: String = "",
+case class QsoMetadata(operator: CallSign = "", rig: String = "", ant: String = "",
                        node: String = "localhost;1",
-                       contestId: String = "FD2021WA9NNN")
+                       contestId: String = "FD2021WA9NNN",
+                       v: String = BuildInfo.canonicalVersion)
 
