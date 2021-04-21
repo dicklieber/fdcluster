@@ -19,4 +19,4 @@ conf/generated.keystore
 /fdcluster/
 /src/main/main.iml
 /src/test/test.iml
-/.bsp/
+.bsp
