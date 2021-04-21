@@ -31,7 +31,9 @@ import java.time.{Duration, Instant}
 import org.wa9nnn.fdcluster.javafx.FdCluster
 import org.wa9nnn.util.DurationFormat
 
+import java.io.File
 import javax.inject.{Inject, Singleton}
+import scala.jdk.CollectionConverters._
 @Singleton
 class  AboutDialog @Inject()(appInfo: AppInfo, fileManager: FileManager) extends Dialog with LazyLogging {
   title = s"About ${BuildInfo.name}"
@@ -51,10 +53,17 @@ class  AboutDialog @Inject()(appInfo: AppInfo, fileManager: FileManager) extends
     goc.add("UpTime", Duration.between(appInfo.started, Instant.now()))
     goc.add("Git Branch", BuildInfo.gitCurrentBranch)
     goc.add("Git commit", BuildInfo.gitHeadCommit.getOrElse("--"))
+    goc.addControl("Source Code", new Hyperlink("https://github.com/dicklieber/fdcluster") {
+      onAction = event => {
+        desktop.browse(new URI("https://github.com/dicklieber/fdcluster"))
+      }
+    })
+
     goc.add("Built", BuildInfo.buildInstant)
     goc.addControl("Java Home", new Hyperlink(System.getenv("JAVA_HOME")) {
       onAction = event => {
-        desktop.open(fileManager.directory.toFile)
+       val javaHome = new File(this.text.value)
+        desktop.open(javaHome)
       }
     })
     goc.add("Java Version", ManagementFactory.getRuntimeMXBean.getVmVersion)
@@ -63,11 +72,13 @@ class  AboutDialog @Inject()(appInfo: AppInfo, fileManager: FileManager) extends
         desktop.open(fileManager.directory.toFile)
       }
     })
-    goc.addControl("Source Code", new Hyperlink("https://github.com/dicklieber/fdcluster") {
-      onAction = event => {
-        desktop.browse(new URI("https://github.com/dicklieber/fdcluster"))
-      }
-    })
+    val args = ManagementFactory.getRuntimeMXBean.getInputArguments.asScala.mkString("\n")
+    val control = new TextArea(args) {
+      prefRowCount = 15
+      prefColumnCount = 70
+      editable = false
+    }
+    goc.addControl("Command Line", control)
     goc.addControl("Blame this guy", new Hyperlink("Dick Lieber WA9NNN") {
       onAction = event => {
         if (desktop.isSupported(Desktop.Action.MAIL)) {
