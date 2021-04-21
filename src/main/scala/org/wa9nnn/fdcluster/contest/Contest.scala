@@ -4,7 +4,7 @@ package org.wa9nnn.fdcluster.contest
 import org.wa9nnn.fdcluster.model.Exchange
 import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
 
-import java.time.LocalDate
+import java.time.{Instant, LocalDate}
 
 
 /**
@@ -21,7 +21,10 @@ case class Contest(callSign: CallSign = "",
                    eventName: String = "FieldDay",
                    year: String = {
                      LocalDate.now().getYear.toString
-                   }) {
+                   },
+                   start:Instant = Instant.EPOCH,
+                   hours:Int = 24
+                  ) {
 
   def fileBase: String = {
     s"$eventName-$year"

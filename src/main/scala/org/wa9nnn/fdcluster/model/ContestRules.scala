@@ -24,6 +24,9 @@ import scalafx.scene.image.Image
 
 import javax.inject.{Inject, Singleton}
 import scala.jdk.CollectionConverters._
+import com.github.andyglow.config._
+
+import java.time.{Instant, LocalDateTime, ZoneId, ZonedDateTime}
 
 /**
  * fixed (i.e. from application.conf)
@@ -36,9 +39,10 @@ case class ContestRules(contestName: String, appConfig: Config) {
   private val configPath = s"/contests/$contestName.conf"
   val contestConfig: Config = ConfigFactory.parseURL(getClass.getResource(configPath)).withFallback(appConfig).getConfig("contest")
 
+
   val categories: EntryCategories = new EntryCategories(contestConfig)
 
- }
+}
 
 @Singleton
 class AllContestRules @Inject()(config: Config) {

@@ -24,12 +24,13 @@ import _root_.scalafx.scene.image.Image
 import com.wa9nnn.util.macos.DockIcon
 import org.wa9nnn.fdcluster.contest.Contest
 import org.wa9nnn.fdcluster.model.MessageFormats._
+import org.wa9nnn.util.TimeHelpers.utcZoneId
 import org.wa9nnn.util.{Persistence, StructuredLogging}
-import scalafx.beans.property._
+import scalafx.beans.property.{ObjectProperty, _}
 
+import java.time.{Instant, LocalDateTime, ZoneOffset}
 import javax.inject.{Inject, Singleton}
 import scala.util.{Failure, Success, Using}
-
 /**
  * Provides access and persistence of a single [[Contest]] instance.
  *
@@ -60,6 +61,10 @@ class ContestProperty @Inject()(persistence: Persistence) extends ObjectProperty
 
   def eventYear: String = eventYearProperty.value
 
+  val startDateTimeProperty: ObjectProperty[LocalDateTime] = ObjectProperty[LocalDateTime]( LocalDateTime.ofInstant(initContest.start, utcZoneId))
+  def startTime: Instant = value.start
+  val hoursProperty: IntegerProperty = IntegerProperty(initContest.hours)
+
   val logotypeImageProperty: ObjectProperty[Image] = new ObjectProperty[Image]()
 
   def fileBase: String = event
@@ -81,11 +86,17 @@ class ContestProperty @Inject()(persistence: Persistence) extends ObjectProperty
    */
   val b: ObjectBinding[Contest] = Bindings.createObjectBinding(
     () => {
-      val newContest = Contest(callSignProperty.value, ourExchangeProperty.value, eventProperty.value, eventYearProperty.value)
+      val newContest = Contest(callSignProperty.value,
+        ourExchangeProperty.value,
+        eventProperty.value,
+        eventYearProperty.value,
+        start =  startDateTimeProperty.value.toInstant(ZoneOffset.UTC),
+        hours = hoursProperty.value
+      )
       newContest
     }
     ,
-    callSignProperty, eventProperty, ourExchangeProperty, eventYearProperty
+    callSignProperty, eventProperty, ourExchangeProperty, eventYearProperty, startDateTimeProperty, hoursProperty
   )
 
   def setUpImage(eventName: String): Unit = {

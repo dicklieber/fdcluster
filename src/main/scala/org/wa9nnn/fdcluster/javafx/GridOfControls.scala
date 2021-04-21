@@ -40,13 +40,14 @@ class GridOfControls extends GridPane {
   hgap = 10
   vgap = 10
   padding = Insets(20, 100, 10, 10)
-  implicit val row = new AtomicInteger()
+  implicit val row: AtomicInteger = new AtomicInteger()
 
   private def label(label: String): Int = {
     val r = row.getAndIncrement()
     add(new Label(label + ":"), 0, r)
     r
   }
+  def nextRow:Int = row.get()
 
    def addText(labelText: String, defValue: String = "",
               forceCaps: Boolean = false,

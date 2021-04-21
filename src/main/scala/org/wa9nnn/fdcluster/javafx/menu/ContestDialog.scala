@@ -34,6 +34,7 @@ import scalafx.scene.control.ButtonBar.ButtonData
 import scalafx.scene.control._
 import scalafx.scene.layout.VBox
 
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 /**
@@ -79,6 +80,8 @@ class ContestDialog @Inject()(contestProperty: ContestProperty,
   contestCB.onChange { (_, _, contestName: String) =>
     setup(contestName)
   }
+  val startProperty = new ObjectProperty[LocalDateTime](contestProperty.startDateTimeProperty)
+
   setup(contestProperty.event)
 
   private def setup(contestName: String): Unit = {
@@ -95,6 +98,7 @@ class ContestDialog @Inject()(contestProperty: ContestProperty,
     defValue = Some(Sections.byCode(currentExchange.sectionCode)),
     tooltip = Option("ARRL sectionCode for exchange sent."),
     choices = Sections.forChoice())
+
 
   val exchangeText: Label = new Label()
   val exchangeMnemonics: Label = new Label() {
@@ -145,7 +149,7 @@ class ContestDialog @Inject()(contestProperty: ContestProperty,
     dp.lookupButton(saveButton).disableProperty()
   )
 
-  gridOfControls.add(exchangePane, 1, 6, 1, 1)
+  gridOfControls.add(exchangePane, 1, gridOfControls.nextRow, 1, 1)
   dialogPane().setContent(gridOfControls)
 }
 
