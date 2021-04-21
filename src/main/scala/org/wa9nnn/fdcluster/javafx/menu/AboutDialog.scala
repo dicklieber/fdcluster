@@ -38,6 +38,8 @@ class  AboutDialog @Inject()(appInfo: AppInfo, fileManager: FileManager) extends
 
   private val cssUrl: String = getClass.getResource("/fdcluster.css").toExternalForm
 
+  dialogPane.value.getButtonTypes.add(ButtonType.Close)
+
 
   def apply(): Unit = {
     val desktop = Desktop.getDesktop
@@ -84,7 +86,7 @@ class  AboutDialog @Inject()(appInfo: AppInfo, fileManager: FileManager) extends
           styleClass += "parenthetic"
 
         },
-        new Hyperlink("Licensed under gpl-3.0") {
+        new Hyperlink("Licens+*.00ed under gpl-3.0") {
           styleClass += "parenthetic"
           onAction = event => {
             desktop.browse(new URI("http://www.gnu.org/licenses/gpl-3.0.html"))
@@ -95,7 +97,6 @@ class  AboutDialog @Inject()(appInfo: AppInfo, fileManager: FileManager) extends
       }
     )
     )
-    dialogPane1.getButtonTypes.add(ButtonType.Close)
 
     showAndWait()
   }
