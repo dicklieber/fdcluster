@@ -1,16 +1,18 @@
 package org.wa9nnn.fdcluster.contest.fieldday
 
 import com.typesafe.config.ConfigFactory
+import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
 import org.wa9nnn.fdcluster.contest.Contest
-import org.wa9nnn.fdcluster.model.{AllContestRules, BandMode, BandModeFactory, Exchange, Qso, QsoMetadata, QsoRecord}
+import org.wa9nnn.fdcluster.model.{AllContestRules, BandMode, BandModeFactory, ContestProperty, Exchange, Qso, QsoMetadata, QsoRecord}
+import scalafx.beans.property.StringProperty
 import scalafx.collections.ObservableBuffer
 
 import java.awt.Desktop
 import java.io.StringWriter
 import java.nio.file.Files
 
-class SummaryEngineSpec extends Specification {
+class SummaryEngineSpec extends Specification with Mockito{
   "SummaryEngine" should {
     "apply" in {
       val config = ConfigFactory.load()
@@ -22,8 +24,10 @@ class SummaryEngineSpec extends Specification {
         club = "WM9W",
         nParticipants = 25
       )
-
-      val allContestRules = new AllContestRules(config)
+      val contestProperty = mock[ContestProperty]
+      val eventProperty: StringProperty = new StringProperty("FieldDay")
+      contestProperty.eventProperty returns eventProperty
+      val allContestRules = new AllContestRules(config, contestProperty)
       val allQsos: ObservableBuffer[QsoRecord] = ObservableBuffer(
         QsoRecord(Qso("KD9BYW", BandMode(), Exchange()), QsoMetadata()),
         QsoRecord(Qso("KD9BYW", BandMode("160m"), Exchange()), QsoMetadata()),

@@ -39,7 +39,6 @@ import scala.util.{Failure, Success, Using}
 @Singleton
 class ContestProperty @Inject()(persistence: Persistence) extends ObjectProperty[Contest] with StructuredLogging {
 
-
   private val initContest: Contest = persistence.loadFromFile[Contest](() => Contest())
   value = initContest
 
@@ -49,7 +48,7 @@ class ContestProperty @Inject()(persistence: Persistence) extends ObjectProperty
 
   def callSign: String = callSignProperty.value
 
-  val eventProperty: StringProperty = StringProperty(initContest.eventName)
+  val eventProperty: StringProperty = StringProperty(initContest.contestName)
 
   def event: String = eventProperty.value
 
@@ -73,7 +72,7 @@ class ContestProperty @Inject()(persistence: Persistence) extends ObjectProperty
     println(s"callSignProperty changed from : $old to: $nv ")
   }
   onChange { (_, old, contest) =>
-    setUpImage(contest.eventName)
+    setUpImage(contest.contestName)
     whenTraceEnabled(() => s"contestProperty changed from : $old to: $contest ")
   }
 

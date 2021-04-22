@@ -20,6 +20,7 @@
 package org.wa9nnn.util
 
 import scalafx.css.Styleable
+import scalafx.scene.control.Labeled
 
 /**
  * A Control (actually any [[Styleable]]) that can be happy or sad.
@@ -48,3 +49,16 @@ trait WithDisposition extends Styleable {
       styleClass.addOne(happySadNeutral.getStyle)
   }
 }
+
+case class Message(text:String, disposition: Disposition = Disposition.neutral){
+  def applyTo(styleable: Labeled):Unit = {
+    styleable.text = text
+    styleable.styleClass.remove("sad")
+    styleable.styleClass.remove("happy")
+    if (disposition != Disposition.neutral)
+      styleable.styleClass.addOne(disposition.getStyle)
+  }
+  def sad:Message = copy(disposition = Disposition.sad)
+  def happy:Message = copy(disposition = Disposition.happy)
+}
+

@@ -13,7 +13,7 @@ import javax.inject.{Inject, Singleton}
 class SummaryEngine @Inject()(allContestRules: AllContestRules,
                               bandModeBreakDown: BandModeBreakDown) {
   def apply(writer: Writer, contest: Contest, wfd: WinterFieldDaySettings): Unit = {
-    val contestRules = allContestRules.byContestName(contest.eventName)
+    val contestRules = allContestRules.byContestName(contest.contestName)
     val categories: Seq[EntryCategory] = contestRules.categories.categories.toSeq
 
     val bandModeTable: Table = bandModeBreakDown(wfd.power)

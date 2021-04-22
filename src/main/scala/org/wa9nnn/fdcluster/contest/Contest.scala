@@ -13,12 +13,12 @@ import java.time.{Instant, LocalDate}
  *
  * @param callSign    who we are. Usually the clubs callSign.
  * @param ourExchange what we will send to worked stations.
- * @param eventName       which contest. We only support FD and Winter Field Day.
+ * @param contestName       which contest. We only support FD and Winter Field Day.
  * @param year        which one.
  */
 case class Contest(callSign: CallSign = "",
                    ourExchange: Exchange =  Exchange(),
-                   eventName: String = "FieldDay",
+                   contestName: String = "FieldDay",
                    year: String = {
                      LocalDate.now().getYear.toString
                    },
@@ -27,10 +27,10 @@ case class Contest(callSign: CallSign = "",
                   ) {
 
   def fileBase: String = {
-    s"$eventName-$year"
+    s"$contestName-$year"
   }
 
-  val id:String = eventName.filter(_.isUpper)
+  val id:String = contestName.filter(_.isUpper)
   def qsoId: String = {
     f"$id$year$callSign"
   }

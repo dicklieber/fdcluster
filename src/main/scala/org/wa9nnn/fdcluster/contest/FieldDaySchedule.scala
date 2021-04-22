@@ -25,7 +25,7 @@ import scala.annotation.tailrec
      * @param eventConfig speciically for this event.
      * @return
      */
-    def apply(year: Int, eventConfig: Config): FieldDaySchedule = {
+    def apply( eventConfig: Config, year: Int = ZonedDateTime.now().getYear): FieldDaySchedule = {
       val config = eventConfig.getConfig("schedule")
 
       val scheduleAlgorithm = ScheduleAlgorithm.valueOf(config.getString("algorithm"))

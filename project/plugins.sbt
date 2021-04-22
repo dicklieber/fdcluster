@@ -6,7 +6,7 @@ resolvers += ("Typesafe repository" at "http://repo.typesafe.com/typesafe/releas
 
 //addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.1")
 
-addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.9.0")
+addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.10.0")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "1.0.0")
 

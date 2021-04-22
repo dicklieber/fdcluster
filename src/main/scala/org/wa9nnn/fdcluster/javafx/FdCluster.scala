@@ -34,7 +34,7 @@ import scalafx.application.{JFXApp, Platform}
 import scalafx.scene.Scene
 import scalafx.scene.control.{Tab, TabPane}
 import scalafx.scene.image.{Image, ImageView}
-import scalafx.scene.layout.{BorderPane, GridPane, HBox, VBox}
+import scalafx.scene.layout.{BorderPane, GridPane}
 
 /**
  * Main for FDLog
@@ -49,8 +49,8 @@ object FdCluster extends JFXApp with StructuredLogging {
   private val runningTaskPane: RunningTaskPane = injector.instance[RunningTaskPane]
   private val statusPane: StatusPane = injector.instance[StatusPane]
   private val commandLine: CommandLine = injector.instance[CommandLine]
-  private val allContestRules: AllContestRules = injector.instance[AllContestRules]
   private val contestProperty: ContestProperty = injector.instance[ContestProperty]
+  private val contestStatusPane: ContestStatusPane = injector.instance[ContestStatusPane]
   try {
     injector.instance[Server]
   } catch {
@@ -92,9 +92,11 @@ object FdCluster extends JFXApp with StructuredLogging {
 
     new GridPane() {
       prefWidth = 400
-      add(imageView, 0, 0, 1, 2)
+      add(imageView, 0, 0, 1, 3)
       add(runningTaskPane.pane, 1, 0)
       add(statusPane.pane, 1, 0)
+      add(statusPane.pane, 1, 0)
+      add(contestStatusPane, 1,1)
     }
   }
   //  private val statsHeader = new HBox(Label(sorter"QSOs:  todo "))
@@ -120,7 +122,7 @@ object FdCluster extends JFXApp with StructuredLogging {
     private val externalForm: String = getClass.getResource("/images/FieldDay.png").toExternalForm
     icons += new Image(externalForm)
     onCloseRequest = {
-      event =>
+      _ =>
         Platform.exit()
         System.exit(0)
 
