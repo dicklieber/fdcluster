@@ -21,11 +21,8 @@ package org.wa9nnn.fdcluster.model
 import org.specs2.execute.{AsResult, Result}
 import org.specs2.mutable.Specification
 import org.specs2.specification.ForEach
-import org.wa9nnn.fdcluster.contest.Contest
-import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.{FileManager, MockFileManager}
 import org.wa9nnn.util.PersistenceImpl
-import scalafx.beans.property.StringProperty
 
 trait FileManagerContext extends ForEach[FileManager] {
   private val fileManager = MockFileManager()
@@ -40,21 +37,7 @@ trait FileManagerContext extends ForEach[FileManager] {
 class ContestPropertySpec extends Specification with FileManagerContext {
   sequential
   "ContestProperty" should {
-    "propMap" >> { fileManger: FileManager =>
-      val persistence = new PersistenceImpl(fileManger)
-      val contestProperty = new ContestProperty(persistence)
-      val was: Contest = persistence.loadFromFile[Contest]( () => Contest())
-      was.year must beEqualTo("2021")
-      val eventyearProperty: StringProperty = contestProperty.eventYearProperty
-      eventyearProperty.value must beEqualTo("2021") //todo mke this work net year too!
-      eventyearProperty.value = "1949"
-
-      contestProperty.save()
-
-      val newContest = persistence.loadFromFile[Contest]( () => Contest())
-      newContest.year must beEqualTo("1949")
-    }
-    "exchange properties" >> { fileManger: FileManager =>
+   "exchange properties" >> { fileManger: FileManager =>
       val persistence = new PersistenceImpl(fileManger)
       val contestProperty = new ContestProperty(persistence)
       val ourExchangeProperty = contestProperty.ourExchangeProperty

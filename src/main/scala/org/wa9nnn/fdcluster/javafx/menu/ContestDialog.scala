@@ -60,10 +60,6 @@ class ContestDialog @Inject()(contestProperty: ContestProperty,
     defValue = Some(contestProperty.event)
   )
 
-  val yearProperty: StringProperty = gridOfControls.addText(labelText = "Year",
-    regx = Some("""\d{4}""".r)
-  )
-  yearProperty <==> contestProperty.eventYearProperty
 
   private val currentExchange: Exchange = contestProperty.ourExchange
 
@@ -80,8 +76,6 @@ class ContestDialog @Inject()(contestProperty: ContestProperty,
   contestCB.onChange { (_, _, contestName: String) =>
     setup(contestName)
   }
-  val startProperty = new ObjectProperty[LocalDateTime](contestProperty.startDateTimeProperty)
-
   setup(contestProperty.event)
 
   private def setup(contestName: String): Unit = {

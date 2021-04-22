@@ -31,34 +31,38 @@ import scala.jdk.CollectionConverters._
  * For testing there can be more than one node at an IP address. So the instance is used to qualify them.
  * This is not suitable to send messages to a node. That's in org.wa9nnn.fdcluster.model.sync.NodeStatus#apiUrl()
  *
- * @param host     ip address of this node.
- * @param instance from application.conf or command line e.g -Dinstance=2
- * @param httpPort as opposed to the multicast port.
+ * @param ipAddress ip address of this node.
+ * @param instance  from application.conf or command line e.g -Dinstance=2
+ * @param httpPort  as opposed to the multicast port.
  */
-case class NodeAddress @Inject()(host: String = "localhost", instance: Int = 0, httpPort: Int = 8000) extends Ordered[NodeAddress] {
+case class NodeAddress @Inject()(ipAddress: String = "localhost", hostName: String = "localhost", instance: Int = 0, httpPort: Int = 8000) extends Ordered[NodeAddress] {
   val display: String = {
-    s"$host:$instance"
+    s"$hostName:$instance ($ipAddress)"
+  }
+
+  val qsoNode: String = {
+    s"$ipAddress:$instance"
   }
   val graphiteName: String = {
-    s"${host.replace('.', '_')}:$instance"
+    s"${ipAddress.replace('.', '_')}:$instance"
   }
 
   val url: URL = {
-    new URL("http", host, httpPort, "")
+    new URL("http", ipAddress, httpPort, "")
   }
 
   def uri: Uri = {
     Uri()
-      .withHost(host)
+      .withHost(ipAddress)
       .withPort(httpPort)
   }
 
-  val inetAddress: InetAddress = InetAddress.getByName(host)
+  val inetAddress: InetAddress = InetAddress.getByName(ipAddress)
 
   override def compare(that: NodeAddress): Int = {
     that match {
       case address: NodeAddress =>
-        var ret = address.host compareTo that.host
+        var ret = address.ipAddress compareTo that.ipAddress
         if (ret == 0) {
           ret = this.instance compareTo that.instance
         }
@@ -72,7 +76,14 @@ object NodeAddress {
   def apply(config: Config): NodeAddress = {
     val instance = config.getInt("instance")
     val httpPort = config.getInt("fdcluster.http.port")
-    NodeAddress(determineIp().getHostAddress, instance, httpPort)
+
+    val inetAddress = determineIp()
+    val address = inetAddress.getHostAddress
+    val name = inetAddress.getHostName
+    NodeAddress(ipAddress = address,
+      hostName = InetAddress.getLocalHost.getHostName,
+      instance,
+      httpPort)
   }
 
   /**

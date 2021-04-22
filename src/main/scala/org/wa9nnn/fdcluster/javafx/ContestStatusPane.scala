@@ -9,6 +9,7 @@ import scalafx.scene.layout.HBox
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.duration._
 import scala.language.postfixOps
+import scala.concurrent.ExecutionContext.Implicits.global
 
 @Singleton
 class ContestStatusPane @Inject()(actorSystem: ActorSystem, allContestRules: AllContestRules) extends HBox with Runnable {

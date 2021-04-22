@@ -218,7 +218,7 @@ class EntryScene @Inject()(
     QsoMetadata(operator = cs.operator,
       rig = cs.rig,
       ant = cs.antenna,
-      node = nodeAddress.display,
+      node = nodeAddress.qsoNode,
       contestId = contestProperty.contest.qsoId
     )
   }, currentStationProperty, contestProperty)

@@ -19,20 +19,16 @@ import java.time.{Instant, LocalDate}
 case class Contest(callSign: CallSign = "",
                    ourExchange: Exchange =  Exchange(),
                    contestName: String = "FieldDay",
-                   year: String = {
-                     LocalDate.now().getYear.toString
-                   },
-                   start:Instant = Instant.EPOCH,
-                   hours:Int = 24
+                   stamp:Instant = Instant.now()
                   ) {
 
   def fileBase: String = {
-    s"$contestName-$year"
+    s"$contestName-${LocalDate.now().getYear.toString}"
   }
 
   val id:String = contestName.filter(_.isUpper)
   def qsoId: String = {
-    f"$id$year$callSign"
+    f"$id$callSign"
   }
 }
 
