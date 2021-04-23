@@ -37,8 +37,8 @@ class ClassField @Inject()(allContestRules: AllContestRules, contestProperty: Co
 
   var entryCategories: ContestRules = _
 
-  entryCategories = allContestRules.byContestName(contestProperty.event)
-  contestProperty.eventProperty.onChange{(_,_,contestName) =>
+  entryCategories = allContestRules.byContestName(contestProperty.contestName)
+  contestProperty.contestNameProperty.onChange{ (_, _, contestName) =>
     entryCategories = allContestRules.byContestName(contestName)
   }
 

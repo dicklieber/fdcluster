@@ -35,9 +35,10 @@ import scala.util.{Failure, Success, Using}
  * @param persistence saves and loads any a case class.
  */
 @Singleton
-class ContestProperty @Inject()(persistence: Persistence) extends ObjectProperty[Contest] with StructuredLogging {
+class ContestProperty @Inject()(persistence: Persistence, nodeAddress: NodeAddress = NodeAddress()) extends ObjectProperty[Contest] with StructuredLogging {
 
-  private val initContest: Contest = persistence.loadFromFile[Contest](() => Contest())
+
+  private val initContest: Contest = persistence.loadFromFile[Contest](() => Contest(nodeAddress = nodeAddress))
   value = initContest
 
   def contest: Contest = value
@@ -46,9 +47,9 @@ class ContestProperty @Inject()(persistence: Persistence) extends ObjectProperty
 
   def callSign: String = callSignProperty.value
 
-  val eventProperty: StringProperty = StringProperty(initContest.contestName)
+  val contestNameProperty: StringProperty = StringProperty(initContest.contestName)
 
-  def event: String = eventProperty.value
+  def contestName: String = contestNameProperty.value
 
   val ourExchangeProperty: ObjectProperty[Exchange] = ObjectProperty[Exchange](initContest.ourExchange)
 
@@ -56,7 +57,9 @@ class ContestProperty @Inject()(persistence: Persistence) extends ObjectProperty
 
   val logotypeImageProperty: ObjectProperty[Image] = new ObjectProperty[Image]()
 
-  def fileBase: String = event
+  def fileBase: String = contestName
+
+
 
   callSignProperty.onChange { (_, old, nv) =>
     println(s"callSignProperty changed from : $old to: $nv ")
@@ -70,19 +73,22 @@ class ContestProperty @Inject()(persistence: Persistence) extends ObjectProperty
     println(s"logotypeImageProperty: $ni")
   }
 
+
   /**
    * Responds to a change on any of the property objects
    */
   val b: ObjectBinding[Contest] = Bindings.createObjectBinding(
     () => {
-      val newContest = Contest(callSignProperty.value,
-        ourExchangeProperty.value,
-        eventProperty.value
+      val newContest = Contest(
+        callSign = callSignProperty.value,
+        ourExchange = ourExchangeProperty.value,
+        contestName = contestNameProperty.value,
+        nodeAddress = nodeAddress
       )
       newContest
     }
     ,
-    callSignProperty, eventProperty, ourExchangeProperty
+    callSignProperty, contestNameProperty, ourExchangeProperty
   )
 
   def setUpImage(eventName: String): Unit = {
@@ -117,7 +123,8 @@ class ContestProperty @Inject()(persistence: Persistence) extends ObjectProperty
       value = nv
   }
 
-  def save(): Unit = {
+  def save(contest: Contest): Unit = {
+    value = contest
     persistence.saveToFile(value) match {
       case Failure(exception) =>
         logger.error("Saving ContestProperty", exception)
@@ -127,7 +134,13 @@ class ContestProperty @Inject()(persistence: Persistence) extends ObjectProperty
         }
     }
   }
+  def saveIfNewer(contest: Contest): Unit = {
+    if(contest.stamp.isAfter(value.stamp)) {
+      logger.info(s"New Contest from ${contest.nodeAddress.display}")
+      save(contest)
+    }
 
 
+  }
 }
 

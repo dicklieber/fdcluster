@@ -54,7 +54,6 @@ class NodeStateContainer(initialNodeStatus: NodeStatus, ourNodeAddress: NodeAddr
 
   def qsoCount: Int = nodeStatus.qsoCount
 
-  val firstContact: LocalDateTime = LocalDateTime.now()
   var nodeStatus: NodeStatus = initialNodeStatus
 
   def nodeAddress: NodeAddress = nodeStatus.nodeAddress

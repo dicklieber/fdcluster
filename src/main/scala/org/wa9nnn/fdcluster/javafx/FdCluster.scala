@@ -131,6 +131,6 @@ object FdCluster extends JFXApp with StructuredLogging {
 
   // This can hang, calling com.apple.eawt.Application
   // if invvocated too early.
-  contestProperty.setUpImage(contestProperty.event)
+  contestProperty.setUpImage(contestProperty.contestName)
 
 }

@@ -9,7 +9,7 @@ import org.apache.commons.math3.stat.descriptive.SynchronizedDescriptiveStatisti
 import org.wa9nnn.fdcluster.model.sync.{ClusterMessage, StoreMessage}
 import org.wa9nnn.fdcluster.store.JsonContainer
 
-import java.net.{DatagramPacket, MulticastSocket}
+import java.net.{DatagramPacket, MulticastSocket, SocketTimeoutException}
 import javax.inject.{Inject, Singleton}
 
 /**
@@ -50,6 +50,7 @@ class MulticastListener @Inject()(
     val recv: DatagramPacket = new DatagramPacket(buf, buf.length)
     do {
       try {
+        multicastSocket.setSoTimeout(timeoutMs)
         multicastSocket.receive(recv)
         val data = recv.getData
         for {
@@ -70,6 +71,8 @@ class MulticastListener @Inject()(
         }
       }
       catch {
+        case _:SocketTimeoutException =>
+          logger.error(s"Timeout waiting for multicast message! $duration")
         case e: Exception =>
           logger.error("MulticastListener", e)
       }

@@ -6,7 +6,7 @@ import akka.util.Timeout
 import com.google.inject.name.Named
 import org.wa9nnn.fdcluster.http.HttpClientActor
 import org.wa9nnn.fdcluster.javafx.sync._
-import org.wa9nnn.fdcluster.model.{CurrentStation, NodeAddress, QsoMetadata}
+import org.wa9nnn.fdcluster.model.{ContestProperty, CurrentStation, NodeAddress, QsoMetadata}
 import org.wa9nnn.fdcluster.store.DumpCluster
 import org.wa9nnn.fdcluster.store.network.cluster.ClusterState
 import org.wa9nnn.util.StructuredLogging
@@ -18,7 +18,8 @@ import scala.language.postfixOps
 class ClusterActor(nodeAddress: NodeAddress,
                    @Named("store") store: ActorRef,
                    @Named("nodeStatusQueue") nodeStatusQueue: ActorRef,
-                   clusterState: ClusterState
+                   clusterState: ClusterState,
+                   contestProperty: ContestProperty,
                   ) extends Actor with StructuredLogging {
   private implicit val timeout: Timeout = Timeout(5 seconds)
   context.system.scheduler.scheduleAtFixedRate(2 seconds, 17 seconds, self, Purge)
@@ -26,7 +27,7 @@ class ClusterActor(nodeAddress: NodeAddress,
   private val httpClient: ActorRef = context.actorOf(Props(classOf[HttpClientActor], store, context.self))
 
   private var ourNodeStatus: NodeStatus = NodeStatus(nodeAddress, 0, "",
-    List.empty, QsoMetadata(), CurrentStation(), 0.0)
+    List.empty, QsoMetadata(), CurrentStation(), 0.0, contestProperty.value)
 
   override def receive: Receive = {
 
@@ -36,6 +37,7 @@ class ClusterActor(nodeAddress: NodeAddress,
       logger.trace(s"Got NodeStatus from ${ns.nodeAddress}")
       nodeStatusQueue ! ns
       clusterState.update(ns)
+      contestProperty.saveIfNewer(ns.contest)
       (nodeStatusQueue ? NextNodeStatus).mapTo[Option[NodeStatus]].map {
         {
           _.map { ns =>

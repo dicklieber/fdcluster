@@ -90,7 +90,6 @@ libraryDependencies ++= Seq(
   "org.apache.commons" % "commons-math3" % "3.6.1",
   "javax.servlet" % "javax.servlet-api" % "3.0.1",
   "commons-codec" % "commons-codec" % "1.15",
-  "no.tornado" % "tornadofx-controls" % "1.0.6"
 )
 
 

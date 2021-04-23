@@ -17,7 +17,8 @@
  */
 package org.wa9nnn.fdcluster.store
 
-import com.google.inject.name.Named
+import akka.actor.ActorRef
+import com.google.inject.name.{Named, Names}
 import nl.grons.metrics4.scala.DefaultInstrumented
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
@@ -42,9 +43,15 @@ import scala.collection.concurrent.TrieMap
 class StoreLogic @Inject()(na: NodeAddress,
                            @Named("qsoMetadata") qsoMetadata: ObjectProperty[QsoMetadata],
                            @Named("allQsos") allQsos: ObservableBuffer[QsoRecord],
+                           @Named("multicastSender") multicastSender: ActorRef,
+                           contestProperty: ContestProperty,
                            fileManager: FileManager
                           )
   extends StructuredLogging with DefaultInstrumented {
+  def sendNodeStatus(): Unit = {
+    multicastSender ! JsonContainer(nodeStatus)
+  }
+
 
   def filterAlreadyPresent(iterator: Iterator[Uuid]): Iterator[Uuid] = {
     iterator.filterNot(uuid => byUuid.contains(uuid))
@@ -245,7 +252,7 @@ class StoreLogic @Inject()(na: NodeAddress,
 
   def size: Int = byUuid.size
 
-  def nodeStatus: NodeStatus = {
+ private  def nodeStatus: NodeStatus = {
     //todo Needs some serious caching. Past hours don't usually change (unless syncing)
 
     val sDigest = qsosDigestTimer.time {
@@ -270,7 +277,7 @@ class StoreLogic @Inject()(na: NodeAddress,
     val rate = qsoMeter.fifteenMinuteRate
     val currentStation = CurrentStation()
 
-    sync.NodeStatus(nodeAddress, byUuid.size, sDigest, hourDigests, qsoMetadata.value, currentStation, rate)
+    sync.NodeStatus(nodeAddress, byUuid.size, sDigest, hourDigests, qsoMetadata.value, currentStation, rate, contestProperty.value)
 
   }
 
@@ -292,10 +299,10 @@ class StoreLogic @Inject()(na: NodeAddress,
       .filter(_.fdHour == fdHour)
       .toList
   }
+
   def getQsos(fdHour: FdHour): List[QsoRecord] = {
     byUuid.values.filter(_.fdHour == fdHour).toList
   }
-
 
 
   def get(uuid: Uuid): Option[QsoRecord] = {
@@ -309,11 +316,11 @@ class StoreLogic @Inject()(na: NodeAddress,
     allQsos.clear()
   }
 
-  def missingUuids(uuidsAtOtherHost: List[Uuid]): List[Uuid] = {
-    uuidsAtOtherHost.filter(otherUuid ⇒
-      !byUuid.contains(otherUuid)
-    )
-  }
+//  def missingUuids(uuidsAtOtherHost: List[Uuid]): List[Uuid] = {
+//    uuidsAtOtherHost.filter(otherUuid ⇒
+//      !byUuid.contains(otherUuid)
+//    )
+//  }
 }
 
 sealed trait AddResult

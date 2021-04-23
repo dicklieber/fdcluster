@@ -2,7 +2,6 @@ package org.wa9nnn.fdcluster.store
 
 import org.specs2.mutable.Specification
 import org.wa9nnn.fdcluster.contest.Contest
-import org.wa9nnn.fdcluster.model.Exchange
 import org.wa9nnn.fdcluster.model.MessageFormats._
 
 import scala.util.Try

@@ -25,11 +25,14 @@ import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.util.StructuredLogging
 
 import java.net.InetAddress
+import java.time.Duration
 
 trait MulticastActor extends  StructuredLogging {
   val config: Config //= context.system.settings.config
   private val multicastConfig = config.getConfig("fdcluster.multicast")
   val port: Int = multicastConfig.getInt("port")
+  val duration: Duration = multicastConfig.getDuration("timeout")
+  val timeoutMs: Int = duration.toMillis.toInt
   val multicastGroup: InetAddress = InetAddress.getByName(multicastConfig.getString("group"))
 
 }

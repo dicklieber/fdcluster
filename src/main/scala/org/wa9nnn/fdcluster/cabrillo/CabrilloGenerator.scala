@@ -48,7 +48,7 @@ class CabrilloGenerator @Inject()(@Named("allQsos") allQsos: ObservableBuffer[Qs
     val builder = new Builder()
     builder + ("CREATED-BY", s"${BuildInfo.name} ${BuildInfo.version}")
     builder + ("CALLSIGN", contestProperty.callSign)
-    builder + ("CONTEST", contestProperty.event)
+    builder + ("CONTEST", contestProperty.contestName)
 
     cabrilloExportRequest.cabrilloValues.fieldValues.foreach { cv =>
       builder.+(cv.tagValue)

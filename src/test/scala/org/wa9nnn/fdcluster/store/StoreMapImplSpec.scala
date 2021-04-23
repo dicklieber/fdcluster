@@ -17,6 +17,7 @@
 
 package org.wa9nnn.fdcluster.store
 
+import akka.actor.ActorRef
 import org.apache.commons.io.FileUtils._
 import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
@@ -43,7 +44,9 @@ class StoreMapImplSpec extends Specification with After with Mockito {
   private val storeMapImpl = new StoreLogic(na = NodeAddress(),
     ObjectProperty(QsoMetadata()),
     allQsos = ObservableBuffer[QsoRecord](Seq.empty),
-    fileManager = MockFileManager()
+    fileManager = MockFileManager(),
+    multicastSender = mock[ActorRef],
+    contestProperty =  new   ContestProperty(persistence, NodeAddress())
   )
 
   private val worked: CallSign = "K2ORS"

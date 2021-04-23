@@ -1,7 +1,7 @@
 
 package org.wa9nnn.fdcluster.contest
 
-import org.wa9nnn.fdcluster.model.Exchange
+import org.wa9nnn.fdcluster.model.{Exchange, NodeAddress}
 import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
 
 import java.time.{Instant, LocalDate}
@@ -19,6 +19,7 @@ import java.time.{Instant, LocalDate}
 case class Contest(callSign: CallSign = "",
                    ourExchange: Exchange =  Exchange(),
                    contestName: String = "FieldDay",
+                   nodeAddress: NodeAddress = NodeAddress(),
                    stamp:Instant = Instant.now()
                   ) {
 

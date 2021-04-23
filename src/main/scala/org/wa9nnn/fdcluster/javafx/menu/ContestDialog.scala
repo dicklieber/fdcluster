@@ -29,7 +29,7 @@ import org.wa9nnn.util.StructuredLogging
 import scalafx.Includes._
 import scalafx.beans.property.{ObjectProperty, StringProperty}
 import scalafx.collections.ObservableBuffer
-import scalafx.geometry.Pos
+import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.control.ButtonBar.ButtonData
 import scalafx.scene.control._
 import scalafx.scene.layout.VBox
@@ -42,7 +42,8 @@ import javax.inject.Inject
  *
  */
 class ContestDialog @Inject()(contestProperty: ContestProperty,
-                              contestRules: AllContestRules) extends Dialog[Contest] with StructuredLogging {
+                              contestRules: AllContestRules,
+                              nodeAddress: NodeAddress) extends Dialog[Contest] with StructuredLogging {
   val dp: DialogPane = dialogPane()
 
   private val saveButton = new ButtonType("Save", ButtonData.OKDone)
@@ -52,12 +53,12 @@ class ContestDialog @Inject()(contestProperty: ContestProperty,
   private val callSignProperty: StringProperty = gridOfControls.addText("CallSign",
     tooltip = Some("""CallSign of the club or individual entrant."""),
     forceCaps = true)
-  callSignProperty <==> contestProperty.callSignProperty
+  callSignProperty.value = contestProperty.callSign
 
   private val contestCB: ObjectProperty[String] = gridOfControls.addCombo[String](
     labelText = "Contest",
     choices = ObservableBuffer(contestRules.contestNames),
-    defValue = Some(contestProperty.event)
+    defValue = Some(contestProperty.contestName)
   )
 
 
@@ -76,10 +77,10 @@ class ContestDialog @Inject()(contestProperty: ContestProperty,
   contestCB.onChange { (_, _, contestName: String) =>
     setup(contestName)
   }
-  setup(contestProperty.event)
+  setup(contestProperty.contestName)
 
   private def setup(contestName: String): Unit = {
-    contestProperty.eventProperty.value = contestName
+    //    contestProperty.contestNameProperty.value = contestName
     val rules = contestRules.byContestName(contestName)
     categoryCB.items = rules.categories.categories
     categoryCB.value = {
@@ -112,7 +113,7 @@ class ContestDialog @Inject()(contestProperty: ContestProperty,
 
 
   title = "Station Settings"
-  headerText = "Contest settings for this station"
+  headerText = s"This node: ${nodeAddress.display}"
 
   // Build the result
   resultConverter = {
@@ -120,8 +121,15 @@ class ContestDialog @Inject()(contestProperty: ContestProperty,
       if (button == saveButton) {
         stationDialogLogic.exchange.foreach {
           exchange =>
-            contestProperty.ourExchangeProperty.value = exchange
-            contestProperty.save()
+            //            contestProperty.ourExchangeProperty.value = exchange
+            //            contestProperty.save()
+
+            val newContest = Contest(callSign = callSignProperty.value,
+              ourExchange = exchange,
+              contestName = contestCB.value,
+              nodeAddress = nodeAddress)
+
+            contestProperty.update(newContest)
         }
       }
       null
@@ -142,8 +150,16 @@ class ContestDialog @Inject()(contestProperty: ContestProperty,
     exchangeText.text,
     dp.lookupButton(saveButton).disableProperty()
   )
+  //todo don't bind with acutal properties until save
+  gridOfControls.add("Exchange", exchangePane)
+  private val contest: Contest = contestProperty.contest
 
-  gridOfControls.add(exchangePane, 1, gridOfControls.nextRow, 1, 1)
+  import com.wa9nnn.util.tableui.Cell
+
+  val lastGoc = new GridOfControls(5->5,  Insets(5.0))
+  lastGoc.add("From", contest.nodeAddress.display)
+  lastGoc.add("At", contest.stamp)
+  gridOfControls.add("Last Changed", lastGoc)
   dialogPane().setContent(gridOfControls)
 }
 

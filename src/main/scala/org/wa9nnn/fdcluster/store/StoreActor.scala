@@ -24,6 +24,7 @@ import akka.actor.{Actor, ActorRef}
 import akka.pattern.pipe
 import akka.util.Timeout
 import com.google.inject.Injector
+import com.google.inject.name.Names
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
@@ -35,7 +36,7 @@ import org.wa9nnn.fdcluster.javafx.menu.ImportRequest
 import org.wa9nnn.fdcluster.javafx.sync._
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
-import org.wa9nnn.fdcluster.store.network.{FdHour, MultcastSenderActor}
+import org.wa9nnn.fdcluster.store.network.FdHour
 import org.wa9nnn.fdcluster.tools.{GenerateRandomQsos, RandomQsoGenerator}
 import org.wa9nnn.util.ImportTask
 
@@ -50,15 +51,12 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
   val config: Config = injector.instance[Config]
   val journalLoader: JournalLoader = injector.instance[JournalLoader]
   val randomQso: RandomQsoGenerator = injector.instance[RandomQsoGenerator]
-  println(randomQso)
-  val store: StoreLogic = injector.instance[StoreLogic]
-  println(store)
+  val multicastSender: ActorRef = injector.instance[ActorRef]( Names.named("multicastSender"))
 
-  //  private val ourNode = nodeInfo.nodeAddress
+  val store: StoreLogic = injector.instance[StoreLogic]
 
   logger.info(s"StoreActor: ${self.path}")
 
-  private val senderActor: ActorRef = context.actorOf(MultcastSenderActor.props(config), "MulticastSender")
 
   context.system.scheduler.scheduleAtFixedRate(2 seconds, 17 seconds, self, StatusPing)
 
@@ -73,7 +71,7 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
       addResult match {
         case Added(addedQsoRecord) ⇒
           val record = DistributedQsoRecord(addedQsoRecord, nodeAddress, store.size)
-          senderActor ! JsonContainer(record)
+          multicastSender ! JsonContainer(record)
         case unexpected ⇒
           println(s"Received: $unexpected")
       }
@@ -125,10 +123,7 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
       sender ! store.get(fdHour)
 
     case StatusPing ⇒
-      val nodeStatus = store.nodeStatus
-
-      senderActor ! JsonContainer(nodeStatus)
-
+     store.sendNodeStatus()
 
     /**
      * Finish up sync with data from another node

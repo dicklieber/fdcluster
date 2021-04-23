@@ -26,7 +26,7 @@ class SummaryEngineSpec extends Specification with Mockito{
       )
       val contestProperty = mock[ContestProperty]
       val eventProperty: StringProperty = new StringProperty("FieldDay")
-      contestProperty.eventProperty returns eventProperty
+      contestProperty.contestNameProperty returns eventProperty
       val allContestRules = new AllContestRules(config, contestProperty)
       val allQsos: ObservableBuffer[QsoRecord] = ObservableBuffer(
         QsoRecord(Qso("KD9BYW", BandMode(), Exchange()), QsoMetadata()),

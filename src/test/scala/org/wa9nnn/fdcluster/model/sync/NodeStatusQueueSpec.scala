@@ -1,9 +1,10 @@
 package org.wa9nnn.fdcluster.model.sync
 
 import org.specs2.mutable.Specification
+import org.wa9nnn.fdcluster.contest.Contest
 import org.wa9nnn.fdcluster.model.{CurrentStation, NodeAddress, QsoMetadata}
 
-import java.time.{Instant, LocalDateTime}
+import java.time.Instant
 
 class NodeStatusQueueSpec extends Specification {
   val address0 = new NodeAddress()
@@ -13,7 +14,8 @@ class NodeStatusQueueSpec extends Specification {
     qsoHourDigests = List.empty,
     bandModeOperator = CurrentStation(),
     qsoMetadata = QsoMetadata(),
-    qsoRate = 1.0
+    qsoRate = 1.0,
+    contest = Contest()
   )
 
   "NodeStatusQueue" >> {

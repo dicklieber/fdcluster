@@ -19,6 +19,7 @@
 package org.wa9nnn.fdcluster.javafx.cluster
 
 import com.typesafe.scalalogging.LazyLogging
+import com.wa9nnn.util.tableui.Cell
 import org.scalafx.extras.onFX
 import org.wa9nnn.fdcluster.model.NodeAddress
 import org.wa9nnn.fdcluster.model.sync.QsoHourDigest
@@ -56,8 +57,9 @@ class ClusterTable extends LazyLogging {
     def buildRow(rowHeader: String, callback: NodeStateContainer ⇒ Any): Row = {
       MetadataRow(StyledAny(rowHeader), orderedNodes.map(nodeAddress ⇒ {
         val container = byAddress(nodeAddress)
-        val value = callback(container)
-        val fv: Any = if (value.toString == "usOrOther") {
+        val cell = Cell(callback(container))
+        val value = cell.value
+        val fv: Any = if (value == "usOrOther") {
           if (container.isUs) {
             "Us"
           } else {
@@ -93,7 +95,6 @@ class ClusterTable extends LazyLogging {
 
     val rows: List[Row] = List(
       buildRow("Location", _ ⇒ "usOrOther"),
-      buildRow("Started", _.firstContact),
       buildRow("Last", _.nodeStatus.stamp),
       buildRow("QSOs", _.nodeStatus.qsoCount),
       buildRow("QSO/Minute", _.nodeStatus.qsoRate),

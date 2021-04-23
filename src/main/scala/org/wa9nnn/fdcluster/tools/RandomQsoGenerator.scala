@@ -27,7 +27,7 @@ import javax.inject.Inject
 
 class RandomQsoGenerator @Inject()(allContestRules: AllContestRules, contestProperty: ContestProperty, val runningTaskInfoConsumer: RunningTaskInfoConsumer = new NullRunningTaskConsumer()) {
 
- val entryCategories =  allContestRules.byContestName(contestProperty.event).categories
+ val entryCategories =  allContestRules.byContestName(contestProperty.contestName).categories
 
   def apply(gr: GenerateRandomQsos): (Qso => Unit) => Unit = {
     new Task(runningTaskInfoConsumer, entryCategories)(gr)

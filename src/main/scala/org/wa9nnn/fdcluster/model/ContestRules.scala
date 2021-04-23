@@ -35,10 +35,10 @@ class AllContestRules @Inject()(config: Config, contestProperty: ContestProperty
   val contestNames: Seq[String] = config.getStringList("contest.contestNames").asScala.toList
   val byContestName: Map[String, ContestRules] = contestNames.map(ContestRules(_, config)).map(cr => cr.contestName -> cr).toMap
 
-  private val event: StringProperty = contestProperty.eventProperty
+  private val event: StringProperty = contestProperty.contestNameProperty
   val contestRulesProperty: ObjectProperty[ContestRules] = ObjectProperty[ContestRules](byContestName(event.value))
 
-  contestProperty.eventProperty.onChange { (_, _, nv) =>
+  contestProperty.contestNameProperty.onChange { (_, _, nv) =>
     contestRulesProperty.value = byContestName(nv)
   }
 

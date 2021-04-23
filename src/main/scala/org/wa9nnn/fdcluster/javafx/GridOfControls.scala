@@ -25,7 +25,7 @@ import scalafx.beans.property.{IntegerProperty, ObjectProperty, StringProperty}
 import scalafx.collections.ObservableBuffer
 import scalafx.geometry.Insets
 import scalafx.scene.control._
-import scalafx.scene.layout.GridPane
+import scalafx.scene.layout.{GridPane, Pane}
 import scalafx.util.StringConverter
 
 import java.text.NumberFormat
@@ -36,13 +36,14 @@ import scala.util.matching.Regex
 /**
  * Help to build a GridPane of one column of labeled controls.
  */
-class GridOfControls extends GridPane {
-  hgap = 10
-  vgap = 10
-  padding = Insets(20, 100, 10, 10)
+class GridOfControls(gaps:(Int,Int) = 10 -> 10, insets:Insets = Insets(20, 100, 10, 10)) extends GridPane {
+  hgap = gaps._1
+  vgap = gaps._2
+  padding = insets
   implicit val row: AtomicInteger = new AtomicInteger()
 
   private def label(label: String): Int = {
+    style = "-fx-alignment:top-left"
     val r = row.getAndIncrement()
     add(new Label(label + ":"), 0, r)
     r
@@ -134,5 +135,10 @@ class GridOfControls extends GridPane {
     val row = label(labelText)
     val cell = com.wa9nnn.util.tableui.Cell(value)
     add(Label(cell.value), 1, row)
+  }
+
+  def add(labelText:String, pane:Pane):Unit = {
+    val row = label(labelText)
+    add(pane, 1, row)
   }
 }

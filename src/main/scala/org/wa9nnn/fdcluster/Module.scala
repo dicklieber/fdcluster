@@ -1,6 +1,6 @@
 
 /*
- * Copyright (C) 2021  Dick Lieber, WA9NNN
+ * Copyright © 2021 Dick Lieber, WA9NNN
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 package org.wa9nnn.fdcluster
@@ -30,7 +29,7 @@ import org.wa9nnn.fdcluster.metrics.MetricsReporter
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.model.sync.{ClusterActor, NodeStatusQueueActor}
 import org.wa9nnn.fdcluster.store._
-import org.wa9nnn.fdcluster.store.network.MulticastListener
+import org.wa9nnn.fdcluster.store.network.{MultcastSenderActor, MulticastListener}
 import org.wa9nnn.fdcluster.store.network.cluster.ClusterState
 import org.wa9nnn.fdcluster.tools.RandomQsoGenerator
 import org.wa9nnn.util._
@@ -102,11 +101,22 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
                         nodeAddress: NodeAddress,
                         @Named("store") storeActor: ActorRef,
                         @Named("nodeStatusQueue") nodestatusQueue: ActorRef,
-                        clusterState: ClusterState
+                        clusterState: ClusterState,
+                        contestProperty: ContestProperty
                        ): ActorRef = {
     actorSystem.actorOf(Props(
-      new ClusterActor(nodeAddress, storeActor, nodestatusQueue, clusterState)),
+      new ClusterActor(nodeAddress, storeActor, nodestatusQueue, clusterState, contestProperty)),
       "cluster")
+  }
+  @Provides
+  @Singleton
+  @Named("multicastSender")
+  def clusterStoreActor(actorSystem: ActorSystem,
+                        config: Config
+                       ): ActorRef = {
+    actorSystem.actorOf(Props(
+      new MultcastSenderActor(config)),
+      "multicastSender")
   }
 
   @Provides
