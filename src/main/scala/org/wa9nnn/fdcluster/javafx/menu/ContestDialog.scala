@@ -52,8 +52,8 @@ class ContestDialog @Inject()(contestProperty: ContestProperty,
   private val gridOfControls = new GridOfControls
   private val callSignProperty: StringProperty = gridOfControls.addText("CallSign",
     tooltip = Some("""CallSign of the club or individual entrant."""),
+    defValue = contestProperty.callSign,
     forceCaps = true)
-  callSignProperty.value = contestProperty.callSign
 
   private val contestCB: ObjectProperty[String] = gridOfControls.addCombo[String](
     labelText = "Contest",
