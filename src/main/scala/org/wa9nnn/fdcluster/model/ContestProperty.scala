@@ -139,8 +139,9 @@ class ContestProperty @Inject()(persistence: Persistence, nodeAddress: NodeAddre
       logger.info(s"New Contest from ${contest.nodeAddress.display}")
       save(contest)
     }
-
-
   }
+
+  override def update(v: Contest): Unit =
+    throw new IllegalStateException("Use save or saveIfNewer!")
 }
 

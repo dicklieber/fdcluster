@@ -45,7 +45,7 @@ class RandomQsoGenerator @Inject()(allContestRules: AllContestRules, contestProp
       totalIterations = gr.ntoGen
       var lastStamp = Instant.now().minus(gr.hoursBefore, ChronoUnit.HOURS)
 
-      for (_ <- 0 to gr.ntoGen) {
+      for (_ <- 0 until  gr.ntoGen) {
         f(Qso(callSign.next, bandMode.next, randomExchange.next(), lastStamp))
         addOne()
         lastStamp = lastStamp.plus(gr.between)

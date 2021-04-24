@@ -40,26 +40,33 @@ class ClusterActor(nodeAddress: NodeAddress,
       contestProperty.saveIfNewer(ns.contest)
       (nodeStatusQueue ? NextNodeStatus).mapTo[Option[NodeStatus]].map {
         {
+
           _.map { ns =>
             if (ns.nodeAddress == nodeAddress) {
               ourNodeStatus = ns
             } else {
-              ns.qsoHourDigests.foreach { otherQsoHourDigest: QsoHourDigest =>
+              val messages = ns.qsoHourDigests.flatMap { otherQsoHourDigest: QsoHourDigest =>
                 val fdHour = otherQsoHourDigest.fdHour
                 ourNodeStatus.digestForHour(fdHour) match {
                   case Some(ourQsoHourDigest: QsoHourDigest) =>
                     if (ourQsoHourDigest.digest == otherQsoHourDigest.digest) {
                       // we match them, nothing to do
                       whenTraceEnabled(() => s"$fdHour matches")
+                      Seq.empty
 
                     } else {
                       whenTraceEnabled(() => s"$fdHour unmatched digest starting uuid process to $ns.")
-                      httpClient ! SendContainer(RequestUuidsForHour(fdHour, ns.nodeAddress, nodeAddress, getClass), ns.nodeAddress)
+                       Seq(SendContainer(RequestUuidsForHour(fdHour, ns.nodeAddress, nodeAddress, getClass), ns.nodeAddress))
                     }
                   case None => // we dont have this hour
                     //todo request all qsos
-                    httpClient ! SendContainer(RequestQsosForHour(fdHour, ns.nodeAddress, nodeAddress, getClass), ns.nodeAddress)
+                    Seq(SendContainer(RequestQsosForHour(fdHour, ns.nodeAddress, nodeAddress, getClass), ns.nodeAddress))
                 }
+              }
+              if(messages.nonEmpty)
+              {
+                logger.debug(s"Need ${messages.length} FdHours, will process up to 5 of them.")
+                messages.take(5).foreach(httpClient ! _)
               }
             }
           }

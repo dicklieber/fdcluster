@@ -121,19 +121,17 @@ class ContestDialog @Inject()(contestProperty: ContestProperty,
       if (button == saveButton) {
         stationDialogLogic.exchange.foreach {
           exchange =>
-            //            contestProperty.ourExchangeProperty.value = exchange
-            //            contestProperty.save()
-
             val newContest = Contest(callSign = callSignProperty.value,
               ourExchange = exchange,
               contestName = contestCB.value,
               nodeAddress = nodeAddress)
 
-            contestProperty.update(newContest)
+            contestProperty.save(newContest)
         }
       }
       null
   }
+
 
   dp.getButtonTypes.addAll(saveButton, cancelButton)
   dp.getStylesheets.addAll(
