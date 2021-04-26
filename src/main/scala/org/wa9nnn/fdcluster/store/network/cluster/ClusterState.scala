@@ -19,21 +19,17 @@
 
 package org.wa9nnn.fdcluster.store.network.cluster
 
-import akka.http.scaladsl.model.Uri
+import com.github.andyglow.config._
+import com.typesafe.config.Config
 import nl.grons.metrics4.scala.DefaultInstrumented
 import org.wa9nnn.fdcluster.model.NodeAddress
 import org.wa9nnn.fdcluster.model.sync.NodeStatus
 import org.wa9nnn.fdcluster.store.network.FdHour
 import org.wa9nnn.util.StructuredLogging
-import com.github.andyglow.config._
-import com.typesafe.config.Config
 
-import java.net.URL
-import java.time.{Duration, Instant, LocalDateTime}
+import java.time.{Duration, Instant}
 import javax.inject.{Inject, Singleton}
 import scala.collection.concurrent.TrieMap
-import scala.collection.immutable
-import scala.concurrent.duration.FiniteDuration
 
 /**
  * Mutable state of all nodes in the cluster, including this one.
@@ -73,7 +69,6 @@ class ClusterState @Inject()(ourNodeAddress: NodeAddress, config: Config) extend
       })
   }
 
-
   def dump: Iterable[NodeStateContainer] = {
     nodes.values
   }
@@ -89,48 +84,6 @@ class ClusterState @Inject()(ourNodeAddress: NodeAddress, config: Config) extend
     setBuilder.result().toList.sorted
   }
 
-  def hoursToSync(): List[FdHour] = {
-    def getForHour(fdHour: FdHour): (Option[NodeFdHourDigest], Seq[NodeFdHourDigest]) = {
-      val allForHour: List[NodeFdHourDigest] =
-        (for {
-          nsc <- nodes.values
-          maybe <- nsc.forHour(fdHour)
-        } yield {
-          maybe
-        }).toList
-      val ours = allForHour.find(_.nodeAddress == ourNodeAddress)
-      val others: immutable.Seq[NodeFdHourDigest] = allForHour.filter(_.nodeAddress != ourNodeAddress)
-      ours → others
-    }
-
-
-    val todoStuff = knownHoursInCluster.flatMap { fdHour ⇒
-
-      //      val nodesToConsider: List[NodeFdHourDigest] = getForHour(fdHour)
-      val (ours, others) = getForHour(fdHour)
-      logger.trace(s"ours: $ours  others: $others")
-      //todo  nodes with different digest that ours
-      //todo  of those pick the one with the most
-      List.empty
-    }
-    List.empty
-  }
-
-  def otherNodeWithMostThanUs(): Option[NodeStateContainer] = {
-    val us: Option[NodeStatus] = nodes.get(ourNodeAddress).map(_.nodeStatus)
-    us match {
-      case Some(ourStatus: NodeStatus) ⇒
-        val ourDigest = ourStatus.digestDisplay
-        val ourCount = ourStatus.qsoCount
-        nodes.values
-          .filter(nsc ⇒ nsc.nodeAddress != ourNodeAddress && (nsc.qsoCount > ourCount | nsc.nodeStatus.digest != ourDigest))
-          .toList
-          .sortBy(_.qsoCount)
-          .lastOption
-      case None ⇒
-        None
-    }
-  }
 }
 
 

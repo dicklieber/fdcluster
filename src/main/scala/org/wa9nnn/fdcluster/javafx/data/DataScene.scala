@@ -23,6 +23,7 @@ import akka.util.Timeout
 import com.google.inject.Inject
 import com.google.inject.name.Named
 import org.wa9nnn.fdcluster.FileManager
+import org.wa9nnn.fdcluster.contest.JournalManager
 import org.wa9nnn.fdcluster.javafx.entry.Sections
 import org.wa9nnn.fdcluster.model.QsoRecord
 import org.wa9nnn.util.TimeHelpers
@@ -45,6 +46,7 @@ import java.util.concurrent.TimeUnit
  * Create JavaFX UI to view QSOs.
  */
 class DataScene @Inject()(fileManager: FileManager,
+                          journalManager: JournalManager,
                           @Named("allQsos") allQsoBuffer: ObservableBuffer[QsoRecord]) {
 
   implicit val timeout: Timeout = Timeout(5, TimeUnit.SECONDS)
@@ -165,7 +167,7 @@ class DataScene @Inject()(fileManager: FileManager,
   splitPane.setDividerPosition(0, 50.0)
   val hbox: HBox = new HBox(
     new Label("QSO Journal file"),
-    new Label(fileManager.journalFile.toString),
+    new Label(journalManager.journalPath.toString),
     new Label("  QSO Count: "),
     sizeLabel
   )

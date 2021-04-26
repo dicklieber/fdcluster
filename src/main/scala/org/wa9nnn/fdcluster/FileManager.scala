@@ -20,6 +20,7 @@
 package org.wa9nnn.fdcluster
 
 import com.github.racc.tscg.TypesafeConfig
+import org.wa9nnn.fdcluster.contest.JournalFileProperty
 import org.wa9nnn.fdcluster.model.{ContestProperty, ExportFile}
 
 import java.nio.file.{Path, Paths}
@@ -31,15 +32,14 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class FileManager @Inject()(@TypesafeConfig("directory") dir: String) {
 
-  val directory = Paths.get(dir).toAbsolutePath
+  val directory: Path = Paths.get(dir).toAbsolutePath
 
   /**
    *
    * @return where to keep settings
    */
   def varDirectory: Path = directory.resolve("var")
-
-  def journalFile: Path = directory.resolve("journal.json")
+  def journalDir:Path = directory.resolve("journal")
 
   /**
    *

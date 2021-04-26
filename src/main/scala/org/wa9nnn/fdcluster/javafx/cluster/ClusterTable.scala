@@ -37,7 +37,7 @@ class ClusterTable extends LazyLogging {
   val tableView = new TableView[Row](data)
 
   def refresh(nodes: Iterable[NodeStateContainer]): Unit = {
-    implicit val byAddress = new TrieMap[NodeAddress, NodeStateContainer]()
+    implicit val byAddress: mutable.Map[NodeAddress, NodeStateContainer] = new TrieMap[NodeAddress, NodeStateContainer]()
     val hours: mutable.Set[FdHour] = mutable.Set.empty
     nodes.foreach { nodeStateContainer ⇒
       byAddress.put(nodeStateContainer.nodeAddress, nodeStateContainer)
@@ -98,6 +98,7 @@ class ClusterTable extends LazyLogging {
       buildRow("Last", _.nodeStatus.stamp),
       buildRow("QSOs", _.nodeStatus.qsoCount),
       buildRow("QSO/Minute", _.nodeStatus.qsoRate),
+      buildRow("Journal", _.nodeStatus.journal.map(_.journalFileName).getOrElse("--")),
       buildRow("Digest", _.nodeStatus.digestDisplay),
       buildRow("Band", _.nodeStatus.bandModeOperator.bandName),
       buildRow("Mode", _.nodeStatus.bandModeOperator.modeName),
@@ -142,7 +143,7 @@ class ClusterTable extends LazyLogging {
       sortable = false
     }
 
-    onFX{
+    onFX {
       tableView.columns.clear()
       tableView.columns += rowHeaderCol
       buildColumns.foreach(tc ⇒

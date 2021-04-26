@@ -57,14 +57,12 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
 
   logger.info(s"StoreActor: ${self.path}")
 
-
-  context.system.scheduler.scheduleAtFixedRate(2 seconds, 17 seconds, self, StatusPing)
+  context.system.scheduler.scheduleAtFixedRate(2 seconds, 7 seconds, self, StatusPing)
 
   journalLoader().pipeTo(self)
 
   override def receive: Receive = {
     case BufferReady =>
-      //todo load local indices
       store.loadLocalIndices()
     case potentialQso: Qso ⇒
       val addResult: AddResult = store.add(potentialQso)
@@ -73,7 +71,7 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
           val record = DistributedQsoRecord(addedQsoRecord, nodeAddress, store.size)
           multicastSender ! JsonContainer(record)
         case unexpected ⇒
-          println(s"Received: $unexpected")
+          logger.error(s"Received: $unexpected")
       }
       sender ! addResult // send back to caller with all info allows UI to show what was recorded or dup
 

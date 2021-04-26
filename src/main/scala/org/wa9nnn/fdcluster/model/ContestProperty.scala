@@ -19,7 +19,6 @@
 
 package org.wa9nnn.fdcluster.model
 
-import _root_.scalafx.beans.binding.{Bindings, ObjectBinding}
 import _root_.scalafx.scene.image.Image
 import com.wa9nnn.util.macos.DockIcon
 import org.wa9nnn.fdcluster.contest.Contest
@@ -43,9 +42,7 @@ class ContestProperty @Inject()(persistence: Persistence, nodeAddress: NodeAddre
 
   def contest: Contest = value
 
-  val callSignProperty: StringProperty = StringProperty(initContest.callSign)
-
-  def callSign: String = callSignProperty.value
+  def callSign: String = value.callSign
 
   val contestNameProperty: StringProperty = StringProperty(initContest.contestName)
 
@@ -59,12 +56,10 @@ class ContestProperty @Inject()(persistence: Persistence, nodeAddress: NodeAddre
 
   def fileBase: String = contestName
 
-
-
-  callSignProperty.onChange { (_, old, nv) =>
-    println(s"callSignProperty changed from : $old to: $nv ")
-  }
   onChange { (_, old, contest) =>
+    contestNameProperty.value = contest.contestName
+    ourExchangeProperty.value = contest.ourExchange
+
     setUpImage(contest.contestName)
     whenTraceEnabled(() => s"contestProperty changed from : $old to: $contest ")
   }
@@ -74,22 +69,6 @@ class ContestProperty @Inject()(persistence: Persistence, nodeAddress: NodeAddre
   }
 
 
-  /**
-   * Responds to a change on any of the property objects
-   */
-  val b: ObjectBinding[Contest] = Bindings.createObjectBinding(
-    () => {
-      val newContest = Contest(
-        callSign = callSignProperty.value,
-        ourExchange = ourExchangeProperty.value,
-        contestName = contestNameProperty.value,
-        nodeAddress = nodeAddress
-      )
-      newContest
-    }
-    ,
-    callSignProperty, contestNameProperty, ourExchangeProperty
-  )
 
   def setUpImage(eventName: String): Unit = {
     val imagePath: String = s"/images/$eventName.png"
@@ -116,11 +95,6 @@ class ContestProperty @Inject()(persistence: Persistence, nodeAddress: NodeAddre
         logger.debug("Icon switch", et)
 
     }
-  }
-
-  b.onChange {
-    (_, _, nv: Contest) =>
-      value = nv
   }
 
   def save(contest: Contest): Unit = {

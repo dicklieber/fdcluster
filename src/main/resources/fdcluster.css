@@ -19,6 +19,7 @@
 .exchange {
     -fx-background-insets: 3;
 }
+
 .exchangeMnemonics {
     -fx-background-insets: 3;
     -fx-font-size: smaller;
@@ -59,7 +60,6 @@
 }
 
 
-
 .statCell {
 
 }
@@ -80,12 +80,30 @@
     -fx-font-family: Monospaced;
 }
 
-.taskAndStatus{
+.taskAndStatus {
     -fx-pref-width: 400;
 }
-.contestLogo{
+
+
+.bordered-titled-title {
+    -fx-border-style: dashed;
+    -fx-background-color: #00ffd9
+}
+
+.bordered-titled-border {
+    -fx-border-style: dashed;
+    -fx-background-color: #0800ff
+}
+
+.bordered-titled-content {
+    -fx-border-style: dashed;
+    -fx-background-color: rgba(38, 255, 0, 0.15)
+}
+
+.contestLogo {
     -fx-text-alignment: left
 }
+
 .happyQso {
     -fx-text-fill: green;
 }
@@ -185,13 +203,20 @@
     -fx-text-fill: grey
 }
 
+.helpPane {
+    -fx-label-padding: 5;
+    -fx-background-color: lightGrey;
+    -fx-border-style: round;
+    -fx-border-radius: 15
+}
+
 .exchangeDisplay {
     -fx-alignment: center;
 }
 
 .alignedLine {
-     -fx-alignment: center
- }
+    -fx-alignment: center
+}
 
 .exchangeBlock {
     -fx-background-color: rgba(17, 255, 0, 0.22);

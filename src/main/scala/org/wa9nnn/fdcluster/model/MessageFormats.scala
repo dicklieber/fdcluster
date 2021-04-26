@@ -20,7 +20,7 @@
 package org.wa9nnn.fdcluster.model
 
 import org.wa9nnn.fdcluster.cabrillo.{CabrilloExportRequest, CabrilloValue, CabrilloValues}
-import org.wa9nnn.fdcluster.contest.Contest
+import org.wa9nnn.fdcluster.contest.{Contest, Journal, JournalContainer, JournalHeader}
 import org.wa9nnn.fdcluster.javafx.entry.section.Section
 import org.wa9nnn.fdcluster.javafx.menu.{BuildLoadRequest, ImportRequest}
 import org.wa9nnn.fdcluster.javafx.sync._
@@ -29,14 +29,11 @@ import org.wa9nnn.fdcluster.rig.{RigModel, RigSettings, SerialPortSettings}
 import org.wa9nnn.fdcluster.store.JsonContainer
 import org.wa9nnn.fdcluster.store.network.FdHour
 import play.api.libs.json.{Format, Json}
-import org.wa9nnn.fdcluster.model.BandMode.bmFormat
-import org.wa9nnn.fdcluster.model.Exchange.exFormat
 
 import java.time.LocalDateTime
 import java.time.format.{DateTimeFormatter, FormatStyle}
 import java.util.UUID
 import scala.language.implicitConversions
-
 /**
  * Creates [[play.api.libs.json.Format]] needed by Play JSon to parse and render JSON for case classes.
  * Usually includes with {{import org.wa9nnn.fdcluster.model.MessageFormats._}}
@@ -75,9 +72,11 @@ object MessageFormats {
   implicit val qsosFromNodeFormat: Format[QsosFromNode] = Json.format[QsosFromNode]
   implicit val qsoHourDigestFormat: Format[QsoHourDigest] = Json.format[QsoHourDigest]
   implicit val qsoPeriodFormat: Format[QsoHour] = Json.format[QsoHour]
+  implicit val jFormat: Format[Journal] = Json.format[Journal]
   implicit val nodeStatsFormat: Format[NodeStatus] = Json.format[NodeStatus]
   implicit val jsonContainerFormat: Format[JsonContainer] = Json.format[JsonContainer]
-
+  implicit val journalContainerFormat: Format[JournalContainer] = Json.format[JournalContainer]
+  implicit val jhFormat: Format[JournalHeader] = Json.format[JournalHeader]
   implicit val rigPortSettingsFormat: Format[SerialPortSettings] = Json.format[SerialPortSettings]
   implicit val rigModelFormat: Format[RigModel] = Json.format[RigModel]
   implicit val rigSettingsFormat: Format[RigSettings] = Json.format[RigSettings]

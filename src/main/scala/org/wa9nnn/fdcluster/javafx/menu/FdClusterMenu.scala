@@ -24,6 +24,7 @@ import com.google.inject.Injector
 import com.google.inject.name.Named
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import org.wa9nnn.fdcluster.cabrillo.{CabrilloDialog, CabrilloExportRequest}
+import org.wa9nnn.fdcluster.contest.ContestDialog
 import org.wa9nnn.fdcluster.contest.fieldday.{SummaryEngine, WinterFieldDaySettings}
 import org.wa9nnn.fdcluster.dupsheet.GenerateDupSheet
 import org.wa9nnn.fdcluster.javafx.debug.DebugRemoveDialog
@@ -238,7 +239,7 @@ class FdClusterMenu @Inject()(
           metricsMenuItem,
         )
       },
-      new Menu("_Edit") {
+      new Menu("Contest") {
         mnemonicParsing = true
         items = List(
           currentStationMenuItem,

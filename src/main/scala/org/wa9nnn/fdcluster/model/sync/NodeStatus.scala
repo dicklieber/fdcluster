@@ -20,7 +20,7 @@
 package org.wa9nnn.fdcluster.model.sync
 
 import org.wa9nnn.fdcluster.BuildInfo
-import org.wa9nnn.fdcluster.contest.Contest
+import org.wa9nnn.fdcluster.contest.{Contest, Journal}
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.{CurrentStation, NodeAddress, QsoMetadata}
 import org.wa9nnn.fdcluster.store.network.FdHour
@@ -49,6 +49,7 @@ case class NodeStatus(nodeAddress: NodeAddress,
                       bandModeOperator: CurrentStation,
                       qsoRate: Double,
                       contest:Contest,
+                      journal: Option[Journal] = None,
                       stamp: Instant = Instant.now(),
                       v: String = BuildInfo.canonicalVersion) extends ClusterMessage {
   def digestDisplay: String = DigestFormat(digest)
@@ -61,5 +62,4 @@ case class NodeStatus(nodeAddress: NodeAddress,
 
 }
 
-case class DigestAndCount(digest: Digest, count: Int)
 

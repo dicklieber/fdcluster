@@ -159,7 +159,7 @@ class EntryScene @Inject()(
   def save(): Unit = {
     import org.wa9nnn.fdcluster.model.MessageFormats._
     val potentialQso: Qso = readQso()
-    if (potentialQso.callSign == contestProperty.callSignProperty.value) {
+    if (potentialQso.callSign == contestProperty.callSign) {
       actionResult.showSad(s"Can't work our own station: \n${potentialQso.callSign}!")
     }
     else {

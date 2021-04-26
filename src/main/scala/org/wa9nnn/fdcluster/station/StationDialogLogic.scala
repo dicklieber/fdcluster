@@ -19,6 +19,7 @@
 
 package org.wa9nnn.fdcluster.station
 
+import org.wa9nnn.fdcluster.contest.ContestDialog
 import org.wa9nnn.fdcluster.javafx.CallsignValidator
 import org.wa9nnn.fdcluster.javafx.entry.section.Section
 import org.wa9nnn.fdcluster.model.{EntryCategory, Exchange, FdClass}
@@ -29,7 +30,7 @@ import scalafx.scene.control.SpinnerValueFactory
 import scala.util.{Failure, Try}
 
 /**
- * Handles interaction between [[org.wa9nnn.fdcluster.javafx.menu.ContestDialog]] controls
+ * Handles interaction between [[ContestDialog]] controls
  *
  * Given values for: callSign, transmitters, category & sectionCode
  * Set exchangeLabel to Exchange

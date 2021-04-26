@@ -35,12 +35,10 @@ class ClusterActor(nodeAddress: NodeAddress,
 
     case ns: NodeStatus ⇒
       logger.trace(s"Got NodeStatus from ${ns.nodeAddress}")
-      nodeStatusQueue ! ns
-      clusterState.update(ns)
+      nodeStatusQueue ! clusterState.update(ns)
       contestProperty.saveIfNewer(ns.contest)
       (nodeStatusQueue ? NextNodeStatus).mapTo[Option[NodeStatus]].map {
         {
-
           _.map { ns =>
             if (ns.nodeAddress == nodeAddress) {
               ourNodeStatus = ns

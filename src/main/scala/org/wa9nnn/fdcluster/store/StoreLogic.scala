@@ -18,19 +18,18 @@
 package org.wa9nnn.fdcluster.store
 
 import akka.actor.ActorRef
-import com.google.inject.name.{Named, Names}
+import com.google.inject.name.Named
 import nl.grons.metrics4.scala.DefaultInstrumented
+import org.wa9nnn.fdcluster.contest.{Journal, JournalManager, JournalProperty}
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHour}
+import org.wa9nnn.fdcluster.store
 import org.wa9nnn.fdcluster.store.network.FdHour
-import org.wa9nnn.fdcluster.{FileManager, store}
-import org.wa9nnn.util.StructuredLogging
-import play.api.libs.json.{JsValue, Json}
+import org.wa9nnn.util.{StructuredLogging, UuidUtil}
 import scalafx.beans.property.ObjectProperty
 import scalafx.collections.ObservableBuffer
 
-import java.nio.file.{Files, Path, StandardOpenOption}
 import java.security.{MessageDigest, SecureRandom}
 import javax.inject.{Inject, Singleton}
 import scala.collection.concurrent.TrieMap
@@ -45,11 +44,13 @@ class StoreLogic @Inject()(na: NodeAddress,
                            @Named("allQsos") allQsos: ObservableBuffer[QsoRecord],
                            @Named("multicastSender") multicastSender: ActorRef,
                            contestProperty: ContestProperty,
-                           fileManager: FileManager
+                           journalManager: JournalManager,
+                           journalProperty: JournalProperty
                           )
   extends StructuredLogging with DefaultInstrumented {
   def sendNodeStatus(): Unit = {
-    multicastSender ! JsonContainer(nodeStatus)
+    val status = nodeStatus
+    multicastSender ! JsonContainer(status)
   }
 
 
@@ -107,8 +108,7 @@ class StoreLogic @Inject()(na: NodeAddress,
       case Some(_) ⇒
         Dup(qsoRecord)
       case None ⇒
-        val jsValue = Json.toJson(qsoRecord)
-        writeJournal(jsValue)
+        journalManager.write(qsoRecord)
         Added(qsoRecord)
     }
   }
@@ -126,9 +126,9 @@ class StoreLogic @Inject()(na: NodeAddress,
     val maybeExisting = byUuid.putIfAbsent(qsoRecord.qso.uuid, qsoRecord)
     if (maybeExisting.isEmpty) {
       allQsos.add(qsoRecord)
-      val callsign = qsoRecord.qso.callSign
-      val qsoRecords: Set[QsoRecord] = byCallsign.getOrElse(callsign, Set.empty) + qsoRecord
-      byCallsign.put(callsign, qsoRecords)
+      val callSign = qsoRecord.qso.callSign
+      val qsoRecords: Set[QsoRecord] = byCallsign.getOrElse(callSign, Set.empty) + qsoRecord
+      byCallsign.put(callSign, qsoRecords)
     }
     maybeExisting
   }
@@ -144,9 +144,9 @@ class StoreLogic @Inject()(na: NodeAddress,
       case Some(_) =>
         logger.error(s"Already have uuid of $qsoRecord")
       case None =>
-        val callsign = qsoRecord.qso.callSign
-        val qsoRecords: Set[QsoRecord] = byCallsign.getOrElse(callsign, Set.empty) + qsoRecord
-        byCallsign.put(callsign, qsoRecords)
+        val callSign = qsoRecord.qso.callSign
+        val qsoRecords: Set[QsoRecord] = byCallsign.getOrElse(callSign, Set.empty) + qsoRecord
+        byCallsign.put(callSign, qsoRecords)
     }
   }
 
@@ -159,18 +159,6 @@ class StoreLogic @Inject()(na: NodeAddress,
       localInsert(qso)
     }
     loadingIndicesFlag = false
-  }
-
-  private val journalFilePath: Path = fileManager.journalFile
-
-  private val outputStream = Files.newOutputStream(journalFilePath, StandardOpenOption.APPEND, StandardOpenOption.CREATE)
-
-  def writeJournal(jsValue: JsValue): Unit = {
-    val lineOfJson = jsValue.toString()
-
-    outputStream.write(lineOfJson.getBytes())
-    outputStream.write("\n".getBytes())
-    outputStream.flush()
   }
 
   /**
@@ -257,8 +245,7 @@ class StoreLogic @Inject()(na: NodeAddress,
 
     val sDigest = qsosDigestTimer.time {
       val messageDigest: MessageDigest = MessageDigest.getInstance("SHA-256")
-      import org.wa9nnn.util.UuidUtil.u2bytes
-      byUuid.values.foreach(qr ⇒ messageDigest.update(qr.qso.uuid))
+      byUuid.values.foreach(qr ⇒ messageDigest.update(UuidUtil(qr.qso.uuid)))
       val bytes = messageDigest.digest()
       val encoder = java.util.Base64.getEncoder
       val bytes1 = encoder.encode(bytes)
@@ -277,7 +264,8 @@ class StoreLogic @Inject()(na: NodeAddress,
     val rate = qsoMeter.fifteenMinuteRate
     val currentStation = CurrentStation()
 
-    sync.NodeStatus(nodeAddress, byUuid.size, sDigest, hourDigests, qsoMetadata.value, currentStation, rate, contestProperty.value)
+    sync.NodeStatus(nodeAddress, byUuid.size, sDigest, hourDigests, qsoMetadata.value, currentStation, rate, contestProperty.value,
+      journal = journalProperty.maybeJournal)
 
   }
 

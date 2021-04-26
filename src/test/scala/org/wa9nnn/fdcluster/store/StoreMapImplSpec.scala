@@ -22,9 +22,10 @@ import org.apache.commons.io.FileUtils._
 import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
 import org.specs2.specification.After
+import org.wa9nnn.fdcluster.FileManager
+import org.wa9nnn.fdcluster.contest.JournalManager
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
-import org.wa9nnn.fdcluster.{FileManager, MockFileManager}
 import org.wa9nnn.util.{CommandLine, PersistenceImpl}
 import scalafx.beans.property.ObjectProperty
 import scalafx.collections.ObservableBuffer
@@ -40,14 +41,15 @@ class StoreMapImplSpec extends Specification with After with Mockito {
   val allQsos = new ObservableBuffer[QsoRecord]()
 
   val commandLine: CommandLine = mock[CommandLine].is("skipJournal") returns false
-
+  private val journalManager: JournalManager = mock[JournalManager]
   private val storeMapImpl = new StoreLogic(na = NodeAddress(),
     ObjectProperty(QsoMetadata()),
     allQsos = ObservableBuffer[QsoRecord](Seq.empty),
-    fileManager = MockFileManager(),
     multicastSender = mock[ActorRef],
-    contestProperty =  new   ContestProperty(persistence, NodeAddress())
+    contestProperty = new ContestProperty(persistence, NodeAddress()),
+    journalManager = journalManager
   )
+
 
   private val worked: CallSign = "K2ORS"
   private val exchange: Exchange = Exchange("2I", "WPA")
