@@ -35,6 +35,9 @@ import _root_.scalafx.scene.Scene
 import _root_.scalafx.scene.control.{Tab, TabPane}
 import _root_.scalafx.scene.image.{Image, ImageView}
 import _root_.scalafx.scene.layout.{BorderPane, GridPane}
+import scalafx.Includes._
+
+import java.awt.Desktop
 
 /**
  * Main for FDLog
@@ -51,6 +54,7 @@ object FdCluster extends JFXApp with StructuredLogging {
   private val commandLine: CommandLine = injector.instance[CommandLine]
   private val contestProperty: ContestProperty = injector.instance[ContestProperty]
   private val contestStatusPane: ContestStatusPane = injector.instance[ContestStatusPane]
+  private val allContestRules: AllContestRules = injector.instance[AllContestRules]
   try {
     injector.instance[Server]
   } catch {
@@ -81,7 +85,6 @@ object FdCluster extends JFXApp with StructuredLogging {
       tabPane.selectionModel.value.select(t)
     )
   }
-
   contestProperty.logotypeImageProperty.onChange { (_, _, newImage: Image) =>
     imageView.image = newImage
   }
@@ -128,9 +131,21 @@ object FdCluster extends JFXApp with StructuredLogging {
 
     }
   }
+  val desktop: Desktop = Desktop.getDesktop
+
+  imageView.onMouseClicked = { e =>
+    allContestRules.byContestName(contestProperty.contestName)
+      .uri
+      .foreach{ uri =>
+      desktop.browse(uri)
+    }
+
+  }
 
   // This can hang, calling com.apple.eawt.Application
-  // if invvocated too early.
+  // if invoked too early.
   contestProperty.setUpImage(contestProperty.contestName)
+
+
 
 }

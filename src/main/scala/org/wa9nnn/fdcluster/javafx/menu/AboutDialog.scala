@@ -93,11 +93,11 @@ class  AboutDialog @Inject()(appInfo: AppInfo, fileManager: FileManager) extends
 
     dialogPane1.setContent(new VBox(goc,
       new HBox(
-        new Label("© 2021  Dick Lieber, WA9NNN") {
+        new Label("© 2020  Dick Lieber, WA9NNN") {
           styleClass += "parenthetic"
 
         },
-        new Hyperlink("Licens+*.00ed under gpl-3.0") {
+        new Hyperlink("Licensed under gpl-3.0") {
           styleClass += "parenthetic"
           onAction = event => {
             desktop.browse(new URI("http://www.gnu.org/licenses/gpl-3.0.html"))

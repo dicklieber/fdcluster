@@ -24,10 +24,13 @@ import com.wa9nnn.util.TimeConverters.instantDisplayUTCLocal
 import org.wa9nnn.fdcluster.contest.FieldDaySchedule
 import org.wa9nnn.util.{DurationFormat, Message}
 import _root_.scalafx.beans.property.{ObjectProperty, StringProperty}
+import scalafx.scene.input.DataFormat.Url
 
+import java.net.{URI, URL}
 import java.time.{Duration, Instant}
 import javax.inject.{Inject, Singleton}
 import scala.jdk.CollectionConverters._
+import scala.util.Try
 
 @Singleton
 class AllContestRules @Inject()(config: Config, contestProperty: ContestProperty) extends ObjectProperty[ContestRules] {
@@ -62,6 +65,8 @@ case class ContestRules(contestName: String, appConfig: Config) {
   def inSchedule(candidate: Instant): Boolean = fieldDaySchedule.inSchedule(candidate)
 
   val categories: EntryCategories = new EntryCategories(contestConfig)
+
+  val uri:Option[URI] = Try(URI.create(contestConfig.getString("contestURL"))).toOption
 
   def scheduleMessage: Message = {
     val now = Instant.now()
