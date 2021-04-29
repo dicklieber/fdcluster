@@ -22,30 +22,39 @@ import org.wa9nnn.fdcluster.javafx.GridOfControls
 import _root_.scalafx.scene.control.{Button, Hyperlink, Label, TitledPane}
 import _root_.scalafx.scene.layout.VBox
 import _root_.scalafx.Includes._
+import scalafx.beans.property.StringProperty
 import scalafx.geometry.Insets
-
+import org.wa9nnn.fdcluster.contest.JournalProperty.notSet
 import java.awt.Desktop
 import javax.inject.Inject
+import com.wa9nnn.util.TimeConverters.local
 
+/**
+ * Allow user to create a new Journal file.
+ * Journals are name based on [[org.wa9nnn.fdcluster.contest.Journal]] object
+ *
+ * @param journalProperty manages the [[Journal]]
+ * @param fileManager     so we can make link to thejournals directory.
+ */
 class JournalDialogPane @Inject()(journalProperty: JournalProperty, fileManager: FileManager) {
   val gridOfControls = new GridOfControls()
   private val desktop = Desktop.getDesktop
 
-  gridOfControls.add("Current", journalProperty.fileName)
+  private val currentJournalFieNameProperty: StringProperty = gridOfControls.add("Current", journalProperty.fileName)
   private val newJournalButton = new Button("New Journal")
   gridOfControls.add(newJournalButton,
     1, gridOfControls.row.getAndIncrement())
 
   val lastGoc = new GridOfControls(5 -> 5, Insets(5.0))
-  journalProperty.maybeJournal.foreach{journal =>
-    lastGoc.add("From", journal.nodeAddress.display)
-    lastGoc.add("At", journal.stamp)
-    gridOfControls.add("Last Changed", lastGoc)
-  }
+  val maybeJournal: Option[Journal] = journalProperty.maybeJournal
+
+  val lastFrom: StringProperty = lastGoc.add("From", maybeJournal.map(_.nodeAddress.display).getOrElse(notSet))
+  val lastAt: StringProperty = lastGoc.add("At", maybeJournal.map(_.stamp).getOrElse(notSet))
+  gridOfControls.add("Last Changed", lastGoc)
 
   gridOfControls.addControl("Journal Files", new Hyperlink(fileManager.journalDir.toString) {
     onAction = event => {
-      desktop.open(fileManager.directory.toFile)
+      desktop.open(fileManager.journalDir.toFile)
     }
   })
 
@@ -68,5 +77,10 @@ class JournalDialogPane @Inject()(journalProperty: JournalProperty, fileManager:
     collapsible = false
   }
 
+  journalProperty.onChange { (_, _, newJournal) =>
+    currentJournalFieNameProperty.value = newJournal.journalFileName
+    lastFrom.value = newJournal.nodeAddress.display
+    lastAt.value = newJournal.stamp
+  }
 
 }

@@ -131,10 +131,12 @@ class GridOfControls(gaps:(Int,Int) = 10 -> 10, insets:Insets = Insets(20, 100, 
     val row = label(labelText)
     add(control, 1, row)
   }
-  def add(labelText: String, value:Any):Unit = {
+  def add(labelText: String, value:Any): StringProperty = {
     val row = label(labelText)
     val cell = com.wa9nnn.util.tableui.Cell(value)
-    add(Label(cell.value), 1, row)
+    val control = Label(cell.value)
+    add(control, 1, row)
+    control.text
   }
 
   def add(labelText:String, pane:Pane):Unit = {

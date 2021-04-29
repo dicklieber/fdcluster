@@ -43,6 +43,7 @@ case class NodeAddress @Inject()(ipAddress: String = "localhost", hostName: Stri
   val qsoNode: String = {
     s"$ipAddress:$instance"
   }
+
   val graphiteName: String = {
     s"${ipAddress.replace('.', '_')}:$instance"
   }

@@ -19,10 +19,11 @@ package org.wa9nnn.fdcluster.contest
 
 import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.FileManager
+import org.wa9nnn.fdcluster.contest.JournalProperty.notSet
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.{ContestProperty, NodeAddress}
 import org.wa9nnn.util.Persistence
-import scalafx.beans.property.ObjectProperty
+import scalafx.beans.property.{ObjectProperty, StringProperty}
 
 import java.nio.file.Path
 import javax.inject.{Inject, Singleton}
@@ -31,14 +32,15 @@ import javax.inject.{Inject, Singleton}
 class JournalProperty @Inject()(persistence: Persistence, fileManager: FileManager, contestProperty: ContestProperty, nodeAddress: NodeAddress)
   extends ObjectProperty[Journal] with LazyLogging with JournalPropertyWriting {
 
+
   def filePath: Path = {
     fileManager.journalDir.resolve(value.journalFileName)
   }
 
-  def fileName:String = {
+  def fileName: String = {
     Option(value) match {
       case Some(value) => value.journalFileName
-      case None =>"Not Set"
+      case None => notSet
     }
   }
 
@@ -51,6 +53,12 @@ class JournalProperty @Inject()(persistence: Persistence, fileManager: FileManag
       // leaving value to be null
       logger.debug("No persisted Journal")
   }
+  val fileNameProperty: StringProperty = StringProperty(Option(value).map(_.journalFileName).getOrElse(notSet))
+
+  onChange { (_, _, newJournal) =>
+    fileNameProperty.value = newJournal.journalFileName
+  }
+
 
   def maybeJournal: Option[Journal] = Option(value)
 
@@ -66,8 +74,13 @@ class JournalProperty @Inject()(persistence: Persistence, fileManager: FileManag
   }
 }
 
+object JournalProperty {
+  val notSet: String = "Not Set"
+}
+
 trait JournalPropertyWriting {
   def maybeJournal: Option[Journal]
+
   def filePath: Path
 }
 
