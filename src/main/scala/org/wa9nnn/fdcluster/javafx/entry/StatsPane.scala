@@ -24,20 +24,20 @@ import _root_.scalafx.scene.control.Label
 import _root_.scalafx.scene.layout.{GridPane, Pane}
 import _root_.scalafx.scene.text.Text
 import org.scalafx.extras.onFX
-import org.wa9nnn.fdcluster.javafx.entry.StatsPane.instanceCounter
+import org.wa9nnn.fdcluster.model.CurrentStation.Mode
 import org.wa9nnn.fdcluster.model.QsoRecord
 import org.wa9nnn.fdcluster.store.AddQsoListener
 
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Singleton
+
 @Singleton
 class StatsPane extends AddQsoListener {
-println(s"this is StatsPane instance: ${instanceCounter.getAndIncrement()}")
   val cw = new Kind("CW")
   val di = new Kind("DI")
   val ph = new Kind("PH")
-  val totals = new Totals()
-  private val nonTotals = Seq(cw, di, ph)
+  var totals = new Totals()
+  var nonTotals = Seq(cw, di, ph)
   val map: Map[String, Kind] = nonTotals.map(k => k.mode -> k).toMap
   val gridPane: GridPane = new GridPane() {
     hgap = 10
@@ -66,13 +66,19 @@ println(s"this is StatsPane instance: ${instanceCounter.getAndIncrement()}")
 
 
   override def add(qsoRecord: QsoRecord): Unit = {
-    val mode = qsoRecord.qso.bandMode.modeName
+    val mode: Mode = qsoRecord.qso.bandMode.modeName
     map(mode).increment()
 
     val tots: (Int, Int) = nonTotals.foldLeft(0, 0) { (accum: (Int, Int), kind: Kind) =>
       (accum._1 + kind.count) -> (accum._2 + kind.points)
     }
     totals.add(tots)
+  }
+
+  override def clear(): Unit = {
+    totals = new Totals()
+    nonTotals = Seq(cw, di, ph)
+
   }
 }
 

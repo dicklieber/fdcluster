@@ -32,6 +32,7 @@ import nl.grons.metrics4.scala.DefaultInstrumented
 import org.wa9nnn.fdcluster.Markers.syncMarker
 import org.wa9nnn.fdcluster.adif.AdiExporter
 import org.wa9nnn.fdcluster.cabrillo.{CabrilloExportRequest, CabrilloGenerator}
+import org.wa9nnn.fdcluster.contest.{Journal, JournalProperty}
 import org.wa9nnn.fdcluster.javafx.menu.ImportRequest
 import org.wa9nnn.fdcluster.javafx.sync._
 import org.wa9nnn.fdcluster.model.MessageFormats._
@@ -51,7 +52,9 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
   val config: Config = injector.instance[Config]
   val randomQso: RandomQsoGenerator = injector.instance[RandomQsoGenerator]
   val multicastSender: ActorRef = injector.instance[ActorRef]( Names.named("multicastSender"))
-
+   injector.instance[JournalProperty].onChange{(_,_,journal) =>
+     self ! journal
+   }
   val store: StoreLogic = injector.instance[StoreLogic]
 
   logger.info(s"StoreActor: ${self.path}")
@@ -121,6 +124,9 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
 
     case StatusPing ⇒
       store.sendNodeStatus()
+
+    case journal:Journal =>
+    store.debugClear()
 
     /**
      * Finish up sync with data from another node

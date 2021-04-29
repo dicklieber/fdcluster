@@ -241,7 +241,6 @@ class StoreLogic @Inject()(na: NodeAddress,
     } catch {
       case eT: Throwable ⇒
         logger.error("merge", eT)
-
     }
   }
 
@@ -300,10 +299,12 @@ class StoreLogic @Inject()(na: NodeAddress,
   }
 
   def debugClear(): Unit = {
-    logger.info(s"Clearing this nodes store for debugging!")
+    logger.info(s"Clearing this nodes store")
     byUuid.clear()
     byCallSign.clear()
     qsoBuffer.clear()
+    listeners.foreach(_.clear())
+
   }
 
   //  def missingUuids(uuidsAtOtherHost: List[Uuid]): List[Uuid] = {
@@ -326,6 +327,7 @@ case class Dup(qsoRecord: QsoRecord) extends AddResult
 
 trait AddQsoListener {
   def add(qsoRecord: QsoRecord): Unit
+  def clear():Unit
 }
 
 trait QsoSource {

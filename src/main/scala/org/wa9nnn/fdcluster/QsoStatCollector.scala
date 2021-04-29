@@ -26,9 +26,11 @@ class QsoCountCollector @Inject()() extends AddQsoListener with StructuredLoggin
     collectors.foreach(_.ingest(qsoRecord))
   }
 
+  var collectors: Seq[StatCollector] = _
+
   //@formatter:off
-  val collectors: Seq[StatCollector] =
-    Seq(
+  def clear():Unit =
+  collectors= Seq(
       StatCollector("Section", "ARRL Section Worked"){_.qso.exchange.sectionCode},
       StatCollector("Area","US callSign area, CA for Canada or DX for other places."){ q => Sections.callAreaForSection(q.qso.exchange.sectionCode)},
       StatCollector("Band","Worked"){_.qso.bandMode.bandName},
@@ -39,6 +41,7 @@ class QsoCountCollector @Inject()() extends AddQsoListener with StructuredLoggin
   )
   //@formatter:on
 
+  clear()
 
   def dumpStats(): Unit = {
     collectors.foreach {
@@ -100,12 +103,12 @@ object FieldCount {
   val byField: FieldCountOrder = FieldCountOrder("By Field", byFieldx)
   val byCount: FieldCountOrder = FieldCountOrder("By Count", byCountx)
 
-//  val s: Seq[Seq[FieldCount] => Seq[FieldCount]] = Seq(byFieldx, byCount)
+  //  val s: Seq[Seq[FieldCount] => Seq[FieldCount]] = Seq(byFieldx, byCount)
 
   def apply(t2: (String, AtomicInteger)): FieldCount = {
     new FieldCount(t2._1, t2._2.get())
   }
 }
 
-case class FieldCountOrder(name: String, sorter:Sorter)
+case class FieldCountOrder(name: String, sorter: Sorter)
 
