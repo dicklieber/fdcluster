@@ -3,7 +3,7 @@ package org.wa9nnn.fdcluster.store
 import org.specs2.mutable.Specification
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.tools.SequentialCallsigns
-import scalafx.collections.ObservableBuffer
+import _root_.scalafx.collections.ObservableBuffer
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -13,7 +13,7 @@ class SquozeQsoSpec extends Specification {
     "encodeUuids" >> {
       val nodeAddress = NodeAddress()
       val callSigns = new SequentialCallsigns()
-      val allQsos = ObservableBuffer[QsoRecord](
+      val allQsos = ObservableBuffer.from(
         List.tabulate(100000) { _ =>
           QsoRecord(Qso(callSigns.next(), BandMode(),  Exchange()), QsoMetadata())
         }
@@ -36,7 +36,7 @@ class SquozeQsoSpec extends Specification {
       val nodeAddress = NodeAddress()
       val callSigns = new SequentialCallsigns()
       val qsosBin = new ArrayBuffer[Byte]()
-      val allQsos = ObservableBuffer[QsoRecord](
+      val allQsos: ObservableBuffer[QsoRecord] = ObservableBuffer.from(
         List.tabulate(100000) { _ =>
           val qsoRecord = QsoRecord(Qso(callSigns.next(), BandMode(),  Exchange()), QsoMetadata())
           val byteString = qsoRecord.toByteString

@@ -2,7 +2,7 @@
 package org.wa9nnn.fdcluster.model
 
 import com.typesafe.config.Config
-import scalafx.collections.ObservableBuffer
+import _root_.scalafx.collections.ObservableBuffer
 
 import scala.jdk.CollectionConverters._
 import scala.util.matching.Regex
@@ -16,7 +16,7 @@ class EntryCategories(contestConfig: Config) {
   private val ec: List[EntryCategory] = contestConfig.getStringList("categories").asScala.map(EntryCategory.fromConfig).toList
 
   //  designators = values.map(_.designator)
-  val categories: ObservableBuffer[EntryCategory] = ObservableBuffer[EntryCategory](ec).sorted
+  val categories: ObservableBuffer[EntryCategory] = ObservableBuffer.from(ec).sorted
 
   var designators: Set[String] = ec.map(_.designator).toSet
 

@@ -64,7 +64,7 @@ libraryDependencies ++= Seq(
   "org.specs2" %% "specs2-core" % "4.6.0" % "test",
   "org.specs2" %% "specs2-mock" % "4.6.0" % "test",
   "com.google.inject" % "guice" % "4.2.2",
-  "org.scalafx" %% "scalafx" % "15.0.1-R21",
+  "org.scalafx" %% "scalafx" % "16.0.0-R22",
   "org.scalafx" %% "scalafx-extras" % "0.3.6",
   "net.codingwell" %% "scala-guice" % "4.2.6",
   "com.github.racc" % "typesafeconfig-guice" % "0.1.0",

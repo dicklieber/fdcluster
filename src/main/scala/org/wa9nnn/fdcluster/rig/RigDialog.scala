@@ -19,17 +19,17 @@
 
 package org.wa9nnn.fdcluster.rig
 
+import _root_.scalafx.Includes._
+import _root_.scalafx.event.ActionEvent
+import _root_.scalafx.scene.control.ComboBox.sfxComboBox2jfx
+import _root_.scalafx.scene.control._
+import _root_.scalafx.scene.layout.{BorderPane, HBox}
+import _root_.scalafx.util.StringConverter
 import javafx.collections.ObservableList
 import javafx.event.EventHandler
-import javafx.scene.{Node, control}
+import javafx.scene.control
 import org.wa9nnn.util.StructuredLogging
-import scalafx.Includes._
 import scalafx.collections.ObservableBuffer
-import scalafx.event.ActionEvent
-import scalafx.scene.control.ComboBox.sfxComboBox2jfx
-import scalafx.scene.control._
-import scalafx.scene.layout.{BorderPane, HBox}
-import scalafx.util.StringConverter
 
 import javax.inject.Inject
 
@@ -39,11 +39,11 @@ class RigDialog @Inject()(rigStore: RigStore) extends Dialog[RigSettings] with S
 
   //  def apply(): Unit = {
 
-  private val mfgSelect = new ComboBox[String](ObservableBuffer[String](riglist.mfgs))
+  private val mfgSelect = new ComboBox[String](ObservableBuffer.from(riglist.mfgs))
   private val modelSelect = new ComboBox[RigModel] {
-    cellFactory = { x =>
+    cellFactory = { _ =>
       new ListCell[RigModel]() {
-        item.onChange { (ov, oldValue, newValue) => {
+        item.onChange { (_, oldValue, newValue) => {
           val choice = Option(newValue).getOrElse(oldValue).choice
           text = choice
         }
@@ -58,21 +58,21 @@ class RigDialog @Inject()(rigStore: RigStore) extends Dialog[RigSettings] with S
       }
     })
   }
-  private val catControlPanel = new CatControlPanel() {
+  private val catControlPanel: CatControlPanel = new CatControlPanel() {
     val currentRigSettings: RigSettings = rigStore.rigSettings.value
     val rigModel = currentRigSettings.rigModel
     mfgSelect.setValue(rigModel.mfg)
     modelSelect.setValue(rigModel)
     setValue(currentRigSettings.serialPortSettings)
   }
-  mfgSelect.onAction = (e: ActionEvent) => {
+  mfgSelect.onAction = (_: ActionEvent) => {
 
     val selectedMfg: String = mfgSelect.value.apply()
 
     val rigModels: Seq[RigModel] = riglist.modelsForMfg(selectedMfg)
-    modelSelect.items = ObservableBuffer[RigModel](rigModels)
+    modelSelect.items = ObservableBuffer.from(rigModels)
   }
-  val borderPane = new BorderPane {
+  val borderPane: BorderPane = new BorderPane {
     top = new HBox(
       new Label("Manufacture:"),
       mfgSelect,

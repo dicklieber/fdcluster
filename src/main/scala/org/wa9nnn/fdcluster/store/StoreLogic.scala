@@ -17,22 +17,23 @@
  */
 package org.wa9nnn.fdcluster.store
 
+import _root_.scalafx.beans.property.ObjectProperty
+import _root_.scalafx.collections.ObservableBuffer
 import akka.actor.ActorRef
 import com.google.inject.name.Named
 import nl.grons.metrics4.scala.DefaultInstrumented
-import org.wa9nnn.fdcluster.contest.{Journal, JournalManager, JournalProperty}
+import org.wa9nnn.fdcluster.contest.{JournalProperty, JournalWriter}
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHour}
 import org.wa9nnn.fdcluster.store
 import org.wa9nnn.fdcluster.store.network.FdHour
 import org.wa9nnn.util.{StructuredLogging, UuidUtil}
-import scalafx.beans.property.ObjectProperty
-import scalafx.collections.ObservableBuffer
 
 import java.security.{MessageDigest, SecureRandom}
 import javax.inject.{Inject, Singleton}
 import scala.collection.concurrent.TrieMap
+import scala.collection.immutable
 
 /**
  * This can only be used within the [[StoreActor]]
@@ -41,18 +42,29 @@ import scala.collection.concurrent.TrieMap
 @Singleton
 class StoreLogic @Inject()(na: NodeAddress,
                            @Named("qsoMetadata") qsoMetadata: ObjectProperty[QsoMetadata],
-                           @Named("allQsos") allQsos: ObservableBuffer[QsoRecord],
                            @Named("multicastSender") multicastSender: ActorRef,
                            contestProperty: ContestProperty,
-                           journalManager: JournalManager,
-                           journalProperty: JournalProperty
+                           journalLoader: JournalLoader,
+                           journalManager: JournalWriter,
+                           journalProperty: JournalProperty,
+                           listeners: immutable.Set[AddQsoListener]
                           )
-  extends StructuredLogging with DefaultInstrumented {
+  extends StructuredLogging with DefaultInstrumented with QsoSource with QsoAdder {
+  /*
+  QSOs live in these three structures. Since QsoRecord is immutable all three structures are simply references.
+   */
+  /**
+   * qsoBuffer is shared read-only by DataScene
+   */
+  val qsoBuffer: ObservableBuffer[QsoRecord] = new ObservableBuffer[QsoRecord]
+  private val byUuid = new TrieMap[Uuid, QsoRecord]()
+  private val byCallSign = new TrieMap[CallSign, Set[QsoRecord]]
+
+
   def sendNodeStatus(): Unit = {
     val status = nodeStatus
     multicastSender ! JsonContainer(status)
   }
-
 
   def filterAlreadyPresent(iterator: Iterator[Uuid]): Iterator[Uuid] = {
     iterator.filterNot(uuid => byUuid.contains(uuid))
@@ -60,26 +72,20 @@ class StoreLogic @Inject()(na: NodeAddress,
 
   implicit val nodeAddress: NodeAddress = na
 
-  /**
-   * This is the canonical set of data. If its not here then we know we have to also add to [[byCallsign]] and [[allQsos]]
-   */
-  private val byUuid = new TrieMap[Uuid, QsoRecord]()
-  private val byCallsign = new TrieMap[CallSign, Set[QsoRecord]]
-
 
   //   override lazy val metricBaseName = MetricName("Store")
   private val random = new SecureRandom()
 
   def debugKillRandom(nToKill: Int): Unit = {
     for (_ ← 0 until nToKill) {
-      val targetIndex = random.nextInt(allQsos.size)
-      val targetQsoRecord = allQsos.remove(targetIndex)
+      val targetIndex = random.nextInt(qsoBuffer.size)
+      val targetQsoRecord = qsoBuffer.remove(targetIndex)
       logger.debug(s"Deleting ${targetQsoRecord.display}")
-      val targetCallsign = targetQsoRecord.callsign
-      byCallsign.remove(targetCallsign).foreach { set ⇒
+      val targetCallSign = targetQsoRecord.callsign
+      byCallSign.remove(targetCallSign).foreach { set ⇒
         val remainder = set - targetQsoRecord
         if (remainder.nonEmpty) {
-          byCallsign.put(targetCallsign, remainder)
+          byCallSign.put(targetCallSign, remainder)
         }
       }
       byUuid.remove(targetQsoRecord.qso.uuid)
@@ -88,7 +94,7 @@ class StoreLogic @Inject()(na: NodeAddress,
 
   private val qsoMeter = metrics.meter("qso")
   metrics.gauge("qso count") {
-    allQsos.size
+    qsoBuffer.size
   }
   private val qsosDigestTimer = metrics.timer("qsos digest")
   private val hourDigestsTimer = metrics.timer("hours digest")
@@ -109,6 +115,7 @@ class StoreLogic @Inject()(na: NodeAddress,
         Dup(qsoRecord)
       case None ⇒
         journalManager.write(qsoRecord)
+        listeners.foreach(_.add(qsoRecord))
         Added(qsoRecord)
     }
   }
@@ -125,10 +132,10 @@ class StoreLogic @Inject()(na: NodeAddress,
     }
     val maybeExisting = byUuid.putIfAbsent(qsoRecord.qso.uuid, qsoRecord)
     if (maybeExisting.isEmpty) {
-      allQsos.add(qsoRecord)
+      qsoBuffer.add(qsoRecord)
       val callSign = qsoRecord.qso.callSign
-      val qsoRecords: Set[QsoRecord] = byCallsign.getOrElse(callSign, Set.empty) + qsoRecord
-      byCallsign.put(callSign, qsoRecords)
+      val qsoRecords: Set[QsoRecord] = byCallSign.getOrElse(callSign, Set.empty) + qsoRecord
+      byCallSign.put(callSign, qsoRecords)
     }
     maybeExisting
   }
@@ -145,8 +152,8 @@ class StoreLogic @Inject()(na: NodeAddress,
         logger.error(s"Already have uuid of $qsoRecord")
       case None =>
         val callSign = qsoRecord.qso.callSign
-        val qsoRecords: Set[QsoRecord] = byCallsign.getOrElse(callSign, Set.empty) + qsoRecord
-        byCallsign.put(callSign, qsoRecords)
+        val qsoRecords: Set[QsoRecord] = byCallSign.getOrElse(callSign, Set.empty) + qsoRecord
+        byCallSign.put(callSign, qsoRecords)
     }
   }
 
@@ -155,7 +162,7 @@ class StoreLogic @Inject()(na: NodeAddress,
    */
   def loadLocalIndices(): Unit = {
     loadingIndicesFlag = true
-    allQsos.foreach { qso =>
+    qsoBuffer.foreach { qso =>
       localInsert(qso)
     }
     loadingIndicesFlag = false
@@ -181,7 +188,7 @@ class StoreLogic @Inject()(na: NodeAddress,
 
   def findDup(potentialQso: Qso): Option[QsoRecord] = {
     for {
-      contacts <- byCallsign.get(potentialQso.callSign)
+      contacts <- byCallSign.get(potentialQso.callSign)
       dup ← contacts.find(_.dup(potentialQso))
     } yield {
       dup
@@ -240,7 +247,7 @@ class StoreLogic @Inject()(na: NodeAddress,
 
   def size: Int = byUuid.size
 
- private  def nodeStatus: NodeStatus = {
+  private def nodeStatus: NodeStatus = {
     //todo Needs some serious caching. Past hours don't usually change (unless syncing)
 
     val sDigest = qsosDigestTimer.time {
@@ -269,16 +276,11 @@ class StoreLogic @Inject()(na: NodeAddress,
 
   }
 
-  /**
-   *
-   * @param fdHours [[List.empty]] returns all Uuids for all QSPOs.
-   */
   def uuidForHour(fdHour: FdHour): List[Uuid] = {
-    allQsos.filter((qsr: QsoRecord) => qsr.fdHour == fdHour)
+    qsoBuffer.filter((qsr: QsoRecord) => qsr.fdHour == fdHour)
       .map(_.qso.uuid)
       .toList
   }
-
 
   def get(fdHour: FdHour): List[QsoHour] = {
     byUuid.values
@@ -300,15 +302,20 @@ class StoreLogic @Inject()(na: NodeAddress,
   def debugClear(): Unit = {
     logger.info(s"Clearing this nodes store for debugging!")
     byUuid.clear()
-    byCallsign.clear()
-    allQsos.clear()
+    byCallSign.clear()
+    qsoBuffer.clear()
   }
 
-//  def missingUuids(uuidsAtOtherHost: List[Uuid]): List[Uuid] = {
-//    uuidsAtOtherHost.filter(otherUuid ⇒
-//      !byUuid.contains(otherUuid)
-//    )
-//  }
+  //  def missingUuids(uuidsAtOtherHost: List[Uuid]): List[Uuid] = {
+  //    uuidsAtOtherHost.filter(otherUuid ⇒
+  //      !byUuid.contains(otherUuid)
+  //    )
+  //  }
+
+  override def qsoIterator: Iterable[QsoRecord] = byUuid.values
+
+  journalLoader.startLoad(this)
+
 }
 
 sealed trait AddResult
@@ -317,3 +324,14 @@ case class Added(qsoRecord: QsoRecord) extends AddResult
 
 case class Dup(qsoRecord: QsoRecord) extends AddResult
 
+trait AddQsoListener {
+  def add(qsoRecord: QsoRecord): Unit
+}
+
+trait QsoSource {
+  def qsoIterator: Iterable[QsoRecord]
+}
+
+trait QsoAdder {
+  def addRecord(qsoRecord: QsoRecord): AddResult
+}

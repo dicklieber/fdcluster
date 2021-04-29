@@ -20,7 +20,7 @@
 package org.wa9nnn.fdcluster.model
 
 import org.wa9nnn.fdcluster.cabrillo.{CabrilloExportRequest, CabrilloValue, CabrilloValues}
-import org.wa9nnn.fdcluster.contest.{Contest, Journal, JournalContainer, JournalHeader}
+import org.wa9nnn.fdcluster.contest.{Contest, Journal, JournalHeader}
 import org.wa9nnn.fdcluster.javafx.entry.section.Section
 import org.wa9nnn.fdcluster.javafx.menu.{BuildLoadRequest, ImportRequest}
 import org.wa9nnn.fdcluster.javafx.sync._
@@ -28,6 +28,7 @@ import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHour, QsoHourDigest, QsoH
 import org.wa9nnn.fdcluster.rig.{RigModel, RigSettings, SerialPortSettings}
 import org.wa9nnn.fdcluster.store.JsonContainer
 import org.wa9nnn.fdcluster.store.network.FdHour
+import org.wa9nnn.util.UuidUtil.uuidFormat._
 import play.api.libs.json.{Format, Json}
 
 import java.time.LocalDateTime
@@ -75,7 +76,6 @@ object MessageFormats {
   implicit val jFormat: Format[Journal] = Json.format[Journal]
   implicit val nodeStatsFormat: Format[NodeStatus] = Json.format[NodeStatus]
   implicit val jsonContainerFormat: Format[JsonContainer] = Json.format[JsonContainer]
-  implicit val journalContainerFormat: Format[JournalContainer] = Json.format[JournalContainer]
   implicit val jhFormat: Format[JournalHeader] = Json.format[JournalHeader]
   implicit val rigPortSettingsFormat: Format[SerialPortSettings] = Json.format[SerialPortSettings]
   implicit val rigModelFormat: Format[RigModel] = Json.format[RigModel]

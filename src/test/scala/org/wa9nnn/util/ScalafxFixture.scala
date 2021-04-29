@@ -3,7 +3,7 @@ package org.wa9nnn.util
 
 import com.sun.javafx.application.PlatformImpl
 import org.specs2.mutable.BeforeAfter
-import scalafx.application.Platform
+import _root_.scalafx.application.Platform
 
 trait ScalafxFixture extends BeforeAfter{
   override def before: Any = {

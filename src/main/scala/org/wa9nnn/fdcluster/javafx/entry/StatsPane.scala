@@ -19,20 +19,20 @@
 
 package org.wa9nnn.fdcluster.javafx.entry
 
-import com.google.inject.name.Named
+import _root_.scalafx.geometry.Insets
+import _root_.scalafx.scene.control.Label
+import _root_.scalafx.scene.layout.{GridPane, Pane}
+import _root_.scalafx.scene.text.Text
 import org.scalafx.extras.onFX
+import org.wa9nnn.fdcluster.javafx.entry.StatsPane.instanceCounter
 import org.wa9nnn.fdcluster.model.QsoRecord
-import scalafx.collections.ObservableBuffer
-import scalafx.geometry.Insets
-import scalafx.scene.control.Label
-import scalafx.scene.layout.{GridPane, Pane}
-import scalafx.scene.text.Text
+import org.wa9nnn.fdcluster.store.AddQsoListener
 
 import java.util.concurrent.atomic.AtomicInteger
-import javax.inject.Inject
-
-class StatsPane @Inject()(@Named("allQsos") allQsos: ObservableBuffer[QsoRecord])  {
-
+import javax.inject.Singleton
+@Singleton
+class StatsPane extends AddQsoListener {
+println(s"this is StatsPane instance: ${instanceCounter.getAndIncrement()}")
   val cw = new Kind("CW")
   val di = new Kind("DI")
   val ph = new Kind("PH")
@@ -49,6 +49,7 @@ class StatsPane @Inject()(@Named("allQsos") allQsos: ObservableBuffer[QsoRecord]
     add(new Text("Count"), 1, 0)
     add(new Text("Points"), 2, 0)
 
+
     def add(kind: StatLine): Unit = {
       val r = row.getAndIncrement()
       add(new Label(kind.mode + ":"), 0, r)
@@ -63,33 +64,28 @@ class StatsPane @Inject()(@Named("allQsos") allQsos: ObservableBuffer[QsoRecord]
   }
   val pane: Pane = gridPane
 
-  allQsos.onChange { (_, changes) =>
-    changes.foreach { change: ObservableBuffer.Change[QsoRecord] =>
-      change match {
-        case ObservableBuffer.Add(_, added) =>
-          added.foreach { qsoRecord =>
-            val mode = qsoRecord.qso.bandMode.modeName
-            map(mode).increment()
 
-            val tots: (Int, Int) = nonTotals.foldLeft(0, 0) { (accum: (Int, Int), kind: Kind) =>
-              (accum._1 + kind.count) -> (accum._2 + kind.points)
-            }
-            totals.add(tots)
-          }
-        case ObservableBuffer.Remove(position, removed) =>
-        case ObservableBuffer.Reorder(start, end, permutation) =>
-        case ObservableBuffer.Update(from, to) =>
-      }
+  override def add(qsoRecord: QsoRecord): Unit = {
+    val mode = qsoRecord.qso.bandMode.modeName
+    map(mode).increment()
+
+    val tots: (Int, Int) = nonTotals.foldLeft(0, 0) { (accum: (Int, Int), kind: Kind) =>
+      (accum._1 + kind.count) -> (accum._2 + kind.points)
     }
+    totals.add(tots)
   }
+}
+
+object StatsPane {
+  val instanceCounter = new AtomicInteger()
 }
 
 trait StatLine {
   val mode: String
-  val countCell: Label = new Label("--"){
+  val countCell: Label = new Label("--") {
     styleClass += "statValue"
   }
-  val pointsCell: Label = new Label("--"){
+  val pointsCell: Label = new Label("--") {
     styleClass += "statValue"
   }
   var count = 0

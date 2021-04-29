@@ -19,19 +19,18 @@
 
 package org.wa9nnn.fdcluster.store.network
 
-import java.net.InetSocketAddress
 import akka.actor.{Actor, ActorRef, Props}
 import akka.io.{IO, Udp}
 import akka.util.ByteString
 import com.typesafe.config.Config
 import nl.grons.metrics4.scala.DefaultInstrumented
-import org.apache.commons.math3.stat.descriptive.SynchronizedDescriptiveStatistics
 import org.wa9nnn.fdcluster.store.JsonContainer
+
+import java.net.InetSocketAddress
 
 class MultcastSenderActor(val config: Config) extends Actor with MulticastActor with DefaultInstrumented {
 
   import context.system
-  private val descriptiveStatistics = new SynchronizedDescriptiveStatistics()
 
   IO(Udp) ! Udp.SimpleSender
 

@@ -19,7 +19,7 @@
 
 package org.wa9nnn.util
 
-import scalafx.application.JFXApp.Parameters
+import _root_.scalafx.application.JFXApp.Parameters
 
 class CommandLineScalaFxImpl(parameters: Parameters) extends CommandLine {
   val noArg: Set[String] = parameters.unnamed.map(_.dropWhile(_ == '-')).toSet

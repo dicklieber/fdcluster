@@ -19,9 +19,9 @@
 
 package org.wa9nnn.fdcluster.javafx.entry
 
-import scalafx.application.Platform
-import scalafx.scene.control.{Label, ProgressBar}
-import scalafx.scene.layout.{BorderPane, VBox}
+import _root_.scalafx.application.Platform
+import _root_.scalafx.scene.control.{Label, ProgressBar}
+import _root_.scalafx.scene.layout.{BorderPane, VBox}
 
 import java.time.Instant
 

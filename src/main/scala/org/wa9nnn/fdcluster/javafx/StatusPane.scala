@@ -21,11 +21,11 @@ package org.wa9nnn.fdcluster.javafx
 
 import org.scalafx.extras.onFX
 import org.wa9nnn.util.{DelayedFuture, Disposition, StructuredLogging, WithDisposition}
-import scalafx.animation.FadeTransition
-import scalafx.collections.ObservableBuffer
-import scalafx.scene.control.Label
-import scalafx.scene.layout.{Pane, VBox}
-import scalafx.util
+import _root_.scalafx.animation.FadeTransition
+import _root_.scalafx.collections.ObservableBuffer
+import _root_.scalafx.scene.control.Label
+import _root_.scalafx.scene.layout.{Pane, VBox}
+import _root_.scalafx.util
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext.Implicits._
@@ -53,7 +53,7 @@ class StatusPane @Inject() extends StructuredLogging {
 
   def message(statusMessage: StatusMessage): Unit = {
     onFX {
-      messageLabel.styleClass = ObservableBuffer[String](statusMessage.styleClasses)
+      messageLabel.styleClass = ObservableBuffer.from(statusMessage.styleClasses)
       messageLabel.disposition(statusMessage.disposition)
       messageLabel.text = statusMessage.text
       statusMessage.nexus.foreach { nexus =>

@@ -6,8 +6,9 @@ import org.wa9nnn.fdcluster.FieldCount.Sorter
 import org.wa9nnn.fdcluster.javafx.entry.Sections
 import org.wa9nnn.fdcluster.model.QsoRecord
 import org.wa9nnn.util.StructuredLogging
-import scalafx.collections.ObservableBuffer
-import scalafx.collections.ObservableBuffer.Change
+import _root_.scalafx.collections.ObservableBuffer
+import _root_.scalafx.collections.ObservableBuffer.Change
+import org.wa9nnn.fdcluster.store.AddQsoListener
 
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.{Inject, Singleton}
@@ -20,18 +21,8 @@ import scala.collection.mutable
  * @param allQsos the data
  */
 @Singleton
-class QsoCountCollector @Inject()(@Named("allQsos") allQsos: ObservableBuffer[QsoRecord]) extends StructuredLogging {
-  allQsos.onChange { (_, changes: Seq[Change[QsoRecord]]) =>
-    changes.foreach {
-      case ObservableBuffer.Add(position, added) =>
-        added.foreach(handle)
-      case x =>
-        logger.error(s"""allQsos had change that wasn't "Add"! $x""")
-    }
-  }
-
-
-  def handle(qsoRecord: QsoRecord): Unit = {
+class QsoCountCollector @Inject()() extends AddQsoListener with StructuredLogging {
+  override def add(qsoRecord: QsoRecord): Unit = {
     collectors.foreach(_.ingest(qsoRecord))
   }
 

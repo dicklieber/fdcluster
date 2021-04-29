@@ -20,13 +20,13 @@
 package org.wa9nnn.fdcluster.cabrillo
 
 import javafx.scene.control.DialogPane
-import scalafx.Includes._
-import scalafx.beans.property.StringProperty
-import scalafx.event.ActionEvent
-import scalafx.geometry.Insets
-import scalafx.scene.control.{Button, ButtonType, Dialog, Label, TextField}
-import scalafx.scene.layout.GridPane
-import scalafx.stage.DirectoryChooser
+import _root_.scalafx.Includes._
+import _root_.scalafx.beans.property.StringProperty
+import _root_.scalafx.event.ActionEvent
+import _root_.scalafx.geometry.Insets
+import _root_.scalafx.scene.control.{Button, ButtonType, Dialog, Label, TextField}
+import _root_.scalafx.scene.layout.GridPane
+import _root_.scalafx.stage.DirectoryChooser
 
 import java.io.File
 import java.util.concurrent.atomic.AtomicInteger

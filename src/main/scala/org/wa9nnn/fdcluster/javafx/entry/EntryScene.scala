@@ -19,6 +19,14 @@
 
 package org.wa9nnn.fdcluster.javafx.entry
 
+import _root_.scalafx.Includes._
+import _root_.scalafx.beans.binding.{Bindings, ObjectBinding}
+import _root_.scalafx.beans.property.ObjectProperty
+import _root_.scalafx.event.ActionEvent
+import _root_.scalafx.geometry.{Insets, Pos}
+import _root_.scalafx.scene.Scene
+import _root_.scalafx.scene.control._
+import _root_.scalafx.scene.layout.{BorderPane, HBox, VBox}
 import akka.actor.ActorRef
 import akka.pattern.ask
 import akka.util.Timeout
@@ -32,15 +40,7 @@ import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.store.{AddResult, Added, Dup}
 import org.wa9nnn.util.{StructuredLogging, WithDisposition}
 import play.api.libs.json.Json
-import scalafx.Includes._
-import scalafx.beans.binding.{Bindings, ObjectBinding}
-import scalafx.beans.property.ObjectProperty
-import scalafx.event.ActionEvent
-import scalafx.geometry.{Insets, Pos}
-import scalafx.scene.Scene
-import scalafx.scene.control._
-import scalafx.scene.layout.{BorderPane, HBox, VBox}
-
+import org.wa9nnn.fdcluster.model.MessageFormats._
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -81,15 +81,17 @@ class EntryScene @Inject()(
   qsoSubmit.disable = true
   qsoSubmit.sad()
   private val initialExchange = contestProperty.ourExchangeProperty
-  val ourExchangeLabel = new Label(initialExchange.value.display){
+  val ourExchangeLabel: Label = new Label(initialExchange.value.display) {
     styleClass += "exchange"
   }
-  val ourExchangeMnomicLabel = new Label(initialExchange.value.mnomonics){
+  val ourExchangeMnomicLabel: Label = new Label(initialExchange.value.mnomonics) {
     styleClass += "exchangeMnemonics"
   }
   contestProperty.ourExchangeProperty.onChange { (_, _, ex) =>
-    ourExchangeLabel.text = ex.display
-    ourExchangeMnomicLabel.text = ex.mnomonics
+    onFX {
+      ourExchangeLabel.text = ex.display
+      ourExchangeMnomicLabel.text = ex.mnomonics
+    }
   }
 
   val pane: BorderPane = new BorderPane {
@@ -102,7 +104,7 @@ class EntryScene @Inject()(
     }
     center = new HBox(
       new VBox(
-        new Label("Callsign"),
+        new Label("CallSign"),
         callSignField,
         actionResult.pane,
         statsPane.pane,
@@ -117,7 +119,7 @@ class EntryScene @Inject()(
       ),
       new VBox(
         new Label("Section"),
-        new HBox( qsoSection, new Label("We are: "), ourExchangeLabel, ourExchangeMnomicLabel),
+        new HBox(qsoSection, new Label("We are: "), ourExchangeLabel, ourExchangeMnomicLabel),
         qsoSection.sectionPrompt
       )
     )
@@ -132,7 +134,7 @@ class EntryScene @Inject()(
       nextField(next, classField)
     }
   }
-  classField.onDone { next =>
+  classField.onDone { _ =>
     qsoSection.requestFocus()
     qsoSection.clear()
   }
@@ -157,7 +159,6 @@ class EntryScene @Inject()(
   }
 
   def save(): Unit = {
-    import org.wa9nnn.fdcluster.model.MessageFormats._
     val potentialQso: Qso = readQso()
     if (potentialQso.callSign == contestProperty.callSign) {
       actionResult.showSad(s"Can't work our own station: \n${potentialQso.callSign}!")

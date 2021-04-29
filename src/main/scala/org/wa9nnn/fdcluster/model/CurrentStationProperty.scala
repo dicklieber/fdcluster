@@ -5,8 +5,8 @@ import org.wa9nnn.fdcluster.model.CurrentStation.{Band, Mode}
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.util.Persistence
 import play.api.libs.json.{Format, JsError, JsResult, JsString, JsSuccess, JsValue}
-import scalafx.beans.binding.Bindings
-import scalafx.beans.property.{ObjectProperty, StringProperty}
+import _root_.scalafx.beans.binding.Bindings
+import _root_.scalafx.beans.property.{ObjectProperty, StringProperty}
 
 import javax.inject.{Inject, Singleton}
 

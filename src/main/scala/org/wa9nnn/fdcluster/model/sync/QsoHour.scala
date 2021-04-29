@@ -23,7 +23,7 @@ import org.wa9nnn.fdcluster.javafx.cluster.LabelSource
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.{QsoRecord, sync}
 import org.wa9nnn.fdcluster.store.network.FdHour
-import scalafx.scene.control.Labeled
+import _root_.scalafx.scene.control.Labeled
 
 import java.security.MessageDigest
 

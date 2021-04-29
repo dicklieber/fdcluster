@@ -25,15 +25,15 @@ import org.wa9nnn.fdcluster.model.NodeAddress
 import org.wa9nnn.fdcluster.model.sync.QsoHourDigest
 import org.wa9nnn.fdcluster.store.network.FdHour
 import org.wa9nnn.fdcluster.store.network.cluster.NodeStateContainer
-import scalafx.beans.property.ObjectProperty
-import scalafx.collections.ObservableBuffer
-import scalafx.scene.control.{TableColumn, TableView}
+import _root_.scalafx.beans.property.ObjectProperty
+import _root_.scalafx.collections.ObservableBuffer
+import _root_.scalafx.scene.control.{TableColumn, TableView}
 
 import scala.collection.concurrent.TrieMap
 import scala.collection.mutable
 
 class ClusterTable extends LazyLogging {
-  private val data = ObservableBuffer[Row](Seq.empty)
+  private val data: ObservableBuffer[Row] = ObservableBuffer.from(Seq.empty[Row])
   val tableView = new TableView[Row](data)
 
   def refresh(nodes: Iterable[NodeStateContainer]): Unit = {

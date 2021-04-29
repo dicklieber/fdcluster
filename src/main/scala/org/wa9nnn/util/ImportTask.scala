@@ -47,7 +47,7 @@ class ImportTask @Inject()(store: StoreLogic, val runningTaskInfoConsumer: Runni
     adifQsos.foreach { adifQso =>
       val qso = AdifQsoAdapter(adifQso)
       store.add(qso)
-      addOne()
+      countOne()
     }
 
     done()

@@ -22,9 +22,9 @@ package org.wa9nnn.fdcluster.javafx.entry.section
 import org.wa9nnn.fdcluster.javafx.NextField
 import org.wa9nnn.fdcluster.javafx.entry.ContestSectionValidator
 import org.wa9nnn.util.WithDisposition
-import scalafx.Includes._
-import scalafx.scene.control.TextField
-import scalafx.scene.input.KeyEvent
+import _root_.scalafx.Includes._
+import _root_.scalafx.scene.control.TextField
+import _root_.scalafx.scene.input.KeyEvent
 
 /**
  * Section entry field for entring QSOs

@@ -22,9 +22,9 @@ package org.wa9nnn.fdcluster.javafx
 import org.wa9nnn.fdcluster.javafx.entry.FieldValidator
 import org.wa9nnn.util.InputHelper.forceCaps
 import org.wa9nnn.util.{StructuredLogging, WithDisposition}
-import scalafx.beans.binding.{Bindings, BooleanBinding}
-import scalafx.beans.property.BooleanProperty
-import scalafx.scene.control.TextInputControl
+import _root_.scalafx.beans.binding.{Bindings, BooleanBinding}
+import _root_.scalafx.beans.property.BooleanProperty
+import _root_.scalafx.scene.control.TextInputControl
 
 /**
  * Most of the common logic for any qso input field.

@@ -17,35 +17,59 @@
 
 package org.wa9nnn.fdcluster.contest
 
-import org.wa9nnn.util.Persistence
 import com.typesafe.scalalogging.LazyLogging
-import org.wa9nnn.fdcluster.model.{ContestProperty, NodeAddress}
-import scalafx.beans.property.ObjectProperty
+import org.wa9nnn.fdcluster.FileManager
 import org.wa9nnn.fdcluster.model.MessageFormats._
+import org.wa9nnn.fdcluster.model.{ContestProperty, NodeAddress}
+import org.wa9nnn.util.Persistence
+import scalafx.beans.property.ObjectProperty
+
+import java.nio.file.Path
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class JournalProperty @Inject()(persistence: Persistence, contestProperty: ContestProperty, nodeAddress: NodeAddress)
-  extends ObjectProperty[Option[Journal]]
-    with LazyLogging {
+class JournalProperty @Inject()(persistence: Persistence, fileManager: FileManager, contestProperty: ContestProperty, nodeAddress: NodeAddress)
+  extends ObjectProperty[Journal] with LazyLogging with JournalPropertyWriting {
+
+  def filePath: Path = {
+    fileManager.journalDir.resolve(value.journalFileName)
+  }
+
+  def fileName:String = {
+    Option(value) match {
+      case Some(value) => value.journalFileName
+      case None =>"Not Set"
+    }
+  }
+
+
+  try {
+    val journal: Journal = persistence.loadFromFile[Journal](() => throw new IllegalStateException())
+    value = journal
+  } catch {
+    case _: Exception =>
+      // leaving value to be null
+      logger.debug("No persisted Journal")
+  }
+
+  def maybeJournal: Option[Journal] = Option(value)
+
+  def hasJournal: Boolean = maybeJournal.isDefined
 
   def newJournal(): Unit = {
     val contest = contestProperty.contest
     contest.checkValid
     val id = contest.id
-    value = Some(Journal(id, nodeAddress))
+    val newJournal = Journal(id, nodeAddress)
+    persistence.saveToFile(newJournal)
+    value = newJournal
   }
-
-  def maybeJournal: Option[Journal] = value
-
-  def fileName: String = value.map(_.journalFileName).getOrElse("File not set!")
-
-  value = persistence.loadFromFile[JournalContainer](() => JournalContainer()).maybeJournal
-
-  onChange { (_, _, nv) =>
-    persistence.saveToFile(nv)
-  }
-
 }
 
-case class JournalContainer(maybeJournal: Option[Journal] = None)
+trait JournalPropertyWriting {
+  def maybeJournal: Option[Journal]
+  def filePath: Path
+}
+
+
+

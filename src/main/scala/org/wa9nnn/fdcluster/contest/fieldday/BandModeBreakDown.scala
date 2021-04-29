@@ -5,14 +5,14 @@ import com.wa9nnn.util.tableui.Cell
 import _root_.com.wa9nnn.util.tableui._
 import org.wa9nnn.fdcluster.model.CurrentStation.Band
 import org.wa9nnn.fdcluster.model.{BandModeFactory, QsoRecord}
-import scalafx.collections.ObservableBuffer
+import _root_.scalafx.collections.ObservableBuffer
+import org.wa9nnn.fdcluster.store.QsoSource
 
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class BandModeBreakDown @Inject()(@Named("allQsos") allQsos: ObservableBuffer[QsoRecord],
-                        bandModeFactory: BandModeFactory) {
+class BandModeBreakDown @Inject()(qsoSource: QsoSource, bandModeFactory: BandModeFactory) {
 
   /**
    * Produces the BandModeBreakDown [[Table]] for the summary HTML page.
@@ -25,7 +25,7 @@ class BandModeBreakDown @Inject()(@Named("allQsos") allQsos: ObservableBuffer[Qs
       .withCssClass("sumCell")
 
     val rows: Seq[Row] = {
-      allQsos
+      qsoSource.qsoIterator
         .toSeq
         .groupBy(_.qso.bandMode.bandName)
         .map { bq: (Band, Seq[QsoRecord]) =>

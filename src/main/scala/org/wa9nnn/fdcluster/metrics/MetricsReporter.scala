@@ -30,10 +30,10 @@ import javafx.scene.text
 import javax.inject.{Inject, Singleton}
 import nl.grons.metrics4.scala.DefaultInstrumented
 import org.wa9nnn.fdcluster.model.NodeAddress
-import scalafx.scene.control.{Button, ButtonType, Dialog, TextArea}
-import scalafx.scene.text.{Font, Text}
-import scalafx.Includes._
-import scalafx.beans.property.StringProperty
+import _root_.scalafx.scene.control.{Button, ButtonType, Dialog, TextArea}
+import _root_.scalafx.scene.text.{Font, Text}
+import _root_.scalafx.Includes._
+import _root_.scalafx.beans.property.StringProperty
 
 import java.io.{ByteArrayOutputStream, PrintStream, StringWriter}
 

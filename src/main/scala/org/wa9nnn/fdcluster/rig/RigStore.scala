@@ -21,7 +21,7 @@ package org.wa9nnn.fdcluster.rig
 
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.util.{Persistence, StructuredLogging}
-import scalafx.beans.property.{IntegerProperty, ObjectProperty, StringProperty}
+import _root_.scalafx.beans.property.{IntegerProperty, ObjectProperty, StringProperty}
 
 import javax.inject.Inject
 

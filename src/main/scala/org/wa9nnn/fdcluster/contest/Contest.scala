@@ -45,16 +45,19 @@ case class Contest(callSign: CallSign = "",
  *
  * @param journalFileName     name of file contestname+YYYMMddHHmmssz.json, obtained from [[com.wa9nnn.util.TimeConverters#fileStamp(java.time.Instant]])
  * @param nodeAddress who started the instance.
- * @param instant     when this was created. Newer always replaces older, anywhere in the cluster.
+ * @param stamp     when this was created. Newer always replaces older, anywhere in the cluster.
  */
-case class Journal(journalFileName: String, nodeAddress: NodeAddress, instant: Instant = Instant.now())
+case class Journal(journalFileName: String, nodeAddress: NodeAddress, stamp: Instant = Instant.now()) {
+
+}
 
 object Journal {
   def apply(contestName: String, nodeAddress: NodeAddress):Journal = {
     val instant = Instant.now()
-    val journal = contestName + fileStamp(instant)
-    new Journal(journal, nodeAddress, instant)
+    val fileName = contestName + fileStamp(instant) + ".json"
+    new Journal(fileName, nodeAddress, instant)
   }
+
 }
 
 

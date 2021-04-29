@@ -21,12 +21,12 @@ package org.wa9nnn.fdcluster.javafx
 
 import org.wa9nnn.fdcluster.FileManager
 import org.wa9nnn.fdcluster.model.ExportFile
-import scalafx.Includes._
-import scalafx.beans.property.StringProperty
-import scalafx.event.ActionEvent
-import scalafx.scene.control.{Button, Label, TextField}
-import scalafx.scene.layout.GridPane
-import scalafx.stage.{DirectoryChooser, Window}
+import _root_.scalafx.Includes._
+import _root_.scalafx.beans.property.StringProperty
+import _root_.scalafx.event.ActionEvent
+import _root_.scalafx.scene.control.{Button, Label, TextField}
+import _root_.scalafx.scene.layout.GridPane
+import _root_.scalafx.stage.{DirectoryChooser, Window}
 
 import java.io.File
 

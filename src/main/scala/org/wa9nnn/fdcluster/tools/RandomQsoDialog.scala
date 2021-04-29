@@ -21,7 +21,7 @@ package org.wa9nnn.fdcluster.tools
 
 import org.wa9nnn.fdcluster.javafx.GridOfControls
 import org.wa9nnn.util.StructuredLogging
-import scalafx.scene.control.{ButtonType, Dialog}
+import _root_.scalafx.scene.control.{ButtonType, Dialog}
 
 class RandomQsoDialog(generateRandomQsos: GenerateRandomQsos = GenerateRandomQsos()) extends Dialog[GenerateRandomQsos] with StructuredLogging {
   title = "Random Qso Generator"

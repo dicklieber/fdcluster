@@ -24,8 +24,8 @@ import org.wa9nnn.fdcluster.javafx.CallsignValidator
 import org.wa9nnn.fdcluster.javafx.entry.section.Section
 import org.wa9nnn.fdcluster.model.{EntryCategory, Exchange, FdClass}
 import org.wa9nnn.util.Mnomonics
-import scalafx.beans.property._
-import scalafx.scene.control.SpinnerValueFactory
+import _root_.scalafx.beans.property._
+import _root_.scalafx.scene.control.SpinnerValueFactory
 
 import scala.util.{Failure, Try}
 

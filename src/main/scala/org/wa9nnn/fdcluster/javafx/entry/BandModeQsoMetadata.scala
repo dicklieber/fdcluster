@@ -3,8 +3,8 @@ package org.wa9nnn.fdcluster.javafx.entry
 
 import com.google.inject.name.Named
 import org.wa9nnn.fdcluster.model._
-import scalafx.beans.binding.Bindings
-import scalafx.beans.property.ObjectProperty
+import _root_.scalafx.beans.binding.Bindings
+import _root_.scalafx.beans.property.ObjectProperty
 
 import javax.inject.{Inject, Singleton}
 @Singleton

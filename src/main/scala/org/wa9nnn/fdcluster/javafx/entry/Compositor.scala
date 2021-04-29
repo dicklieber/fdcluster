@@ -19,7 +19,7 @@
 
 package org.wa9nnn.fdcluster.javafx.entry
 
-import scalafx.beans.property.BooleanProperty
+import _root_.scalafx.beans.property.BooleanProperty
 
 import java.util.concurrent.atomic.AtomicBoolean
 

@@ -47,7 +47,7 @@ class RandomQsoGenerator @Inject()(allContestRules: AllContestRules, contestProp
 
       for (_ <- 0 until  gr.ntoGen) {
         f(Qso(callSign.next, bandMode.next, randomExchange.next(), lastStamp))
-        addOne()
+        countOne()
         lastStamp = lastStamp.plus(gr.between)
       }
       done()

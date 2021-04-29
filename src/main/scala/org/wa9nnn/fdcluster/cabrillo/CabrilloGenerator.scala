@@ -28,7 +28,8 @@ import org.wa9nnn.fdcluster.javafx.entry.RunningTaskInfoConsumer
 import org.wa9nnn.fdcluster.javafx.runningtask.RunningTask
 import org.wa9nnn.fdcluster.model.{ContestProperty, QsoRecord, Qso => fdQso}
 import org.wa9nnn.util.TimeHelpers
-import scalafx.collections.ObservableBuffer
+import _root_.scalafx.collections.ObservableBuffer
+import org.wa9nnn.fdcluster.store.QsoSource
 
 import java.io.PrintWriter
 import java.nio.file.{Files, Paths}
@@ -37,7 +38,7 @@ import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import scala.util.{Failure, Success, Using}
 
-class CabrilloGenerator @Inject()(@Named("allQsos") allQsos: ObservableBuffer[QsoRecord],
+class CabrilloGenerator @Inject()(qsoSource: QsoSource,
                                   val runningTaskInfoConsumer: RunningTaskInfoConsumer,
                                   contestProperty: ContestProperty) extends RunningTask {
   override def taskName: String = "Cabrillo Generator"
@@ -53,9 +54,9 @@ class CabrilloGenerator @Inject()(@Named("allQsos") allQsos: ObservableBuffer[Qs
     cabrilloExportRequest.cabrilloValues.fieldValues.foreach { cv =>
       builder.+(cv.tagValue)
     }
-    allQsos.foreach(qsoRecord => {
+    qsoSource.qsoIterator.foreach(qsoRecord => {
       builder + qso(qsoRecord.qso)
-      addOne()
+      countOne()
     }
     )
     val data = builder.toCabrilloData

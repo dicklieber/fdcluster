@@ -47,7 +47,7 @@ trait RunningTask extends StructuredLogging{
   }, 15, 125)
 
 
-  def addOne(): Unit = {
+  def countOne(): Unit = {
     n += 1
     val progressValue:Double = n.toDouble / totalIterations.toDouble
     val topLine = f"$n%,d of $totalIterations%,d"

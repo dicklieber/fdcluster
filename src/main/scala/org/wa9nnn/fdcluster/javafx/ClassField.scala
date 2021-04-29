@@ -22,7 +22,7 @@ package org.wa9nnn.fdcluster.javafx
 
 import org.wa9nnn.fdcluster.model.{AllContestRules, ContestProperty, ContestRules}
 import org.wa9nnn.util.WithDisposition
-import scalafx.scene.control.TextField
+import _root_.scalafx.scene.control.TextField
 
 import javax.inject.{Inject, Singleton}
 import scala.util.matching.Regex

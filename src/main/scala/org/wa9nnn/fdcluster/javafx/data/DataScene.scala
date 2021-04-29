@@ -19,35 +19,33 @@
 
 package org.wa9nnn.fdcluster.javafx.data
 
+import _root_.scalafx.Includes._
+import _root_.scalafx.beans.property.{ReadOnlyObjectWrapper, ReadOnlyStringWrapper}
+import _root_.scalafx.collections.ObservableBuffer
+import _root_.scalafx.geometry.Pos
+import _root_.scalafx.scene.Node
+import _root_.scalafx.scene.control.TableColumn._
+import _root_.scalafx.scene.control._
+import _root_.scalafx.scene.layout.{HBox, VBox}
 import akka.util.Timeout
 import com.google.inject.Inject
-import com.google.inject.name.Named
-import org.wa9nnn.fdcluster.FileManager
-import org.wa9nnn.fdcluster.contest.JournalManager
+import org.scalafx.extras.onFX
+import org.wa9nnn.fdcluster.contest.JournalProperty
 import org.wa9nnn.fdcluster.javafx.entry.Sections
 import org.wa9nnn.fdcluster.model.QsoRecord
+import org.wa9nnn.fdcluster.store.StoreLogic
 import org.wa9nnn.util.TimeHelpers
 import play.api.libs.json.Json
-import scalafx.Includes._
-import scalafx.application.Platform
-import scalafx.beans.property.{ReadOnlyObjectWrapper, ReadOnlyStringWrapper}
-import scalafx.collections.ObservableBuffer
-import scalafx.geometry.Pos
-import scalafx.scene.Node
-import scalafx.scene.control.TableColumn._
-import scalafx.scene.control._
-import scalafx.scene.layout.{HBox, VBox}
 
 import java.time.format.DateTimeFormatter
 import java.time.{Instant, ZonedDateTime}
 import java.util.concurrent.TimeUnit
-
+import org.wa9nnn.fdcluster.model.MessageFormats._
 /**
  * Create JavaFX UI to view QSOs.
  */
-class DataScene @Inject()(fileManager: FileManager,
-                          journalManager: JournalManager,
-                          @Named("allQsos") allQsoBuffer: ObservableBuffer[QsoRecord]) {
+class DataScene @Inject()(journalProperty: JournalProperty,
+                          storeLogic: StoreLogic) {
 
   implicit val timeout: Timeout = Timeout(5, TimeUnit.SECONDS)
 
@@ -59,14 +57,14 @@ class DataScene @Inject()(fileManager: FileManager,
 
   //  private val allQsoBuffer: ObservableBuffer[QsoRecord] = StoreMapImpl.allQsos
   private val sizeLabel = new Label("--")
-
-  allQsoBuffer.onChange((ob, _) ⇒
-    Platform.runLater { // on scalafx thread
+  private val qsoBuffer: ObservableBuffer[QsoRecord] = storeLogic.qsoBuffer
+  qsoBuffer.onChange((ob, _) ⇒
+    onFX {
       sizeLabel.text = f"${ob.size}%,d"
     }
   )
 
-  var tableView: TableView[QsoRecord] = new TableView[QsoRecord](allQsoBuffer) {
+  var tableView: TableView[QsoRecord] = new TableView[QsoRecord](qsoBuffer) {
     columns ++= List(
       new TableColumn[QsoRecord, Instant] {
         text = "Stamp"
@@ -90,7 +88,7 @@ class DataScene @Inject()(fileManager: FileManager,
         prefWidth = 150
       },
       new TableColumn[QsoRecord, String] {
-        text = "Callsign"
+        text = "CallSign"
         cellFactory = { _: TableColumn[QsoRecord, String] ⇒
           new TableCell[QsoRecord, String]() {
             styleClass += "dateTime"
@@ -150,7 +148,7 @@ class DataScene @Inject()(fileManager: FileManager,
 
   private val selectionModel = tableView.selectionModel
   selectionModel.apply.selectedItem.onChange { (_, _, selectedQso) ⇒
-    import org.wa9nnn.fdcluster.model.MessageFormats._
+
     if (selectedQso != null) {
       val sJson = Json.prettyPrint(Json.toJson(selectedQso))
       detailView.setText(sJson)
@@ -167,7 +165,7 @@ class DataScene @Inject()(fileManager: FileManager,
   splitPane.setDividerPosition(0, 50.0)
   val hbox: HBox = new HBox(
     new Label("QSO Journal file"),
-    new Label(journalManager.journalPath.toString),
+    new Label(journalProperty.maybeJournal.map(_.journalFileName).getOrElse("Not Set")),
     new Label("  QSO Count: "),
     sizeLabel
   )

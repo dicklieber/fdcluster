@@ -18,24 +18,23 @@
 
 package org.wa9nnn.fdcluster
 
-import akka.actor.{ActorRef, ActorSystem, Props}
+import _root_.scalafx.application.JFXApp.Parameters
+import _root_.scalafx.beans.property.ObjectProperty
+import akka.actor.{ActorRef, ActorSystem, DeadLetter, Props}
 import com.github.racc.tscg.TypesafeConfigModule
 import com.google.inject.{AbstractModule, Injector, Provides}
-import com.typesafe.config.{Config, ConfigFactory}
+import com.typesafe.config.ConfigFactory
 import configs.Config
-import net.codingwell.scalaguice.ScalaModule
-import org.wa9nnn.fdcluster.javafx.entry.{RunningTaskInfoConsumer, RunningTaskPane}
+import net.codingwell.scalaguice.{ScalaModule, ScalaMultibinder}
+import org.wa9nnn.fdcluster.contest.{JournalProperty, JournalPropertyWriting}
+import org.wa9nnn.fdcluster.javafx.entry.{RunningTaskInfoConsumer, RunningTaskPane, StatsPane}
 import org.wa9nnn.fdcluster.metrics.MetricsReporter
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.model.sync.{ClusterActor, NodeStatusQueueActor}
 import org.wa9nnn.fdcluster.store._
-import org.wa9nnn.fdcluster.store.network.{MultcastSenderActor, MulticastListener}
 import org.wa9nnn.fdcluster.store.network.cluster.ClusterState
-import org.wa9nnn.fdcluster.tools.RandomQsoGenerator
+import org.wa9nnn.fdcluster.store.network.{MultcastSenderActor, MulticastListener}
 import org.wa9nnn.util._
-import scalafx.application.JFXApp.Parameters
-import scalafx.beans.property.ObjectProperty
-import scalafx.collections.ObservableBuffer
 
 import javax.inject.{Named, Singleton}
 
@@ -57,6 +56,12 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
       bind[CommandLine].toInstance(new CommandLineScalaFxImpl(parameters))
       bind[MulticastListener].asEagerSingleton()
       val actorSystem = ActorSystem("default", config)
+      val deadLetterMonitorActor =
+        actorSystem.actorOf(Props[DeadLetterMonitorActor],
+          name = "deadlettermonitoractor")
+      actorSystem.eventStream.subscribe(
+        deadLetterMonitorActor, classOf[DeadLetter])
+      bind[QsoSource].to[StoreLogic]
       bind[NodeAddress]
         .toInstance(NodeAddress.apply(config))
       bind[Persistence]
@@ -68,9 +73,7 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
       bind[ObjectProperty[CurrentStation]]
         .annotatedWithName("currentStation")
         .toInstance(ObjectProperty(CurrentStation()))
-      bind[ObservableBuffer[QsoRecord]]
-        .annotatedWithName("allQsos")
-        .toInstance(new ObservableBuffer[QsoRecord])
+      bind[JournalPropertyWriting].to[JournalProperty]
       val runningTaskPane = new RunningTaskPane
       bind[RunningTaskPane].toInstance(runningTaskPane)
       bind[RunningTaskInfoConsumer].toInstance(runningTaskPane)
@@ -78,6 +81,10 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
       bind[Config].toInstance(actorSystem.settings.config)
       install(TypesafeConfigModule.fromConfigWithPackage(config, "org.wa9nnn"))
       bind[MetricsReporter].asEagerSingleton()
+
+      val qsoListeners = ScalaMultibinder.newSetBinder[AddQsoListener](binder)
+      qsoListeners.addBinding.to[StatsPane]
+      qsoListeners.addBinding.to[QsoCountCollector]
     }
     catch {
       case e: Throwable ⇒
@@ -108,6 +115,7 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
       new ClusterActor(nodeAddress, storeActor, nodestatusQueue, clusterState, contestProperty)),
       "cluster")
   }
+
   @Provides
   @Singleton
   @Named("multicastSender")
@@ -123,7 +131,8 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
   @Singleton
   @Named("nodeStatusQueue")
   def clusterStoreActor(actorSystem: ActorSystem): ActorRef = {
-    actorSystem.actorOf(Props(new NodeStatusQueueActor()))
+    actorSystem.actorOf(Props(new NodeStatusQueueActor()),
+      "nodeStatusQueue")
   }
 
 

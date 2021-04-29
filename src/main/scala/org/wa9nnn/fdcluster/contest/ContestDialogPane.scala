@@ -22,12 +22,12 @@ import org.wa9nnn.fdcluster.javafx.entry.Sections
 import org.wa9nnn.fdcluster.javafx.entry.section.Section
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.station.StationDialogLogic
-import scalafx.Includes._
-import scalafx.beans.property.{ObjectProperty, StringProperty}
-import scalafx.collections.ObservableBuffer
-import scalafx.geometry.{Insets, Pos}
-import scalafx.scene.control._
-import scalafx.scene.layout.VBox
+import _root_.scalafx.Includes._
+import _root_.scalafx.beans.property.{ObjectProperty, StringProperty}
+import _root_.scalafx.collections.ObservableBuffer
+import _root_.scalafx.geometry.{Insets, Pos}
+import _root_.scalafx.scene.control._
+import _root_.scalafx.scene.layout.VBox
 
 import javax.inject.Inject
 
@@ -44,7 +44,7 @@ case class ContestDialogPane @Inject()(contestProperty: ContestProperty,
 
   private val contestCB: ObjectProperty[String] = gridOfControls.addCombo[String](
     labelText = "Contest",
-    choices = ObservableBuffer(contestRules.contestNames),
+    choices = ObservableBuffer.from(contestRules.contestNames),
     defValue = Some(contestProperty.contestName)
   )
 
@@ -123,7 +123,7 @@ case class ContestDialogPane @Inject()(contestProperty: ContestProperty,
   lastGoc.add("From", contest.nodeAddress.display)
   lastGoc.add("At", contest.stamp)
   gridOfControls.add("Last Changed", lastGoc)
-  //  private val saveButton = new Button("Save to Cluster")
+
   gridOfControls.add(saveButton,
     1, gridOfControls.row.getAndIncrement())
 
@@ -131,10 +131,12 @@ case class ContestDialogPane @Inject()(contestProperty: ContestProperty,
     text = "Contest Settings"
     content = new VBox(new Label(
       """These should be set before the contest begins.
+        |Changes will be propagated to all nodes in the cluster including new
+        |or rejoined members.
         |Changing the Exchange after the contest begins will result in
         |busted QSOs!
-        |Changes will be propagated to all nodes in the cluster including new
-        |or rejoined members.""".stripMargin) {
+        |CallSign is not used until post contest. Changing during the contest is ok.
+        |""".stripMargin) {
       styleClass += "helpPane"
     }
       , gridOfControls)

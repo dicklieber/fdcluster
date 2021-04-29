@@ -3,7 +3,7 @@ package org.wa9nnn.fdcluster.model
 
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.util.Persistence
-import scalafx.beans.property.ObjectProperty
+import _root_.scalafx.beans.property.ObjectProperty
 
 import javax.inject.{Inject, Singleton}
 

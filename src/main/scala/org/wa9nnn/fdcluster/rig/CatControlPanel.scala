@@ -20,10 +20,10 @@
 package org.wa9nnn.fdcluster.rig
 
 import org.wa9nnn.fdcluster.rig.SerialPortSettings.{baudRates, defautBaudRate}
-import scalafx.collections.ObservableBuffer
-import scalafx.geometry.Insets
-import scalafx.scene.control._
-import scalafx.scene.layout.GridPane
+import _root_.scalafx.collections.ObservableBuffer
+import _root_.scalafx.geometry.Insets
+import _root_.scalafx.scene.control._
+import _root_.scalafx.scene.layout.GridPane
 
 class CatControlPanel() extends GridPane {
   def setValue(sps: SerialPortSettings): Unit = {
@@ -32,8 +32,8 @@ class CatControlPanel() extends GridPane {
   }
 
   private val serialPortNames: Seq[String] = Serial.ports.map(_.name)
-  val portComboBox = new ComboBox[String](ObservableBuffer[String](serialPortNames))
-  val baudRateComboBox = new ComboBox[String](ObservableBuffer[String](baudRates))
+  val portComboBox = new ComboBox[String](ObservableBuffer.from(serialPortNames))
+  val baudRateComboBox = new ComboBox[String](ObservableBuffer.from(baudRates))
   baudRateComboBox.setValue(defautBaudRate)
 
   //  val gridPane: GridPane = new GridPane() {

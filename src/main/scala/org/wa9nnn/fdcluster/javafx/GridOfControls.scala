@@ -20,13 +20,13 @@
 package org.wa9nnn.fdcluster.javafx
 
 import org.wa9nnn.util.InputHelper.{forceAllowed, forceCaps => ForceCaps, forceInt => ForceInt}
-import scalafx.Includes._
-import scalafx.beans.property.{IntegerProperty, ObjectProperty, StringProperty}
-import scalafx.collections.ObservableBuffer
-import scalafx.geometry.Insets
-import scalafx.scene.control._
-import scalafx.scene.layout.{GridPane, Pane}
-import scalafx.util.StringConverter
+import _root_.scalafx.Includes._
+import _root_.scalafx.beans.property.{IntegerProperty, ObjectProperty, StringProperty}
+import _root_.scalafx.collections.ObservableBuffer
+import _root_.scalafx.geometry.Insets
+import _root_.scalafx.scene.control._
+import _root_.scalafx.scene.layout.{GridPane, Pane}
+import _root_.scalafx.util.StringConverter
 
 import java.text.NumberFormat
 import java.time.Duration
@@ -115,7 +115,7 @@ class GridOfControls(gaps:(Int,Int) = 10 -> 10, insets:Insets = Insets(20, 100, 
                   tooltip: Option[String] = None,
                   converter: Option[StringConverter[T]] = None): ObjectProperty[T] = {
     val row = label(labelText)
-    val control: ComboBox[T] = new ComboBox[T]( ObservableBuffer[T](choices.toSeq))
+    val control: ComboBox[T] = new ComboBox[T]( ObservableBuffer.from(choices.toSeq))
     converter.foreach(control.converter = _)
     tooltip.foreach(control.tooltip = _)
 

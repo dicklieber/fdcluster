@@ -35,10 +35,10 @@ import org.wa9nnn.fdcluster.store.DebugClearStore
 import org.wa9nnn.fdcluster.tools.RandomQsoDialog
 import org.wa9nnn.fdcluster.{FileManager, QsoCountCollector}
 import org.wa9nnn.util.StructuredLogging
-import scalafx.Includes._
-import scalafx.application.Platform
-import scalafx.event.ActionEvent
-import scalafx.scene.control._
+import _root_.scalafx.Includes._
+import _root_.scalafx.application.Platform
+import _root_.scalafx.event.ActionEvent
+import _root_.scalafx.scene.control._
 
 import java.awt.Desktop
 import java.io.{PrintWriter, StringWriter}

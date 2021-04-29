@@ -22,7 +22,7 @@ package org.wa9nnn.fdcluster.cabrillo
 import com.wa9nnn.cabrillo.model.{SimpleTagValue, TagValue}
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.util.{StructuredLogging, Persistence}
-import scalafx.beans.property.ObjectProperty
+import _root_.scalafx.beans.property.ObjectProperty
 
 import javax.inject.Inject
 

@@ -1,6 +1,5 @@
-
 /*
- * Copyright (C) 2021  Dick Lieber, WA9NNN
+ * Copyright © 2021 Dick Lieber, WA9NNN
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,27 +13,20 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
-package org.wa9nnn.fdcluster.javafx.debug
+package org.wa9nnn.util
 
-import akka.actor.ActorRef
-import com.google.inject.name.Named
-import javax.inject.Inject
-import org.wa9nnn.fdcluster.store.DebugKillRandom
-import _root_.scalafx.scene.control.TextInputDialog
+import akka.actor.{Actor, DeadLetter}
 
-class DebugRemoveDialog @Inject()(@Named("store") store: ActorRef) extends TextInputDialog("1") {
-  title = "Debug Random QSO Killer"
-  headerText = "Randomly remove some QSOs from this node."
-  contentText = "Number top kill:"
+class DeadLetterMonitorActor extends Actor with StructuredLogging {
 
-  def apply(): Unit = {
+  def receive: Receive = {
+    case d: DeadLetter =>
+      logJson("DeadLetter")
+        .++("sender" -> d.sender, "recipient" -> d.recipient, "message" -> d.message)
+        .error()
 
-    val result = showAndWait()
-    result foreach { nToKill ⇒
-       store ! DebugKillRandom(nToKill.toInt)
-    }
+    case x => logger.info(s"Unexpected message: $x")
   }
 }

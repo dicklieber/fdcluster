@@ -206,7 +206,6 @@
 .helpPane {
     -fx-label-padding: 5;
     -fx-background-color: lightGrey;
-    -fx-border-style: round;
     -fx-border-radius: 15
 }
 

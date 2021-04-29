@@ -23,7 +23,7 @@ import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
 import org.specs2.specification.After
 import org.wa9nnn.fdcluster.FileManager
-import org.wa9nnn.fdcluster.contest.JournalManager
+import org.wa9nnn.fdcluster.contest.{JournalWriter, JournalProperty}
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.util.{CommandLine, PersistenceImpl}
@@ -41,13 +41,17 @@ class StoreMapImplSpec extends Specification with After with Mockito {
   val allQsos = new ObservableBuffer[QsoRecord]()
 
   val commandLine: CommandLine = mock[CommandLine].is("skipJournal") returns false
-  private val journalManager: JournalManager = mock[JournalManager]
+  private val journalWriter: JournalWriter = mock[JournalWriter]
+  private val journalProperty = mock[JournalProperty]
+  private val journalLoader: JournalLoader = mock[JournalLoader]
   private val storeMapImpl = new StoreLogic(na = NodeAddress(),
     ObjectProperty(QsoMetadata()),
-    allQsos = ObservableBuffer[QsoRecord](Seq.empty),
     multicastSender = mock[ActorRef],
     contestProperty = new ContestProperty(persistence, NodeAddress()),
-    journalManager = journalManager
+    journalManager = journalWriter,
+    journalProperty = journalProperty,
+    journalLoader = journalLoader,
+   listeners =  Set.empty
   )
 
 

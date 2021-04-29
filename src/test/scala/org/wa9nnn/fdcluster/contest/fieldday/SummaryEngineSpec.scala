@@ -4,15 +4,15 @@ import com.typesafe.config.ConfigFactory
 import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
 import org.wa9nnn.fdcluster.contest.Contest
-import org.wa9nnn.fdcluster.model.{AllContestRules, BandMode, BandModeFactory, ContestProperty, Exchange, Qso, QsoMetadata, QsoRecord}
+import org.wa9nnn.fdcluster.model._
+import org.wa9nnn.fdcluster.store.QsoSource
 import scalafx.beans.property.StringProperty
-import scalafx.collections.ObservableBuffer
 
 import java.awt.Desktop
 import java.io.StringWriter
 import java.nio.file.Files
 
-class SummaryEngineSpec extends Specification with Mockito{
+class SummaryEngineSpec extends Specification with Mockito {
   "SummaryEngine" should {
     "apply" in {
       val config = ConfigFactory.load()
@@ -28,7 +28,7 @@ class SummaryEngineSpec extends Specification with Mockito{
       val eventProperty: StringProperty = new StringProperty("FieldDay")
       contestProperty.contestNameProperty returns eventProperty
       val allContestRules = new AllContestRules(config, contestProperty)
-      val allQsos: ObservableBuffer[QsoRecord] = ObservableBuffer(
+      val allQsos: Seq[QsoRecord] = Seq(
         QsoRecord(Qso("KD9BYW", BandMode(), Exchange()), QsoMetadata()),
         QsoRecord(Qso("KD9BYW", BandMode("160m"), Exchange()), QsoMetadata()),
         QsoRecord(Qso("KD9BYW", BandMode(modeName = "DI"),  Exchange()), QsoMetadata()),
@@ -36,7 +36,10 @@ class SummaryEngineSpec extends Specification with Mockito{
         QsoRecord(Qso("W9BBQ", BandMode(modeName = "DI"), Exchange()), QsoMetadata()),
       )
 
-      val summaryEngine = new SummaryEngine(allContestRules, new BandModeBreakDown(allQsos, new BandModeFactory()))
+      val qsoSource = mock[QsoSource]
+      qsoSource.qsoIterator returns(allQsos)
+
+      val summaryEngine = new SummaryEngine(allContestRules, new BandModeBreakDown(qsoSource, new BandModeFactory()))
       val writer = new StringWriter
       summaryEngine(writer, contest, wfd)
       writer.close()
@@ -48,4 +51,6 @@ class SummaryEngineSpec extends Specification with Mockito{
       ok
     }
   }
+
+
 }

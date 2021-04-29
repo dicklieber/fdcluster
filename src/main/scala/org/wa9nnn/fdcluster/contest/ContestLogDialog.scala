@@ -17,7 +17,7 @@
 
 package org.wa9nnn.fdcluster.contest
 
-import scalafx.scene.control.Dialog
+import _root_.scalafx.scene.control.Dialog
 
 class ContestLogDialog extends Dialog[Journal]{
 

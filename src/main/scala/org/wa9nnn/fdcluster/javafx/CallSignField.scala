@@ -20,9 +20,9 @@
 package org.wa9nnn.fdcluster.javafx
 
 import org.wa9nnn.fdcluster.javafx.entry.ActionResult
-import scalafx.Includes._
-import scalafx.scene.control.TextField
-import scalafx.scene.input.{KeyCode, KeyEvent}
+import _root_.scalafx.Includes._
+import _root_.scalafx.scene.control.TextField
+import _root_.scalafx.scene.input.{KeyCode, KeyEvent}
 
 /**
  * Callsign entry field

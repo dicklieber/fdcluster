@@ -22,14 +22,14 @@ package org.wa9nnn.fdcluster.javafx.menu
 import javafx.scene.control.DialogPane
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.util.Persistence
-import scalafx.Includes._
-import scalafx.beans.property.StringProperty
-import scalafx.event.ActionEvent
-import scalafx.geometry.Insets
-import scalafx.scene.control._
-import scalafx.scene.layout.GridPane
-import scalafx.stage.FileChooser
-import scalafx.stage.FileChooser.ExtensionFilter
+import _root_.scalafx.Includes._
+import _root_.scalafx.beans.property.StringProperty
+import _root_.scalafx.event.ActionEvent
+import _root_.scalafx.geometry.Insets
+import _root_.scalafx.scene.control._
+import _root_.scalafx.scene.layout.GridPane
+import _root_.scalafx.stage.FileChooser
+import _root_.scalafx.stage.FileChooser.ExtensionFilter
 
 import java.io.File
 import javax.inject.Inject

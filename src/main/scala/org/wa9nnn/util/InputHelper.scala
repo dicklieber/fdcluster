@@ -19,10 +19,10 @@
 
 package org.wa9nnn.util
 
-import scalafx.Includes._
-import scalafx.scene.control.{TextField, TextFormatter, TextInputControl}
-import scalafx.scene.input.KeyEvent
-import scalafx.util.converter.FormatStringConverter
+import _root_.scalafx.Includes._
+import _root_.scalafx.scene.control.{TextField, TextFormatter, TextInputControl}
+import _root_.scalafx.scene.input.KeyEvent
+import _root_.scalafx.util.converter.FormatStringConverter
 
 import java.text.NumberFormat
 import scala.util.matching.Regex

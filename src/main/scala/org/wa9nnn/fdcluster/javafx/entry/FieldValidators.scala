@@ -19,8 +19,8 @@
 
 package org.wa9nnn.fdcluster.javafx.entry
 
-import scalafx.beans.property.StringProperty
-import scalafx.scene.control.TextInputControl
+import _root_.scalafx.beans.property.StringProperty
+import _root_.scalafx.scene.control.TextInputControl
 
 import scala.util.matching.Regex
 

@@ -23,10 +23,10 @@ import javafx.collections.ObservableList
 import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
 import org.wa9nnn.fdcluster.model.{BandModeFactory, CurrentStationProperty, KnownOperatorsProperty}
 import org.wa9nnn.util.InputHelper.forceCaps
-import scalafx.Includes._
-import scalafx.event.ActionEvent
-import scalafx.scene.control.{ComboBox, Control, Label, TextField}
-import scalafx.scene.layout.GridPane
+import _root_.scalafx.Includes._
+import _root_.scalafx.event.ActionEvent
+import _root_.scalafx.scene.control.{ComboBox, Control, Label, TextField}
+import _root_.scalafx.scene.layout.GridPane
 
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject

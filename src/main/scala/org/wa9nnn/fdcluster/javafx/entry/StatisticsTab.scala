@@ -7,9 +7,9 @@ import org.scalafx.extras.onFX
 import org.wa9nnn.fdcluster.FieldCount.Sorter
 import org.wa9nnn.fdcluster.{FieldCount, QsoCountCollector, StatCollector}
 import org.wa9nnn.util.StructuredLogging
-import scalafx.geometry.Orientation
-import scalafx.scene.control.{Button, Label, Tab}
-import scalafx.scene.layout._
+import _root_.scalafx.geometry.Orientation
+import _root_.scalafx.scene.control.{Button, Label, Tab}
+import _root_.scalafx.scene.layout._
 
 import java.time.Duration
 import javax.inject.Singleton

@@ -23,7 +23,7 @@ import java.time.LocalDateTime
 
 import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.model.TimeFormat.formatLocalDateTime
-import scalafx.scene.control.TableCell
+import _root_.scalafx.scene.control.TableCell
 
 class FdClusterTableCell[S, T] extends TableCell[Row, T] with LazyLogging {
   item.onChange { (_, _, newValue) =>

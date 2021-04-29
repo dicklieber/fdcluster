@@ -20,9 +20,9 @@
 package org.wa9nnn.fdcluster.javafx.entry.section
 
 import org.wa9nnn.fdcluster.javafx.entry.Sections
-import scalafx.geometry.Orientation.Vertical
-import scalafx.scene.control.{Button, ButtonBase}
-import scalafx.scene.layout.{Pane, TilePane, VBox}
+import _root_.scalafx.geometry.Orientation.Vertical
+import _root_.scalafx.scene.control.{Button, ButtonBase}
+import _root_.scalafx.scene.layout.{Pane, TilePane, VBox}
 
 /**
  * A scalaFx pane that shows sections and allows mouse selection.

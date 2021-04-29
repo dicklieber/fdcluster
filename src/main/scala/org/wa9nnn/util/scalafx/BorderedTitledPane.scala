@@ -17,10 +17,10 @@
 
 package org.wa9nnn.util.scalafx
 
-import scalafx.geometry.Pos
-import scalafx.scene.Node
-import scalafx.scene.control.Label
-import scalafx.scene.layout.StackPane
+import _root_.scalafx.geometry.Pos
+import _root_.scalafx.scene.Node
+import _root_.scalafx.scene.control.Label
+import _root_.scalafx.scene.layout.StackPane
 
 case class BorderedTitledPane( title: String, content: Node) extends StackPane {
   alignment = Pos.TopCenter

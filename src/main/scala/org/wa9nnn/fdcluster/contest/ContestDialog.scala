@@ -21,9 +21,9 @@ package org.wa9nnn.fdcluster.contest
 import com.google.inject.Injector
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import org.wa9nnn.util.StructuredLogging
-import scalafx.Includes._
-import scalafx.scene.control._
-import scalafx.scene.layout.HBox
+import _root_.scalafx.Includes._
+import _root_.scalafx.scene.control._
+import _root_.scalafx.scene.layout.HBox
 
 import javax.inject.Inject
 

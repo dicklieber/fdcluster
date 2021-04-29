@@ -21,8 +21,8 @@ package org.wa9nnn.fdcluster.javafx.menu
 import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.{AppInfo, BuildInfo, FileManager}
 import org.wa9nnn.fdcluster.javafx.GridOfControls
-import scalafx.scene.control.{Hyperlink, _}
-import scalafx.scene.layout.{HBox, VBox}
+import _root_.scalafx.scene.control.{Hyperlink, _}
+import _root_.scalafx.scene.layout.{HBox, VBox}
 
 import java.awt.Desktop
 import java.lang.management.ManagementFactory

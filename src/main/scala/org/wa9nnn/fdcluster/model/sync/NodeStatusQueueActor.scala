@@ -1,21 +1,35 @@
 package org.wa9nnn.fdcluster.model.sync
 
-import akka.actor.Actor
+import akka.actor.{Actor, ActorRef}
 import org.wa9nnn.util.StructuredLogging
 
 /**
  * Wraps the [[NodeStatusQueue]] to provide the thread-safety of an actor.
  */
-class NodeStatusQueueActor extends Actor with StructuredLogging{
+class NodeStatusQueueActor extends Actor with StructuredLogging {
   private val nodeStatusQueue = new NodeStatusQueue
 
   override def receive: Receive = {
     case ns: NodeStatus =>
       nodeStatusQueue.add(ns)
     case NextNodeStatus =>
-    val maybeStatus = nodeStatusQueue.take()
+      val maybeStatus = nodeStatusQueue.take()
       logger.debug(s"Returning: $maybeStatus")
       sender ! maybeStatus
+
+    case x =>
+      val s: ActorRef = sender()
+      logger.info(s"Unexpected message: $x from ${s.path}")
+  }
+
+  override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
+    logger.error(message.toString, reason)
+    super.preRestart(reason, message)
+  }
+
+  override def postStop(): Unit = {
+    logger.error("postStop")
+    super.postStop()
   }
 }
 

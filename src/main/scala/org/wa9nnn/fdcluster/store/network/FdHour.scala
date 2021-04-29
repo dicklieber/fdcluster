@@ -22,7 +22,7 @@ package org.wa9nnn.fdcluster.store.network
 import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.javafx.cluster.LabelSource
 import org.wa9nnn.util.TimeHelpers.{msHour, utcZoneId}
-import scalafx.scene.control.Labeled
+import _root_.scalafx.scene.control.Labeled
 
 import java.time.{Instant, ZonedDateTime}
 import scala.collection.concurrent.TrieMap

@@ -2,7 +2,7 @@ package org.wa9nnn.util
 
 import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
-import scalafx.application.JFXApp.Parameters
+import _root_.scalafx.application.JFXApp.Parameters
 
 class CommandLineScalaFxImplSpec extends Specification with Mockito {
   val parameters: Parameters = mock[Parameters]

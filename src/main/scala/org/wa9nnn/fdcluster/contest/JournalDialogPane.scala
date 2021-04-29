@@ -19,20 +19,30 @@ package org.wa9nnn.fdcluster.contest
 
 import org.wa9nnn.fdcluster.FileManager
 import org.wa9nnn.fdcluster.javafx.GridOfControls
-import scalafx.scene.control.{Button, Hyperlink, Label, TitledPane}
-import scalafx.scene.layout.VBox
-import scalafx.Includes._
+import _root_.scalafx.scene.control.{Button, Hyperlink, Label, TitledPane}
+import _root_.scalafx.scene.layout.VBox
+import _root_.scalafx.Includes._
+import scalafx.geometry.Insets
+
 import java.awt.Desktop
 import javax.inject.Inject
 
-class JournalDialogPane @Inject()(journalFileProperty: JournalFileProperty, fileManager: FileManager) {
+class JournalDialogPane @Inject()(journalProperty: JournalProperty, fileManager: FileManager) {
   val gridOfControls = new GridOfControls()
   private val desktop = Desktop.getDesktop
 
-  gridOfControls.add("Current", journalFileProperty.fileName)
+  gridOfControls.add("Current", journalProperty.fileName)
   private val newJournalButton = new Button("New Journal")
   gridOfControls.add(newJournalButton,
     1, gridOfControls.row.getAndIncrement())
+
+  val lastGoc = new GridOfControls(5 -> 5, Insets(5.0))
+  journalProperty.maybeJournal.foreach{journal =>
+    lastGoc.add("From", journal.nodeAddress.display)
+    lastGoc.add("At", journal.stamp)
+    gridOfControls.add("Last Changed", lastGoc)
+  }
+
   gridOfControls.addControl("Journal Files", new Hyperlink(fileManager.journalDir.toString) {
     onAction = event => {
       desktop.open(fileManager.directory.toFile)
@@ -40,7 +50,7 @@ class JournalDialogPane @Inject()(journalFileProperty: JournalFileProperty, file
   })
 
   newJournalButton.onAction = () =>
-    journalFileProperty.newJournal()
+    journalProperty.newJournal()
 
   val pane: TitledPane = new TitledPane() {
     text = "Journal"

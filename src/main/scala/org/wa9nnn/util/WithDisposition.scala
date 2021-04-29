@@ -19,8 +19,8 @@
 
 package org.wa9nnn.util
 
-import scalafx.css.Styleable
-import scalafx.scene.control.Labeled
+import _root_.scalafx.css.Styleable
+import _root_.scalafx.scene.control.Labeled
 
 /**
  * A Control (actually any [[Styleable]]) that can be happy or sad.

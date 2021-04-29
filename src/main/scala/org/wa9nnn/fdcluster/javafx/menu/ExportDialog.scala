@@ -25,8 +25,8 @@ import org.wa9nnn.fdcluster.javafx.FileSavePanel
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.{AdifExportRequest, ContestProperty}
 import org.wa9nnn.util.Persistence
-import scalafx.Includes._
-import scalafx.scene.control._
+import _root_.scalafx.Includes._
+import _root_.scalafx.scene.control._
 
 import javax.inject.Inject
 

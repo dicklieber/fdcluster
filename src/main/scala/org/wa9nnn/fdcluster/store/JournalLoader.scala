@@ -19,24 +19,22 @@
 
 package org.wa9nnn.fdcluster.store
 
+import akka.actor.ActorRef
 import com.google.inject.name.Named
 import com.typesafe.scalalogging.LazyLogging
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics
-import org.wa9nnn.fdcluster.contest.JournalManager
+import org.wa9nnn.fdcluster.contest.JournalProperty
 import org.wa9nnn.fdcluster.javafx.entry.RunningTaskInfoConsumer
 import org.wa9nnn.fdcluster.javafx.runningtask.RunningTask
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.QsoRecord
 import org.wa9nnn.util.BoolConverter.s2b
 import play.api.libs.json.Json
-import scalafx.collections.ObservableBuffer
 
 import java.nio.file.{Files, Path}
 import java.time.{Duration, Instant}
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 import scala.io.Source
 import scala.util.Using
 
@@ -49,46 +47,45 @@ import scala.util.Using
  * @param journalManager          access to journal
  * @param runningTaskInfoConsumer progress UI
  */
-class JournalLoader @Inject()(@Named("allQsos") allQsos: ObservableBuffer[QsoRecord],
-                              journalManager: JournalManager,
+class JournalLoader @Inject()(@Named("store") store: ActorRef,
+                              journalProperty: JournalProperty,
                               val runningTaskInfoConsumer: RunningTaskInfoConsumer) {
-  def apply(): Future[BufferReady.type] = {
-    val future = new Task(runningTaskInfoConsumer)()
-    future
+  def startLoad(qsoAdder: QsoAdder): Unit = {
+    new Task(runningTaskInfoConsumer)(qsoAdder)
+
   }
 
   class Task(val runningTaskInfoConsumer: RunningTaskInfoConsumer) extends RunningTask {
 
     override def taskName: String = "Journal Loader"
 
-    def apply(): Future[BufferReady.type] = {
-      Future {
-        try {
-          if (System.getProperty("skipJournal", "false")) throw new SkipJournal
+    def apply(qsoAdder: QsoAdder): Unit = {
+      try {
+        if (System.getProperty("skipJournal", "false")) throw new SkipJournal
 
-          if (!journalManager.hasJournal) throw new NoJournalDefined
-          val journalFilePath: Path = journalManager.journalPath
-          Files.createDirectories(journalFilePath.getParent)
-          if (!Files.isReadable(journalFilePath)) throw EmptyJournal(journalFilePath)
+        if (!journalProperty.hasJournal) throw new NoJournalDefined
+        val journalFilePath: Path = journalProperty.filePath
+        Files.createDirectories(journalFilePath.getParent)
+        if (!Files.isReadable(journalFilePath)) throw EmptyJournal(journalFilePath)
 
 
-          //          if (Files.isReadable(journalFilePath) && Files.size(journalFilePath) > 0) {
-          val typicalQsoLength = 363 // empirically determined by loading journal then divided file size by number of QSOs
-          // see log message with meanLineLength to get latest.
-          totalIterations = Files.size(journalFilePath) / typicalQsoLength
-          processLines(journalFilePath)
-        } catch {
-          case e:JournalException =>
-            e.log()
-        }
-        finally {
-          done()
-        }
-        BufferReady // returned to StoreActor
+        //          if (Files.isReadable(journalFilePath) && Files.size(journalFilePath) > 0) {
+        val typicalQsoLength = 363 // empirically determined by loading journal then divided file size by number of QSOs
+        // see log message with meanLineLength to get latest.
+        totalIterations = Files.size(journalFilePath) / typicalQsoLength
+        processLines(journalFilePath, qsoAdder)
+      } catch {
+        case e: JournalException =>
+          e.log()
       }
+      finally {
+        done()
+      }
+      store ! BufferReady // returned to StoreActor
     }
 
-    private def processLines(journalFilePath: Path) = {
+
+    private def processLines(journalFilePath: Path, qsoAdder: QsoAdder) = {
       val qsoLineLengths = new SummaryStatistics()
       val lineNumber = new AtomicInteger()
       val errorCount = new AtomicInteger()
@@ -98,10 +95,10 @@ class JournalLoader @Inject()(@Named("allQsos") allQsos: ObservableBuffer[QsoRec
             qsoLineLengths.addValue(line.length)
             lineNumber.incrementAndGet()
             try {
-              addOne()
+              countOne()
               val qsoRecord = Json.parse(line).as[QsoRecord]
-              allQsos.addOne(qsoRecord) // todo consider batching up and using addAll instead of addOne
-
+              //              allQsos.addOne(qsoRecord) // todo consider batching up and using addAll instead of addOne
+              qsoAdder.addRecord(qsoRecord)
             } catch {
               case e: Exception =>
                 val err = errorCount.incrementAndGet()

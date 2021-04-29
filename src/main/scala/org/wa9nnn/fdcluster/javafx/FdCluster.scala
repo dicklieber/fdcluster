@@ -29,12 +29,12 @@ import org.wa9nnn.fdcluster.javafx.entry.{EntryScene, RunningTaskPane, Statistic
 import org.wa9nnn.fdcluster.javafx.menu.FdClusterMenu
 import org.wa9nnn.fdcluster.model.{AllContestRules, ContestProperty, NodeAddress}
 import org.wa9nnn.util.{CommandLine, StructuredLogging}
-import scalafx.application.JFXApp.PrimaryStage
-import scalafx.application.{JFXApp, Platform}
-import scalafx.scene.Scene
-import scalafx.scene.control.{Tab, TabPane}
-import scalafx.scene.image.{Image, ImageView}
-import scalafx.scene.layout.{BorderPane, GridPane}
+import _root_.scalafx.application.JFXApp.PrimaryStage
+import _root_.scalafx.application.{JFXApp, Platform}
+import _root_.scalafx.scene.Scene
+import _root_.scalafx.scene.control.{Tab, TabPane}
+import _root_.scalafx.scene.image.{Image, ImageView}
+import _root_.scalafx.scene.layout.{BorderPane, GridPane}
 
 /**
  * Main for FDLog

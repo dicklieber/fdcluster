@@ -19,13 +19,12 @@
 
 package org.wa9nnn.fdcluster.adif
 
-import com.google.inject.name.Named
 import org.wa9nnn.fdcluster.BuildInfo
 import org.wa9nnn.fdcluster.javafx.entry.RunningTaskInfoConsumer
 import org.wa9nnn.fdcluster.javafx.runningtask.RunningTask
 import org.wa9nnn.fdcluster.model.{AdifExportRequest, QsoRecord}
+import org.wa9nnn.fdcluster.store.QsoSource
 import org.wa9nnn.util.{StructuredLogging, TimeHelpers}
-import scalafx.collections.ObservableBuffer
 
 import java.io.PrintWriter
 import java.nio.file.Files
@@ -34,7 +33,7 @@ import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import scala.util.{Try, Using}
 
-class AdiExporter @Inject()(@Named("allQsos") allQsos: ObservableBuffer[QsoRecord], val runningTaskInfoConsumer: RunningTaskInfoConsumer) extends StructuredLogging with RunningTask {
+class AdiExporter @Inject()(qsoSource: QsoSource, val runningTaskInfoConsumer: RunningTaskInfoConsumer) extends StructuredLogging with RunningTask {
   val taskName = "Export ADIF"
 
   private def print(s: String = "")(implicit writer: PrintWriter): Unit = {
@@ -69,10 +68,10 @@ class AdiExporter @Inject()(@Named("allQsos") allQsos: ObservableBuffer[QsoRecor
 
 
       //records
-      allQsos.foreach { qso: QsoRecord =>
+      qsoSource.qsoIterator.foreach { qso: QsoRecord =>
         AdifQsoAdapter(qso.qso).entries.toSeq.sorted.foreach(adifentry =>
           print(adifentry))
-        addOne()
+        countOne()
         print(AdifResult.eor)
         print()
       }

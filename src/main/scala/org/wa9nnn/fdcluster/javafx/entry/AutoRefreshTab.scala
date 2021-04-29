@@ -3,7 +3,7 @@ package org.wa9nnn.fdcluster.javafx.entry
 import akka.actor.{ActorSystem, Cancellable}
 import org.scalafx.extras.onFX
 import org.wa9nnn.util.StructuredLogging
-import scalafx.scene.control.Tab
+import _root_.scalafx.scene.control.Tab
 
 import java.time.Duration
 import scala.concurrent.ExecutionContextExecutor

@@ -19,17 +19,14 @@
 
 package org.wa9nnn.fdcluster.dupsheet
 
-import com.google.inject.name.Named
-import org.wa9nnn.fdcluster.contest.Contest
 import org.wa9nnn.fdcluster.model.{ContestProperty, QsoRecord}
+import org.wa9nnn.fdcluster.store.QsoSource
 import org.wa9nnn.util.StructuredLogging
-import scalafx.beans.property.ObjectProperty
-import scalafx.collections.ObservableBuffer
 
 import java.io.PrintWriter
 import javax.inject.{Inject, Singleton}
 @Singleton
-class GenerateDupSheet @Inject()(@Named("allQsos") allQsos: ObservableBuffer[QsoRecord],
+class GenerateDupSheet @Inject()(qsoSource: QsoSource,
                                  contestProperty:ContestProperty) extends StructuredLogging {
   /**
    *
@@ -43,7 +40,7 @@ class GenerateDupSheet @Inject()(@Named("allQsos") allQsos: ObservableBuffer[Qso
     pw.print("Dupe Sheet\r\n")
 
     var count = 0
-    allQsos.groupBy(qsoRecord =>
+    qsoSource.qsoIterator.groupBy(qsoRecord =>
       qsoRecord.qso.bandMode)
       .foreach { case (bandMode, ob) =>
         val head = s"$bandMode"
@@ -51,7 +48,7 @@ class GenerateDupSheet @Inject()(@Named("allQsos") allQsos: ObservableBuffer[Qso
         val callSigns = ob.map((qsoRecord: QsoRecord) =>
           qsoRecord.qso.callSign
         )
-        callSigns.sorted.foreach(cs => {
+        callSigns.toSeq.sorted.foreach(cs => {
           pw.print(s"$cs\r\n")
           count += 1
         })

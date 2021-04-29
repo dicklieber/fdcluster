@@ -23,7 +23,7 @@ import java.time.LocalDateTime
 
 import org.wa9nnn.fdcluster.model.TimeFormat.formatLocalDateTime
 import org.wa9nnn.util.CssClassProvider
-import scalafx.scene.control.Labeled
+import _root_.scalafx.scene.control.Labeled
 
 import scala.collection.JavaConverters._
 /**

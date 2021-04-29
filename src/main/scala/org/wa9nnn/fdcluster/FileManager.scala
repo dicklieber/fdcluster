@@ -20,7 +20,6 @@
 package org.wa9nnn.fdcluster
 
 import com.github.racc.tscg.TypesafeConfig
-import org.wa9nnn.fdcluster.contest.JournalFileProperty
 import org.wa9nnn.fdcluster.model.{ContestProperty, ExportFile}
 
 import java.nio.file.{Path, Paths}

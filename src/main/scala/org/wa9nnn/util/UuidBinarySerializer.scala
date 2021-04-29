@@ -1,12 +1,12 @@
 package org.wa9nnn.util
 
-import org.apache.commons.codec.binary.{Base64InputStream, Base64OutputStream}
+import org.apache.commons.codec.binary.Base64OutputStream
 
-import java.io.{ByteArrayInputStream, ByteArrayOutputStream}
+import java.io.ByteArrayOutputStream
 import java.util.UUID
-import java.util.zip.{GZIPInputStream, GZIPOutputStream}
+import java.util.zip.GZIPOutputStream
 import scala.collection.mutable.ArrayBuffer
-import scala.util.{Try, Using}
+import scala.util.Using
 
 object UuidBinarySerializer {
   /**

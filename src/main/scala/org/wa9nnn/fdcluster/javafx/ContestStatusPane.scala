@@ -3,8 +3,8 @@ package org.wa9nnn.fdcluster.javafx
 import akka.actor.ActorSystem
 import org.scalafx.extras.onFX
 import org.wa9nnn.fdcluster.model.AllContestRules
-import scalafx.scene.control.Label
-import scalafx.scene.layout.HBox
+import _root_.scalafx.scene.control.Label
+import _root_.scalafx.scene.layout.HBox
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.duration._

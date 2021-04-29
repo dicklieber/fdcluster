@@ -19,13 +19,13 @@
 package org.wa9nnn.fdcluster.javafx.entry
 
 import org.wa9nnn.fdcluster.javafx.entry.section.Section
-import scalafx.collections.ObservableBuffer
+import _root_.scalafx.collections.ObservableBuffer
 
 import scala.language.postfixOps
 
 object Sections {
   def forChoice(): ObservableBuffer[Section] = {
-    ObservableBuffer[Section](
+    ObservableBuffer.from(
       Sections.sortedByCode
     )
   }

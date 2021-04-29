@@ -27,10 +27,10 @@ import org.wa9nnn.fdcluster.model.{BandMode, QsoMetadata}
 import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
 import org.wa9nnn.fdcluster.store.{Search, SearchResult}
 import org.wa9nnn.util.{StructuredLogging, WithDisposition}
-import scalafx.application.Platform
-import scalafx.beans.property.ObjectProperty
-import scalafx.scene.control.Label
-import scalafx.scene.layout.{Pane, VBox}
+import _root_.scalafx.application.Platform
+import _root_.scalafx.beans.property.ObjectProperty
+import _root_.scalafx.scene.control.Label
+import _root_.scalafx.scene.layout.{Pane, VBox}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

@@ -24,9 +24,9 @@ import com.typesafe.config.Config
 import org.wa9nnn.fdcluster.cabrillo.CabrilloFieldsSource._
 import org.wa9nnn.fdcluster.model.BandModeFactory
 import org.wa9nnn.util.StructuredLogging
-import scalafx.beans.property.StringProperty
-import scalafx.scene.control.{ComboBox, Control, Label, TextField, TextArea => fxTextArea}
-import scalafx.scene.layout.GridPane
+import _root_.scalafx.beans.property.StringProperty
+import _root_.scalafx.scene.control.{ComboBox, Control, Label, TextField, TextArea => fxTextArea}
+import _root_.scalafx.scene.layout.GridPane
 
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject

@@ -23,7 +23,7 @@ import com.typesafe.config.{Config, ConfigFactory}
 import com.wa9nnn.util.TimeConverters.instantDisplayUTCLocal
 import org.wa9nnn.fdcluster.contest.FieldDaySchedule
 import org.wa9nnn.util.{DurationFormat, Message}
-import scalafx.beans.property.{ObjectProperty, StringProperty}
+import _root_.scalafx.beans.property.{ObjectProperty, StringProperty}
 
 import java.time.{Duration, Instant}
 import javax.inject.{Inject, Singleton}

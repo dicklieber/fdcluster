@@ -7,9 +7,9 @@ import org.apache.commons.codec.binary.{Base64InputStream, Base64OutputStream}
 import org.wa9nnn.fdcluster.model.MessageFormats.Uuid
 import org.wa9nnn.fdcluster.model.{NodeAddress, QsoMetadata, QsoRecord}
 import play.api.libs.json.Json
-import scalafx.beans.property.ObjectProperty
-import scalafx.collections.ObservableBuffer
-import scalafx.Includes._
+import _root_.scalafx.beans.property.ObjectProperty
+import _root_.scalafx.collections.ObservableBuffer
+import _root_.scalafx.Includes._
 import org.wa9nnn.fdcluster.model.MessageFormats._
 
 import java.io.{BufferedReader, ByteArrayInputStream, ByteArrayOutputStream, InputStreamReader, StringWriter}
