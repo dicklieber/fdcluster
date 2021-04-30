@@ -28,7 +28,6 @@ sources in doc in Compile := List()
 
 scalaVersion := "2.13.5"
 
-//mainClass in(Compile, run) := Some("org.wa9nnn.fdcluster.javafx.entry.FdCluster")
 mainClass in Compile := Some("org.wa9nnn.fdcluster.javafx.entry.FdCluster")
 
 

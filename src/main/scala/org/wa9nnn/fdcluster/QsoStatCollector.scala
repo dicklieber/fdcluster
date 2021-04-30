@@ -32,12 +32,13 @@ class QsoCountCollector @Inject()() extends AddQsoListener with StructuredLoggin
   def clear():Unit =
   collectors= Seq(
       StatCollector("Section", "ARRL Section Worked"){_.qso.exchange.sectionCode},
-      StatCollector("Area","US callSign area, CA for Canada or DX for other places."){ q => Sections.callAreaForSection(q.qso.exchange.sectionCode)},
-      StatCollector("Band","Worked"){_.qso.bandMode.bandName},
-      StatCollector("Mode","Contest Mode"){_.qso.bandMode.modeName},
-      StatCollector("Operator", "Operator's Callsign. As set on the Entry Tab."){_.qsoMetadata.operator},
-      StatCollector("Rig", "Rig description. As set on the Entry Tab."){_.qsoMetadata.rig},
-      StatCollector("Antenna","Antenna. As set on the Entry Tab."){_.qsoMetadata.ant},
+    StatCollector("Area","US callSign area, CA for Canada or DX for other places."){ q => Sections.callAreaForSection(q.qso.exchange.sectionCode)},
+    StatCollector("Band","Worked"){_.qso.bandMode.bandName},
+    StatCollector("Mode","Contest Mode"){_.qso.bandMode.modeName},
+    StatCollector("Operator", "Operator's Callsign. As set on the Entry Tab."){_.qsoMetadata.operator},
+    StatCollector("Rig", "Rig description. As set on the Entry Tab."){_.qsoMetadata.rig},
+    StatCollector("Antenna","Antenna. As set on the Entry Tab."){_.qsoMetadata.ant},
+    StatCollector("Node", "In Cluster"){_.qsoMetadata.node},
   )
   //@formatter:on
 
