@@ -21,6 +21,7 @@ package org.wa9nnn.fdcluster.adif
 
 import org.wa9nnn.fdcluster.model.{BandMode, Exchange, Qso}
 import org.wa9nnn.fdcluster.{model, _}
+import org.wa9nnn.fdcluster.model.CallSign.s2cs
 import org.wa9nnn.util.TimeHelpers.utcZoneId
 
 import java.time.format.DateTimeFormatter
@@ -86,7 +87,7 @@ object AdifQsoAdapter {
     entries += "APP_FDC_UUID" -> qso.uuid.toString
     entries += "QSO_DATE" -> zdt.toLocalDate.format(BASIC_ISO_DATE)
     entries += "TIME_ON" -> zdt.toLocalTime.format(timeFormat)
-    entries += "CALL" -> qso.callSign
+    entries += "CALL" -> qso.callSign.callSign
     entries += "BAND" -> qso.bandMode.bandName
     entries += "MODE" -> qso.bandMode.modeName
     entries += "CLASS" -> qso.exchange.entryClass

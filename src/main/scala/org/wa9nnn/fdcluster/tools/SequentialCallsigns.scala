@@ -1,6 +1,6 @@
 package org.wa9nnn.fdcluster.tools
 
-import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
+import org.wa9nnn.fdcluster.model.CallSign
 
 import scala.language.{implicitConversions, postfixOps}
 
@@ -21,18 +21,18 @@ class SequentialCallsigns {
             SequentialChar(any,
               SequentialChar(start))))))
 
-  def next(): CallSign = {
-    stackedChars.next.replace(" ", "")
+  def next(): String = {
+   stackedChars.next.replace(" ", "")
   }
 }
 
 case class SequentialChar private(chars: String, parent: Option[SequentialChar] = None) {
   val reset = "↺"
-  private val values: CallSign = chars + reset
+  private val values: String = chars + reset
   private val it: Iterator[String] = Iterator.continually(values.map(_.toString).toList).flatten
 
   def pvalue(): String = {
-  val r: CallSign =   parent match {
+  val r: String =   parent match {
       case Some(value: SequentialChar) =>
         value.next
       case None =>
@@ -43,11 +43,11 @@ case class SequentialChar private(chars: String, parent: Option[SequentialChar] 
 
   var parentValue:CallSign = pvalue()
 
-  def next: CallSign = {
+  def next: String = {
     val next1: String = it.next
     val str = if (next1 == reset) {
       parentValue = pvalue()
-      it.next //skip past resest
+      it.next //skip past reset
     } else {
       next1
     }

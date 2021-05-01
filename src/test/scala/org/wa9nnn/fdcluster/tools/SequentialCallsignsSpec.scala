@@ -1,7 +1,7 @@
 package org.wa9nnn.fdcluster.tools
 
 import org.specs2.mutable.Specification
-import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
+import org.wa9nnn.fdcluster.model.CallSign
 import org.wa9nnn.fdcluster.tools.SequentialChar._
 
 class SequentialCallsignsSpec extends Specification {

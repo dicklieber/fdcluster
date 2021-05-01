@@ -20,7 +20,7 @@
 package org.wa9nnn.fdcluster.model
 
 import org.wa9nnn.fdcluster.BuildInfo
-import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
+import org.wa9nnn.fdcluster.model.CallSign
 
 
 /**

@@ -30,6 +30,7 @@ import org.wa9nnn.fdcluster.store.JsonContainer
 import org.wa9nnn.fdcluster.store.network.FdHour
 import org.wa9nnn.util.UuidUtil.uuidFormat._
 import play.api.libs.json.{Format, Json}
+import org.wa9nnn.fdcluster.model.CallSign.callSignFormat
 
 import java.time.LocalDateTime
 import java.time.format.{DateTimeFormatter, FormatStyle}
@@ -90,7 +91,7 @@ object MessageFormats {
   implicit val CabrilloExportRequestFormat: Format[CabrilloExportRequest] = Json.format[CabrilloExportRequest]
 
 
-  type CallSign = String
+//  type CallSign = String
   type Uuid = UUID
   type Digest = String
   type Node = String
@@ -101,6 +102,4 @@ object TimeFormat {
   implicit def formatLocalDateTime(ldt: LocalDateTime): String = {
     ldt.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT))
   }
-
-
 }

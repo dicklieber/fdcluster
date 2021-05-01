@@ -19,7 +19,7 @@
 
 package org.wa9nnn.fdcluster.tools
 
-import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
+import org.wa9nnn.fdcluster.model.CallSign
 
 import java.security.SecureRandom
 import scala.collection.{AbstractIterable, IterableFactoryDefaults}

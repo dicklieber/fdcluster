@@ -37,6 +37,7 @@ import org.wa9nnn.fdcluster.javafx.menu.ImportRequest
 import org.wa9nnn.fdcluster.javafx.sync._
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
+import org.wa9nnn.fdcluster.model.CallSign._
 import org.wa9nnn.fdcluster.store.network.FdHour
 import org.wa9nnn.fdcluster.tools.{GenerateRandomQsos, RandomQsoGenerator}
 import org.wa9nnn.util.ImportTask
@@ -70,8 +71,9 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
       val addResult: AddResult = store.add(potentialQso)
       addResult match {
         case Added(addedQsoRecord) ⇒
-          val record = DistributedQsoRecord(addedQsoRecord, nodeAddress, store.size)
-          multicastSender ! JsonContainer(record)
+          val record: DistributedQsoRecord = DistributedQsoRecord(addedQsoRecord, nodeAddress, store.size)
+          val jsonContainer = JsonContainer(record)
+          multicastSender ! jsonContainer
         case unexpected ⇒
           logger.error(s"Received: $unexpected")
       }

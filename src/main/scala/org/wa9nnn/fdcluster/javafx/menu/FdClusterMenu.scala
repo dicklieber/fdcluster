@@ -82,18 +82,6 @@ class FdClusterMenu @Inject()(
       store ! DebugClearStore
     }
   }
-  private val debugDemoBulkMenuItem = new MenuItem {
-    text = "Add fake QSOs."
-    onAction = { _: ActionEvent =>
-      val dialog = injector.instance[BuildLoadDialog]
-      dialog.showAndWait() match {
-        case Some(blr) =>
-          store ! blr
-        case None =>
-      }
-
-    }
-  }
   private val debugRandomKillerMenuItem = new MenuItem {
     text = "Remove random QSOs"
     onAction = { _: ActionEvent =>
@@ -234,7 +222,6 @@ class FdClusterMenu @Inject()(
           dumpStatsMenuItem,
           debugClearStoreMenuItem,
           debugRandomKillerMenuItem,
-          debugDemoBulkMenuItem,
           generateTimed,
           metricsMenuItem,
         )

@@ -2,6 +2,7 @@ package org.wa9nnn.fdcluster.store
 
 import org.apache.commons.io.output.ByteArrayOutputStream
 import org.wa9nnn.fdcluster.model.MessageFormats._
+import org.wa9nnn.fdcluster.model.CallSign.callSignFormat
 import org.wa9nnn.fdcluster.store.network.MessageDecoder
 import play.api.libs.json.{Json, Writes}
 

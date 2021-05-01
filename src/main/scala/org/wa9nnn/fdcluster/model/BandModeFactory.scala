@@ -23,7 +23,7 @@ import com.typesafe.config.{Config, ConfigFactory}
 import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.model.AvailableBand.availaBandRegx
 import org.wa9nnn.fdcluster.model.CurrentStation._
-import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
+import org.wa9nnn.fdcluster.model.CallSign
 
 import javax.inject.{Inject, Singleton}
 import scala.jdk.CollectionConverters._

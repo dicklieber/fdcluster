@@ -20,7 +20,8 @@
 package org.wa9nnn.fdcluster.javafx.entry
 
 import javafx.collections.ObservableList
-import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
+import org.wa9nnn.fdcluster.model.CallSign._
+import org.wa9nnn.fdcluster.model.CallSign
 import org.wa9nnn.fdcluster.model.{BandModeFactory, CurrentStationProperty, KnownOperatorsProperty}
 import org.wa9nnn.util.InputHelper.forceCaps
 import _root_.scalafx.Includes._
@@ -56,7 +57,7 @@ class CurrentStationPanel @Inject()(currentStationProperty: CurrentStationProper
   operator.onAction = (event: ActionEvent) => {
     val currentEditText = operator.editor.value.text.value
     currentStationProperty.operatorProperty.value = currentEditText
-    val items: ObservableList[String] = operator.items.value
+    val items: ObservableList[CallSign] = operator.items.value
     if (!items.contains(currentEditText)) {
       items.add(currentEditText)
       knownOperatorsProperty.add(currentEditText)

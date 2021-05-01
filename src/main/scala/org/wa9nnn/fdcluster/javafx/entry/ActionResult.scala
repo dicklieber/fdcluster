@@ -24,7 +24,7 @@ import akka.pattern.ask
 import akka.util.Timeout
 import org.scalafx.extras.onFX
 import org.wa9nnn.fdcluster.model.{BandMode, QsoMetadata}
-import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
+import org.wa9nnn.fdcluster.model.CallSign
 import org.wa9nnn.fdcluster.store.{Search, SearchResult}
 import org.wa9nnn.util.{StructuredLogging, WithDisposition}
 import _root_.scalafx.application.Platform

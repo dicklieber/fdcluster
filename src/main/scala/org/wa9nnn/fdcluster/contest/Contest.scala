@@ -1,9 +1,8 @@
 
 package org.wa9nnn.fdcluster.contest
 
-import org.wa9nnn.fdcluster.model.{Exchange, NodeAddress}
-import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
-import com.wa9nnn.util.TimeConverters.{fileStamp, timeFmt}
+import com.wa9nnn.util.TimeConverters.fileStamp
+import org.wa9nnn.fdcluster.model.{CallSign, Exchange, NodeAddress}
 
 import java.time.{Instant, LocalDate}
 

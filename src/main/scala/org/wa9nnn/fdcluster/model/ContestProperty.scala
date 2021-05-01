@@ -19,12 +19,12 @@
 
 package org.wa9nnn.fdcluster.model
 
+import _root_.scalafx.beans.property.{ObjectProperty, _}
 import _root_.scalafx.scene.image.Image
 import com.wa9nnn.util.macos.DockIcon
 import org.wa9nnn.fdcluster.contest.Contest
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.util.{Persistence, StructuredLogging}
-import _root_.scalafx.beans.property.{ObjectProperty, _}
 
 import javax.inject.{Inject, Singleton}
 import scala.util.{Failure, Success, Using}
@@ -42,7 +42,7 @@ class ContestProperty @Inject()(persistence: Persistence, nodeAddress: NodeAddre
 
   def contest: Contest = value
 
-  def callSign: String = value.callSign
+  def callSign: CallSign = value.callSign
 
   val contestNameProperty: StringProperty = StringProperty(initContest.contestName)
 

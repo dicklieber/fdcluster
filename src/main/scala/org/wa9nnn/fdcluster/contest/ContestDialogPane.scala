@@ -21,6 +21,7 @@ import org.wa9nnn.fdcluster.javafx.GridOfControls
 import org.wa9nnn.fdcluster.javafx.entry.Sections
 import org.wa9nnn.fdcluster.javafx.entry.section.Section
 import org.wa9nnn.fdcluster.model._
+import org.wa9nnn.fdcluster.model.CallSign.s2cs
 import org.wa9nnn.fdcluster.station.StationDialogLogic
 import _root_.scalafx.Includes._
 import _root_.scalafx.beans.property.{ObjectProperty, StringProperty}

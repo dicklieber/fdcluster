@@ -1,7 +1,7 @@
 
 package org.wa9nnn.fdcluster.contest.fieldday
 
-import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
+import org.wa9nnn.fdcluster.model.CallSign
 
 case class WinterFieldDaySettings(gotaCallSign:CallSign = "NE9A",
                                   club:String = "WM9W",
