@@ -55,7 +55,7 @@
     -fx-font-size: 13pt;
     -fx-text-alignment: center;
     /*-fx-pref-width: 500;*/
-    -fx-fill-width: true;
+    /*-fx-fill-width: true;*/
 
 }
 

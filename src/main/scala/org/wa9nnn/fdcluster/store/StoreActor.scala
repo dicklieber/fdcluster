@@ -131,7 +131,8 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
     /**
      * Finish up sync with data from another node
      */
-    case  QsosFromNode(qsos,_) ⇒
+    case  qfn:QsosFromNode ⇒
+      val qsos = qfn.qsos
       logger.debug(syncMarker, s"got ${qsos.size}")
       store.merge(qsos)
 

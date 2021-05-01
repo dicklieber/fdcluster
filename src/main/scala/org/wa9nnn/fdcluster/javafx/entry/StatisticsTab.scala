@@ -8,7 +8,7 @@ import org.wa9nnn.fdcluster.FieldCount.Sorter
 import org.wa9nnn.fdcluster.{FieldCount, QsoCountCollector, StatCollector}
 import org.wa9nnn.util.StructuredLogging
 import _root_.scalafx.geometry.Orientation
-import _root_.scalafx.scene.control.{Button, Label, Tab}
+import _root_.scalafx.scene.control.{Button, Label, ScrollPane, Tab}
 import _root_.scalafx.scene.layout._
 
 import java.time.Duration
@@ -16,35 +16,6 @@ import javax.inject.Singleton
 
 @Singleton
 class StatisticsTab @Inject()(qsoCountCollector: QsoCountCollector, val actorSystem: ActorSystem) extends AutoRefreshTab {
-  //todo elapsed/remaining time in contest.
-//  implicit val executor = actorSystem.dispatcher
-
-//  private val task = new Runnable {
-//    def run() {
-//      logger.trace("Refresh:scheduled")
-//      onFX {
-//        refresh()
-//      }
-//    }
-//  }
-//  var timer: Option[Cancellable] = None
-//
-//  selected.onChange { (_, _, isSelectd) =>
-//    if (isSelectd) {
-//      logger.trace("Refresh:selected")
-//      refresh()
-//      timer = Some(actorSystem.scheduler.scheduleAtFixedRate(
-//        initialDelay = Duration.ofSeconds(5),
-//        interval = Duration.ofSeconds(5),
-//        runnable = task,
-//        executor = executor)
-//      )
-//    } else {
-//      logger.trace("Cancel Timer")
-//      timer.foreach(_.cancel())
-//    }
-//  }
-//
 
   private var sorter: Sorter = FieldCount.byCount.sorter
 
@@ -64,16 +35,25 @@ class StatisticsTab @Inject()(qsoCountCollector: QsoCountCollector, val actorSys
   val allStats: FlowPane = new FlowPane() {
     new TilePane() {
       styleClass += "statPane"
-      orientation = Orientation.Vertical
-      prefHeight = 200
-
+      children = qsoCountCollector.collectors.map(new CollectorPane(_, sorter))
+//      orientation = Orientation.Horizontal
+////      prefHeight = 200
+//      prefWrapLength =  60
     }
+//    orientation = Orientation.Horizontal
+    //      prefHeight = 200
+//    prefWrapLength =  60
+
   }
+  allStats.orientation = Orientation.Horizontal
+  allStats.prefWidth = 400
 
   text = "Statistics"
   content = new BorderPane() {
     top = new HBox(byCountButton, byFieldButton)
-    center = allStats
+    center = new ScrollPane(){
+      content =  allStats
+    }
   }
   closable = false
 

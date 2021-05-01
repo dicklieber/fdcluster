@@ -31,7 +31,7 @@ class QsoCountCollector @Inject()() extends AddQsoListener with StructuredLoggin
   //@formatter:off
   def clear():Unit =
   collectors= Seq(
-      StatCollector("Section", "ARRL Section Worked"){_.qso.exchange.sectionCode},
+    StatCollector("Section", "ARRL Section Worked"){_.qso.exchange.sectionCode},
     StatCollector("Area","US callSign area, CA for Canada or DX for other places."){ q => Sections.callAreaForSection(q.qso.exchange.sectionCode)},
     StatCollector("Band","Worked"){_.qso.bandMode.bandName},
     StatCollector("Mode","Contest Mode"){_.qso.bandMode.modeName},
