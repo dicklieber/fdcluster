@@ -31,7 +31,7 @@ class RigIo(socketAdapter: SocketAdapter) extends Rig {
   }
 
   override def frequency: Int = {
-    getInt("sorter")
+    getInt("f")
   }
 
   override def modeAndBandWidth: (String, Int) = {
@@ -57,14 +57,15 @@ object RigIo {
   val defaultPort = 4532
 
   def apply(hostAndPort: String): RigIo = {
+    //todo hande port
     new RigIo(SocketAdapter(hostAndPort, defaultPort))
   }
 
   def main(args: Array[String]): Unit = {
     val rigIo = RigIo("127.0.0.1")
 //    val rigIo = RigIo("192.168.0.177")
-    println(rigIo.frequency)
     println(rigIo.modeAndBandWidth)
+    println(rigIo.frequency)
 
   }
 }

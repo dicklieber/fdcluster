@@ -33,14 +33,16 @@ import scalafx.collections.ObservableBuffer
 
 import javax.inject.Inject
 
-class RigDialog @Inject()(rigStore: RigStore) extends Dialog[RigSettings] with StructuredLogging{
-  println("org.wa9nnn.fdcluster.rig.RigDialog")
+class   RigDialog @Inject()(rigStore: RigStore) extends Dialog[RigSettings] with StructuredLogging{
   private val riglist = new RigList()
 
   //  def apply(): Unit = {
-
-  private val mfgSelect = new ComboBox[String](ObservableBuffer.from(riglist.mfgs))
+val initRigModel: RigModel = rigStore.rigSettings.value.rigModel
+  private val mfgSelect = new ComboBox[String](ObservableBuffer.from(riglist.mfgs)){
+    value = initRigModel.mfg
+  }
   private val modelSelect = new ComboBox[RigModel] {
+    value = initRigModel
     cellFactory = { _ =>
       new ListCell[RigModel]() {
         item.onChange { (_, oldValue, newValue) => {
@@ -69,7 +71,7 @@ class RigDialog @Inject()(rigStore: RigStore) extends Dialog[RigSettings] with S
 
     val selectedMfg: String = mfgSelect.value.apply()
 
-    val rigModels: Seq[RigModel] = riglist.modelsForMfg(selectedMfg)
+    val rigModels: Seq[RigModel] = riglist.modelsForMfg(selectedMfg).sorted
     modelSelect.items = ObservableBuffer.from(rigModels)
   }
   val borderPane: BorderPane = new BorderPane {

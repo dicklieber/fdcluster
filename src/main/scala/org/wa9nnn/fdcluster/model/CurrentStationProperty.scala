@@ -1,12 +1,11 @@
 
 package org.wa9nnn.fdcluster.model
 
+import _root_.scalafx.beans.binding.Bindings
+import _root_.scalafx.beans.property.{ObjectProperty, StringProperty}
 import org.wa9nnn.fdcluster.model.CurrentStation.{Band, Mode}
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.util.Persistence
-import play.api.libs.json.{Format, JsError, JsResult, JsString, JsSuccess, JsValue}
-import _root_.scalafx.beans.binding.Bindings
-import _root_.scalafx.beans.property.{ObjectProperty, StringProperty}
 
 import javax.inject.{Inject, Singleton}
 

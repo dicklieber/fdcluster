@@ -36,7 +36,10 @@ import scala.jdk.CollectionConverters._
 @Singleton
 class BandModeFactory @Inject()(config: Config = ConfigFactory.load()) extends LazyLogging {
   def modeForRig(rig: String): Option[String] = {
-    modes.find(_.rigModes.contains(rig)).map(_.mode)
+    modes.find((m: AvailableMode) =>
+      m.rigModes.contains(rig))
+      .map(_.mode)
+      .orElse(Some("DI"))
   }
 
   /**
@@ -56,7 +59,8 @@ class BandModeFactory @Inject()(config: Config = ConfigFactory.load()) extends L
    * @return
    */
   def band(frequency: Int): Option[Band] = {
-    val maybeBand: Option[AvailableBand] = availableBands.find(ab => ab.containsFfreq(frequency))
+    val kc = frequency/1000
+    val maybeBand: Option[AvailableBand] = availableBands.find(ab => ab.containsFfreq(kc))
     maybeBand.map(_.band)
   }
 

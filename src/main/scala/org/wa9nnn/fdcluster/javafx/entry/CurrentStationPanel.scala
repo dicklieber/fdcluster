@@ -27,6 +27,7 @@ import _root_.scalafx.Includes._
 import _root_.scalafx.event.ActionEvent
 import _root_.scalafx.scene.control.{ComboBox, Control, Label, TextField}
 import _root_.scalafx.scene.layout.GridPane
+import org.wa9nnn.fdcluster.rig.RigInfo
 
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
@@ -39,13 +40,20 @@ import javax.inject.Inject
  * @param bandModeFactory        available bands and modes.
  * @param knownOperatorsProperty Operators who have used fdcluster.
  */
-class CurrentStationPanel @Inject()(currentStationProperty: CurrentStationProperty, bandModeFactory: BandModeFactory, knownOperatorsProperty: KnownOperatorsProperty) extends GridPane {
-  val rigFreq = new Label()
+class CurrentStationPanel @Inject()(currentStationProperty: CurrentStationProperty,
+                                    bandModeFactory: BandModeFactory,
+                                    knownOperatorsProperty: KnownOperatorsProperty,
+                                    rigInfo: RigInfo) extends GridPane {
+  val rigState = new Label()
+ rigState.text <== rigInfo.rigState
+
   val band: ComboBox[String] = new ComboBox[String](bandModeFactory.availableBands.sorted.map(_.band)) {
     value <==> currentStationProperty.bandNameProperty
+    value <== rigInfo.bandProperty
   }
   val mode: ComboBox[String] = new ComboBox[String](bandModeFactory.modes.map(_.mode)) {
     value <==> currentStationProperty.modeNameProperty
+    value <== rigInfo.modeProperty
   }
   val operator: ComboBox[CallSign] = new ComboBox[CallSign](knownOperatorsProperty.value.callSigns) {
     editable.value = true
@@ -79,7 +87,7 @@ class CurrentStationPanel @Inject()(currentStationProperty: CurrentStationProper
     maybeTooltip.foreach{control.tooltip = _}
   }
 
-  add("Rig", rigFreq)
+  add("Rig", rigState)
   add("Band", band)
   add("Mode", mode)
   add("Op", operator)

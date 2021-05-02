@@ -23,13 +23,14 @@ import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.util.{Persistence, StructuredLogging}
 import _root_.scalafx.beans.property.{IntegerProperty, ObjectProperty, StringProperty}
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 /**
  * Manages Rig information
  *
  * @param preferences default or runtime, override with a mock Preferences for unit testing
  */
+@Singleton
 class RigStore @Inject()(persistence: Persistence) extends StructuredLogging {
 
   val rigFrequencyDisplay: StringProperty = new StringProperty()
@@ -44,7 +45,6 @@ class RigStore @Inject()(persistence: Persistence) extends StructuredLogging {
 
   val rigSettings: ObjectProperty[RigSettings] = new ObjectProperty[RigSettings]()
 
-  private val prefsKey = "rigSettings"
   rigSettings.value = {
     persistence.loadFromFile[RigSettings](() => RigSettings())
   }

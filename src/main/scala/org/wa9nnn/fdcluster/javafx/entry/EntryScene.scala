@@ -41,6 +41,8 @@ import org.wa9nnn.fdcluster.store.{AddResult, Added, Dup}
 import org.wa9nnn.util.{StructuredLogging, WithDisposition}
 import play.api.libs.json.Json
 import org.wa9nnn.fdcluster.model.MessageFormats._
+import org.wa9nnn.fdcluster.rig.{RigInfo, RigStore}
+
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -61,7 +63,8 @@ class EntryScene @Inject()(
                             currentStationProperty: CurrentStationProperty,
                             statsPane: StatsPane,
                             statusPane: StatusPane,
-                            @Named("store") store: ActorRef) extends StructuredLogging {
+                            @Named("store") store: ActorRef,
+                            ) extends StructuredLogging {
   private implicit val timeout: Timeout = Timeout(5, TimeUnit.SECONDS)
 
   var actionResult: ActionResult = new ActionResult(store, qsoMetadataProperty.value)
