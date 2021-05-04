@@ -7,7 +7,7 @@ import org.wa9nnn.util.TimeHelpers.msHour
 import java.time.{Instant, LocalDate, LocalTime, ZonedDateTime}
 
 class FdHourSpec extends Specification {
-
+sequential
   "FdHourSpec" >> {
     val zdt = ZonedDateTime.of(
       LocalDate.of(2016, 1, 12),
@@ -36,7 +36,15 @@ class FdHourSpec extends Specification {
     }
   }
   "known" >> {
-    FdHour.knownHours must haveSize(3)
+    val fdh1 = FdHour(Instant.EPOCH.plusMillis(msHour + 20))
+    val fdh2 = FdHour(Instant.EPOCH.plusMillis(msHour + 20))
+    val fdh3 = FdHour(Instant.EPOCH.plusMillis(msHour + 20))
+    val fdh4 = FdHour(Instant.EPOCH.plusMillis(msHour + 20))
+
+    fdh1 must beTheSameAs(fdh4)
+
+    val hours = FdHour.knownHours
+    hours must haveSize(3)
   }
 
 }

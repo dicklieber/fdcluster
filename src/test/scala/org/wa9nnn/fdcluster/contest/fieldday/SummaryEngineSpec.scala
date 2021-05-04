@@ -39,7 +39,7 @@ class SummaryEngineSpec extends Specification with Mockito {
       val qsoSource = mock[QsoSource]
       qsoSource.qsoIterator returns(allQsos)
 
-      val summaryEngine = new SummaryEngine(allContestRules, new BandModeBreakDown(qsoSource, new BandModeFactory()))
+      val summaryEngine = new SummaryEngine(allContestRules, new BandModeBreakDown(qsoSource, new BandFactory(), new ModeFactory()))
       val writer = new StringWriter
       summaryEngine(writer, contest, wfd)
       writer.close()

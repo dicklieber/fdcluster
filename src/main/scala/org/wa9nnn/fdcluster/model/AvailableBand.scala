@@ -19,29 +19,23 @@
 
 package org.wa9nnn.fdcluster.model
 
-import org.wa9nnn.fdcluster.model.CurrentStation.{Band, Mode}
-
 import scala.util.matching.Regex
 
 
 case class AvailableBand(band: String, freqStart: Int = 0, freqEnd: Int = 0) extends Ordered[AvailableBand] {
-  def containsFfreq(frequency: Int): Boolean = frequency >= freqStart && frequency <= freqEnd
+  def containsHz(frequency: Int): Boolean = frequency >= freqStart && frequency <= freqEnd
 
   override def compare(that: AvailableBand): Int = this.freqStart.compareTo(that.freqStart)
 }
 
 object AvailableBand {
-  val availaBandRegx: Regex = """(\d+(?:\.\d+)?c?m)\s*:\s(\d+)\s*to\s*(\d+)""".r
+  val availaBandRegx: Regex = """([a-zA-Z0-9.]{1,5}):\s+([0-9.]+)\s+to\s+([0-9.]+)""".r
 
-  def apply(): AvailableBand = {
-    throw new NotImplementedError() //todo
+  def apply(confString:String): AvailableBand = {
+    val availaBandRegx(contestBand, startMhz, endMhz) = confString
+    val startHz:Int = (startMhz.toDouble * 1000000.0).toInt
+    val endHz:Int = (endMhz.toDouble * 1000000.0).toInt
+    AvailableBand(contestBand, startHz, endHz)
   }
 }
-
-/**
- *
- * @param mode context mode
- * @param rigModes modes that map to [[mode]]
- */
-case class AvailableMode(mode:Mode, rigModes:List[Mode])
 

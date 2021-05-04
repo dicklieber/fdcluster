@@ -21,7 +21,7 @@ package org.wa9nnn.fdcluster.javafx.entry
 
 import javafx.collections.ObservableList
 import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
-import org.wa9nnn.fdcluster.model.{BandModeFactory, CurrentStationProperty, KnownOperatorsProperty}
+import org.wa9nnn.fdcluster.model.{BandFactory, CurrentStationProperty, KnownOperatorsProperty, ModeFactory}
 import org.wa9nnn.util.InputHelper.forceCaps
 import _root_.scalafx.Includes._
 import _root_.scalafx.event.ActionEvent
@@ -37,21 +37,22 @@ import javax.inject.Inject
  * Changes to controls taake place immediately.
  *
  * @param currentStationProperty what this edits.
- * @param bandModeFactory        available bands and modes.
+ * @param bandFactory        available bands and modes.
  * @param knownOperatorsProperty Operators who have used fdcluster.
  */
 class CurrentStationPanel @Inject()(currentStationProperty: CurrentStationProperty,
-                                    bandModeFactory: BandModeFactory,
+                                    bandFactory: BandFactory,
+                                    modeFactory: ModeFactory,
                                     knownOperatorsProperty: KnownOperatorsProperty,
                                     rigInfo: RigInfo) extends GridPane {
   val rigState = new Label()
  rigState.text <== rigInfo.rigState
 
-  val band: ComboBox[String] = new ComboBox[String](bandModeFactory.availableBands.sorted.map(_.band)) {
+  val band: ComboBox[String] = new ComboBox[String](bandFactory.availableBands.sorted.map(_.band)) {
     value <==> currentStationProperty.bandNameProperty
     value <== rigInfo.bandProperty
   }
-  val mode: ComboBox[String] = new ComboBox[String](bandModeFactory.modes.map(_.mode)) {
+  val mode: ComboBox[String] = new ComboBox[String](modeFactory.modes) {
     value <==> currentStationProperty.modeNameProperty
     value <== rigInfo.modeProperty
   }

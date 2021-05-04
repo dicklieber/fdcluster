@@ -96,3 +96,6 @@ java.nio.file.FileAlreadyExistsException: /var/folders/40/32_wnrm92fg5crlxcy6c4r
 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
 	at java.base/java.lang.Thread.run(Thread.java:834)
+2021-05-04 13:44:58,620 INFO [specs2-1] o.w.u.JsonLoggingSpec [?:?] someClass: {"hello":"World","goodbye":"covid"}
+2021-05-04 13:50:14,909 INFO [specs2-1] o.w.u.JsonLoggingSpec [?:?] someClass: {"hello":"World","goodbye":"covid"}
+2021-05-04 13:51:21,953 INFO [specs2-1] o.w.u.JsonLoggingSpec [?:?] someClass: {"hello":"World","goodbye":"covid"}

@@ -1,18 +1,15 @@
 package org.wa9nnn.fdcluster.contest.fieldday
 
-import com.google.inject.name.Named
-import com.wa9nnn.util.tableui.Cell
-import _root_.com.wa9nnn.util.tableui._
+import _root_.com.wa9nnn.util.tableui.{Cell, _}
 import org.wa9nnn.fdcluster.model.CurrentStation.Band
-import org.wa9nnn.fdcluster.model.{BandModeFactory, QsoRecord}
-import _root_.scalafx.collections.ObservableBuffer
+import org.wa9nnn.fdcluster.model.{BandFactory, ModeFactory, QsoRecord}
 import org.wa9nnn.fdcluster.store.QsoSource
 
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class BandModeBreakDown @Inject()(qsoSource: QsoSource, bandModeFactory: BandModeFactory) {
+class BandModeBreakDown @Inject()(qsoSource: QsoSource, bandFactory: BandFactory, modeFactory: ModeFactory) {
 
   /**
    * Produces the BandModeBreakDown [[Table]] for the summary HTML page.
@@ -43,8 +40,8 @@ class BandModeBreakDown @Inject()(qsoSource: QsoSource, bandModeFactory: BandMod
   case class SumBandRow(bq: (Band, Seq[QsoRecord]), powerCell: Cell) extends RowSource {
     // Start with entry for each possible mode.
     private val modeCounts: Map[String, AtomicInteger] =
-      bandModeFactory.modes.map { availableMode =>
-        availableMode.mode -> new AtomicInteger()
+      modeFactory.modes.map { availableMode =>
+        availableMode -> new AtomicInteger()
       }.toMap
 
     val (band: Band, qsos: Seq[QsoRecord]) = bq

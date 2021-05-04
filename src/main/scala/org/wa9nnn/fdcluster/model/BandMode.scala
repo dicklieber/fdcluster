@@ -3,6 +3,9 @@ package org.wa9nnn.fdcluster.model
 import org.wa9nnn.fdcluster.model.CurrentStation.{Band, Mode}
 import play.api.libs.json._
 
+/**
+ * Allows storng band and mode in a compact why in a [[Qso]]
+ */
 case class BandMode(bandName: Band = "20m", modeName: Mode = "PH") {
   override def toString: String = s"$bandName $modeName"
 

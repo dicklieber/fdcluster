@@ -61,11 +61,9 @@ class StatusPane @Inject() extends StructuredLogging {
       }
     }
 
-
     DelayedFuture(statusMessage.duration) {
       onFX {
         fadeTransition.play()
-        println("fading...")
       }
     }
   }

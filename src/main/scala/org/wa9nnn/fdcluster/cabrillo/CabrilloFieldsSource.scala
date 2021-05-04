@@ -19,14 +19,14 @@
 
 package org.wa9nnn.fdcluster.cabrillo
 
-import com.github.andyglow.config._
-import com.typesafe.config.Config
-import org.wa9nnn.fdcluster.cabrillo.CabrilloFieldsSource._
-import org.wa9nnn.fdcluster.model.BandModeFactory
-import org.wa9nnn.util.StructuredLogging
 import _root_.scalafx.beans.property.StringProperty
 import _root_.scalafx.scene.control.{ComboBox, Control, Label, TextField, TextArea => fxTextArea}
 import _root_.scalafx.scene.layout.GridPane
+import com.github.andyglow.config._
+import com.typesafe.config.Config
+import org.wa9nnn.fdcluster.cabrillo.CabrilloFieldsSource._
+import org.wa9nnn.fdcluster.model.{BandFactory, ModeFactory}
+import org.wa9nnn.util.StructuredLogging
 
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
@@ -34,16 +34,17 @@ import scala.util.matching.Regex
 import scala.util.{Failure, Success, Try}
 
 class CabrilloFieldsSource @Inject()(config: Config,
-                                     bandModeFactory: BandModeFactory
+                                     bandFactory: BandFactory,
+                                     modeFactory: ModeFactory
                                     )extends StructuredLogging {
 
   private def parseChoices(choices: String): Seq[String] = {
     choices match
       {
         case "$bands" =>
-          bandModeFactory.availableBands.map(_.band)
+          bandFactory.availableBands.map(_.band)
         case "$modes" =>
-          bandModeFactory.modes.map(_.mode)
+          modeFactory.modes
         case x =>
           x.split("""\s+""")
       }
