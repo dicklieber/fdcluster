@@ -38,26 +38,31 @@ class RigInfo @Inject()(rigStore: RigStore, actorSystem: ActorSystem, currentSta
   val modeProperty = new StringProperty()
 
   override def run(): Unit = {
-    mayBeRigIo
-      .orElse(connectToRigctld)
-      .foreach { rigIo =>
-      val frequencyInt = rigIo.frequency
-      val frequency = frequencyInt.toDouble
-      val mhz = frequency / 1000000.0
-      val (mode, _) = rigIo.modeAndBandWidth
-      val maybeBand = bandFactory.band(frequencyInt)
-      onFX {
-        val sMhz = f"$mhz%.3fMHz"
-        rigState.value = f"$sMhz $mode"
-        maybeBand match {
-          case Some(value: Band) =>
-            bandProperty.value = value
-            statusPane.clear()
-          case None =>
-            statusPane.messageSad(s"$sMhz not in contest band!")
+    try {
+      mayBeRigIo
+        .orElse(connectToRigctld)
+        .foreach { rigIo =>
+          val frequencyInt = rigIo.frequency
+          val frequency = frequencyInt.toDouble
+          val mhz = frequency / 1000000.0
+          val (mode, _) = rigIo.modeAndBandWidth
+          val maybeBand = bandFactory.band(frequencyInt)
+          onFX {
+            val sMhz = f"$mhz%.3fMHz"
+            rigState.value = f"$sMhz $mode"
+            maybeBand match {
+              case Some(value: Band) =>
+                bandProperty.value = value
+                statusPane.clear()
+              case None =>
+                statusPane.messageSad(s"$sMhz not in contest band!")
+            }
+            modeProperty.value = modeFactory.modeForRig(mode)
+          }
         }
-        modeProperty.value = modeFactory.modeForRig(mode)
-      }
+    } catch {
+      case e:Exception =>
+        logger.warn("RigInfo run", e)
     }
   }
 }

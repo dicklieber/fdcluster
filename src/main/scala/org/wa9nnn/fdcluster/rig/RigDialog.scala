@@ -33,12 +33,11 @@ import scalafx.collections.ObservableBuffer
 
 import javax.inject.Inject
 
-class   RigDialog @Inject()(rigStore: RigStore) extends Dialog[RigSettings] with StructuredLogging{
-  private val riglist = new RigList()
+class   RigDialog @Inject()(rigStore: RigStore, rigList: Rigctld) extends Dialog[RigSettings] with StructuredLogging{
 
   //  def apply(): Unit = {
 val initRigModel: RigModel = rigStore.rigSettings.value.rigModel
-  private val mfgSelect = new ComboBox[String](ObservableBuffer.from(riglist.mfgs)){
+  private val mfgSelect = new ComboBox[String](ObservableBuffer.from(rigList.rigManufacturers)){
     value = initRigModel.mfg
   }
   private val modelSelect = new ComboBox[RigModel] {
@@ -60,18 +59,16 @@ val initRigModel: RigModel = rigStore.rigSettings.value.rigModel
       }
     })
   }
-  private val catControlPanel: CatControlPanel = new CatControlPanel() {
-    val currentRigSettings: RigSettings = rigStore.rigSettings.value
-    val rigModel = currentRigSettings.rigModel
-    mfgSelect.setValue(rigModel.mfg)
-    modelSelect.setValue(rigModel)
-    setValue(currentRigSettings.serialPortSettings)
-  }
+  val currentRigSettings: RigSettings = rigStore.rigSettings.value
+  val rigModel = currentRigSettings.rigModel
+  mfgSelect.setValue(rigModel.mfg)
+  modelSelect.setValue(rigModel)
+  private val catControlPanel: CatControlPanel = new CatControlPanel(currentRigSettings.serialPortSettings)
   mfgSelect.onAction = (_: ActionEvent) => {
 
     val selectedMfg: String = mfgSelect.value.apply()
 
-    val rigModels: Seq[RigModel] = riglist.modelsForMfg(selectedMfg).sorted
+    val rigModels: Seq[RigModel] = rigList.modelsForMfg(selectedMfg).sorted
     modelSelect.items = ObservableBuffer.from(rigModels)
   }
   val borderPane: BorderPane = new BorderPane {

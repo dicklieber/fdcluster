@@ -19,57 +19,27 @@
 
 package org.wa9nnn.fdcluster.rig
 
-import com.fazecast.jSerialComm.SerialPort
-import org.wa9nnn.util.StructuredLogging
+import java.nio.file.{Path, Paths}
 
 object Serial extends App {
-
-  def ports: Seq[SerialPortWrapper] = {
-    SerialPort.getCommPorts
-      .map(SerialPortWrapper)
-      .filter(_.useful)
-      .sorted
+  lazy val ports: Seq[SerialPort] = {
+    if (System.getProperty("os.name").toLowerCase.contains("win"))
+      Seq.tabulate(15)(SerialPort(_))
+    else
+      Paths.get("/dev").toFile.list.filter(_.startsWith("tty.")).map(f => SerialPort(Paths.get("/dev").resolve(f)))
   }
 }
 
-case class SerialPortWrapper(serialPort: SerialPort) extends NamedSerialPort[SerialPortWrapper] {
-  override val name: String = serialPort.getSystemPortName
+case class SerialPort private(port: String, display: String)
 
-  override def description: String = serialPort.getPortDescription
+object SerialPort {
+  def apply(path: Path): SerialPort = {
+    SerialPort(path.toString, path.getFileName.toString.stripPrefix("tty."))
+  }
+
+  def apply(comPortNumber: Int): SerialPort = {
+    val c: String = s"COM$comPortNumber"
+    SerialPort(c, c)
+  }
 }
 
-trait NamedSerialPort[T <: NamedSerialPort[T]] extends Ordered[T] with StructuredLogging {
-  implicit def name: String
-
-  def description: String
-
-  override def toString: String = s"$name ($description)"
-
-  def compare(that: T): Int = {
-    name.compareToIgnoreCase(that.name)
-  }
-
-  def dd(cmd: String, ret: Boolean)(implicit name: String): Boolean = {
-//    println(s"$name: $cmd => $ret")
-    ret
-  }
-
-  lazy val useful: Boolean = {
-    val linuxBad = """ttyp.+""".r
-    val microsoftWidows = """COM\d+""".r
-    val macOS = """tty\.usb.*""".r
-//    val macOSBT = """.*Bluetooth.*""".r
-    val raspberryPi = """ttyUSB.*""".r
-
-    name match {
-      case linuxBad(_) => dd("linuxBad", ret = false)
-      case microsoftWidows(_) => dd("microsoftWidows", ret = true)
-      case "tty.Bluetooth-Incoming-Port" => dd("linuxBad", ret = false)
-//      case macOSBT(_) => dd("bluetooth", ret = false)
-      case raspberryPi(_) => dd("raspberryPi", ret = true) // todo perhaps any Linux
-      case macOS(_) => dd("macOS", true) // MacOS
-      case d => dd("default", !(d.startsWith("ttyp") || d.contains("Bluetooth")))
-    }
-  }
-
-}

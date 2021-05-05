@@ -34,7 +34,6 @@ import javax.inject.{Inject, Singleton}
 class RigStore @Inject()(persistence: Persistence) extends StructuredLogging {
 
   val rigFrequencyDisplay: StringProperty = new StringProperty()
-  val band:StringProperty = new StringProperty()
   val rigFrequency = new IntegerProperty()
 
   rigFrequency.onChange { (_, _, tobo) =>

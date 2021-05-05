@@ -19,22 +19,43 @@
 
 package org.wa9nnn.fdcluster.rig
 
-import org.wa9nnn.fdcluster.rig.SerialPortSettings.{baudRates, defautBaudRate}
 import _root_.scalafx.collections.ObservableBuffer
 import _root_.scalafx.geometry.Insets
 import _root_.scalafx.scene.control._
 import _root_.scalafx.scene.layout.GridPane
+import org.wa9nnn.fdcluster.rig.SerialPortSettings.baudRates
+import scalafx.util.StringConverter
 
-class CatControlPanel() extends GridPane {
-  def setValue(sps: SerialPortSettings): Unit = {
-    portComboBox.setValue(sps.port)
-    baudRateComboBox.setValue(sps.baudrate)
+class CatControlPanel(serialPortSettings: SerialPortSettings) extends GridPane {
+
+  val portComboBox: ComboBox[SerialPort] = new ComboBox[SerialPort](ObservableBuffer.from(Serial.ports)) {
+    converter = StringConverter.toStringConverter((h: SerialPort) => {
+      if (h == null)
+        "- Choose Serial Port -"
+      else {
+        h.display
+      }
+    })
+
+
+    cellFactory = { _ =>
+      new ListCell[SerialPort]() {
+        item.onChange { (_, oldValue, newValue) => {
+          val choice = Option(newValue).getOrElse(oldValue).display
+          text = choice
+        }
+        }
+      }
+    }
+    placeholder = new ListCell() {
+      text = "-choose-"
+    }
+    serialPortSettings.port.foreach { sp =>
+      value = sp
+    }
   }
-
-  private val serialPortNames: Seq[String] = Serial.ports.map(_.name)
-  val portComboBox = new ComboBox[String](ObservableBuffer.from(serialPortNames))
   val baudRateComboBox = new ComboBox[String](ObservableBuffer.from(baudRates))
-  baudRateComboBox.setValue(defautBaudRate)
+  baudRateComboBox.setValue(serialPortSettings.baudRate)
 
   //  val gridPane: GridPane = new GridPane() {
   hgap = 10
@@ -49,15 +70,14 @@ class CatControlPanel() extends GridPane {
 
 
   def result: SerialPortSettings = {
-    SerialPortSettings(portComboBox.value.value, baudRateComboBox.value.value)
+    SerialPortSettings(Option(portComboBox.value.value), baudRateComboBox.value.value)
   }
 }
 
-case class SerialPortSettings(port: String, baudrate: String)
+case class SerialPortSettings(port: Option[SerialPort] = None, baudRate: String = "9600")
 
 object SerialPortSettings {
   val baudRates = Seq("115200", "57600", "38400", "19200", "9600", "4800", "1200")
   val defautBaudRate: String = baudRates(3)
 
-  def apply():SerialPortSettings = SerialPortSettings("-", defautBaudRate)
 }

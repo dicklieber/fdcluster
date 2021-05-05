@@ -25,7 +25,7 @@ import org.wa9nnn.fdcluster.javafx.entry.section.Section
 import org.wa9nnn.fdcluster.javafx.menu.{BuildLoadRequest, ImportRequest}
 import org.wa9nnn.fdcluster.javafx.sync._
 import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHour, QsoHourDigest, QsoHourIds}
-import org.wa9nnn.fdcluster.rig.{RigModel, RigSettings, SerialPortSettings}
+import org.wa9nnn.fdcluster.rig.{RigModel, RigSettings, SerialPort, SerialPortSettings}
 import org.wa9nnn.fdcluster.store.JsonContainer
 import org.wa9nnn.fdcluster.store.network.FdHour
 import org.wa9nnn.util.UuidUtil.uuidFormat._
@@ -77,6 +77,7 @@ object MessageFormats {
   implicit val nodeStatsFormat: Format[NodeStatus] = Json.format[NodeStatus]
   implicit val jsonContainerFormat: Format[JsonContainer] = Json.format[JsonContainer]
   implicit val jhFormat: Format[JournalHeader] = Json.format[JournalHeader]
+  implicit val spFormat: Format[SerialPort] = Json.format[SerialPort]
   implicit val rigPortSettingsFormat: Format[SerialPortSettings] = Json.format[SerialPortSettings]
   implicit val rigModelFormat: Format[RigModel] = Json.format[RigModel]
   implicit val rigSettingsFormat: Format[RigSettings] = Json.format[RigSettings]

@@ -84,11 +84,11 @@ libraryDependencies ++= Seq(
   "io.dropwizard.metrics" % "metrics-core" % "4.1.2",
   "io.dropwizard.metrics" % "metrics-graphite" % "4.1.2",
   "io.dropwizard.metrics" % "metrics-servlets" % "4.1.19",
-  "com.fazecast" % "jSerialComm" % "2.6.2",
   "commons-io" % "commons-io" % "2.8.0",
   "org.apache.commons" % "commons-math3" % "3.6.1",
   "javax.servlet" % "javax.servlet-api" % "3.0.1",
   "commons-codec" % "commons-codec" % "1.15",
+  "org.apache.commons" % "commons-text" % "1.9",
 )
 
 
