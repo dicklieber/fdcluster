@@ -29,7 +29,7 @@ import javax.inject.{Inject, Singleton}
  * All access to various files should go through this.
  */
 @Singleton
-class FileManager @Inject()(@TypesafeConfig("directory") dir: String) {
+class FileManager @Inject()(@TypesafeConfig("fdcluster.directory") dir: String) {
 
   val directory: Path = Paths.get(dir).toAbsolutePath
 

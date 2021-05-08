@@ -1,17 +1,14 @@
 package org.wa9nnn.fdcluster.model
 
-import com.typesafe.config.{Config, ConfigFactory, ConfigValue}
+import com.typesafe.config.{Config, ConfigValue}
 import org.wa9nnn.fdcluster.model.CurrentStation.Mode
 
 import java.util
-import javax.inject.{Inject, Singleton}
 import scala.jdk.CollectionConverters.CollectionHasAsScala
 
-@Singleton
-class ModeFactory @Inject()(config: Config = ConfigFactory.load()) {
-
+class Modes (contestConfig:Config){
   val rigModeToContestMode: Predef.Map[Mode, Mode] = {
-    val config1 = config.getConfig("fdcluster.contest.modes")
+    val config1 = contestConfig.getConfig("modes")
     (for {
       mc: util.Map.Entry[Mode, ConfigValue] <- config1.entrySet.asScala
       contestMode = mc.getKey

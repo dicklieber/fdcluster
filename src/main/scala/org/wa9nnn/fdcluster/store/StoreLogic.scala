@@ -149,7 +149,7 @@ class StoreLogic @Inject()(na: NodeAddress,
     val maybeExisting = byUuid.putIfAbsent(qsoRecord.qso.uuid, qsoRecord)
     maybeExisting match {
       case Some(_) =>
-        logger.error(s"Already have uuid of $qsoRecord")
+        logger.debug(s"Already have uuid of $qsoRecord")
       case None =>
         val callSign = qsoRecord.qso.callSign
         val qsoRecords: Set[QsoRecord] = byCallSign.getOrElse(callSign, Set.empty) + qsoRecord

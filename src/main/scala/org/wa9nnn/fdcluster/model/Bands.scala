@@ -19,11 +19,10 @@
 
 package org.wa9nnn.fdcluster.model
 
-import com.typesafe.config.{Config, ConfigFactory}
+import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.model.CurrentStation._
 
-import javax.inject.{Inject, Singleton}
 import scala.jdk.CollectionConverters._
 
 /**
@@ -31,17 +30,18 @@ import scala.jdk.CollectionConverters._
  *
  * @param config access to application.conf.
  */
-@Singleton
-class BandFactory @Inject()(config: Config = ConfigFactory.load()) extends LazyLogging {
+class Bands (contestConfig: Config ) extends LazyLogging {
 
   /**
    * All the bands that can be used.
    * Currently all bands for WFD and ARRL Field day.
    *
    */
-  val availableBands: List[AvailableBand] = config.getStringList("contest.bands").asScala.toList.map { s =>
+  val availableBands: List[AvailableBand] = contestConfig.getStringList("bands").asScala.toList.map { s =>
     AvailableBand(s)
   }.sorted
+
+  val bands:List[Band] = availableBands.map(_.band)
 
   /**
    * Find a band for a frequency.

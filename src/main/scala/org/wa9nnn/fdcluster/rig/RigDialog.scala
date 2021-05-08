@@ -23,7 +23,7 @@ import _root_.scalafx.Includes._
 import _root_.scalafx.event.ActionEvent
 import _root_.scalafx.scene.control.ComboBox.sfxComboBox2jfx
 import _root_.scalafx.scene.control._
-import _root_.scalafx.scene.layout.{BorderPane, HBox}
+import _root_.scalafx.scene.layout.{BorderPane, HBox, VBox}
 import _root_.scalafx.util.StringConverter
 import javafx.collections.ObservableList
 import javafx.event.EventHandler
@@ -71,6 +71,8 @@ val initRigModel: RigModel = rigStore.rigSettings.value.rigModel
     val rigModels: Seq[RigModel] = rigList.modelsForMfg(selectedMfg).sorted
     modelSelect.items = ObservableBuffer.from(rigModels)
   }
+
+  val enableCheckBox = new CheckBox()
   val borderPane: BorderPane = new BorderPane {
     top = new HBox(
       new Label("Manufacture:"),
@@ -79,7 +81,9 @@ val initRigModel: RigModel = rigStore.rigSettings.value.rigModel
       new Label("Model:"),
       modelSelect,
     )
-    center = catControlPanel
+    center = new VBox(catControlPanel,
+      enableCheckBox
+    )
   }
   private val pane: control.DialogPane = dialogPane()
   private val saveButton = new ButtonType("Save")

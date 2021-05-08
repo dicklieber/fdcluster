@@ -19,15 +19,16 @@
 
 package org.wa9nnn.fdcluster.javafx.entry
 
-import javafx.collections.ObservableList
-import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
-import org.wa9nnn.fdcluster.model.{BandFactory, CurrentStationProperty, KnownOperatorsProperty, ModeFactory}
-import org.wa9nnn.util.InputHelper.forceCaps
 import _root_.scalafx.Includes._
 import _root_.scalafx.event.ActionEvent
 import _root_.scalafx.scene.control.{ComboBox, Control, Label, TextField}
 import _root_.scalafx.scene.layout.GridPane
+import javafx.collections.ObservableList
+import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
+import org.wa9nnn.fdcluster.model.{AllContestRules, ContestRules, CurrentStationProperty, KnownOperatorsProperty}
 import org.wa9nnn.fdcluster.rig.RigInfo
+import org.wa9nnn.util.InputHelper.forceCaps
+import scalafx.collections.ObservableBuffer
 
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
@@ -41,18 +42,23 @@ import javax.inject.Inject
  * @param knownOperatorsProperty Operators who have used fdcluster.
  */
 class CurrentStationPanel @Inject()(currentStationProperty: CurrentStationProperty,
-                                    bandFactory: BandFactory,
-                                    modeFactory: ModeFactory,
+                                    allContestRules: AllContestRules,
                                     knownOperatorsProperty: KnownOperatorsProperty,
                                     rigInfo: RigInfo) extends GridPane {
   val rigState = new Label()
  rigState.text <== rigInfo.rigState
 
-  val band: ComboBox[String] = new ComboBox[String](bandFactory.availableBands.sorted.map(_.band)) {
+  allContestRules.contestRulesProperty.onChange{(_,_,nv) =>
+    setup(nv)
+  }
+
+
+
+  val band: ComboBox[String] = new ComboBox[String]() {
     value <==> currentStationProperty.bandNameProperty
     value <== rigInfo.bandProperty
   }
-  val mode: ComboBox[String] = new ComboBox[String](modeFactory.modes) {
+  val mode: ComboBox[String] = new ComboBox[String]() {
     value <==> currentStationProperty.modeNameProperty
     value <== rigInfo.modeProperty
   }
@@ -95,6 +101,14 @@ class CurrentStationPanel @Inject()(currentStationProperty: CurrentStationProper
   add("Rig", rig, Some("Rig currently being used at this node."))
   add("Antenna", antenna, Some("Antenna currently being used at this node."))
   forceCaps(operator.editor.value)
+
+  private def setup(contestRules:ContestRules):Unit= {
+    band.items = ObservableBuffer.from(contestRules.bands.bands)
+    mode.items = ObservableBuffer.from(contestRules.modes.modes)
+  }
+
+  setup(allContestRules.currentRules)
+
 }
 
 

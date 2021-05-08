@@ -23,7 +23,7 @@ import play.api.libs.json.Json
 
 import java.time.Instant
 
-case class RigSettings(rigModel: RigModel, serialPortSettings: SerialPortSettings, stamp: Instant = Instant.now()) {
+case class RigSettings(rigModel: RigModel, serialPortSettings: SerialPortSettings, enavble:Boolean = false, stamp: Instant = Instant.now()) {
   def encodeJson: String = {
     Json.toJson(this).toString()
   }

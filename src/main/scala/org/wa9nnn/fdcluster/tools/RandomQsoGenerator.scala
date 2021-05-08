@@ -19,15 +19,15 @@ package org.wa9nnn.fdcluster.tools
 
 import org.wa9nnn.fdcluster.javafx.entry.{NullRunningTaskConsumer, RunningTaskInfoConsumer}
 import org.wa9nnn.fdcluster.javafx.runningtask.RunningTask
-import org.wa9nnn.fdcluster.model.{AllContestRules, ContestProperty, EntryCategories, Qso}
+import org.wa9nnn.fdcluster.model.{AllContestRules, EntryCategories, Qso}
 
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 
-class RandomQsoGenerator @Inject()(allContestRules: AllContestRules, contestProperty: ContestProperty, val runningTaskInfoConsumer: RunningTaskInfoConsumer = new NullRunningTaskConsumer()) {
+class RandomQsoGenerator @Inject()(allContestRules: AllContestRules, val runningTaskInfoConsumer: RunningTaskInfoConsumer = new NullRunningTaskConsumer()) {
 
- val entryCategories =  allContestRules.byContestName(contestProperty.contestName).categories
+ val entryCategories: EntryCategories =  allContestRules.currentRules.categories
 
   def apply(gr: GenerateRandomQsos): (Qso => Unit) => Unit = {
     new Task(runningTaskInfoConsumer, entryCategories)(gr)

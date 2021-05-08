@@ -2,14 +2,14 @@ package org.wa9nnn.fdcluster.contest.fieldday
 
 import _root_.com.wa9nnn.util.tableui.{Cell, _}
 import org.wa9nnn.fdcluster.model.CurrentStation.Band
-import org.wa9nnn.fdcluster.model.{BandFactory, ModeFactory, QsoRecord}
+import org.wa9nnn.fdcluster.model.{AllContestRules, QsoRecord}
 import org.wa9nnn.fdcluster.store.QsoSource
 
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class BandModeBreakDown @Inject()(qsoSource: QsoSource, bandFactory: BandFactory, modeFactory: ModeFactory) {
+class BandModeBreakDown @Inject()(qsoSource: QsoSource, allContestRules: AllContestRules) {
 
   /**
    * Produces the BandModeBreakDown [[Table]] for the summary HTML page.
@@ -40,7 +40,7 @@ class BandModeBreakDown @Inject()(qsoSource: QsoSource, bandFactory: BandFactory
   case class SumBandRow(bq: (Band, Seq[QsoRecord]), powerCell: Cell) extends RowSource {
     // Start with entry for each possible mode.
     private val modeCounts: Map[String, AtomicInteger] =
-      modeFactory.modes.map { availableMode =>
+      allContestRules.currentRules.modes.modes.map { availableMode =>
         availableMode -> new AtomicInteger()
       }.toMap
 

@@ -49,7 +49,7 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
 
   override def configure(): Unit = {
     try {
-      val config = ConfigFactory.load
+      val config:Config= ConfigApp.apply
       LogFilePath(config)
       // File manager must be invoked before any logging is done as logback.xml uses the system property  "log.file.path"
       // which gets set by th3 FileManager.
@@ -78,7 +78,7 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
       bind[RunningTaskPane].toInstance(runningTaskPane)
       bind[RunningTaskInfoConsumer].toInstance(runningTaskPane)
       bind[ActorSystem].toInstance(actorSystem)
-      bind[Config].toInstance(actorSystem.settings.config)
+      bind[Config].toInstance(config)
       install(TypesafeConfigModule.fromConfigWithPackage(config, "org.wa9nnn"))
       bind[MetricsReporter].asEagerSingleton()
 

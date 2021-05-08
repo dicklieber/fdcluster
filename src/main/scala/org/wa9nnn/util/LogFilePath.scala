@@ -12,7 +12,7 @@ object LogFilePath {
    * @param config with directory set
    */
   def apply(config: Config): Unit = {
-    val path = Paths.get(config.getString("log"))
+    val path = Paths.get(config.getString("fdcluster.log"))
     Files.createDirectories(path.getParent)
     val logFile = path.toAbsolutePath.toString
     System.setProperty("log.file.path", logFile)

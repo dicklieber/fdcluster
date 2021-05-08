@@ -25,7 +25,7 @@ import _root_.scalafx.scene.layout.GridPane
 import com.github.andyglow.config._
 import com.typesafe.config.Config
 import org.wa9nnn.fdcluster.cabrillo.CabrilloFieldsSource._
-import org.wa9nnn.fdcluster.model.{BandFactory, ModeFactory}
+import org.wa9nnn.fdcluster.model.{AllContestRules, Bands, ContestRules, ModeFactory}
 import org.wa9nnn.util.StructuredLogging
 
 import java.util.concurrent.atomic.AtomicInteger
@@ -34,17 +34,16 @@ import scala.util.matching.Regex
 import scala.util.{Failure, Success, Try}
 
 class CabrilloFieldsSource @Inject()(config: Config,
-                                     bandFactory: BandFactory,
-                                     modeFactory: ModeFactory
+                                     allContestRules: AllContestRules,
                                     )extends StructuredLogging {
 
   private def parseChoices(choices: String): Seq[String] = {
     choices match
       {
         case "$bands" =>
-          bandFactory.availableBands.map(_.band)
+          allContestRules.currentRules.bands.bands
         case "$modes" =>
-          modeFactory.modes
+          allContestRules.currentRules.modes.modes
         case x =>
           x.split("""\s+""")
       }

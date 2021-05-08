@@ -75,7 +75,7 @@ case class NodeAddress @Inject()(ipAddress: String = "localhost", hostName: Stri
 
 object NodeAddress {
   def apply(config: Config): NodeAddress = {
-    val instance = config.getInt("instance")
+    val instance = config.getInt("fdcluster.instance")
     val httpPort = config.getInt("fdcluster.http.port")
 
     val inetAddress = determineIp()
