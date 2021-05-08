@@ -61,7 +61,7 @@ object FdCluster extends JFXApp with StructuredLogging {
     case e: Throwable ⇒
       e.printStackTrace()
   }
-  val fdlogmenu: FdClusterMenu = injector.instance[FdClusterMenu]
+  val fdMenu: FdClusterMenu = injector.instance[FdClusterMenu]
 
   private val dataTab: Tab = new Tab {
     text = "Data"
@@ -104,7 +104,7 @@ object FdCluster extends JFXApp with StructuredLogging {
   }
   //  private val statsHeader = new HBox(Label(sorter"QSOs:  todo "))
   private val rootPane = new BorderPane {
-    top = fdlogmenu.menuBar
+    top = fdMenu.menuBar
     center = tabPane
     bottom = bottomPane
   }

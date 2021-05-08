@@ -7,9 +7,13 @@ import java.nio.file.Paths
 import scala.jdk.CollectionConverters.SetHasAsScala
 import scala.sys.exit
 
-object ConfigApp extends  LazyLogging {
+object ConfigApp extends  StructuredLogging {
   def apply: Config = {
     try {
+      val builtinConfig = ConfigFactory.load()
+      // LogFilePath must be invoked before any logging happens log fie wont be available and no log file will be generated!
+      LogFilePath(builtinConfig)
+
       val userHome = Paths.get(System.getProperty("user.home"))
       val userConf = userHome.resolve("fdcluster").resolve("user.conf")
 
@@ -20,7 +24,6 @@ object ConfigApp extends  LazyLogging {
         dumpConfig(userConfig)
       }
       )
-      val builtinConfig = ConfigFactory.load()
 
       val finalConfig = userConfig.withFallback(builtinConfig)
       val finalOrigin = finalConfig.origin()

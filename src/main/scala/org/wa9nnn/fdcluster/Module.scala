@@ -50,7 +50,6 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
   override def configure(): Unit = {
     try {
       val config:Config= ConfigApp.apply
-      LogFilePath(config)
       // File manager must be invoked before any logging is done as logback.xml uses the system property  "log.file.path"
       // which gets set by th3 FileManager.
       bind[CommandLine].toInstance(new CommandLineScalaFxImpl(parameters))
