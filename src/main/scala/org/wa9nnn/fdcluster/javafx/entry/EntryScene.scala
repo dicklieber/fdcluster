@@ -36,12 +36,11 @@ import org.scalafx.extras.onFX
 import org.wa9nnn.fdcluster.javafx.entry.section.SectionField
 import org.wa9nnn.fdcluster.javafx.{CallSignField, ClassField, StatusMessage, StatusPane}
 import org.wa9nnn.fdcluster.model
+import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.store.{AddResult, Added, Dup}
 import org.wa9nnn.util.{StructuredLogging, WithDisposition}
 import play.api.libs.json.Json
-import org.wa9nnn.fdcluster.model.MessageFormats._
-import org.wa9nnn.fdcluster.rig.{RigInfo, RigStore}
 
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
@@ -57,7 +56,6 @@ class EntryScene @Inject()(
                             currentStationPanel: CurrentStationPanel,
                             contestProperty: ContestProperty,
                             nodeAddress: NodeAddress,
-                            knownOperatorsProperty: KnownOperatorsProperty,
                             classField: ClassField,
                             @Named("qsoMetadata") qsoMetadataProperty: ObjectProperty[QsoMetadata],
                             currentStationProperty: CurrentStationProperty,
@@ -117,7 +115,7 @@ class EntryScene @Inject()(
         classField,
         new VBox(
           buttons,
-          currentStationPanel
+          currentStationPanel.pane
         )
       ),
       new VBox(
@@ -228,20 +226,6 @@ class EntryScene @Inject()(
   }, currentStationProperty, contestProperty)
 
   qsoMetadataProperty <== qsoMetadataBinding
-
-  currentStationProperty.onChange { (_, from, to) =>
-    println(s"currentStation: from: $from to $to")
-  }
-  contestProperty.onChange { (_, from, to) =>
-    println(s"contestProperty1: from: $from to $to")
-  }
-
-  qsoMetadataBinding.onChange { (_, from, to) =>
-    println(s"qsoMetadataProperty: from: $from to $to")
-  }
-  qsoMetadataProperty.onChange { (_, from, to) =>
-    println(s"qsoMetadataProperty: from: $from to $to")
-  }
 
 }
 

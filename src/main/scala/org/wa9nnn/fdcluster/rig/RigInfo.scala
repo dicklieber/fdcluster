@@ -12,22 +12,27 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.language.postfixOps
+import scala.util.Try
 
 @Singleton
-class RigInfo @Inject()(rigStore: RigStore, actorSystem: ActorSystem, currentStationProperty: CurrentStationProperty,
+class RigInfo @Inject()(rigStore: RigStore, actorSystem: ActorSystem,
                         allContestRules: AllContestRules,
                         statusPane: StatusPane
                        ) extends Runnable with LazyLogging {
+  def connectToRigctld(): Option[RigIo] = {
 
-  val host = "127.0.0.1"
-  def connectToRigctld():Option[RigIo] = {
-//    Try {
-//      new RigIo(SocketAdapter(host, defaultPort))
-//    }.toOption
-    logger.error("todo dsiabling RigInfo")
-    None
+    val rigSettings = rigStore.rigSettings.value
+    if (rigSettings.enable) {
+      val option: Option[RigIo] = Try {
+        new RigIo(SocketAdapter(rigSettings.rigctldHostPort, 4532))
+      }.toOption
+      mayBeRigIo = option
+      option
+    } else
+      None
   }
-  val mayBeRigIo: Option[RigIo] = connectToRigctld()
+
+  var mayBeRigIo: Option[RigIo] = connectToRigctld()
 
   val duration: FiniteDuration = (2 seconds)
   actorSystem.getScheduler.scheduleWithFixedDelay(duration, duration)(this)
@@ -39,7 +44,7 @@ class RigInfo @Inject()(rigStore: RigStore, actorSystem: ActorSystem, currentSta
   override def run(): Unit = {
     try {
       mayBeRigIo
-        .orElse(connectToRigctld)
+        .orElse(connectToRigctld())
         .foreach { rigIo =>
           val frequencyInt = rigIo.frequency
           val frequency = frequencyInt.toDouble
@@ -60,7 +65,7 @@ class RigInfo @Inject()(rigStore: RigStore, actorSystem: ActorSystem, currentSta
           }
         }
     } catch {
-      case e:Exception =>
+      case e: Exception =>
         logger.warn("RigInfo run", e)
     }
   }

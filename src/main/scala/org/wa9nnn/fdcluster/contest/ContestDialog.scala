@@ -31,9 +31,7 @@ import javax.inject.Inject
  * UI for things that need to be setup for the contest.
  *
  */
-class ContestDialog @Inject()(injector: Injector
-
-                             ) extends Dialog[Contest] with StructuredLogging {
+class ContestDialog @Inject()(injector: Injector) extends Dialog[Contest] with StructuredLogging {
   val dp: DialogPane = dialogPane()
 
   private val cancelButton = ButtonType.Cancel

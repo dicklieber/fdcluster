@@ -26,55 +26,9 @@ import _root_.scalafx.scene.layout.GridPane
 import org.wa9nnn.fdcluster.rig.SerialPortSettings.baudRates
 import scalafx.util.StringConverter
 
-class CatControlPanel(serialPortSettings: SerialPortSettings) extends GridPane {
-
-  val portComboBox: ComboBox[SerialPort] = new ComboBox[SerialPort](ObservableBuffer.from(Serial.ports)) {
-    converter = StringConverter.toStringConverter((h: SerialPort) => {
-      if (h == null)
-        "- Choose Serial Port -"
-      else {
-        h.display
-      }
-    })
 
 
-    cellFactory = { _ =>
-      new ListCell[SerialPort]() {
-        item.onChange { (_, oldValue, newValue) => {
-          val choice = Option(newValue).getOrElse(oldValue).display
-          text = choice
-        }
-        }
-      }
-    }
-    placeholder = new ListCell() {
-      text = "-choose-"
-    }
-    serialPortSettings.port.foreach { sp =>
-      value = sp
-    }
-  }
-  val baudRateComboBox = new ComboBox[String](ObservableBuffer.from(baudRates))
-  baudRateComboBox.setValue(serialPortSettings.baudRate)
-
-  //  val gridPane: GridPane = new GridPane() {
-  hgap = 10
-  vgap = 10
-  padding = Insets(20, 100, 10, 10)
-
-  add(new Label("Serial Port:"), 0, 0)
-  add(portComboBox, 1, 0)
-
-  add(new Label("Baud Rate:"), 0, 1)
-  add(baudRateComboBox, 1, 1)
-
-
-  def result: SerialPortSettings = {
-    SerialPortSettings(Option(portComboBox.value.value), baudRateComboBox.value.value)
-  }
-}
-
-case class SerialPortSettings(port: Option[SerialPort] = None, baudRate: String = "9600")
+case class SerialPortSettings(rigSettings: RigSettings)
 
 object SerialPortSettings {
   val baudRates = Seq("115200", "57600", "38400", "19200", "9600", "4800", "1200")

@@ -64,11 +64,6 @@ class ContestProperty @Inject()(persistence: Persistence, nodeAddress: NodeAddre
     whenTraceEnabled(() => s"contestProperty changed from : $old to: $contest ")
   }
 
-  logotypeImageProperty.onChange { (_, _, ni) =>
-    println(s"logotypeImageProperty: $ni")
-  }
-
-
 
   def setUpImage(eventName: String): Unit = {
     val imagePath: String = s"/images/$eventName.png"
@@ -83,9 +78,6 @@ class ContestProperty @Inject()(persistence: Persistence, nodeAddress: NodeAddre
 
     try {
       {
-        val thread = Thread.currentThread()
-        val name1 = thread.getName
-        println(name1)
         DockIcon(imagePath)
       }
     } catch {

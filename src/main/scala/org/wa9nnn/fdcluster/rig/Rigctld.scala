@@ -22,14 +22,13 @@ package org.wa9nnn.fdcluster.rig
 import com.github.racc.tscg.TypesafeConfig
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
-import org.apache.commons.text.StringSubstitutor
 
 import javax.inject.Inject
-import scala.jdk.CollectionConverters._
 import scala.sys.process._
+import scala.util.{Failure, Success, Try}
 
 /**
- * invokes hamlib  rigctld.
+ * Start and stop rigctld.
  *
  * @param rigConfig part from application.conf.
  */
@@ -40,7 +39,7 @@ class Rigctld @Inject()(@TypesafeConfig("fdcluster.rig") rigConfig: Config, rigS
     }
 
     override def out(s: => String): Unit = {
-      throw new NotImplementedError() //todo
+      logger.trace(s)
     }
 
     override def buffer[T](f: => T) = {
@@ -48,7 +47,6 @@ class Rigctld @Inject()(@TypesafeConfig("fdcluster.rig") rigConfig: Config, rigS
     }
   }
   private val map: Map[String, Seq[RigModel]] = {
-
     val args: Seq[String] = rigConfig.getString("rigList").split("""\s+""")
     args.lazyLines_!(pl)
       .drop(1) // get rid of header
@@ -70,44 +68,51 @@ class Rigctld @Inject()(@TypesafeConfig("fdcluster.rig") rigConfig: Config, rigS
     map(mfg).sorted
   }
 
-  val version: String = {
+  def logVersion(): Try[String] = {
     val str = rigConfig.getString("rigctldVersion")
-    val process: Process = str.run()
-    val value: LazyList[String] = str lazyLines pl
-    value.head
+    val r = Try {
+      val process: Process = str.run()
+      val value: LazyList[String] = str lazyLines pl
+      value.head
+    }
+    r match {
+      case Failure(exception) =>
+        logger.error(s"$str failed", exception)
+      case Success(value) =>
+        logger.info(s"$str is $value")
+    }
+    r
   }
 
-  def start(rigSettings: RigSettings): Unit = {
-    if(rigSettings.serialPortSettings.port.isEmpty){
-      throw new IllegalStateException("No serial port selected!")
+  def start(): Unit = {
+    val rigSettings = rigStore.rigSettings.value
+    if (rigSettings.launchRigctld) {
+      if (rigSettings.port.isEmpty) {
+        throw new IllegalStateException("No serial port selected!")
+      }
+      logVersion()
+      val commandLine = RigctldCommand(rigSettings)
+
+
+      val process: Process = commandLine.run(pl)
+      rigctldProcess = Option(process)
+      logger.info(s"Started rigctld with process: $process")
     }
-    val valuesMap: Map[String, Any] = Seq(
-      "modelId" -> rigSettings.rigModel.number,
-      "speed" -> rigSettings.serialPortSettings.baudRate,
-      "deviceName" ->  ( rigSettings.serialPortSettings.port.get.port)
-    ).toMap
-    val ss = new StringSubstitutor(valuesMap.asJava, "<", ">")
-
-    // ${fdcluster.rig.rigctldApp} -m <modelId> -r <deviceName>
-    val str = rigConfig.getString("launchRigctld")
-    val commandLine = ss.replace(str)
-    logger.info(s"""Starting rigctld with "$commandLine" """)
-    val process: Process = commandLine.run()
-    rigctldProcess = Option(process)
-    logger.info(s"Started rigctld with process: $process")
-
   }
 
   private var rigctldProcess: Option[Process] = None
 
   def stop(): Unit = {
     rigctldProcess.foreach(p =>
-    p.destroy())
+      p.destroy())
   }
-  rigStore.rigSettings.onChange{(_,_,newRigSettings) =>
+
+  rigStore.rigSettings.onChange { (_, _, newRigSettings) =>
     stop()
-    start(newRigSettings)
+    start()
   }
+
+  start()
 }
 
 

@@ -24,6 +24,7 @@ import _root_.scalafx.event.ActionEvent
 import _root_.scalafx.scene.control.{ComboBox, Control, Label, TextField}
 import _root_.scalafx.scene.layout.GridPane
 import javafx.collections.ObservableList
+import org.wa9nnn.fdcluster.javafx.GridOfControls
 import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
 import org.wa9nnn.fdcluster.model.{AllContestRules, ContestRules, CurrentStationProperty, KnownOperatorsProperty}
 import org.wa9nnn.fdcluster.rig.RigInfo
@@ -44,15 +45,13 @@ import javax.inject.Inject
 class CurrentStationPanel @Inject()(currentStationProperty: CurrentStationProperty,
                                     allContestRules: AllContestRules,
                                     knownOperatorsProperty: KnownOperatorsProperty,
-                                    rigInfo: RigInfo) extends GridPane {
+                                    rigInfo: RigInfo) {
   val rigState = new Label()
  rigState.text <== rigInfo.rigState
 
   allContestRules.contestRulesProperty.onChange{(_,_,nv) =>
     setup(nv)
   }
-
-
 
   val band: ComboBox[String] = new ComboBox[String]() {
     value <==> currentStationProperty.bandNameProperty
@@ -80,27 +79,24 @@ class CurrentStationPanel @Inject()(currentStationProperty: CurrentStationProper
 
   val rig: TextField = new  TextField(){
     text <==> currentStationProperty.rigProperty
+    tooltip = "Rig currently being used at this node."
   }
     val antenna: TextField = new  TextField(){
     text <==> currentStationProperty.antennaProperty
+      tooltip = "Antenna currently being used at this node."
   }
 
-  val row = new AtomicInteger()
 
-  def add(label: String, control: Control, maybeTooltip:Option[String] = None): Unit = {
-    val nrow = row.getAndIncrement()
-    add(new Label(label + ":"), 0, nrow)
-    add(control, 1, nrow)
-    maybeTooltip.foreach{control.tooltip = _}
-  }
-
-  add("Rig", rigState)
-  add("Band", band)
-  add("Mode", mode)
-  add("Op", operator)
-  add("Rig", rig, Some("Rig currently being used at this node."))
-  add("Antenna", antenna, Some("Antenna currently being used at this node."))
+  val goc = new GridOfControls(4-> 5)
+  goc.addControl("Rig", rigState)
+  goc.addControl("Band", band)
+  goc.addControl("Mode", mode)
+  goc.addControl("Op", operator)
+  goc.addControl("Rig", rig)
+  goc.addControl("Antenna", antenna)
   forceCaps(operator.editor.value)
+  val pane: GridOfControls = goc
+
 
   private def setup(contestRules:ContestRules):Unit= {
     band.items = ObservableBuffer.from(contestRules.bands.bands)

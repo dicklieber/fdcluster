@@ -23,17 +23,21 @@ import play.api.libs.json.Json
 
 import java.time.Instant
 
-case class RigSettings(rigModel: RigModel, serialPortSettings: SerialPortSettings, enavble:Boolean = false, stamp: Instant = Instant.now()) {
-  def encodeJson: String = {
-    Json.toJson(this).toString()
-  }
-}
+case class RigSettings(rigModel: RigModel = RigModel(),
+                       port: Option[SerialPort] = None,
+                       baudRate: String = "9600",
+                       enable: Boolean = false,
+                       launchRigctld: Boolean = false,
+                       rigctldCommand: String = "rigctld -m <modelId>  -s <speed> -r <deviceName>",
+                       rigctldHostPort: String = "localhost:4532",
+                       stamp: Instant = Instant.now()) extends RigctldLaunchPrameters
 
-object RigSettings {
-  def apply(): RigSettings = RigSettings(RigModel(), SerialPortSettings())
-
-  def decodeJson(json: String): RigSettings = {
-    Json.parse(json).as[RigSettings]
-  }
-
+/**
+ * Need to launch rigtcld
+ */
+trait RigctldLaunchPrameters {
+  def rigModel: RigModel
+  def port: Option[SerialPort]
+  def baudRate: String
+  def rigctldCommand:String
 }

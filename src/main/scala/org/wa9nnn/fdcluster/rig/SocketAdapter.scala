@@ -19,6 +19,8 @@
 
 package org.wa9nnn.fdcluster.rig
 
+import com.typesafe.scalalogging.LazyLogging
+
 import java.io.{BufferedReader, InputStreamReader, PrintWriter}
 import java.net.Socket
 
@@ -55,7 +57,7 @@ class SocketAdapterSocket(socket: Socket) extends SocketAdapter {
   }
 }
 
-object SocketAdapter {
+object SocketAdapter extends LazyLogging{
   def apply(hostAndPort: String, defaultPort: Int): SocketAdapter = {
     new SocketAdapterSocket(socketFromString(hostAndPort, defaultPort))
   }
@@ -77,7 +79,7 @@ object SocketAdapter {
       s
     } catch {
       case e: Throwable =>
-        e.printStackTrace()
+        logger.error(s"rigctld $host:$port failed: ${e.getMessage}!")
         throw e
     }
   }

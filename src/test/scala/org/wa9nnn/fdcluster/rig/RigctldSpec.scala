@@ -22,8 +22,8 @@ class RigctldSpec extends Specification with Mockito{
       maybe705.get.model must beEqualTo("IC-705")
     }
     "version" in {
-      val version = rigList.version
-      version startsWith ("rigctl Hamlib")
+      val version = rigList.logVersion
+      version.get startsWith ("rigctl Hamlib")
     }
 
     "mfgs" in {
@@ -31,14 +31,6 @@ class RigctldSpec extends Specification with Mockito{
       mfgs.head must beEqualTo("ADAT")
     }
 
-    "run" >> {
-      rigList.start(
-        rigSettings = RigSettings(
-          rigModel = RigModel(number = 3085),
-          serialPortSettings = SerialPortSettings()
-        ))
-        pending
-    }
 
   }
 }

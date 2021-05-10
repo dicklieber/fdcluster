@@ -25,7 +25,7 @@ import _root_.scalafx.beans.property.{IntegerProperty, ObjectProperty, StringPro
 import _root_.scalafx.collections.ObservableBuffer
 import _root_.scalafx.geometry.Insets
 import _root_.scalafx.scene.control._
-import _root_.scalafx.scene.layout.{GridPane, Pane}
+import _root_.scalafx.scene.layout.{GridPane, Pane, Region}
 import _root_.scalafx.util.StringConverter
 
 import java.text.NumberFormat
@@ -36,7 +36,7 @@ import scala.util.matching.Regex
 /**
  * Help to build a GridPane of one column of labeled controls.
  */
-class GridOfControls(gaps:(Int,Int) = 10 -> 10, insets:Insets = Insets(20, 100, 10, 10)) extends GridPane {
+class GridOfControls(gaps: (Int, Int) = 10 -> 10, insets: Insets = Insets(20, 100, 10, 10)) extends GridPane {
   hgap = gaps._1
   vgap = gaps._2
   padding = insets
@@ -48,9 +48,10 @@ class GridOfControls(gaps:(Int,Int) = 10 -> 10, insets:Insets = Insets(20, 100, 
     add(new Label(label + ":"), 0, r)
     r
   }
-  def nextRow:Int = row.get()
 
-   def addText(labelText: String, defValue: String = "",
+  def nextRow: Int = row.get()
+
+  def addText(labelText: String, defValue: String = "",
               forceCaps: Boolean = false,
               regx: Option[Regex] = None,
               tooltip: Option[String] = None): StringProperty = {
@@ -115,7 +116,7 @@ class GridOfControls(gaps:(Int,Int) = 10 -> 10, insets:Insets = Insets(20, 100, 
                   tooltip: Option[String] = None,
                   converter: Option[StringConverter[T]] = None): ObjectProperty[T] = {
     val row = label(labelText)
-    val control: ComboBox[T] = new ComboBox[T]( ObservableBuffer.from(choices.toSeq))
+    val control: ComboBox[T] = new ComboBox[T](ObservableBuffer.from(choices.toSeq))
     converter.foreach(control.converter = _)
     tooltip.foreach(control.tooltip = _)
 
@@ -127,11 +128,21 @@ class GridOfControls(gaps:(Int,Int) = 10 -> 10, insets:Insets = Insets(20, 100, 
     control.value
   }
 
-  def addControl(labelText: String, control:Control):Unit = {
+  /**
+   *
+   * @param labelText     column 1
+   * @param control       column 2
+   * @param extraControls zero or more
+   */
+  def addControl(labelText: String, control: Region, extraControls: Control*): Unit = {
     val row = label(labelText)
     add(control, 1, row)
+    extraControls.zipWithIndex.foreach { case (extra, index) =>
+      add(extra, index + 2, row)
+    }
   }
-  def add(labelText: String, value:Any): StringProperty = {
+
+  def add(labelText: String, value: Any): StringProperty = {
     val row = label(labelText)
     val cell = com.wa9nnn.util.tableui.Cell(value)
     val control = Label(cell.value)
@@ -139,7 +150,7 @@ class GridOfControls(gaps:(Int,Int) = 10 -> 10, insets:Insets = Insets(20, 100, 
     control.text
   }
 
-  def add(labelText:String, pane:Pane):Unit = {
+  def add(labelText: String, pane: Pane): Unit = {
     val row = label(labelText)
     add(pane, 1, row)
   }
