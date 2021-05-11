@@ -70,6 +70,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-actor" % "2.6.0-M7",
   "com.github.kxbmap" %% "configs" % "0.6.0",
   "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
+  "com.typesafe.akka" %% "akka-stream" % "2.6.4",
   "ch.qos.logback" % "logback-classic" % logbackVersion,
   "ch.qos.logback" % "logback-core" % logbackVersion,
   "com.github.andyglow" %% "typesafe-config-scala" % "1.1.0" % Compile,
@@ -150,3 +151,7 @@ jlinkIgnoreMissingDependency := JlinkIgnore.only(
   "com.papertrail.profiler.jaxrs" -> "javax.ws.rs"
 
 )
+
+publishTo := Some("Artifactory Realm" at "https://wa9nnn.jfrog.io/artifactory/wa9nnn")
+credentials += Credentials(Path.userHome / ".sbt" / "jfrog.credentials")
+
