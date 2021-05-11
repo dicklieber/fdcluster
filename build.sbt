@@ -57,7 +57,7 @@ val logbackVersion = "1.2.3"
 val jettyVersion = "9.4.39.v20210325"
 
 libraryDependencies ++= Seq(
-  "com.wa9nnn" %% "util" % "0.0.2-SNAPSHOT",
+  "com.wa9nnn" %% "util" % "0.0.4",
   "com.wa9nnn" %% "cabrillo-lib" % "1.0.2",
   "com.typesafe.play" %% "play-json" % "2.8.0-M4",
   "org.specs2" %% "specs2-core" % "4.6.0" % "test",
@@ -70,7 +70,6 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-actor" % "2.6.0-M7",
   "com.github.kxbmap" %% "configs" % "0.6.0",
   "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
-  "com.typesafe.akka" %% "akka-stream" % "2.6.4",
   "ch.qos.logback" % "logback-classic" % logbackVersion,
   "ch.qos.logback" % "logback-core" % logbackVersion,
   "com.github.andyglow" %% "typesafe-config-scala" % "1.1.0" % Compile,

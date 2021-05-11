@@ -28,9 +28,9 @@ import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHour}
 import org.wa9nnn.fdcluster.store
 import org.wa9nnn.fdcluster.store.network.FdHour
-import org.wa9nnn.util.{StructuredLogging, UuidUtil}
+import org.wa9nnn.util.StructuredLogging
 
-import java.security.{MessageDigest, SecureRandom}
+import java.security.SecureRandom
 import javax.inject.{Inject, Singleton}
 import scala.collection.concurrent.TrieMap
 import scala.collection.immutable
@@ -249,15 +249,6 @@ class StoreLogic @Inject()(na: NodeAddress,
   private def nodeStatus: NodeStatus = {
     //todo Needs some serious caching. Past hours don't usually change (unless syncing)
 
-    val sDigest = qsosDigestTimer.time {
-      val messageDigest: MessageDigest = MessageDigest.getInstance("SHA-256")
-      byUuid.values.foreach(qr ⇒ messageDigest.update(UuidUtil(qr.qso.uuid)))
-      val bytes = messageDigest.digest()
-      val encoder = java.util.Base64.getEncoder
-      val bytes1 = encoder.encode(bytes)
-      new String(bytes1)
-    }
-
     val hourDigests = hourDigestsTimer.time {
       byUuid
         .values
@@ -270,7 +261,7 @@ class StoreLogic @Inject()(na: NodeAddress,
     val rate = qsoMeter.fifteenMinuteRate
     val currentStation = CurrentStation()
 
-    sync.NodeStatus(nodeAddress, byUuid.size, sDigest, hourDigests, qsoMetadata.value, currentStation, rate, contestProperty.value,
+    sync.NodeStatus(nodeAddress, byUuid.size, hourDigests, qsoMetadata.value, currentStation, contestProperty.value,
       journal = journalProperty.maybeJournal)
 
   }

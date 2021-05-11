@@ -10,17 +10,21 @@ Goals:
 * Free open-source
 * Runs on Linux, Mac or Microsoft Windows
 * Raspberry Pi Support (download image, copy to SD card)
-e
-`sbt:
-`stage
-`universal:packageBin`
+
+
+#Building
+  
+## Zip file without the JVM. 
+You can run this anywhere but you must install th JVM yourself.
+`sbt universal:packageBin`
 
 Creates target/universal/fdcluster-1.0.zip
 
-### MACOS
-universal:packageOsxDmg
+## macOS
+`sbt universal:packageOsxDmg`
 
-### Building for Microsoft Windows
-(Must be on Windows)
+## Microsoft Windows
+This will bundle the JVM. Must run on Windows.
 
 `sbt windows:packageBin`
+

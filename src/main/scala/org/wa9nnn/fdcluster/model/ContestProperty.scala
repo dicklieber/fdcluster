@@ -54,8 +54,6 @@ class ContestProperty @Inject()(persistence: Persistence, nodeAddress: NodeAddre
 
   val logotypeImageProperty: ObjectProperty[Image] = new ObjectProperty[Image]()
 
-  def fileBase: String = contestName
-
   onChange { (_, old, contest) =>
     contestNameProperty.value = contest.contestName
     ourExchangeProperty.value = contest.ourExchange

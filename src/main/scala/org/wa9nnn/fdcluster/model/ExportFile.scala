@@ -29,6 +29,7 @@ case class AdifExportRequest(exportFile: ExportFile = ExportFile())
  * @param directory to be resolved with filename.
  * @param fileName to save under.
  */
+//case class ExportFile() {
 case class ExportFile(directory: String = System.getProperty("user.home"), fileName: String = "") {
   def validate: Option[String] = {
     if (fileName.isBlank)

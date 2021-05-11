@@ -23,7 +23,6 @@ import _root_.scalafx.beans.property.ObjectProperty
 import akka.actor.{ActorRef, ActorSystem, DeadLetter, Props}
 import com.github.racc.tscg.TypesafeConfigModule
 import com.google.inject.{AbstractModule, Injector, Provides}
-import com.typesafe.config.ConfigFactory
 import configs.Config
 import net.codingwell.scalaguice.{ScalaModule, ScalaMultibinder}
 import org.wa9nnn.fdcluster.contest.{JournalProperty, JournalPropertyWriting}
@@ -49,9 +48,11 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
 
   override def configure(): Unit = {
     try {
-      val config:Config= ConfigApp.apply
+      val fileManager = new FileManager()
+      bind[FileManager] .toInstance(fileManager)
       // File manager must be invoked before any logging is done as logback.xml uses the system property  "log.file.path"
-      // which gets set by th3 FileManager.
+      // which gets set by the FileManager.
+      val config:Config= ConfigApp.apply
       bind[CommandLine].toInstance(new CommandLineScalaFxImpl(parameters))
       bind[MulticastListener].asEagerSingleton()
       val actorSystem = ActorSystem("default", config)
@@ -62,7 +63,7 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
         deadLetterMonitorActor, classOf[DeadLetter])
       bind[QsoSource].to[StoreLogic]
       bind[NodeAddress]
-        .toInstance(NodeAddress.apply(config))
+        .toInstance(NodeAddress.apply(fileManager))
       bind[Persistence]
         .to[PersistenceImpl]
         .asEagerSingleton()

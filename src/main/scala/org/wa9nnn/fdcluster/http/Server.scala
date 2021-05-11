@@ -26,6 +26,7 @@ import akka.http.scaladsl.server.Route
 import com.google.inject.Inject
 import com.google.inject.name.Named
 import com.typesafe.config.Config
+import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.model.NodeAddress
 import play.api.libs.json.{JsValue, Json}
 
@@ -44,7 +45,7 @@ import scala.util.{Failure, Success}
 class Server @Inject()(@Inject() @Named("store") val store: ActorRef,
                        system: ActorSystem,
                        config: Config,
-                       val nodeAddress: NodeAddress) extends UserRoutes {
+                       val nodeAddress: NodeAddress) extends UserRoutes with LazyLogging {
   private implicit val s = system
   implicit val executionContext: ExecutionContext = system.dispatcher
 
@@ -72,10 +73,9 @@ class Server @Inject()(@Inject() @Named("store") val store: ActorRef,
 
   serverBinding.onComplete {
     case Success(bound) =>
-      println(s"HTTP server online at http://${bound.localAddress.getHostString}:${bound.localAddress.getPort}/")
+      logger.info(s"HTTP server online at http://${bound.localAddress.getHostString}:${bound.localAddress.getPort}/")
     case Failure(e) =>
-      Console.err.println(s"Server could not start!")
-      e.printStackTrace()
+      logger.error(s"HTTP Server did not start!", e)
       system.terminate()
   }
 

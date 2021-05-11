@@ -231,6 +231,23 @@
     -fx-font-family: monospace;
 }
 
+.ageCurrent {
+    -fx-background-color: #A6FF0059;
+}
+
+.ageOld {
+    -fx-background-color: yellow
+}
+
+.ageOlder {
+    -fx-background-color: orange;
+}
+
+.ageMax {
+    -fx-background-color: red;
+}
+
+
 TextArea {
     -fx-font-family: monospace;
 }

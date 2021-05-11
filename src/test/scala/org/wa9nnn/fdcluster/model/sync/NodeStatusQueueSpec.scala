@@ -10,11 +10,9 @@ class NodeStatusQueueSpec extends Specification {
   val address0 = new NodeAddress()
   val ns0: NodeStatus = NodeStatus(nodeAddress = address0,
     qsoCount = 42,
-    digest = "123445",
     qsoHourDigests = List.empty,
-    bandModeOperator = CurrentStation(),
+    currentStation = CurrentStation(),
     qsoMetadata = QsoMetadata(),
-    qsoRate = 1.0,
     contest = Contest()
   )
 

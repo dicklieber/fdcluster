@@ -23,6 +23,7 @@ import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.javafx.cluster.LabelSource
 import org.wa9nnn.util.TimeHelpers.{msHour, utcZoneId}
 import _root_.scalafx.scene.control.Labeled
+import com.wa9nnn.util.tableui.Cell
 
 import java.time.{Instant, ZonedDateTime}
 import scala.collection.concurrent.TrieMap
@@ -34,6 +35,8 @@ import scala.collection.mutable
  *
  */
 case class FdHour private(day: Int, hour: Int) extends Ordered[FdHour] with LabelSource {
+  def toCell: Cell = Cell(display)
+
 
   val display: String = f"$day:$hour%02d"
   override val toolTip = s"utc date: $day hour: $hour"

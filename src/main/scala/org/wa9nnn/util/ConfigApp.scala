@@ -11,8 +11,6 @@ object ConfigApp extends  StructuredLogging {
   def apply: Config = {
     try {
       val builtinConfig = ConfigFactory.load()
-      // LogFilePath must be invoked before any logging happens log fie wont be available and no log file will be generated!
-      LogFilePath(builtinConfig)
 
       val userHome = Paths.get(System.getProperty("user.home"))
       val userConf = userHome.resolve("fdcluster").resolve("user.conf")

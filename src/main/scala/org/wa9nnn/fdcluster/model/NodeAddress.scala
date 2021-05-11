@@ -20,10 +20,9 @@
 package org.wa9nnn.fdcluster.model
 
 import akka.http.scaladsl.model.Uri
-import com.typesafe.config.Config
+import org.wa9nnn.fdcluster.FileManager
 
 import java.net.{Inet4Address, InetAddress, NetworkInterface, URL}
-import javax.inject.Inject
 import scala.jdk.CollectionConverters._
 
 /**
@@ -35,7 +34,7 @@ import scala.jdk.CollectionConverters._
  * @param instance  from application.conf or command line e.g -Dinstance=2
  * @param httpPort  as opposed to the multicast port.
  */
-case class NodeAddress @Inject()(ipAddress: String = "localhost", hostName: String = "localhost", instance: Int = 0, httpPort: Int = 8000) extends Ordered[NodeAddress] {
+case class NodeAddress (ipAddress: String = "localhost", hostName: String = "localhost", instance: Int = 0, httpPort: Int = 8000) extends Ordered[NodeAddress] {
   val display: String = {
     s"$hostName:$instance ($ipAddress)"
   }
@@ -74,17 +73,15 @@ case class NodeAddress @Inject()(ipAddress: String = "localhost", hostName: Stri
 }
 
 object NodeAddress {
-  def apply(config: Config): NodeAddress = {
-    val instance = config.getInt("fdcluster.instance")
-    val httpPort = config.getInt("fdcluster.http.port")
+  def apply(fileManager: FileManager): NodeAddress = {
 
     val inetAddress = determineIp()
     val address = inetAddress.getHostAddress
     val name = inetAddress.getHostName
     NodeAddress(ipAddress = address,
       hostName = InetAddress.getLocalHost.getHostName,
-      instance,
-      httpPort)
+      fileManager.instance,
+      fileManager.httpPort)
   }
 
   /**

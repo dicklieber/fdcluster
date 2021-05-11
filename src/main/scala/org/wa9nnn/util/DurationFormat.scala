@@ -18,8 +18,7 @@
 
 package org.wa9nnn.util
 
-import java.time.Duration
-
+import java.time.{Duration, Instant}
 import scala.language.implicitConversions
 
 /**
@@ -54,15 +53,20 @@ object DurationFormat {
         val hours = ms / ONE_HOUR
         val minutes = (ms - hours * ONE_HOUR) / ONE_MINUTE
         f"$hours%d hours $minutes%d min"
-      case ms  =>
+      case ms =>
         val days = ms / ONE_DAY
         val hours = (ms - days * ONE_DAY) / ONE_HOUR
         val mins = (ms - (hours * ONE_HOUR + days * ONE_DAY)) / ONE_MINUTE
-        if(mins == 0) {
+        if (mins == 0) {
           f"$days%d day $hours%d hour"
-        }else{
+        } else {
           f"$days%d day $hours%d hour $mins%d min"
         }
     }
   }
+
+  def apply(instant: Instant): String = {
+    apply(Duration.between(instant, Instant.now()))
+  }
+
 }

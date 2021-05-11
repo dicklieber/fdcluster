@@ -20,6 +20,7 @@
 package org.wa9nnn.fdcluster.javafx.cluster
 
 import com.typesafe.scalalogging.LazyLogging
+import com.wa9nnn.util.tableui.Cell
 import org.wa9nnn.fdcluster.javafx.cluster.HourRow._
 import org.wa9nnn.fdcluster.model.MessageFormats.Digest
 import org.wa9nnn.fdcluster.model.sync.QsoHourDigest
@@ -28,29 +29,28 @@ import org.wa9nnn.fdcluster.store.network.cluster.NodeStateContainer
 import scala.collection.immutable
 
 
-case class HourRow(rowHeader: StyledAny, qhdAndContainers: List[(QsoHourDigest, NodeStateContainer)]) extends Row with LazyLogging {
+case class HourRow(rowHeader: Cell, qhdAndContainers: List[(QsoHourDigest, NodeStateContainer)]) extends Row with LazyLogging {
   private val setOfDigests: Set[Digest] = qhdAndContainers.map {
     _._1.digest
   }.toSet
 
-  val cells: Seq[StyledAny] = {
+  val cells: Seq[Cell] = {
     if (setOfDigests.size == 1) {
       // all the same
-      qhdAndContainers.map(t ⇒ {
-        StyledAny(t._1)
+      qhdAndContainers.map { case (qhd: QsoHourDigest, nsc: NodeStateContainer) ⇒
+        qhd.toCell
           .withCssClass(sameHour)
-          .withCssClass(t._2.cssStyles)
+          .withCssClass(nsc.cssStyles)
       }
-      )
     } else {
       // not all the same
       val differentDigests: immutable.Seq[Digest] = setOfDigests.toList.sorted
 
-      qhdAndContainers.map(t ⇒
-        StyledAny(t._1)
-          .withCssClass(styleForIndex(differentDigests.indexOf(t._1.digest)))
-          .withCssClass(t._2.cssStyles)
-      )
+      qhdAndContainers.map { case (qhd: QsoHourDigest, nsc: NodeStateContainer) ⇒
+        qhd.toCell
+          .withCssClass(styleForIndex(differentDigests.indexOf(qhd.digest)))
+          .withCssClass(nsc.cssStyles)
+      }
     }
   }
 

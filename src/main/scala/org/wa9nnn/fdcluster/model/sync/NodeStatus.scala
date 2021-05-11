@@ -25,36 +25,31 @@ import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.{CurrentStation, NodeAddress, QsoMetadata}
 import org.wa9nnn.fdcluster.store.network.FdHour
 
-import java.time.{Instant, LocalDateTime}
+import java.time.{Duration, Instant, LocalDateTime}
 
 /**
  *
  * @param nodeAddress      our IP and instance.
- * @param apiUrl           how to talk to this node. URL of the API.
  * @param qsoCount         of QSOs in db.
- * @param digest           over all QSO UUIDs
  * @param qsoHourDigests   for quickly determining what we have.
  * @param qsoMetadata      band, mode, operator etc.
- * @param bandModeOperator band mode and current operator
- * @param qsoRate          qsos per minute
+ * @param currentStation   band mode and current operator
  * @param stamp            when this message was generated.
  * @param v                FDCLuster Version that built this so we can detect mismatched versions.
  *
  */
 case class NodeStatus(nodeAddress: NodeAddress,
                       qsoCount: Int,
-                      digest: Digest,
                       qsoHourDigests: List[QsoHourDigest],
                       qsoMetadata: QsoMetadata,
-                      bandModeOperator: CurrentStation,
-                      qsoRate: Double,
-                      contest:Contest,
+                      currentStation: CurrentStation,
+                      contest: Contest,
                       journal: Option[Journal] = None,
                       stamp: Instant = Instant.now(),
                       v: String = BuildInfo.canonicalVersion) extends ClusterMessage {
-  def digestDisplay: String = DigestFormat(digest)
 
-  assert(bandModeOperator != null, "null BandModeOperator")
+
+  assert(currentStation != null, "null BandModeOperator")
 
   def digestForHour(fdHour: FdHour): Option[QsoHourDigest] = {
     qsoHourDigests.find(_.fdHour == fdHour)

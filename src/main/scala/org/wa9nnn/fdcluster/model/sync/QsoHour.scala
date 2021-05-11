@@ -19,17 +19,16 @@
 
 package org.wa9nnn.fdcluster.model.sync
 
-import org.wa9nnn.fdcluster.javafx.cluster.LabelSource
+import com.wa9nnn.util.tableui.Cell
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.{QsoRecord, sync}
 import org.wa9nnn.fdcluster.store.network.FdHour
-import _root_.scalafx.scene.control.Labeled
 
 import java.security.MessageDigest
 
 /**
  *
- * @param fdHour hour this is for..
+ * @param fdHour      hour this is for..
  * @param qsos        QSOs in this hour.
  */
 case class QsoHour(fdHour: FdHour, qsos: List[QsoRecord]) {
@@ -49,6 +48,14 @@ case class QsoHour(fdHour: FdHour, qsos: List[QsoRecord]) {
     val ids = qsos.map(_.qso.uuid)
     QsoHourIds(fdHour, ids)
   }
+
+  override def toString: Node = {
+    super.toString
+  }
+
+//  def toCell():Cell = {
+//
+//  }
 }
 
 object QsoHour {
@@ -62,28 +69,31 @@ object QsoHour {
 /**
  * Used to quickly compare one node's hour with another.
  *
- * @param fdHour truncated to the hour.
+ * @param fdHour      truncated to the hour.
  * @param digest      of all the QsoIDs in this hour.
  * @param size        number of Qsos in this hour.  //todo Do we actually need this? isn't the digest sufficient?
  */
-case class QsoHourDigest(fdHour: FdHour, digest: Digest, size: Int) extends LabelSource {
-  override def setLabel(labeled: Labeled): Unit = {
-    if (size == 0) {
-      labeled.text = "--"
-      labeled.tooltip = "No QSOs for this hour."
-    } else {
-      labeled.tooltip = "Qso Count: ${qsoHourDigest.size}\ndigest: ${qsoHourDigest.digest}\nDigest is based on all the QSO UUIDs in the hour."
-      labeled.text = s"$size: ${DigestFormat(digest)}"
-    }
+case class QsoHourDigest(fdHour: FdHour, digest: Digest, size: Int) {
 
+  override def toString: Node = {
+    super.toString
   }
 
+  def toCell: Cell = {
+    if (size == 0) {
+      Cell("--")
+        .withToolTip("No QSOs for this hour.")
+    } else {
+      Cell(s"$size: ${DigestFormat(digest)}")
+        .withToolTip("Qso Count: ${qsoHourDigest.size}\ndigest: ${qsoHourDigest.digest}\nDigest is based on all the QSO UUIDs in the hour.")
+    }
+  }
 }
 
 case class QsoHourIds(startOfHour: FdHour, qsiIds: List[Uuid])
 
 object DigestFormat {
-  def apply(digest:Digest):String = {
+  def apply(digest: Digest): String = {
     digest.take(10) + "..."
   }
 }

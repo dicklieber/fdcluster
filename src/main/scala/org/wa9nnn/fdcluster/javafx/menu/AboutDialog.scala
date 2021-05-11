@@ -29,13 +29,14 @@ import java.lang.management.ManagementFactory
 import java.net.URI
 import java.time.{Duration, Instant}
 import org.wa9nnn.fdcluster.javafx.FdCluster
+import org.wa9nnn.fdcluster.model.NodeAddress
 import org.wa9nnn.util.DurationFormat
 
 import java.io.File
 import javax.inject.{Inject, Singleton}
 import scala.jdk.CollectionConverters._
 @Singleton
-class  AboutDialog @Inject()(appInfo: AppInfo, fileManager: FileManager) extends Dialog with LazyLogging {
+class  AboutDialog @Inject()(appInfo: AppInfo, fileManager: FileManager, nodeAddress: NodeAddress) extends Dialog with LazyLogging {
   title = s"About ${BuildInfo.name}"
 
   private val cssUrl: String = getClass.getResource("/fdcluster.css").toExternalForm
@@ -70,6 +71,11 @@ class  AboutDialog @Inject()(appInfo: AppInfo, fileManager: FileManager) extends
     goc.addControl("App Directory", new Hyperlink(fileManager.directory.toString) {
       onAction = event => {
         desktop.open(fileManager.directory.toFile)
+      }
+    })
+    goc.addControl("Our HTTP", new Hyperlink(nodeAddress.url.toExternalForm()) {
+      onAction = event => {
+        desktop.browse(nodeAddress.url.toURI)
       }
     })
     val args = ManagementFactory.getRuntimeMXBean.getInputArguments.asScala.mkString("\n")

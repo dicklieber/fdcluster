@@ -19,17 +19,19 @@
 
 package org.wa9nnn.fdcluster.javafx.cluster
 
+import com.wa9nnn.util.tableui.Cell
+
 
 trait Row {
-  def rowHeader: StyledAny
+  def rowHeader: Cell
 
-  def cells: Seq[StyledAny]
+  def cells: Seq[Cell]
 
 }
 
 /**
  *
  * @param rowHeader name show in 1st column of row.
- * @param cells     things that an be rendered.
+ * @param cells     things that can be rendered.
  */
-case class MetadataRow(rowHeader: StyledAny, cells: Seq[StyledAny]) extends Row
+case class MetadataRow(rowHeader: Cell, cells: Seq[Cell]) extends Row

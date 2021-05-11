@@ -19,31 +19,37 @@
 
 package org.wa9nnn.fdcluster.javafx.cluster
 
-import java.time.LocalDateTime
-
+import _root_.scalafx.scene.control.{Hyperlink, TableCell}
 import com.typesafe.scalalogging.LazyLogging
-import org.wa9nnn.fdcluster.model.TimeFormat.formatLocalDateTime
-import _root_.scalafx.scene.control.TableCell
+import com.wa9nnn.util.tableui.Cell
 
-class FdClusterTableCell[S, T] extends TableCell[Row, T] with LazyLogging {
-  item.onChange { (_, _, newValue) =>
-    Option(newValue).foreach { v: T ⇒
-      try {
-        v match {
-          case sa: StyledAny ⇒
-            sa.setLabel(this)
-          case stamp: LocalDateTime ⇒
-            text = stamp
-          case string: String ⇒
-            text = string
-          case other ⇒
-            text = other.toString
-        }
-      } catch {
-        case x: Throwable ⇒ x.printStackTrace()
+import java.awt.Desktop
+import java.net.URI
+
+/**
+ * A [[TableCell]] that wotk with [[com.wa9nnn.util.tableui.Cell]]s.
+ * These Cells can have css style class, tool tips or href links.
+ * @tparam S
+ */
+class FdClusterTableCell[S] extends TableCell[Row, Cell] with LazyLogging {
+  private val desktop = Desktop.getDesktop
+
+  item.onChange { (_, _, cell) =>
+    Option(cell).foreach { c: Cell ⇒
+      if (c.cssClass.nonEmpty) {
+        styleClass = c.cssClass
       }
-//      val styles = styleClass.toList
-//      logger.debug(s"value: $v styles: $styles")
+      if (cell.href.isDefined)
+        graphic = new Hyperlink(c.value) {
+          onAction = _ => {
+            desktop.browse(new URI(cell.href.get.url))
+          }
+        } else
+        text = c.value
+      cell.tooltip.foreach {
+        tooltip = _
+      }
+
     }
 
   }

@@ -30,22 +30,22 @@ import _root_.scalafx.scene.layout.{HBox, VBox}
 import akka.util.Timeout
 import com.google.inject.Inject
 import org.scalafx.extras.onFX
-import org.wa9nnn.fdcluster.contest.JournalProperty
+import org.wa9nnn.fdcluster.contest.{Journal, JournalProperty}
 import org.wa9nnn.fdcluster.javafx.entry.Sections
+import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.QsoRecord
 import org.wa9nnn.fdcluster.store.StoreLogic
 import org.wa9nnn.util.TimeHelpers
 import play.api.libs.json.Json
 
+import java.awt.Desktop
 import java.time.format.DateTimeFormatter
 import java.time.{Instant, ZonedDateTime}
 import java.util.concurrent.TimeUnit
-import org.wa9nnn.fdcluster.model.MessageFormats._
 /**
  * Create JavaFX UI to view QSOs.
  */
-class DataScene @Inject()(journalProperty: JournalProperty,
-                          storeLogic: StoreLogic) {
+class DataScene @Inject()(journalProperty: JournalProperty, storeLogic: StoreLogic) {
 
   implicit val timeout: Timeout = Timeout(5, TimeUnit.SECONDS)
 
@@ -58,6 +58,7 @@ class DataScene @Inject()(journalProperty: JournalProperty,
   //  private val allQsoBuffer: ObservableBuffer[QsoRecord] = StoreMapImpl.allQsos
   private val sizeLabel = new Label("--")
   private val qsoBuffer: ObservableBuffer[QsoRecord] = storeLogic.qsoBuffer
+  sizeLabel.text = f"${qsoBuffer.size}%,d"
   qsoBuffer.onChange((ob, _) ⇒
     onFX {
       sizeLabel.text = f"${ob.size}%,d"
@@ -163,9 +164,20 @@ class DataScene @Inject()(journalProperty: JournalProperty,
   private val splitPane = new SplitPane
   splitPane.items.addAll(tableView, detailView)
   splitPane.setDividerPosition(0, 50.0)
+  private val desktop: Desktop = Desktop.getDesktop
+  private val journalFileLabel = new Hyperlink(journalProperty.fileName) {
+    onAction = event => {
+      desktop.open(journalProperty.filePath.toFile)
+    }
+  }
+  journalProperty.onChange{(_,_,newFile: Journal) =>
+    journalFileLabel.text = journalProperty.fileName
+  }
+
+
   val hbox: HBox = new HBox(
     new Label("QSO Journal file"),
-    new Label(journalProperty.maybeJournal.map(_.journalFileName).getOrElse("Not Set")),
+    journalFileLabel,
     new Label("  QSO Count: "),
     sizeLabel
   )

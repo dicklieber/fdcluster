@@ -19,38 +19,52 @@
 
 package org.wa9nnn.fdcluster
 
-import com.github.racc.tscg.TypesafeConfig
 import org.wa9nnn.fdcluster.model.{ContestProperty, ExportFile}
 
-import java.nio.file.{Path, Paths}
-import javax.inject.{Inject, Singleton}
+import java.nio.file.{Files, Path, Paths}
+import java.time.ZonedDateTime
 
 /**
  * All access to various files should go through this.
  */
-@Singleton
-class FileManager @Inject()(@TypesafeConfig("fdcluster.directory") dir: String) {
+class FileManager  {
+  val userDir: Path = Paths.get(System.getProperty("user.home")).toAbsolutePath
+  val instance: Int = System.getProperty("instance", "1").toInt
+  val directory: Path = userDir.resolve(s"fdcluster${instance}")
 
-  val directory: Path = Paths.get(dir).toAbsolutePath
+  val logsDirectory: Path = directory.resolve("logs")
+  Files.createDirectories(logsDirectory)
+  val logFile: String = logsDirectory.resolve("fdcluster.log").toString
+
+  System.setProperty("log.file.path", logFile.toString)
 
   /**
    *
    * @return where to keep settings
    */
   def varDirectory: Path = directory.resolve("var")
-  def journalDir:Path = directory.resolve("journal")
+
+  def journalDir: Path = directory.resolve("journal")
 
   /**
    *
-   * @param extension       without leading dot.
+   * @param extension       with or without leading dot.
    * @param contestProperty to make contest-specific names.
    * @return with default directory and filename.
    */
   def defaultExportFile(extension: String, contestProperty: ContestProperty): ExportFile = {
-    val fileBase = contestProperty.fileBase
-    val dir: String = directory.resolve(fileBase).toAbsolutePath.toString
-    ExportFile(dir, s"$fileBase.$extension")
+    val year = ZonedDateTime.now().getYear
+    val contestName = contestProperty.contestName
+    val fileBase = s"$contestName-$year"
+    val dir: String = directory.resolve(contestName).toAbsolutePath.toString
+    ExportFile(dir, s"$fileBase.${extension.dropWhile(_ =='.')}")
   }
+
+  def httpPort:Int =  {
+      8080 + instance
+  }
+
 }
+
 
 

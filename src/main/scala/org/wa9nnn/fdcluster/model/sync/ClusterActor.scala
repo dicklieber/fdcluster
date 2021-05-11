@@ -26,8 +26,13 @@ class ClusterActor(nodeAddress: NodeAddress,
 
   private val httpClient: ActorRef = context.actorOf(Props(classOf[HttpClientActor], store, context.self))
 
-  private var ourNodeStatus: NodeStatus = NodeStatus(nodeAddress, 0, "",
-    List.empty, QsoMetadata(), CurrentStation(), 0.0, contestProperty.value)
+  private var ourNodeStatus: NodeStatus = NodeStatus(
+    nodeAddress = nodeAddress,
+    qsoCount = 0,
+    qsoHourDigests = List.empty,
+    qsoMetadata = QsoMetadata(),
+    currentStation = CurrentStation(),
+    contest = contestProperty.value)
 
   override def receive: Receive = {
 
@@ -56,15 +61,14 @@ class ClusterActor(nodeAddress: NodeAddress,
 
                     } else {
                       whenTraceEnabled(() => s"$fdHour unmatched digest starting uuid process to $ns.")
-                       Seq(SendContainer(RequestUuidsForHour(fdHour, ns.nodeAddress, nodeAddress, getClass), ns.nodeAddress))
+                      Seq(SendContainer(RequestUuidsForHour(fdHour, ns.nodeAddress, nodeAddress, getClass), ns.nodeAddress))
                     }
                   case None => // we dont have this hour
                     //todo request all qsos
                     Seq(SendContainer(RequestQsosForHour(fdHour, ns.nodeAddress, nodeAddress, getClass), ns.nodeAddress))
                 }
               }
-              if(messages.nonEmpty)
-              {
+              if (messages.nonEmpty) {
                 logger.debug(s"Need ${messages.length} FdHours, will process up to 5 of them.")
                 messages.take(5).foreach(httpClient ! _)
               }
