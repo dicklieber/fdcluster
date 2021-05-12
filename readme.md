@@ -1,15 +1,24 @@
-# Field Day Logging
+# FDCLuster - Field Day Logging
 
-Distributed, serverless, Field Day Logging system.
+Distributed, serverless, shared-nothing. Field Day Logging system.
 
 Goals:
 
-* All nodes in sync
+* All nodes are equal peers.
 * Nodes can enter or leave and will resync automatically
-* Each node can have native (or provide Web access to clients Maybe)
+* Each node can have native (or provide Web access to clients, sometime)
 * Free open-source
 * Runs on Linux, Mac or Microsoft Windows
-* Raspberry Pi Support (download image, copy to SD card)
+* Raspberry Pi Support (download image, copy to SD card, sometime)
+
+#Technologies
+* Written in [Scala](https://www.scala-lang.org) with a few Java enums.
+* UI is [ScalaFx](http://www.scalafx.org). a nice scala wrapper for [JavaFx](https://openjfx.io)
+* Nodes in cluster discover each other via TCP/IP [Multicast](https://en.wikipedia.org/wiki/Multicast).
+* [Akka](https://akka.io) actors are used within each node to manage messages.
+* HTTP client and Server using [AKKA-HTTP](https://doc.akka.io/docs/akka-http/current/index.html).
+* Dependency injection using [Googe Guice](https://github.com/google/guice).
+* Configuration via [Typesafe config](https://github.com/lightbend/config) using [HOCON](https://en.wikipedia.org/wiki/HOCON) syntax.
 
 
 #Building
@@ -27,4 +36,11 @@ Creates target/universal/fdcluster-1.0.zip
 This will bundle the JVM. Must run on Windows.
 
 `sbt windows:packageBin`
+
+Artifacts published to: https://wa9nnn.jfrog.io/
+
+Source code at: https://github.com/dicklieber/fdcluster
+
+Discuission at: https://groups.io/g/FDCluster
+
 
