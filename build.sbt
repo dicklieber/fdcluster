@@ -56,7 +56,6 @@ osType := {
 val javafxLib = file(sys.env.get("JAVAFX_LIB").getOrElse("Environmental variable JAVAFX_LIB is not set"))
 lazy val akkaHttpVersion = "10.2.4"
 val logbackVersion = "1.2.3"
-val jettyVersion = "9.4.39.v20210325"
 
 libraryDependencies ++= Seq(
   "com.wa9nnn" %% "util" % "0.0.4",
