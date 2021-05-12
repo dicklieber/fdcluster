@@ -1,3 +1,5 @@
+import com.typesafe.sbt.packager.SettingsHelper.makeDeploymentSettings
+
 name := "fdcluster"
 
 maintainer := "wa9nnn@u505.com"
@@ -154,4 +156,5 @@ jlinkIgnoreMissingDependency := JlinkIgnore.only(
 
 publishTo := Some("Artifactory Realm" at "https://wa9nnn.jfrog.io/artifactory/wa9nnn")
 credentials += Credentials(Path.userHome / ".sbt" / "jfrog.credentials")
+makeDeploymentSettings(Universal, packageBin in Universal, "zip")
 
