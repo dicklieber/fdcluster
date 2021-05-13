@@ -1,4 +1,4 @@
-# FDCLuster - Field Day Logging
+# FDCluster - Field Day Logging
 
 Distributed, serverless, shared-nothing. Field Day Logging system.
 
