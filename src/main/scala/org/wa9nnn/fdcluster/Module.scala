@@ -25,7 +25,7 @@ import com.github.racc.tscg.TypesafeConfigModule
 import com.google.inject.{AbstractModule, Injector, Provides}
 import configs.Config
 import net.codingwell.scalaguice.{ScalaModule, ScalaMultibinder}
-import org.wa9nnn.fdcluster.contest.{JournalProperty, JournalPropertyWriting}
+import org.wa9nnn.fdcluster.contest.JournalManager
 import org.wa9nnn.fdcluster.javafx.entry.{RunningTaskInfoConsumer, RunningTaskPane, StatsPane}
 import org.wa9nnn.fdcluster.metrics.MetricsReporter
 import org.wa9nnn.fdcluster.model._
@@ -48,8 +48,8 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
 
   override def configure(): Unit = {
     try {
-      val fileManager = new FileManager()
-      bind[FileManager] .toInstance(fileManager)
+      val fileManager = new FileContext()
+      bind[FileContext] .toInstance(fileManager)
       // File manager must be invoked before any logging is done as logback.xml uses the system property  "log.file.path"
       // which gets set by the FileManager.
       val config:Config= ConfigApp.apply
@@ -63,7 +63,7 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
         deadLetterMonitorActor, classOf[DeadLetter])
       bind[QsoSource].to[StoreLogic]
       bind[NodeAddress]
-        .toInstance(NodeAddress.apply(fileManager))
+        .toInstance(fileManager.nodeAddress)
       bind[Persistence]
         .to[PersistenceImpl]
         .asEagerSingleton()
@@ -73,7 +73,6 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
       bind[ObjectProperty[CurrentStation]]
         .annotatedWithName("currentStation")
         .toInstance(ObjectProperty(CurrentStation()))
-      bind[JournalPropertyWriting].to[JournalProperty]
       val runningTaskPane = new RunningTaskPane
       bind[RunningTaskPane].toInstance(runningTaskPane)
       bind[RunningTaskInfoConsumer].toInstance(runningTaskPane)
@@ -109,10 +108,11 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
                         @Named("store") storeActor: ActorRef,
                         @Named("nodeStatusQueue") nodestatusQueue: ActorRef,
                         clusterState: ClusterState,
-                        contestProperty: ContestProperty
+                        contestProperty: ContestProperty,
+                        journalManager: JournalManager
                        ): ActorRef = {
     actorSystem.actorOf(Props(
-      new ClusterActor(nodeAddress, storeActor, nodestatusQueue, clusterState, contestProperty)),
+      new ClusterActor(nodeAddress, storeActor, nodestatusQueue, clusterState, contestProperty, journalManager)),
       "cluster")
   }
 
@@ -120,10 +120,11 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
   @Singleton
   @Named("multicastSender")
   def clusterStoreActor(actorSystem: ActorSystem,
-                        config: Config
+                        config: Config,
+                        clusterControl: ClusterControl
                        ): ActorRef = {
     actorSystem.actorOf(Props(
-      new MultcastSenderActor(config)),
+      new MultcastSenderActor(config, clusterControl)),
       "multicastSender")
   }
 

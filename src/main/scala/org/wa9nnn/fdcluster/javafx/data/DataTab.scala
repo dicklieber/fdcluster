@@ -30,7 +30,7 @@ import _root_.scalafx.scene.layout.{HBox, VBox}
 import akka.util.Timeout
 import com.google.inject.Inject
 import org.scalafx.extras.onFX
-import org.wa9nnn.fdcluster.contest.{Journal, JournalProperty}
+import org.wa9nnn.fdcluster.contest.JournalManager
 import org.wa9nnn.fdcluster.javafx.entry.Sections
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.QsoRecord
@@ -39,13 +39,20 @@ import org.wa9nnn.util.TimeHelpers
 import play.api.libs.json.Json
 
 import java.awt.Desktop
+import java.nio.file.Path
 import java.time.format.DateTimeFormatter
 import java.time.{Instant, ZonedDateTime}
 import java.util.concurrent.TimeUnit
+import scala.util.Try
+import org.wa9nnn.fdcluster.contest.JournalManager._
+import org.wa9nnn.fdcluster.javafx.FdCluster.dataTab
+
 /**
  * Create JavaFX UI to view QSOs.
  */
-class DataScene @Inject()(journalProperty: JournalProperty, storeLogic: StoreLogic) {
+class DataTab @Inject()(journalManager: JournalManager, storeLogic: StoreLogic) extends Tab {
+  text = "Data"
+  closable = false
 
   implicit val timeout: Timeout = Timeout(5, TimeUnit.SECONDS)
 
@@ -165,26 +172,29 @@ class DataScene @Inject()(journalProperty: JournalProperty, storeLogic: StoreLog
   splitPane.items.addAll(tableView, detailView)
   splitPane.setDividerPosition(0, 50.0)
   private val desktop: Desktop = Desktop.getDesktop
-  private val journalFileLabel = new Hyperlink(journalProperty.fileName) {
-    onAction = event => {
-      desktop.open(journalProperty.filePath.toFile)
+  private val journalFileLabel = new Hyperlink() {
+    text = journalManager.journalFilePathProperty.value
+    onAction = () => {
+      journalManager.journalFilePathProperty.value.foreach { path =>
+        desktop.open(path.toFile)
+      }
     }
   }
-  journalProperty.onChange{(_,_,newFile: Journal) =>
-    journalFileLabel.text = journalProperty.fileName
+  journalManager.journalFilePathProperty.onChange {
+    (_, _, tryPath: Try[Path]) =>
+      onFX {
+        journalFileLabel.text = tryPath
+      }
   }
 
-
-  val hbox: HBox = new HBox(
+  val hBox: HBox = new HBox(
     new Label("QSO Journal file"),
     journalFileLabel,
     new Label("  QSO Count: "),
     sizeLabel
   )
-  hbox.setAlignment(Pos.Center)
-  hbox.getStyleClass.add("parenthetic")
-  val vbox = new VBox(hbox, splitPane)
-  val pane: Node = vbox
-
-
+  hBox.setAlignment(Pos.Center)
+  hBox.getStyleClass.add("parenthetic")
+  val vbox = new VBox(hBox, splitPane)
+  content = vbox
 }

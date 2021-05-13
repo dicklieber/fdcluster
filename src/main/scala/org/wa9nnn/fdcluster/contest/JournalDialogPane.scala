@@ -17,49 +17,79 @@
 
 package org.wa9nnn.fdcluster.contest
 
-import org.wa9nnn.fdcluster.FileManager
+import org.wa9nnn.fdcluster.FileContext
 import org.wa9nnn.fdcluster.javafx.GridOfControls
 import _root_.scalafx.scene.control.{Button, Hyperlink, Label, TitledPane}
 import _root_.scalafx.scene.layout.VBox
 import _root_.scalafx.Includes._
 import scalafx.beans.property.StringProperty
 import scalafx.geometry.Insets
-import org.wa9nnn.fdcluster.contest.JournalProperty.notSet
+import org.wa9nnn.fdcluster.contest.JournalManager.notSet
+
 import java.awt.Desktop
 import javax.inject.Inject
 import com.wa9nnn.util.TimeConverters.local
+import org.wa9nnn.fdcluster.model.ContestProperty
 
 /**
  * Allow user to create a new Journal file.
  * Journals are name based on [[org.wa9nnn.fdcluster.contest.Journal]] object
  *
  * @param journalProperty manages the [[Journal]]
- * @param fileManager     so we can make link to thejournals directory.
+ * @param fileContext     so we can make link to the journals directory.
  */
-class JournalDialogPane @Inject()(journalProperty: JournalProperty, fileManager: FileManager) {
+class JournalDialogPane @Inject()(journalProperty: JournalManager, fileContext: FileContext, contestProperty: ContestProperty) {
   val gridOfControls = new GridOfControls()
   private val desktop = Desktop.getDesktop
 
-  private val currentJournalFieNameProperty: StringProperty = gridOfControls.add("Current", journalProperty.fileName)
+  import org.wa9nnn.fdcluster.contest.JournalManager.tp2String
+
+  private val currentFile: StringProperty = gridOfControls.add("Current", "--")
   private val newJournalButton = new Button("New Journal")
   gridOfControls.add(newJournalButton,
     1, gridOfControls.row.getAndIncrement())
 
   val lastGoc = new GridOfControls(5 -> 5, Insets(5.0))
-  val maybeJournal: Option[Journal] = journalProperty.maybeJournal
+  val maybeJournal: Option[Journal] = journalProperty._currentJournal
 
   val lastFrom: StringProperty = lastGoc.add("From", maybeJournal.map(_.nodeAddress.display).getOrElse(notSet))
   val lastAt: StringProperty = lastGoc.add("At", maybeJournal.map(_.stamp).getOrElse(notSet))
+  updateLast() // starting values.
   gridOfControls.add("Last Changed", lastGoc)
 
-  gridOfControls.addControl("Journal Files", new Hyperlink(fileManager.journalDir.toString) {
+  gridOfControls.addControl("Journal Files", new Hyperlink(fileContext.journalDir.toString) {
+    tooltip = "A new file will not exist until a QSO is written to it."
     onAction = event => {
-      desktop.open(fileManager.journalDir.toFile)
+      desktop.open(fileContext.journalDir.toFile)
     }
   })
 
-  newJournalButton.onAction = () =>
-    journalProperty.newJournal()
+  def updateLast(): Unit = {
+    journalProperty._currentJournal match {
+      case Some(journal) =>
+        currentFile.value = journal.journalFileName
+        lastFrom.value = journal.nodeAddress.display
+        lastAt.value = journal.stamp
+      case None =>
+        currentFile.value = "--"
+        lastFrom.value = "--"
+        lastAt.value = "--"
+    }
+  }
+
+  journalProperty.journalFilePathProperty.onChange { (_, _, _) =>
+    updateLast()
+  }
+
+
+  newJournalButton.onAction = () => {
+    journalProperty.createNewJournal()
+    goodLuckPane.visible = true
+  }
+  val goodLuckPane: Label = new Label("Good luck in the contest!") {
+    styleClass += "goodLuckPane"
+    visible = false
+  }
 
   val pane: TitledPane = new TitledPane() {
     text = "Journal"
@@ -73,14 +103,18 @@ class JournalDialogPane @Inject()(journalProperty: JournalProperty, fileManager:
         |can viw them """.stripMargin) {
       styleClass += "helpPane"
     }
-      , gridOfControls)
+      , gridOfControls,
+      goodLuckPane
+    )
     collapsible = false
   }
 
-  journalProperty.onChange { (_, _, newJournal) =>
-    currentJournalFieNameProperty.value = newJournal.journalFileName
-    lastFrom.value = newJournal.nodeAddress.display
-    lastAt.value = newJournal.stamp
+  {
+    pane.visible = contestProperty.okToLogProperty.value
+    contestProperty.okToLogProperty.onChange { (_, _, nv) =>
+      pane.visible = nv
+    }
   }
+
 
 }

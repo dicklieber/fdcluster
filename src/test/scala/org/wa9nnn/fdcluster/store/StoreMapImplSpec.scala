@@ -22,11 +22,11 @@ import org.apache.commons.io.FileUtils._
 import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
 import org.specs2.specification.After
-import org.wa9nnn.fdcluster.FileManager
-import org.wa9nnn.fdcluster.contest.{JournalWriter, JournalProperty}
+import org.wa9nnn.fdcluster.contest.{JournalManager, JournalWriter}
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
-import org.wa9nnn.util.{CommandLine, PersistenceImpl}
+import org.wa9nnn.fdcluster.{FileContext, MockFileContext}
+import org.wa9nnn.util.CommandLine
 import scalafx.beans.property.ObjectProperty
 import scalafx.collections.ObservableBuffer
 
@@ -35,23 +35,22 @@ import java.nio.file.{Files, Path}
 class StoreMapImplSpec extends Specification with After with Mockito {
   val expectedNodeAddress: NodeAddress = NodeAddress()
 
-  val fileManager: FileManager = mock[FileManager] //todo need some values
+  val fileContext: FileContext = MockFileContext()
   private val directory: Path = Files.createTempDirectory("StoreMapImplSpec")
-  val persistence = new PersistenceImpl(fileManager)
   val allQsos = new ObservableBuffer[QsoRecord]()
 
   val commandLine: CommandLine = mock[CommandLine].is("skipJournal") returns false
-  private val journalWriter: JournalWriter = mock[JournalWriter]
-  private val journalProperty = mock[JournalProperty]
+  private val journalManager = mock[JournalManager]
   private val journalLoader: JournalLoader = mock[JournalLoader]
+  private val journalWriter = mock[JournalWriter]
   private val storeMapImpl = new StoreLogic(na = NodeAddress(),
     ObjectProperty(QsoMetadata()),
     multicastSender = mock[ActorRef],
-    contestProperty = new ContestProperty(persistence, NodeAddress()),
-    journalManager = journalWriter,
-    journalProperty = journalProperty,
+    contestProperty = new ContestProperty(fileContext),
+    journalManager = journalManager,
     journalLoader = journalLoader,
-   listeners =  Set.empty
+    journalWriter = journalWriter,
+    listeners = Set.empty
   )
 
 
@@ -61,7 +60,7 @@ class StoreMapImplSpec extends Specification with After with Mockito {
 
   "StoreMapImplSpec" >> {
     "happy path" >> {
-      val maybeAddedContact: AddResult = storeMapImpl.add(Qso(worked, bandMode, exchange))
+      val maybeAddedContact: AddResult = storeMapImpl.add(Qso(worked, exchange, bandMode))
       maybeAddedContact must beAnInstanceOf[Added]
 
       val contactIds = storeMapImpl.contactIds

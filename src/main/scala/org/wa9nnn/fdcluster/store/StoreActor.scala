@@ -21,7 +21,6 @@ package org.wa9nnn.fdcluster.store
 
 import akka.actor.Status.Failure
 import akka.actor.{Actor, ActorRef}
-import akka.pattern.pipe
 import akka.util.Timeout
 import com.google.inject.Injector
 import com.google.inject.name.Names
@@ -29,10 +28,11 @@ import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import nl.grons.metrics4.scala.DefaultInstrumented
+import org.wa9nnn.fdcluster.ClusterControl
 import org.wa9nnn.fdcluster.Markers.syncMarker
 import org.wa9nnn.fdcluster.adif.AdiExporter
 import org.wa9nnn.fdcluster.cabrillo.{CabrilloExportRequest, CabrilloGenerator}
-import org.wa9nnn.fdcluster.contest.{Journal, JournalProperty}
+import org.wa9nnn.fdcluster.contest.Journal
 import org.wa9nnn.fdcluster.javafx.menu.ImportRequest
 import org.wa9nnn.fdcluster.javafx.sync._
 import org.wa9nnn.fdcluster.model.MessageFormats._
@@ -52,10 +52,8 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
   val config: Config = injector.instance[Config]
   val randomQso: RandomQsoGenerator = injector.instance[RandomQsoGenerator]
   val multicastSender: ActorRef = injector.instance[ActorRef]( Names.named("multicastSender"))
-   injector.instance[JournalProperty].onChange{(_,_,journal) =>
-     self ! journal
-   }
   val store: StoreLogic = injector.instance[StoreLogic]
+  val clusterControl = injector.instance[ClusterControl]
 
   logger.info(s"StoreActor: ${self.path}")
 
@@ -66,6 +64,7 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
   override def receive: Receive = {
     case BufferReady =>
       store.loadLocalIndices()
+      clusterControl.up()
     case potentialQso: Qso ⇒
       val addResult: AddResult = store.add(potentialQso)
       addResult match {
@@ -131,15 +130,15 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
     /**
      * Finish up sync with data from another node
      */
-    case  qfn:QsosFromNode ⇒
+    case  qfn:QsosFromNode =>
       val qsos = qfn.qsos
       logger.debug(syncMarker, s"got ${qsos.size}")
       store.merge(qsos)
 
-    case DebugClearStore ⇒
+    case ClearStore =>
       store.debugClear()
 
-    case DebugKillRandom(nToKill) ⇒
+    case DebugKillRandom(nToKill) =>
       store.debugKillRandom(nToKill)
 
     case cer: CabrilloExportRequest =>
@@ -200,7 +199,7 @@ case object DumpCluster
 
 case object StatusPing
 
-case object DebugClearStore
+case object ClearStore
 
 case class DebugKillRandom(nToKill: Int)
 

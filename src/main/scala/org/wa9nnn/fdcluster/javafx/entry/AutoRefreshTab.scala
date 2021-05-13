@@ -32,8 +32,8 @@ trait AutoRefreshTab extends Tab with StructuredLogging{
       logger.trace("Refresh:selected")
       refresh()
       timer = Some(actorSystem.scheduler.scheduleAtFixedRate(
-        initialDelay = Duration.ofSeconds(5),
-        interval = Duration.ofSeconds(5),
+        initialDelay = Duration.ofSeconds(1),
+        interval = Duration.ofSeconds(1),
         runnable = task,
         executor = executor)
       )

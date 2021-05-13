@@ -140,6 +140,12 @@
     -fx-font-size: 24;
 }
 
+.goodLuckPane {
+    -fx-text-fill: blue;
+    -fx-font-weight: bold;
+    -fx-font-size: 20;
+}
+
 .differentHour1 {
     -fx-background-color: lightcoral;
 }

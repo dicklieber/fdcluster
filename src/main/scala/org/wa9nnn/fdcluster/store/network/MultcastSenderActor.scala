@@ -24,11 +24,13 @@ import akka.io.{IO, Udp}
 import akka.util.ByteString
 import com.typesafe.config.Config
 import nl.grons.metrics4.scala.DefaultInstrumented
+import org.wa9nnn.fdcluster.ClusterControl
 import org.wa9nnn.fdcluster.store.JsonContainer
 
 import java.net.InetSocketAddress
 
-class MultcastSenderActor(val config: Config) extends Actor with MulticastActor with DefaultInstrumented {
+class MultcastSenderActor(val config: Config,
+                          clusterControl: ClusterControl) extends Actor with MulticastActor with DefaultInstrumented {
 
   import context.system
 
@@ -46,15 +48,11 @@ class MultcastSenderActor(val config: Config) extends Actor with MulticastActor 
         val str = new String(bytes)
         s"Sending: $something to $multicastGroup:$port"
       }
-      send ! Udp.Send(ByteString(bytes), new InetSocketAddress(multicastGroup, port))
+      if (clusterControl.isUp)
+        send ! Udp.Send(ByteString(bytes), new InetSocketAddress(multicastGroup, port))
 
     case x ⇒
       logger.error(s"MulticastSenderActor: Unexpected: $x")
   }
 }
 
-object MultcastSenderActor {
-  def props(config: Config): Props = {
-    Props(new MultcastSenderActor(config))
-  }
-}

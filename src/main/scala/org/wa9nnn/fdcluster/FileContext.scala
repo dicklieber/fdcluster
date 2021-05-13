@@ -19,24 +19,36 @@
 
 package org.wa9nnn.fdcluster
 
-import org.wa9nnn.fdcluster.model.{ContestProperty, ExportFile}
+import org.wa9nnn.fdcluster.model.{ContestProperty, ExportFile, NodeAddress}
+import org.wa9nnn.util.{Persistence, PersistenceImpl}
+import play.api.libs.json.{Reads, Writes}
 
 import java.nio.file.{Files, Path, Paths}
 import java.time.ZonedDateTime
+import scala.reflect.ClassTag
+import scala.util.Try
 
 /**
  * All access to various files should go through this.
  */
-class FileManager  {
+class FileContext extends Persistence {
   val userDir: Path = Paths.get(System.getProperty("user.home")).toAbsolutePath
   val instance: Int = System.getProperty("instance", "1").toInt
   val directory: Path = userDir.resolve(s"fdcluster${instance}")
+  val nodeAddress: NodeAddress = NodeAddress(this)
 
   val logsDirectory: Path = directory.resolve("logs")
   Files.createDirectories(logsDirectory)
   val logFile: String = logsDirectory.resolve("fdcluster.log").toString
 
   System.setProperty("log.file.path", logFile.toString)
+
+
+  val persistenceDelegate: Persistence = new PersistenceImpl(this)
+
+  override def saveToFile[T: ClassTag](product: T)(implicit writes: Writes[T]): Try[String] = persistenceDelegate.saveToFile(product)
+
+  override def loadFromFile[T: ClassTag](f: () => T)(implicit writes: Reads[T]): T = persistenceDelegate.loadFromFile(f)
 
   /**
    *
@@ -57,11 +69,11 @@ class FileManager  {
     val contestName = contestProperty.contestName
     val fileBase = s"$contestName-$year"
     val dir: String = directory.resolve(contestName).toAbsolutePath.toString
-    ExportFile(dir, s"$fileBase.${extension.dropWhile(_ =='.')}")
+    ExportFile(dir, s"$fileBase.${extension.dropWhile(_ == '.')}")
   }
 
-  def httpPort:Int =  {
-      8080 + instance
+  def httpPort: Int = {
+    8080 + instance
   }
 
 }

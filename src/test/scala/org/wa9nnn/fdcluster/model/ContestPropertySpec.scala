@@ -21,13 +21,13 @@ package org.wa9nnn.fdcluster.model
 import org.specs2.execute.{AsResult, Result}
 import org.specs2.mutable.Specification
 import org.specs2.specification.ForEach
-import org.wa9nnn.fdcluster.{FileManager, MockFileManager}
+import org.wa9nnn.fdcluster.{FileContext, MockFileContext}
 import org.wa9nnn.util.PersistenceImpl
 
-trait FileManagerContext extends ForEach[FileManager] {
-  private val fileManager = MockFileManager()
+trait FileManagerContext extends ForEach[FileContext] {
+  private val fileManager = MockFileContext()
 
-  override protected def foreach[R](f: FileManager => R)(implicit evidence$3: AsResult[R]): Result = {
+  override protected def foreach[R](f: FileContext => R)(implicit evidence$3: AsResult[R]): Result = {
     try AsResult(f(fileManager))
     finally fileManager.clean()
   }
@@ -37,9 +37,9 @@ trait FileManagerContext extends ForEach[FileManager] {
 class ContestPropertySpec extends Specification with FileManagerContext {
   sequential
   "ContestProperty" should {
-   "exchange properties" >> { fileManger: FileManager =>
+   "exchange properties" >> { fileManger: FileContext =>
       val persistence = new PersistenceImpl(fileManger)
-      val contestProperty = new ContestProperty(persistence)
+      val contestProperty = new ContestProperty(fileManger)
       val ourExchangeProperty = contestProperty.ourExchangeProperty
       val ourExchange = ourExchangeProperty.value
       ourExchange.display must beEqualTo ("1O AB")

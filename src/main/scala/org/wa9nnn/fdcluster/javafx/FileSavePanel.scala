@@ -19,7 +19,7 @@
 
 package org.wa9nnn.fdcluster.javafx
 
-import org.wa9nnn.fdcluster.FileManager
+import org.wa9nnn.fdcluster.FileContext
 import org.wa9nnn.fdcluster.model.ExportFile
 import _root_.scalafx.Includes._
 import _root_.scalafx.beans.property.StringProperty

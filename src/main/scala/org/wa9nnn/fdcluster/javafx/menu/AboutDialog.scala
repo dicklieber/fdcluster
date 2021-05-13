@@ -19,7 +19,7 @@
 package org.wa9nnn.fdcluster.javafx.menu
 
 import com.typesafe.scalalogging.LazyLogging
-import org.wa9nnn.fdcluster.{AppInfo, BuildInfo, FileManager}
+import org.wa9nnn.fdcluster.{AppInfo, BuildInfo, FileContext}
 import org.wa9nnn.fdcluster.javafx.GridOfControls
 import _root_.scalafx.scene.control.{Hyperlink, _}
 import _root_.scalafx.scene.layout.{HBox, VBox}
@@ -31,21 +31,23 @@ import java.time.{Duration, Instant}
 import org.wa9nnn.fdcluster.javafx.FdCluster
 import org.wa9nnn.fdcluster.model.NodeAddress
 import org.wa9nnn.util.DurationFormat
+import scalafx.geometry.Insets
 
 import java.io.File
 import javax.inject.{Inject, Singleton}
 import scala.jdk.CollectionConverters._
+
 @Singleton
-class  AboutDialog @Inject()(appInfo: AppInfo, fileManager: FileManager, nodeAddress: NodeAddress) extends Dialog with LazyLogging {
+class AboutDialog @Inject()(appInfo: AppInfo, fileManager: FileContext, nodeAddress: NodeAddress) extends Dialog with LazyLogging {
   title = s"About ${BuildInfo.name}"
 
   private val cssUrl: String = getClass.getResource("/fdcluster.css").toExternalForm
 
   dialogPane.value.getButtonTypes.add(ButtonType.Close)
+  implicit val desktop: Desktop = Desktop.getDesktop
 
 
   def apply(): Unit = {
-    val desktop = Desktop.getDesktop
 
     val goc = new GridOfControls()
 
@@ -63,7 +65,7 @@ class  AboutDialog @Inject()(appInfo: AppInfo, fileManager: FileManager, nodeAdd
     goc.add("Built", BuildInfo.buildInstant)
     goc.addControl("Java Home", new Hyperlink(System.getenv("JAVA_HOME")) {
       onAction = event => {
-       val javaHome = new File(this.text.value)
+        val javaHome = new File(this.text.value)
         desktop.open(javaHome)
       }
     })
@@ -94,6 +96,12 @@ class  AboutDialog @Inject()(appInfo: AppInfo, fileManager: FileManager, nodeAdd
         }
       }
     })
+
+    goc.add("Credits",Credits(
+      Credit("Icons made by", "https://www.freepik.com", Some("Freepik"))
+    ))
+
+
     val dialogPane1 = dialogPane()
     dialogPane1.getStylesheets.add(cssUrl)
 
@@ -109,7 +117,7 @@ class  AboutDialog @Inject()(appInfo: AppInfo, fileManager: FileManager, nodeAdd
             desktop.browse(new URI("http://www.gnu.org/licenses/gpl-3.0.html"))
           }
         }
-      ){
+      ) {
         styleClass += "alignedLine"
       }
     )
@@ -119,3 +127,23 @@ class  AboutDialog @Inject()(appInfo: AppInfo, fileManager: FileManager, nodeAdd
   }
 
 }
+
+
+case class Credits(credits:Credit*) extends GridOfControls(5->5, Insets(2)) {
+
+  credits.foreach{credit =>
+    addControl(credit.name, credit.hyperLink)
+  }
+}
+
+case class Credit(name: String, url: String, link:Option[String] = None)(implicit desktop: Desktop) {
+  def hyperLink: Hyperlink = {
+    new Hyperlink(link.getOrElse(url)) {
+      onAction = event => {
+        val uri = new URI(url)
+        desktop.browse(uri)
+      }
+    }
+  }
+}
+

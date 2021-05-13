@@ -135,7 +135,7 @@ case class ContestDialogPane @Inject()(contestProperty: ContestProperty,
         |or rejoined members.
         |Changing the Exchange after the contest begins will result in
         |busted QSOs!
-        |CallSign is not used until post contest. Changing during the contest is ok.
+        |Once this is set you can start the contest in the Journal section to the right!
         |""".stripMargin) {
       styleClass += "helpPane"
     }

@@ -5,7 +5,7 @@ import MessageFormats._
 
 class QsoRecordSpec extends Specification {
   "QsoRecord" >> {
-    val qsoRecord = QsoRecord(Qso("WA9NNN", BandMode(), Exchange()), QsoMetadata())
+    val qsoRecord = QsoRecord(Qso("WA9NNN", Exchange(), BandMode()), QsoMetadata())
     "json line round trip" >> {
       val jsonLine = qsoRecord.toJsonLine
       val backAgain = QsoRecord(jsonLine)

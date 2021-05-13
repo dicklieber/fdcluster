@@ -24,21 +24,22 @@ import _root_.scalafx.beans.binding.{Bindings, ObjectBinding}
 import _root_.scalafx.beans.property.ObjectProperty
 import _root_.scalafx.event.ActionEvent
 import _root_.scalafx.geometry.{Insets, Pos}
-import _root_.scalafx.scene.Scene
 import _root_.scalafx.scene.control._
-import _root_.scalafx.scene.layout.{BorderPane, HBox, VBox}
+import _root_.scalafx.scene.layout.{BorderPane, HBox, Pane, VBox}
 import akka.actor.ActorRef
 import akka.pattern.ask
 import akka.util.Timeout
-import com.google.inject.Inject
+import com.google.inject.{Inject, Injector}
 import com.google.inject.name.Named
 import org.scalafx.extras.onFX
+import org.wa9nnn.fdcluster.contest.{ContestDialog, JournalManager}
 import org.wa9nnn.fdcluster.javafx.entry.section.SectionField
+import org.wa9nnn.fdcluster.javafx.menu.FdClusterMenu
 import org.wa9nnn.fdcluster.javafx.{CallSignField, ClassField, StatusMessage, StatusPane}
 import org.wa9nnn.fdcluster.model
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
-import org.wa9nnn.fdcluster.store.{AddResult, Added, Dup}
+import org.wa9nnn.fdcluster.store.{AddResult, Added, Dup, FailedToAdd}
 import org.wa9nnn.util.{StructuredLogging, WithDisposition}
 import play.api.libs.json.Json
 
@@ -47,23 +48,27 @@ import javax.inject.Singleton
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}
+import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 
 /**
  * Create ScalaFX UI for field day entry mode.
  */
 @Singleton
-class EntryScene @Inject()(
-                            currentStationPanel: CurrentStationPanel,
-                            contestProperty: ContestProperty,
-                            nodeAddress: NodeAddress,
-                            classField: ClassField,
-                            @Named("qsoMetadata") qsoMetadataProperty: ObjectProperty[QsoMetadata],
-                            currentStationProperty: CurrentStationProperty,
-                            statsPane: StatsPane,
-                            statusPane: StatusPane,
-                            @Named("store") store: ActorRef,
-                            ) extends StructuredLogging {
+class EntryTab @Inject()( injector: Injector,
+                          currentStationPanel: CurrentStationPanel,
+                          contestProperty: ContestProperty,
+                          nodeAddress: NodeAddress,
+                          classField: ClassField,
+                          @Named("qsoMetadata") qsoMetadataProperty: ObjectProperty[QsoMetadata],
+                          currentStationProperty: CurrentStationProperty,
+                          statsPane: StatsPane,
+                          statusPane: StatusPane,
+                          journalManager: JournalManager,
+                          @Named("store") store: ActorRef,
+                        ) extends Tab with StructuredLogging {
   private implicit val timeout: Timeout = Timeout(5, TimeUnit.SECONDS)
+  text = "Entry"
+  closable = false
 
   var actionResult: ActionResult = new ActionResult(store, qsoMetadataProperty.value)
   val callSignField: CallSignField = new CallSignField(actionResult) {
@@ -95,7 +100,19 @@ class EntryScene @Inject()(
     }
   }
 
-  val pane: BorderPane = new BorderPane {
+
+  val notReadyPane: BorderPane = new BorderPane {
+    center = new VBox(new Label("Not ready, setup or wait for another node to sync."),
+      new Hyperlink("Contest Setup") {
+        onAction = event => {
+          injector.instance[ContestDialog].show()
+        }
+      }
+    )
+  }
+
+
+  val entryPane: BorderPane = new BorderPane {
     padding = Insets(25)
     private val buttons = new HBox() {
       alignment = Pos.BottomCenter
@@ -126,10 +143,6 @@ class EntryScene @Inject()(
     )
   }
 
-
-  val scene: Scene = new Scene {
-    root = pane
-  }
   callSignField.onDone { next =>
     if (classField.text.value.isEmpty) {
       nextField(next, classField)
@@ -158,6 +171,20 @@ class EntryScene @Inject()(
       qsoSubmit.sad()
     }
   }
+  content = setOk(journalManager.okToLogProperty.value)
+  journalManager.okToLogProperty.onChange { (_, _, nv) =>
+    onFX {
+      content = setOk(nv)
+    }
+  }
+
+
+  def setOk(ok: Boolean): Pane = {
+    if (ok)
+      entryPane
+    else
+      notReadyPane
+  }
 
   def save(): Unit = {
     val potentialQso: Qso = readQso()
@@ -182,6 +209,10 @@ class EntryScene @Inject()(
                 statusPane.message(StatusMessage("Thanks for using fdcluster, from Dick Lieber WA9NNN", styleClasses = Seq("hiDick")))
               }
             }
+          case Success(FailedToAdd(exception)) =>
+            actionResult.addSad(s"Failed to add QSO! Err: ${exception.getMessage}")
+            logger.error(s"Failed to ad QSO", exception)
+
         }
         onFX {
           actionResult.done()
@@ -200,7 +231,7 @@ class EntryScene @Inject()(
 
   def readQso(): Qso = {
     val exchange = Exchange(classField.text.value, qsoSection.text.value)
-    model.Qso(callSignField.text.value, currentStationProperty.bandMode, exchange)
+    model.Qso(callSignField.text.value, exchange, currentStationProperty.bandMode)
   }
 
   /**

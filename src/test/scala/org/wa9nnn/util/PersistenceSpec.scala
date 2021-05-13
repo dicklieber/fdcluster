@@ -3,7 +3,7 @@ package org.wa9nnn.util
 import org.specs2.execute.{AsResult, Result}
 import org.specs2.mutable.Specification
 import org.specs2.specification.ForEach
-import org.wa9nnn.fdcluster.MockFileManager
+import org.wa9nnn.fdcluster.MockFileContext
 import org.wa9nnn.fdcluster.model.CurrentStation
 import org.wa9nnn.fdcluster.model.MessageFormats._
 
@@ -12,7 +12,7 @@ import java.nio.file.{Files, Paths}
 
 trait PreferencesContext extends ForEach[Persistence] {
   def foreach[R: AsResult](r: Persistence => R): Result = {
-    val fileManager = MockFileManager()
+    val fileManager = MockFileContext()
     val persistence = new PersistenceImpl(fileManager)
     try AsResult(r(persistence))
     finally fileManager.clean()

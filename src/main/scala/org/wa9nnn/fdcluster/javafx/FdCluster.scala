@@ -21,11 +21,11 @@ package org.wa9nnn.fdcluster.javafx
 
 import com.google.inject.Guice
 import net.codingwell.scalaguice.InjectorExtensions._
-import org.wa9nnn.fdcluster.Module
+import org.wa9nnn.fdcluster.{Module, NetworkPane}
 import org.wa9nnn.fdcluster.http.Server
 import org.wa9nnn.fdcluster.javafx.cluster.ClusterTab
-import org.wa9nnn.fdcluster.javafx.data.DataScene
-import org.wa9nnn.fdcluster.javafx.entry.{EntryScene, RunningTaskPane, StatisticsTab}
+import org.wa9nnn.fdcluster.javafx.data.DataTab
+import org.wa9nnn.fdcluster.javafx.entry.{EntryTab, RunningTaskPane, StatisticsTab}
 import org.wa9nnn.fdcluster.javafx.menu.FdClusterMenu
 import org.wa9nnn.fdcluster.model.{AllContestRules, ContestProperty, NodeAddress}
 import org.wa9nnn.util.{CommandLine, StructuredLogging}
@@ -44,8 +44,8 @@ import java.awt.Desktop
  */
 object FdCluster extends JFXApp with StructuredLogging {
   private val injector = Guice.createInjector(new Module(parameters))
-  private val entryScene = injector.instance[EntryScene]
-  private val dataScene = injector.instance[DataScene]
+  private val entryTab = injector.instance[EntryTab]
+  private val dataTab = injector.instance[DataTab]
   private val clusterTab: ClusterTab = injector.instance[ClusterTab]
   private val statisticsTab = injector.instance[StatisticsTab]
   private val nodeAddress: NodeAddress = injector.instance[NodeAddress]
@@ -62,17 +62,6 @@ object FdCluster extends JFXApp with StructuredLogging {
       e.printStackTrace()
   }
   val fdMenu: FdClusterMenu = injector.instance[FdClusterMenu]
-
-  private val dataTab: Tab = new Tab {
-    text = "Data"
-    content = dataScene.pane
-    closable = false
-  }
-  private val entryTab: Tab = new Tab {
-    text = "Entry"
-    content = entryScene.pane
-    closable = false
-  }
 
   private val fdclusterTabs: Seq[Tab] = Seq(entryTab, dataTab, clusterTab, statisticsTab)
   val tabPane: TabPane = new TabPane {
@@ -107,6 +96,7 @@ object FdCluster extends JFXApp with StructuredLogging {
     top = fdMenu.menuBar
     center = tabPane
     bottom = bottomPane
+    right = injector.instance[NetworkPane]
   }
   val ourScene = new Scene()
 

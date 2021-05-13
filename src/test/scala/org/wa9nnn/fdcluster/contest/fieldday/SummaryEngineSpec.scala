@@ -29,11 +29,11 @@ class SummaryEngineSpec extends Specification with Mockito {
       contestProperty.contestNameProperty returns eventProperty
       val allContestRules = mock[AllContestRules]
       val allQsos: Seq[QsoRecord] = Seq(
-        QsoRecord(Qso("KD9BYW", BandMode(), Exchange()), QsoMetadata()),
-        QsoRecord(Qso("KD9BYW", BandMode("160m"), Exchange()), QsoMetadata()),
-        QsoRecord(Qso("KD9BYW", BandMode(modeName = "DI"),  Exchange()), QsoMetadata()),
-        QsoRecord(Qso("NE9A", BandMode(modeName = "DI"), Exchange()), QsoMetadata()),
-        QsoRecord(Qso("W9BBQ", BandMode(modeName = "DI"), Exchange()), QsoMetadata()),
+        QsoRecord(Qso("KD9BYW", Exchange(), BandMode()), QsoMetadata()),
+        QsoRecord(Qso("KD9BYW", Exchange(),  BandMode("160m")), QsoMetadata()),
+        QsoRecord(Qso("KD9BYW",  Exchange(), BandMode(modeName = "DI")), QsoMetadata()),
+        QsoRecord(Qso("NE9A", Exchange(), BandMode(modeName = "DI")), QsoMetadata()),
+        QsoRecord(Qso("W9BBQ", Exchange(), BandMode(modeName = "DI")), QsoMetadata()),
       )
 
       val qsoSource = mock[QsoSource]

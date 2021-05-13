@@ -23,30 +23,35 @@ import org.wa9nnn.fdcluster.model.{NodeAddress, QsoRecord}
 import play.api.libs.json.Json
 
 import java.io.IOException
-import java.nio.file.{Files, StandardOpenOption}
+import java.nio.file.{Files, Path, StandardOpenOption}
 import javax.inject.{Inject, Singleton}
+import scala.util.Try
 
 /**
  * Handles access and naming of the Qso journal.
  *
- * @param journalProperty updated from any node and synced via NodeStatus messages.
+ * @param journalManager  updated from any node and synced via NodeStatus messages.
  * @param nodeAddress     us.
  */
 @Singleton
-class JournalWriter @Inject()(val journalProperty: JournalPropertyWriting, nodeAddress: NodeAddress) extends LazyLogging {
+class JournalWriter @Inject()(val journalManager: JournalManager, nodeAddress: NodeAddress) extends LazyLogging {
+
   /**
-   *  creating the file with header as needed.
+   * creating the file with header as needed.
+   *
    * @param qsoRecord of interest.
    */
   def write(qsoRecord: QsoRecord): Unit = {
-    journalProperty.maybeJournal.foreach { journal =>
-      val filePath = journalProperty.filePath
+    val value: Try[Path] = journalManager.journalFilePathProperty.value
+    if(value.isFailure)
+      throw new IllegalStateException(s"No journal!")
+    value.foreach { filePath =>
       if (!Files.exists(filePath) || Files.size(filePath) == 0) {
         try {
-          val json = Json.toJson(JournalHeader(journal, nodeAddress)).toString()
+          val json = Json.toJson(JournalHeader(journalManager._currentJournal.get, nodeAddress)).toString()
           Files.writeString(filePath, json + "\n", StandardOpenOption.CREATE, StandardOpenOption.WRITE)
         } catch {
-          case e: IOException =>
+          case e:Exception =>
             logger.error(s"Writing header to $filePath", e)
         }
       }

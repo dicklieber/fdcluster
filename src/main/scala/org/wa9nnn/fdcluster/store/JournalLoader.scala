@@ -19,11 +19,9 @@
 
 package org.wa9nnn.fdcluster.store
 
-import akka.actor.ActorRef
-import com.google.inject.name.Named
 import com.typesafe.scalalogging.LazyLogging
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics
-import org.wa9nnn.fdcluster.contest.JournalProperty
+import org.wa9nnn.fdcluster.contest.JournalManager
 import org.wa9nnn.fdcluster.javafx.entry.RunningTaskInfoConsumer
 import org.wa9nnn.fdcluster.javafx.runningtask.RunningTask
 import org.wa9nnn.fdcluster.model.MessageFormats._
@@ -43,12 +41,11 @@ import scala.util.Using
  * Runs at startup only.
  * Talks directly to allQsos which can only be done at startup time.
  *
- * @param allQsos                 where to store.
  * @param journalManager          access to journal
  * @param runningTaskInfoConsumer progress UI
  */
-class JournalLoader @Inject()(@Named("store") store: ActorRef,
-                              journalProperty: JournalProperty,
+class JournalLoader @Inject()(storeSender: StoreSender,
+                              journalManager: JournalManager,
                               val runningTaskInfoConsumer: RunningTaskInfoConsumer) {
   def startLoad(qsoAdder: QsoAdder): Unit = {
     new Task(runningTaskInfoConsumer)(qsoAdder)
@@ -62,28 +59,27 @@ class JournalLoader @Inject()(@Named("store") store: ActorRef,
     def apply(qsoAdder: QsoAdder): Unit = {
       try {
         if (System.getProperty("skipJournal", "false")) throw new SkipJournal
-
-        if (!journalProperty.hasJournal) throw new NoJournalDefined
-        val journalFilePath: Path = journalProperty.filePath
-        Files.createDirectories(journalFilePath.getParent)
-        if (!Files.isReadable(journalFilePath)) throw EmptyJournal(journalFilePath)
-
-
-        //          if (Files.isReadable(journalFilePath) && Files.size(journalFilePath) > 0) {
-        val typicalQsoLength = 363 // empirically determined by loading journal then divided file size by number of QSOs
-        // see log message with meanLineLength to get latest.
-        totalIterations = Files.size(journalFilePath) / typicalQsoLength
-        processLines(journalFilePath, qsoAdder)
-      } catch {
+        journalManager.journalFilePathProperty.value.foreach { journalFilePath =>
+          val typicalQsoLength = 250 // empirically determined by loading journal then divided file size by number of QSOs
+          // see log message with meanLineLength to get latest.
+          totalIterations = {
+            if (Files.exists(journalFilePath))
+              Files.size(journalFilePath) / typicalQsoLength
+            else
+              0
+          }
+          processLines(journalFilePath, qsoAdder)
+        }
+      }
+      catch {
         case e: JournalException =>
           e.log()
       }
       finally {
         done()
       }
-      store ! BufferReady // returned to StoreActor
+      storeSender ! BufferReady
     }
-
 
     private def processLines(journalFilePath: Path, qsoAdder: QsoAdder) = {
       val qsoLineLengths = new SummaryStatistics()
@@ -95,11 +91,16 @@ class JournalLoader @Inject()(@Named("store") store: ActorRef,
             qsoLineLengths.addValue(line.length)
             lineNumber.incrementAndGet()
             try {
-              countOne()
-              val qsoRecord = Json.parse(line).as[QsoRecord]
-              //              allQsos.addOne(qsoRecord) // todo consider batching up and using addAll instead of addOne
-              qsoAdder.addRecord(qsoRecord)
-            } catch {
+              if (line.startsWith("{\"jour")) {
+                //todo check header
+              } else {
+                countOne()
+                val qsoRecord = Json.parse(line).as[QsoRecord]
+                //              allQsos.addOne(qsoRecord) // todo consider batching up and using addAll instead of addOne
+                qsoAdder.addRecord(qsoRecord)
+              }
+            }
+            catch {
               case e: Exception =>
                 val err = errorCount.incrementAndGet()
                 err match {

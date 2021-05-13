@@ -15,7 +15,7 @@ class SquozeQsoSpec extends Specification {
       val callSigns = new SequentialCallsigns()
       val allQsos = ObservableBuffer.from(
         List.tabulate(100000) { _ =>
-          QsoRecord(Qso(callSigns.next(), BandMode(),  Exchange()), QsoMetadata())
+          QsoRecord(Qso(callSigns.next(), Exchange(), BandMode()), QsoMetadata())
         }
       )
 
@@ -38,7 +38,7 @@ class SquozeQsoSpec extends Specification {
       val qsosBin = new ArrayBuffer[Byte]()
       val allQsos: ObservableBuffer[QsoRecord] = ObservableBuffer.from(
         List.tabulate(100000) { _ =>
-          val qsoRecord = QsoRecord(Qso(callSigns.next(), BandMode(),  Exchange()), QsoMetadata())
+          val qsoRecord = QsoRecord(Qso(callSigns.next(), Exchange(), BandMode()), QsoMetadata())
           val byteString = qsoRecord.toByteString
           qsosBin.addAll(byteString.toArray)
           qsosBin.addOne('\n'.toByte)
@@ -57,7 +57,7 @@ class SquozeQsoSpec extends Specification {
       nodeQsos.nodeInfo must beEqualTo(nodeAddress)
 
       val qsoDecoder = new QsoDecoder(nodeQsos)
-      qsoDecoder.next() must beEqualTo (allQsos.head)
+      qsoDecoder.next() must beEqualTo(allQsos.head)
     }
   }
 }

@@ -27,13 +27,13 @@ import org.wa9nnn.fdcluster.cabrillo.{CabrilloDialog, CabrilloExportRequest}
 import org.wa9nnn.fdcluster.contest.ContestDialog
 import org.wa9nnn.fdcluster.contest.fieldday.{SummaryEngine, WinterFieldDaySettings}
 import org.wa9nnn.fdcluster.dupsheet.GenerateDupSheet
-import org.wa9nnn.fdcluster.javafx.debug.DebugRemoveDialog
+import org.wa9nnn.fdcluster.javafx.debug.{DebugRemoveDialog, ResetDialog}
 import org.wa9nnn.fdcluster.metrics.MetricsReporter
 import org.wa9nnn.fdcluster.model.{ContestProperty, ExportFile, NodeAddress}
 import org.wa9nnn.fdcluster.rig.RigDialog
-import org.wa9nnn.fdcluster.store.DebugClearStore
+import org.wa9nnn.fdcluster.store.ClearStore
 import org.wa9nnn.fdcluster.tools.RandomQsoDialog
-import org.wa9nnn.fdcluster.{FileManager, QsoCountCollector}
+import org.wa9nnn.fdcluster.{ClusterControl, FileContext, QsoCountCollector}
 import org.wa9nnn.util.StructuredLogging
 import _root_.scalafx.Includes._
 import _root_.scalafx.application.Platform
@@ -43,27 +43,28 @@ import _root_.scalafx.scene.control._
 import java.awt.Desktop
 import java.io.{PrintWriter, StringWriter}
 import java.nio.file.Files
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.duration.DurationInt
 import scala.language.postfixOps
 import scala.util.{Failure, Success, Try, Using}
-
+@Singleton
 class FdClusterMenu @Inject()(
                                injector: Injector,
                                @Named("store") store: ActorRef,
                                @Named("cluster") cluster: ActorRef,
                                aboutDialog: AboutDialog,
                                nodeAddress: NodeAddress,
-                               fileManager: FileManager,
+                               fileManager: FileContext,
                                generateDupSheet: GenerateDupSheet,
                                contestProperty: ContestProperty,
                                summaryEngine: SummaryEngine,
                                metricsReporter: MetricsReporter,
+                               clusterControl: ClusterControl,
                                debugRemoveDialog: DebugRemoveDialog) extends StructuredLogging {
   private implicit val timeout: Timeout = Timeout(5 seconds)
   private val desktop = Desktop.getDesktop
-  private val currentStationMenuItem = new MenuItem {
-    text = "Current Station"
+   private val contestetupMenuItem: MenuItem = new MenuItem {
+    text = "Contest Setup"
     onAction = { _: ActionEvent =>
       injector.instance[ContestDialog].showAndWait()
     }
@@ -79,7 +80,7 @@ class FdClusterMenu @Inject()(
   private val debugClearStoreMenuItem = new MenuItem {
     text = "Clear QSOs on this node"
     onAction = { _: ActionEvent =>
-      store ! DebugClearStore
+      store ! ClearStore
     }
   }
   private val debugDemoBulkMenuItem = new MenuItem {
@@ -152,7 +153,7 @@ class FdClusterMenu @Inject()(
       summaryEngine(writer, contestProperty.contest, wfd)
       writer.close()
 
-      fileManager.defaultExportFile(".html",contestProperty)
+      fileManager.defaultExportFile(".html", contestProperty)
       val path = Files.createTempFile("SummaryEngineSpec", ".html")
       Files.writeString(path, writer.toString)
       val uri = path.toUri
@@ -186,7 +187,7 @@ class FdClusterMenu @Inject()(
     text = "Dup Sheet"
     onAction = { _ =>
 
-      val dupFile: ExportFile = fileManager.defaultExportFile("dup",contestProperty)
+      val dupFile: ExportFile = fileManager.defaultExportFile("dup", contestProperty)
       val r: Try[Int] = Using(new PrintWriter(Files.newBufferedWriter(dupFile.path))) { pw =>
         generateDupSheet(pw)
       }
@@ -212,6 +213,13 @@ class FdClusterMenu @Inject()(
     }
   }
 
+  private val upDown = new MenuItem {
+    text = "Cluster"
+    onAction = () =>
+      injector.instance[ResetDialog].showAndWait()
+
+  }
+
   val menuBar: MenuBar = new MenuBar {
     menus = List(
       new Menu("_File") {
@@ -231,6 +239,7 @@ class FdClusterMenu @Inject()(
       }, new Menu("_Debug") {
         mnemonicParsing = true
         items = List(
+          upDown,
           dumpStatsMenuItem,
           debugClearStoreMenuItem,
           debugRandomKillerMenuItem,
@@ -242,7 +251,7 @@ class FdClusterMenu @Inject()(
       new Menu("Contest") {
         mnemonicParsing = true
         items = List(
-          currentStationMenuItem,
+          contestetupMenuItem,
         )
       },
       new Menu("_Help") {

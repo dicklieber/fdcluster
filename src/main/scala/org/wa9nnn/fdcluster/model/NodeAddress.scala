@@ -20,7 +20,7 @@
 package org.wa9nnn.fdcluster.model
 
 import akka.http.scaladsl.model.Uri
-import org.wa9nnn.fdcluster.FileManager
+import org.wa9nnn.fdcluster.FileContext
 
 import java.net.{Inet4Address, InetAddress, NetworkInterface, URL}
 import scala.jdk.CollectionConverters._
@@ -73,7 +73,7 @@ case class NodeAddress (ipAddress: String = "localhost", hostName: String = "loc
 }
 
 object NodeAddress {
-  def apply(fileManager: FileManager): NodeAddress = {
+  def apply(fileManager: FileContext): NodeAddress = {
 
     val inetAddress = determineIp()
     val address = inetAddress.getHostAddress

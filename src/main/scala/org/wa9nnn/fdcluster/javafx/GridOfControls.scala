@@ -134,12 +134,13 @@ class GridOfControls(gaps: (Int, Int) = 10 -> 10, insets: Insets = Insets(20, 10
    * @param control       column 2
    * @param extraControls zero or more
    */
-  def addControl(labelText: String, control: Region, extraControls: Control*): Unit = {
+  def addControl(labelText: String, control: Region, extraControls: Control*): Region = {
     val row = label(labelText)
     add(control, 1, row)
     extraControls.zipWithIndex.foreach { case (extra, index) =>
       add(extra, index + 2, row)
     }
+    control
   }
 
   def add(labelText: String, value: Any): StringProperty = {

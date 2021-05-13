@@ -4,6 +4,7 @@ import akka.actor.{Actor, ActorRef, Props}
 import akka.pattern.ask
 import akka.util.Timeout
 import com.google.inject.name.Named
+import org.wa9nnn.fdcluster.contest.JournalManager
 import org.wa9nnn.fdcluster.http.HttpClientActor
 import org.wa9nnn.fdcluster.javafx.sync._
 import org.wa9nnn.fdcluster.model.{ContestProperty, CurrentStation, NodeAddress, QsoMetadata}
@@ -20,6 +21,7 @@ class ClusterActor(nodeAddress: NodeAddress,
                    @Named("nodeStatusQueue") nodeStatusQueue: ActorRef,
                    clusterState: ClusterState,
                    contestProperty: ContestProperty,
+                   journalManager: JournalManager,
                   ) extends Actor with StructuredLogging {
   private implicit val timeout: Timeout = Timeout(5 seconds)
   context.system.scheduler.scheduleAtFixedRate(2 seconds, 17 seconds, self, Purge)
@@ -50,6 +52,9 @@ class ClusterActor(nodeAddress: NodeAddress,
             if (ns.nodeAddress == nodeAddress) {
               ourNodeStatus = ns
             } else {
+              ns.journal.foreach(journalManager.updateJournal)
+
+
               val messages = ns.qsoHourDigests.flatMap { otherQsoHourDigest: QsoHourDigest =>
                 val fdHour = otherQsoHourDigest.fdHour
                 ourNodeStatus.digestForHour(fdHour) match {

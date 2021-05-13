@@ -5,7 +5,7 @@ import com.google.inject.name.Named
 import com.typesafe.config.Config
 import nl.grons.metrics4.scala
 import nl.grons.metrics4.scala.DefaultInstrumented
-import org.apache.commons.math3.stat.descriptive.SynchronizedDescriptiveStatistics
+import org.wa9nnn.fdcluster.ClusterControl
 import org.wa9nnn.fdcluster.model.sync.{ClusterMessage, StoreMessage}
 import org.wa9nnn.fdcluster.store.JsonContainer
 
@@ -23,9 +23,10 @@ import javax.inject.{Inject, Singleton}
 class MulticastListener @Inject()(
                                    @Named("cluster") val cluster: ActorRef,
                                    @Named("store") val store: ActorRef,
-                                   val config: Config) extends MulticastActor with Runnable with DefaultInstrumented {
+                                   val config: Config,
+                                   clusterControl: ClusterControl)
+  extends MulticastActor with Runnable with DefaultInstrumented {
   private val messagesMeter: scala.Meter = metrics.meter("messages")
-  private val descriptiveStatistics = new SynchronizedDescriptiveStatistics()
 
   private var multicastSocket = new MulticastSocket(port)
 
@@ -47,37 +48,46 @@ class MulticastListener @Inject()(
 
     var buf = new Array[Byte](8000)
 
-    val recv: DatagramPacket = new DatagramPacket(buf, buf.length)
+    val datagramPacket: DatagramPacket = new DatagramPacket(buf, buf.length)
     do {
       try {
         multicastSocket.setSoTimeout(timeoutMs)
-        multicastSocket.receive(recv)
-        val data = recv.getData
-        for {
-          jc <- JsonContainer(data)
-          rec <- jc.received()
-        } {
-          descriptiveStatistics.addValue(1.0)
-          messagesMeter.mark()
-          whenTraceEnabled { () =>
-            s"Got: $jc from  ${recv.getAddress}"
-          }
-          rec match {
-            case sm: StoreMessage =>
-              store ! sm
-            case cm: ClusterMessage =>
-              cluster ! cm
-          }
-        }
+        multicastSocket.receive(datagramPacket)
+        if (clusterControl.isUp)
+          processMessage(datagramPacket)
       }
       catch {
-        case _:SocketTimeoutException =>
+        case _: SocketTimeoutException =>
           logger.error(s"Timeout waiting for multicast message! $duration")
         case e: Exception =>
           logger.error("MulticastListener", e)
       }
     }
     while (true)
+  }
+
+  def processMessage(datagramPacket: DatagramPacket): Unit = {
+    val data: Array[Byte] = datagramPacket.getData
+
+    for {
+      jc <- JsonContainer(data)
+      rec <- jc.received()
+    } {
+      messagesMeter.mark()
+      whenTraceEnabled {
+        () =>
+          s"Got: $jc from  ${
+            datagramPacket.getAddress
+          }"
+      }
+      rec match {
+        case sm: StoreMessage =>
+          store ! sm
+        case cm: ClusterMessage =>
+          cluster ! cm
+      }
+    }
+
   }
 
   def shutdown(): Unit = {

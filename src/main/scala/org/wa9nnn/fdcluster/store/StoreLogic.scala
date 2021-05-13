@@ -22,7 +22,7 @@ import _root_.scalafx.collections.ObservableBuffer
 import akka.actor.ActorRef
 import com.google.inject.name.Named
 import nl.grons.metrics4.scala.DefaultInstrumented
-import org.wa9nnn.fdcluster.contest.{JournalProperty, JournalWriter}
+import org.wa9nnn.fdcluster.contest.{JournalManager, JournalWriter}
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHour}
@@ -45,8 +45,8 @@ class StoreLogic @Inject()(na: NodeAddress,
                            @Named("multicastSender") multicastSender: ActorRef,
                            contestProperty: ContestProperty,
                            journalLoader: JournalLoader,
-                           journalManager: JournalWriter,
-                           journalProperty: JournalProperty,
+                           journalWriter: JournalWriter,
+                           journalManager: JournalManager,
                            listeners: immutable.Set[AddQsoListener]
                           )
   extends StructuredLogging with DefaultInstrumented with QsoSource with QsoAdder {
@@ -114,9 +114,14 @@ class StoreLogic @Inject()(na: NodeAddress,
       case Some(_) ⇒
         Dup(qsoRecord)
       case None ⇒
-        journalManager.write(qsoRecord)
-        listeners.foreach(_.add(qsoRecord))
-        Added(qsoRecord)
+        try {
+          journalWriter.write(qsoRecord)
+          listeners.foreach(_.add(qsoRecord))
+          Added(qsoRecord)
+        } catch {
+          case e:Exception =>
+            FailedToAdd(e)
+        }
     }
   }
 
@@ -262,7 +267,7 @@ class StoreLogic @Inject()(na: NodeAddress,
     val currentStation = CurrentStation()
 
     sync.NodeStatus(nodeAddress, byUuid.size, hourDigests, qsoMetadata.value, currentStation, contestProperty.value,
-      journal = journalProperty.maybeJournal)
+      journal = journalManager._currentJournal)
 
   }
 
@@ -315,6 +320,7 @@ sealed trait AddResult
 case class Added(qsoRecord: QsoRecord) extends AddResult
 
 case class Dup(qsoRecord: QsoRecord) extends AddResult
+case class FailedToAdd(exception: Exception) extends AddResult
 
 trait AddQsoListener {
   def add(qsoRecord: QsoRecord): Unit

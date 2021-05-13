@@ -6,10 +6,10 @@ import org.wa9nnn.fdcluster.model.{ContestProperty, ExportFile}
 
 import java.nio.file.{Path, Paths}
 
-class FileManagerSpec extends Specification  with Mockito {
+class FileContextSpec extends Specification  with Mockito {
   System.setProperty("instance", "42")
   val userHome: Path = Paths.get(System.getProperty("user.home"))
-  val fileManager = new FileManager
+  val fileManager = new FileContext
 
   "values" >> {
     fileManager.userDir must beEqualTo (userHome)
@@ -29,9 +29,9 @@ class FileManagerSpec extends Specification  with Mockito {
   }
 
   "mock" >> {
-    val mockFileManager = new MockFileManager
-    import org.wa9nnn.fdcluster.MockFileManager.mock2Fm
-    val fm:FileManager = mockFileManager
+    val mockFileManager = new MockFileContext
+    import org.wa9nnn.fdcluster.MockFileContext.mock2Fm
+    val fm:FileContext = mockFileManager
     fm.userDir must beEqualTo (mockFileManager.mockUserdir)
   }
 }

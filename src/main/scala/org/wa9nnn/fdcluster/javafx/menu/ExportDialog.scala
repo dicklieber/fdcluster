@@ -20,7 +20,7 @@
 package org.wa9nnn.fdcluster.javafx.menu
 
 import javafx.stage.Window
-import org.wa9nnn.fdcluster.FileManager
+import org.wa9nnn.fdcluster.FileContext
 import org.wa9nnn.fdcluster.javafx.FileSavePanel
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.{AdifExportRequest, ContestProperty}
@@ -38,9 +38,9 @@ import javax.inject.Inject
  * @param contestProperty so can make contest-specific files.
  */
 class ExportDialog @Inject()(
-                             persistence: Persistence,
-                             fileManager: FileManager,
-                             contestProperty: ContestProperty) extends Dialog[AdifExportRequest] {
+                              persistence: Persistence,
+                              fileManager: FileContext,
+                              contestProperty: ContestProperty) extends Dialog[AdifExportRequest] {
   private val adifExportRequest: AdifExportRequest =
     persistence.loadFromFile[AdifExportRequest] { () =>
       AdifExportRequest(fileManager.defaultExportFile("adif", contestProperty))

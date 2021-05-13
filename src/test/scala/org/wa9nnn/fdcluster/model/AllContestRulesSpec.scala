@@ -2,6 +2,7 @@ package org.wa9nnn.fdcluster.model
 
 import com.typesafe.config.{Config, ConfigFactory}
 import org.specs2.mutable.Specification
+import org.wa9nnn.fdcluster.MockFileContext
 import org.wa9nnn.fdcluster.contest.Contest
 import org.wa9nnn.fdcluster.tools.MockPersistence
 import org.wa9nnn.util.ScalafxFixture
@@ -9,7 +10,7 @@ import org.wa9nnn.util.ScalafxFixture
 class AllContestRulesSpec extends Specification with ScalafxFixture{
 
   private val config: Config = ConfigFactory.load()
-  private val contestProperty = new ContestProperty(new MockPersistence())
+  private val contestProperty = new ContestProperty( MockFileContext())
   "AllContestRulesSpec" should {
     "names" in {
        val allContestRules = new AllContestRules(config, contestProperty)

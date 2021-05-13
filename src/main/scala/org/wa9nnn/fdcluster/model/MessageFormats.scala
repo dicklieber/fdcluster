@@ -28,7 +28,6 @@ import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHour, QsoHourDigest, QsoH
 import org.wa9nnn.fdcluster.rig.{RigModel, RigSettings, SerialPort, SerialPortSettings}
 import org.wa9nnn.fdcluster.store.JsonContainer
 import org.wa9nnn.fdcluster.store.network.FdHour
-import org.wa9nnn.util.UuidUtil.uuidFormat._
 import play.api.libs.json.{Format, Json}
 
 import java.time.LocalDateTime
@@ -48,6 +47,7 @@ object MessageFormats {
     builder += f
     f
   }
+  implicit val iuuidf =  org.wa9nnn.util.UuidUtil.uuidFormat
 
   implicit val entcFromat: Format[EntryCategory] = c(Json.format[EntryCategory])
   implicit val fdcFromat: Format[FdClass] = Json.format[FdClass]

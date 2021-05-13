@@ -19,7 +19,7 @@
 
 package org.wa9nnn.util
 
-import org.wa9nnn.fdcluster.FileManager
+import org.wa9nnn.fdcluster.FileContext
 import play.api.libs.json._
 
 import java.nio.file.StandardOpenOption._
@@ -36,7 +36,7 @@ trait Persistence {
    * @tparam T must be a case class
    * @return
    */
-  def saveToFile[T: ClassTag](product: T = true)(implicit writes: Writes[T]): Try[String]
+  def saveToFile[T: ClassTag](product: T)(implicit writes: Writes[T]): Try[String]
 
   def loadFromFile[T: ClassTag](f: () => T)(implicit writes: Reads[T]): T
 }
@@ -47,7 +47,7 @@ trait Persistence {
  *
  * @param fileManager where to write files
  */
-class PersistenceImpl @Inject()(fileManager: FileManager) extends Persistence with StructuredLogging {
+class PersistenceImpl @Inject()(fileManager: FileContext) extends Persistence with StructuredLogging {
   val path: Path = fileManager.varDirectory
   Files.createDirectories(path)
   if (!Files.isDirectory(path)) {

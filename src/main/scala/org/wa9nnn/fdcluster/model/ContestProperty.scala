@@ -19,25 +19,28 @@
 
 package org.wa9nnn.fdcluster.model
 
+import _root_.scalafx.beans.property.{ObjectProperty, _}
 import _root_.scalafx.scene.image.Image
 import com.wa9nnn.util.macos.DockIcon
-import org.wa9nnn.fdcluster.contest.Contest
+import org.wa9nnn.fdcluster.FileContext
+import org.wa9nnn.fdcluster.contest.{Contest, OkToLogContributer}
 import org.wa9nnn.fdcluster.model.MessageFormats._
-import org.wa9nnn.util.{Persistence, StructuredLogging}
-import _root_.scalafx.beans.property.{ObjectProperty, _}
+import org.wa9nnn.util.StructuredLogging
 
 import javax.inject.{Inject, Singleton}
 import scala.util.{Failure, Success, Using}
+
 /**
  * Provides access and persistence of a single [[Contest]] instance.
  *
- * @param persistence saves and loads any a case class.
+ * @param fileContext saves and loads any a case class.
  */
 @Singleton
-class ContestProperty @Inject()(persistence: Persistence, nodeAddress: NodeAddress = NodeAddress()) extends ObjectProperty[Contest] with StructuredLogging {
+class ContestProperty @Inject()(fileContext: FileContext) extends ObjectProperty[Contest]
+  with OkToLogContributer with StructuredLogging {
 
 
-  private val initContest: Contest = persistence.loadFromFile[Contest](() => Contest(nodeAddress = nodeAddress))
+  private val initContest: Contest = fileContext.loadFromFile[Contest](() => Contest(nodeAddress = fileContext.nodeAddress))
   value = initContest
 
   def contest: Contest = value
@@ -60,6 +63,8 @@ class ContestProperty @Inject()(persistence: Persistence, nodeAddress: NodeAddre
 
     setUpImage(contest.contestName)
     whenTraceEnabled(() => s"contestProperty changed from : $old to: $contest ")
+
+    contestOK
   }
 
 
@@ -81,7 +86,7 @@ class ContestProperty @Inject()(persistence: Persistence, nodeAddress: NodeAddre
     } catch {
       case e: java.lang.NoClassDefFoundError =>
         logger.debug("Icon switch", e)
-      case et:Throwable =>
+      case et: Throwable =>
         logger.debug("Icon switch", et)
 
     }
@@ -89,7 +94,7 @@ class ContestProperty @Inject()(persistence: Persistence, nodeAddress: NodeAddre
 
   def save(contest: Contest): Unit = {
     value = contest
-    persistence.saveToFile(value) match {
+    fileContext.saveToFile(value) match {
       case Failure(exception) =>
         logger.error("Saving ContestProperty", exception)
       case Success(path) =>
@@ -98,8 +103,9 @@ class ContestProperty @Inject()(persistence: Persistence, nodeAddress: NodeAddre
         }
     }
   }
+
   def saveIfNewer(contest: Contest): Unit = {
-    if(contest.stamp.isAfter(value.stamp)) {
+    if (contest.stamp.isAfter(value.stamp)) {
       logger.info(s"New Contest from ${contest.nodeAddress.display}")
       save(contest)
     }
@@ -107,5 +113,15 @@ class ContestProperty @Inject()(persistence: Persistence, nodeAddress: NodeAddre
 
   override def update(v: Contest): Unit =
     throw new IllegalStateException("Use save or saveIfNewer!")
+
+  override val okToLogProperty: BooleanProperty = new BooleanProperty {
+
+  }
+
+  def contestOK(): Unit = {
+    val value1 = value
+      okToLogProperty.value = Option(value1).exists(_.isOk)
+  }
+  contestOK()
 }
 

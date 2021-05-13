@@ -8,20 +8,22 @@ import play.api.libs.json.Json
 import java.nio.file.Files
 import scala.jdk.CollectionConverters.CollectionHasAsScala
 import org.wa9nnn.fdcluster.model.MessageFormats._
+import scalafx.beans.property.ObjectProperty
 
 import java.time.Instant
+import scala.util.Try
 
 class JournalWriterSpec extends Specification with Mockito {
   val qsoRecord: QsoRecord = org.wa9nnn.fdcluster.tools.MockQso.qsoRecord
   "JournalWriterSpec" >> {
     "happy path" >> {
       val journalStamp = Instant.now()
-      val journalProperty = mock[JournalPropertyWriting]
+      val journalProperty = mock[JournalManager]
       val ourNodeAddress = NodeAddress()
       val journal = Journal.apply("Test", ourNodeAddress, stamp = journalStamp)
-      journalProperty.maybeJournal returns (Some(journal))
+      journalProperty._currentJournal returns (Some(journal))
       val path = Files.createTempFile(journal.journalFileName, "")
-      journalProperty.filePath returns (path)
+      journalProperty.journalFilePathProperty returns ObjectProperty(Try(path))
       val journalWriter = new JournalWriter(journalProperty, ourNodeAddress)
       try {
         journalWriter.write(qsoRecord)

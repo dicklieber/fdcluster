@@ -131,3 +131,5 @@ com.typesafe.config.ConfigException$Parse: application.conf @ file:/Users/dliebe
 	at com.sun.javafx.application.PlatformImpl.lambda$runLater$11(PlatformImpl.java:427)
 	at com.sun.glass.ui.InvokeLaterDispatcher$Future.run$$$capture(InvokeLaterDispatcher.java:96)
 	at com.sun.glass.ui.InvokeLaterDispatcher$Future.run(InvokeLaterDispatcher.java)
+2021-05-13 17:54:03,996 INFO [specs2-1] o.w.u.JsonLoggingSpec [?:?] someClass: {"hello":"World","goodbye":"covid"}
+2021-05-13 17:54:04,162 ERROR [main] o.w.f.r.SocketAdapter$ [?:?] rigctld 127.0.0.1:4532 failed: Connection refused!
