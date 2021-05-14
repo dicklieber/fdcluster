@@ -55,11 +55,9 @@ class CurrentStationPanel @Inject()(currentStationProperty: CurrentStationProper
 
   val band: ComboBox[String] = new ComboBox[String]() {
     value <==> currentStationProperty.bandNameProperty
-    value <== rigInfo.bandProperty
   }
   val mode: ComboBox[String] = new ComboBox[String]() {
     value <==> currentStationProperty.modeNameProperty
-    value <== rigInfo.modeProperty
   }
   val operator: ComboBox[CallSign] = new ComboBox[CallSign](knownOperatorsProperty.value.callSigns) {
     editable.value = true

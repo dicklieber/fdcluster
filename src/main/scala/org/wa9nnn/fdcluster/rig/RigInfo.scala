@@ -16,6 +16,7 @@ import scala.util.Try
 
 @Singleton
 class RigInfo @Inject()(rigStore: RigStore, actorSystem: ActorSystem,
+                        currentStationProperty: CurrentStationProperty,
                         allContestRules: AllContestRules,
                         statusPane: StatusPane
                        ) extends Runnable with LazyLogging {
@@ -38,8 +39,6 @@ class RigInfo @Inject()(rigStore: RigStore, actorSystem: ActorSystem,
   actorSystem.getScheduler.scheduleWithFixedDelay(duration, duration)(this)
 
   val rigState: StringProperty = new StringProperty("-")
-  val bandProperty = new StringProperty()
-  val modeProperty = new StringProperty()
 
   override def run(): Unit = {
     try {
@@ -56,12 +55,12 @@ class RigInfo @Inject()(rigStore: RigStore, actorSystem: ActorSystem,
             rigState.value = f"$sMhz $mode"
             maybeBand match {
               case Some(value: Band) =>
-                bandProperty.value = value
+                currentStationProperty.bandNameProperty.value = value
                 statusPane.clear()
               case None =>
                 statusPane.messageSad(s"$sMhz not in contest band!")
             }
-            modeProperty.value = allContestRules.currentRules.modes.modeForRig(mode)
+            currentStationProperty.modeNameProperty.value = allContestRules.currentRules.modes.modeForRig(mode)
           }
         }
     } catch {
