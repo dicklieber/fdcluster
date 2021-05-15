@@ -4,7 +4,6 @@ name := "fdcluster"
 
 maintainer := "wa9nnn@u505.com"
 
-resolvers += "Artifactory" at "https://wa9nnn.jfrog.io/artifactory/wa9nnn"
 
 lazy val `fdcluster` = (project in file("."))
   .enablePlugins(JlinkPlugin, GitPlugin, BuildInfoPlugin, SbtTwirl, WindowsPlugin).settings(
@@ -153,8 +152,10 @@ jlinkIgnoreMissingDependency := JlinkIgnore.only(
   "com.papertrail.profiler.jaxrs" -> "javax.ws.rs"
 
 )
+resolvers += "Artifactory" at "https://wa9nnn.jfrog.io/artifactory/wa9nnn"
+resolvers += ("Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/").withAllowInsecureProtocol(true)
 
 publishTo := Some("Artifactory Realm" at "https://wa9nnn.jfrog.io/artifactory/wa9nnn")
 credentials += Credentials(Path.userHome / ".sbt" / "jfrog.credentials")
-makeDeploymentSettings(Universal, packageBin in Universal, "zip")
+//makeDeploymentSettings(Universal, packageBin in Universal, "zip")
 

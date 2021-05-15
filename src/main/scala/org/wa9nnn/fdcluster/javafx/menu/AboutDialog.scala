@@ -102,6 +102,11 @@ class AboutDialog @Inject()(appInfo: AppInfo, fileManager: FileContext, nodeAddr
     ))
 
 
+
+goc.add("ClassPath", System.getProperty("java.class.path").split(":").mkString("\n"))
+
+
+
     val dialogPane1 = dialogPane()
     dialogPane1.getStylesheets.add(cssUrl)
 

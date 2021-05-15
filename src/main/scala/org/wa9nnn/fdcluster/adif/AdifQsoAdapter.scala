@@ -19,14 +19,17 @@
 
 package org.wa9nnn.fdcluster.adif
 
-import org.wa9nnn.fdcluster.model.{BandMode, Exchange, Qso}
+import org.wa9nnn.fdcluster.model.{BandMode, Exchange, Qso, QsoMetadata, QsoRecord}
 import org.wa9nnn.fdcluster.{model, _}
 import org.wa9nnn.util.TimeHelpers.utcZoneId
 
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatter.BASIC_ISO_DATE
 import java.time.{Instant, LocalDate, LocalTime, ZonedDateTime}
+import java.util.UUID
 import scala.language.implicitConversions
+import org.wa9nnn.util.UuidUtil
+import org.wa9nnn.util.UuidUtil.{fromBase64, toBase64}
 
 object AdifQsoAdapter {
   private val timeFormat = DateTimeFormatter.ofPattern("HHmmss")
@@ -38,7 +41,7 @@ object AdifQsoAdapter {
    * @return model Qso
    * @throws MissingRequiredTag if required tag not found
    */
-  def apply(adif: AdifQso): model.Qso = {
+  def apply(adif: AdifQso): QsoRecord = {
     val map = adif.toMap
     /**
      * Allows a 'm' string, e.g. m"BAND" to lookup the key in the map and throw appropriate exception for missing tag.
@@ -49,9 +52,9 @@ object AdifQsoAdapter {
         try {
           map(tagName)
         } catch {
-          case e: NoSuchElementException =>
+          case _: NoSuchElementException =>
             throw new MissingRequiredTag(tagName)
-          case x:Throwable =>
+          case x: Throwable =>
             throw x
         }
       }
@@ -69,30 +72,55 @@ object AdifQsoAdapter {
         LocalTime.parse(m"TIME_ON", timeFormat),
         utcZoneId).toInstant
     }
-    model.Qso(callSign = m"CALL",
+    val qso = Qso(callSign = m"CALL",
       bandMode = bandMode,
       exchange = exchange,
-      stamp = stamp
+      stamp = stamp,
+      uuid = fromBase64(m"APP_FDC_UUID")
     )
+    val qsoMetadata: QsoMetadata = {
+      QsoMetadata()
+    }
+    QsoRecord(qso, qsoMetadata)
   }
 
-  def apply(qso: Qso): adif.AdifQso = {
+  def apply(qsoRecord: QsoRecord): adif.AdifQso = {
     implicit def e(t2: (String, String)): AdifEntry = {
       AdifEntry(t2._1, t2._2)
     }
 
+    val qso = qsoRecord.qso
     val zdt = ZonedDateTime.ofInstant(qso.stamp, utcZoneId)
-    val entries = Set.newBuilder[AdifEntry]
-    entries += "APP_FDC_UUID" -> qso.uuid.toString
-    entries += "QSO_DATE" -> zdt.toLocalDate.format(BASIC_ISO_DATE)
-    entries += "TIME_ON" -> zdt.toLocalTime.format(timeFormat)
-    entries += "CALL" -> qso.callSign
-    entries += "BAND" -> qso.bandMode.bandName
-    entries += "MODE" -> qso.bandMode.modeName
-    entries += "CLASS" -> qso.exchange.entryClass
-    entries += "ARRL_SECT" -> qso.exchange.sectionCode
+    val builder = new AdifQsoBuilder()
+    builder("APP_FDC_UUID", toBase64(qso.uuid))
+    builder("QSO_DATE", zdt.toLocalDate.format(BASIC_ISO_DATE))
+    builder("TIME_ON", zdt.toLocalTime.format(timeFormat))
+    builder("CALL", qso.callSign)
+    builder("BAND", qso.bandMode.bandName)
+    builder("MODE", qso.bandMode.modeName)
+    builder("CLASS", qso.exchange.entryClass)
+    builder("ARRL_SECT", qso.exchange.sectionCode)
+    val qsoMetadata = qsoRecord.qsoMetadata
+    builder("MY_RIG", qsoMetadata.rig)
+    builder("MY_ANTENNA", qsoMetadata.ant)
+    builder("OPERATOR", qsoMetadata.operator)
 
-    adif.AdifQso(entries.result())
+
+    builder.result
+  }
+}
+
+class AdifQsoBuilder() {
+  private val set = Set.newBuilder[AdifEntry]
+
+  def apply(field: String, value: String): Unit = {
+    if (value.nonEmpty) {
+      set += AdifEntry(field, value)
+    }
+  }
+
+  def result: AdifQso = {
+    AdifQso(set.result())
   }
 }
 

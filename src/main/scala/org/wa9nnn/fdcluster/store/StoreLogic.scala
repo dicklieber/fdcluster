@@ -31,6 +31,7 @@ import org.wa9nnn.fdcluster.store.network.FdHour
 import org.wa9nnn.util.StructuredLogging
 
 import java.security.SecureRandom
+import java.util.UUID
 import javax.inject.{Inject, Singleton}
 import scala.collection.concurrent.TrieMap
 import scala.collection.immutable
@@ -57,7 +58,7 @@ class StoreLogic @Inject()(na: NodeAddress,
    * qsoBuffer is shared read-only by DataScene
    */
   val qsoBuffer: ObservableBuffer[QsoRecord] = new ObservableBuffer[QsoRecord]
-  private val byUuid = new TrieMap[Uuid, QsoRecord]()
+  private val byUuid = new TrieMap[UUID, QsoRecord]()
   private val byCallSign = new TrieMap[CallSign, Set[QsoRecord]]
 
 
@@ -119,7 +120,7 @@ class StoreLogic @Inject()(na: NodeAddress,
           listeners.foreach(_.add(qsoRecord))
           Added(qsoRecord)
         } catch {
-          case e:Exception =>
+          case e: Exception =>
             FailedToAdd(e)
         }
     }
@@ -144,6 +145,23 @@ class StoreLogic @Inject()(na: NodeAddress,
     }
     maybeExisting
   }
+
+  def importQsoRecord(candidate: QsoRecord): Option[ImportProblem] = {
+    byUuid.get(candidate.qso.uuid)
+      .map(ImportProblem(candidate, _, "UUID exists"))
+      .orElse {
+        add(candidate.qso) match {
+          case Added(_) =>
+            None
+          case Dup(qsoRecord) =>
+            Option(ImportProblem(candidate, qsoRecord, "QSO exists"))
+          case FailedToAdd(exception) =>
+            throw exception
+        }
+      }
+
+  }
+
 
   /**
    * Only for loadLocalIndices
@@ -190,6 +208,7 @@ class StoreLogic @Inject()(na: NodeAddress,
         addRecord(newRecord)
     }
   }
+
 
   def findDup(potentialQso: Qso): Option[QsoRecord] = {
     for {
@@ -320,11 +339,13 @@ sealed trait AddResult
 case class Added(qsoRecord: QsoRecord) extends AddResult
 
 case class Dup(qsoRecord: QsoRecord) extends AddResult
+
 case class FailedToAdd(exception: Exception) extends AddResult
 
 trait AddQsoListener {
   def add(qsoRecord: QsoRecord): Unit
-  def clear():Unit
+
+  def clear(): Unit
 }
 
 trait QsoSource {

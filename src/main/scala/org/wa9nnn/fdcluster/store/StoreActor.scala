@@ -39,7 +39,7 @@ import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.store.network.FdHour
 import org.wa9nnn.fdcluster.tools.{GenerateRandomQsos, RandomQsoGenerator}
-import org.wa9nnn.util.ImportTask
+import org.wa9nnn.util.ImportAdifTask
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
@@ -150,8 +150,8 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
       exporter(exportRequest)
 
     case ImportRequest(path) =>
-      val importTask = injector.instance[ImportTask]
-      importTask(path)
+      val importTask = injector.instance[ImportAdifTask]
+      importTask(path, store)
 
     case search: Search =>
       sender ! store.search(search)

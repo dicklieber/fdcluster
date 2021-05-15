@@ -114,7 +114,7 @@ class FdClusterMenu @Inject()(
     }
   }
   private val importMenuItem = new MenuItem {
-    text = "_Import"
+    text = "Import Adif"
     onAction = { _: ActionEvent =>
       injector.instance[ImportDialog].showAndWait() match {
         case Some(importRequest) =>
@@ -134,7 +134,7 @@ class FdClusterMenu @Inject()(
     }
   }
   private val exportCabrillo = new MenuItem {
-    text = "export Cabrillo"
+    text = "Write Cabrillo"
     onAction = { _: ActionEvent =>
       val cabrilloDialog: CabrilloDialog = injector.instance[CabrilloDialog]
       cabrilloDialog.showAndWait() match {

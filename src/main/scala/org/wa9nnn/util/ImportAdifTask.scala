@@ -34,19 +34,19 @@ import scala.io.Source
  * @param store where to put
  * @param runningTaskInfoConsumer progress UI
  */
-class ImportTask @Inject()(store: StoreLogic, val runningTaskInfoConsumer: RunningTaskInfoConsumer) extends RunningTask {
-  override val taskName: String = "Import"
+class ImportAdifTask @Inject()(val runningTaskInfoConsumer: RunningTaskInfoConsumer) extends RunningTask {
+  override val taskName: String = "Import ADIF"
 
-  def apply(sPath: String) {
-    //todo cabrillo starts with: START-OF-LOG
+  def apply(sPath: String, store: StoreLogic) {
     val adifFile: AdifFile = AdifCollector.read(Source.fromFile(sPath))
     val adifQsos: Seq[adif.AdifQso] = adifFile.records
 
     totalIterations = adifQsos.size
 
     adifQsos.foreach { adifQso =>
-      val qso = AdifQsoAdapter(adifQso)
-      store.add(qso)
+      val qsoRecord = AdifQsoAdapter(adifQso)
+      val maybeProblem = store.importQsoRecord(qsoRecord)
+      //todo how to report dups to user?
       countOne()
     }
 

@@ -20,8 +20,7 @@
 package org.wa9nnn.fdcluster.adif
 
 import java.net.URL
-import java.time.{Duration, Instant}
-import scala.io.{BufferedSource, Source}
+import scala.io.Source
 
 
 object AdifCollector {
@@ -32,7 +31,6 @@ object AdifCollector {
    * @return raw records
    */
   def read(source: Source, url: Option[URL] = None): AdifFile = {
-    val start = Instant.now()
     val entries = List.newBuilder[AdifResult]
     new AdifParser(source)((t: AdifResult) =>
       entries += t
@@ -41,19 +39,16 @@ object AdifCollector {
     val r: Seq[AdifResult] = entries.result()
     val (heads, qsos) = r.span(_ != AdifResult.eoh)
 
-    val q: Seq[AdifQso] = qsos
+    val adifQsos: Seq[AdifQso] = qsos
       .tail // past EOH
       .foldLeft(Seq(Seq.empty[AdifEntry])) {
-        ((acc, i) =>
+        (acc, i) =>
           if (i == AdifResult.eor) acc :+ Seq.empty
           else acc.init :+ (acc.last :+ i.asInstanceOf[AdifEntry])
-          )
       }
-      .filterNot(_.isEmpty) // get rid of nothing after lasst EOR
+      .filterNot(_.isEmpty) // get rid of nothing after last EOR
       .map(e => AdifQso(e.toSet)) // put into Qsos
-
-    AdifFile(url.map(_.toExternalForm).getOrElse(""),
-      heads.asInstanceOf[Seq[AdifEntry]], q, Duration.between(start, Instant.now()))
+    AdifFile(heads.asInstanceOf[Seq[AdifEntry]], adifQsos)
 
   }
 }

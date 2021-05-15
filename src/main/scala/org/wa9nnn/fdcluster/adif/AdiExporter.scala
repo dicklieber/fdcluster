@@ -69,7 +69,7 @@ class AdiExporter @Inject()(qsoSource: QsoSource, val runningTaskInfoConsumer: R
 
       //records
       qsoSource.qsoIterator.foreach { qso: QsoRecord =>
-        AdifQsoAdapter(qso.qso).entries.toSeq.sorted.foreach(adifentry =>
+        AdifQsoAdapter(qso).entries.toSeq.sorted.foreach(adifentry =>
           print(adifentry))
         countOne()
         print(AdifResult.eor)

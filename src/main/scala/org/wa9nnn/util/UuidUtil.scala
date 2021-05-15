@@ -23,7 +23,7 @@ object UuidUtil {
     bb.array
   }
 
-  implicit def u2bytes(uuid: UUID): Array[Byte] = apply(uuid)
+  implicit def uuidToBytes(uuid: UUID): Array[Byte] = apply(uuid)
 
   def toBase64(uuid: UUID): String = {
     Base64.encodeBase64URLSafeString(apply(uuid))

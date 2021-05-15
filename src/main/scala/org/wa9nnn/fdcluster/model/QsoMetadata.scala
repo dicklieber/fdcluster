@@ -32,7 +32,9 @@ import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
  * @param contestId so old data can't accident be missed with current.
  * @param v         FDCLuster Version that built this so we can detect mismatched versions.
  */
-case class QsoMetadata(operator: CallSign = "", rig: String = "", ant: String = "",
+case class QsoMetadata(operator: CallSign = "",
+                       rig: String = "",
+                       ant: String = "",
                        node: String = "localhost;1",
                        contestId: String = "FD2021WA9NNN",
                        v: String = BuildInfo.canonicalVersion)

@@ -1,7 +1,7 @@
 package org.wa9nnn.fdcluster.adif
 
 import org.specs2.mutable.Specification
-import org.wa9nnn.fdcluster.model.Qso
+import org.wa9nnn.fdcluster.model.{Qso, QsoRecord}
 
 import scala.io.Source
 
@@ -51,8 +51,8 @@ class AdifQsoAdaptersSpec extends Specification {
 
   "AdifQsoAdaptersSpec" should {
     "happy" in {
-      val qso: Qso = AdifQsoAdapter(adifQso)
-      qso.callSign must beEqualTo("K0USA")
+      val qso: QsoRecord = AdifQsoAdapter(adifQso)
+      qso.qso.callSign must beEqualTo("K0USA")
     }
     "no ARRL_Sect" in {
       val toRemove = AdifEntry("ARRL_SECT", "ENY")
