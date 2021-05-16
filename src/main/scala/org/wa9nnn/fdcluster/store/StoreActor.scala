@@ -62,6 +62,14 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
 //  journalLoader().pipeTo(self)
 
   override def receive: Receive = {
+    /**
+     * Finish up sync with data from another node
+     */
+    case  QsosFromNode(qsos, _) =>
+      logger.debug(syncMarker, s"got ${qsos.size}")
+      store.merge(qsos)
+
+
     case BufferReady =>
       store.loadLocalIndices()
       clusterControl.up()
@@ -124,16 +132,6 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
     case StatusPing ⇒
       store.sendNodeStatus()
 
-    case journal:Journal =>
-    store.debugClear()
-
-    /**
-     * Finish up sync with data from another node
-     */
-    case  qfn:QsosFromNode =>
-      val qsos = qfn.qsos
-      logger.debug(syncMarker, s"got ${qsos.size}")
-      store.merge(qsos)
 
     case ClearStore =>
       store.debugClear()

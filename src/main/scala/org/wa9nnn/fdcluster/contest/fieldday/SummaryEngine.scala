@@ -8,7 +8,7 @@ import play.twirl.api.HtmlFormat
 
 import java.io.Writer
 import javax.inject.{Inject, Singleton}
-
+import org.wa9nnn.fdcluster.html
 @Singleton
 class SummaryEngine @Inject()(allContestRules: AllContestRules,
                               bandModeBreakDown: BandModeBreakDown) {

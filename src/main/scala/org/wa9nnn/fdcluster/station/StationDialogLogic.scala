@@ -30,7 +30,7 @@ import _root_.scalafx.scene.control.SpinnerValueFactory
 import scala.util.{Failure, Try}
 
 /**
- * Handles interaction between [[ContestDialog]] controls
+ * Handles interaction between [[org.wa9nnn.fdcluster.contest.ContestDialog]] controls
  *
  * Given values for: callSign, transmitters, category & sectionCode
  * Set exchangeLabel to Exchange

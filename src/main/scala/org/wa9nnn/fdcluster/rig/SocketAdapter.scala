@@ -26,7 +26,7 @@ import java.net.Socket
 
 /**
  * Everything we need for hamlib from a socket
- * Allows easy mocking. Mocking [[Socket]] is hard.
+ * Allows easy mocking. Mocking [[java.net.Socket]] is hard.
  */
 trait SocketAdapter {
   def doOp(command: String):Seq[String]

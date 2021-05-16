@@ -22,7 +22,7 @@ import java.time.{Duration, Instant}
 import scala.language.implicitConversions
 
 /**
- * Format a Java 1.8 [[Duration]] to nice human readable, scaled string.
+ * Format a [[java.time.Duration]] to nice human readable, scaled string.
  */
 object DurationFormat {
 

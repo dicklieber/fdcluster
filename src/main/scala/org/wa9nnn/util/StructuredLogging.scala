@@ -25,13 +25,7 @@ import play.api.libs.json._
 import java.time.{Instant, LocalDateTime, ZonedDateTime}
 import scala.reflect.ClassTag
 
-/**
- * Provides an slf4j [[org.slf4j.Logger]]
- * Uses the java class name as the LoggerName.
- * Can be changed by invoking [[.loggerName]] before using any logger.
- * Can produce a [[LogJson]] that easily generates JSON log messages
- * that are very friendly to [[https://www.elastic.co LogStash and the ELK stack.]]
- */
+
 trait StructuredLogging {
 
   def whenDebugEnabled(body:() => String): Unit = {

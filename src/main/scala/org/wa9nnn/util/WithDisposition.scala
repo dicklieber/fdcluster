@@ -23,7 +23,7 @@ import _root_.scalafx.css.Styleable
 import _root_.scalafx.scene.control.Labeled
 
 /**
- * A Control (actually any [[Styleable]]) that can be happy or sad.
+ * A Control (actually any scalafx.css.Styleable) that can be happy or sad.
  * This manipulate the style class making it happy, sad or removing either happy or sad for neutral.
  */
 trait WithDisposition extends Styleable {

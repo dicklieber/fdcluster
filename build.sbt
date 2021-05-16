@@ -1,44 +1,45 @@
-import com.typesafe.sbt.packager.SettingsHelper.makeDeploymentSettings
+import sbtbuildinfo.BuildInfoPlugin.autoImport.buildInfoOptions
 
 name := "fdcluster"
 
 maintainer := "wa9nnn@u505.com"
 
 
-lazy val `fdcluster` = (project in file("."))
-  .enablePlugins(JlinkPlugin, GitPlugin, BuildInfoPlugin, SbtTwirl, WindowsPlugin).settings(
-  buildInfoKeys ++= Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, maintainer,
-    git.gitCurrentTags, git.gitCurrentBranch, git.gitHeadCommit, git.gitHeadCommitDate, git.baseVersion,
-    BuildInfoKey.action("buildTimexxx") {
-      System.currentTimeMillis
-    } // re-computed each time at compile)
-  ),
-  buildInfoPackage := "org.wa9nnn.fdcluster"
-)
+//lazy val `fdcluster` = (project in file("."))
+//lazy val root = (project in file("."))
+//enablePlugins(JavaAppPackaging, JlinkPlugin, GitPlugin, SbtTwirl, WindowsPlugin)
+enablePlugins(JavaAppPackaging, JlinkPlugin, GitPlugin, BuildInfoPlugin, SbtTwirl, WindowsPlugin)
+buildInfoKeys ++= Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, maintainer,
+  git.gitCurrentTags, git.gitCurrentBranch, git.gitHeadCommit, git.gitHeadCommitDate, git.baseVersion)
+buildInfoPackage := "org.wa9nnn.fdcluster"
+
 buildInfoOptions ++= Seq(
   BuildInfoOption.ToJson,
   BuildInfoOption.BuildTime,
   BuildInfoOption.Traits("org.wa9nnn.fdcluster.BuildInfoBase")
 )
 
+
+//Compile / sourceDirectories := (Compile / unmanagedSourceDirectories).value
+Compile / sourceDirectories := (Compile / unmanagedSourceDirectories).value
+
+
+Compile / mainClass  := Some("org.wa9nnn.fdcluster.javafx.FdCluster")
+Compile / discoveredMainClasses := Seq()
+
 // wix build information
 wixProductId := "268963af-6f14-445a-bcc7-21775b5bdcc5"
 wixProductUpgradeId := "6b10420e-df5b-4c6c-9ca0-c12daf4b239d"
 
-sources in doc in Compile := List()
+//sources in doc in Compile := List()
 
 scalaVersion := "2.13.5"
 
-mainClass in Compile := Some("org.wa9nnn.fdcluster.javafx.entry.FdCluster")
-mainClass in Universal := Some("org.wa9nnn.fdcluster.javafx.entry.FdCluster")
-
-
-scalacOptions in(Compile, doc) ++= Seq("-verbose", "-Ymacro-annotations")
 
 import scala.util.Properties
 
 
-sourceDirectories in(Compile, TwirlKeys.compileTemplates) := (unmanagedSourceDirectories in Compile).value
+//sourceDirectories in(Compile, TwirlKeys.compileTemplates) := (unmanagedSourceDirectories in Compile).value
 
 val osType: SettingKey[String] = SettingKey[String]("osType")
 
@@ -152,6 +153,8 @@ jlinkIgnoreMissingDependency := JlinkIgnore.only(
   "com.papertrail.profiler.jaxrs" -> "javax.ws.rs"
 
 )
+resolvers += ("spray repo" at "http://repo.spray.io").withAllowInsecureProtocol(true)
+
 resolvers += "Artifactory" at "https://wa9nnn.jfrog.io/artifactory/wa9nnn"
 resolvers += ("Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/").withAllowInsecureProtocol(true)
 

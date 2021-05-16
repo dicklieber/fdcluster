@@ -36,7 +36,7 @@ import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
 /**
- * HTTP client.  Sends messages, wrapped in a [[SendContainer]] to another node in the cluster.
+ * HTTP client.  Sends messages, wrapped in a [[org.wa9nnn.fdcluster.javafx.sync.SendContainer]] to another node in the cluster.
  * @param store actor that manages QSOs
  * @param cluster actor that handles custer stuff.
  */

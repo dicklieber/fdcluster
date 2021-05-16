@@ -60,7 +60,7 @@ trait FieldValidator {
 
   /**
    *
-   * @param textInputControl to be validated. [[scalafx.scene.control.TextField]] or [[scalafx.scene.control.TextArea]]
+   * @param textInputControl to be validated.
    * @return one if valid otherwise the error message.
    */
   def valid(textInputControl: TextInputControl): Option[String] = {

@@ -51,11 +51,18 @@ class ClusterTable extends LazyLogging {
 
     val orderedNodes: List[NodeAddress] = byAddress.keySet.toList.sorted
 
+    //    /**
+    //     *
+    //     * @param rowHeader string for 1st column
+    //     * @param callback  how to extract body cell from a NodeStateContainer. Will be called for each NodeStateContainer.
+    //     * @return a row for the table
+    //     */
+
     /**
      *
-     * @param rowHeader string for 1st column
-     * @param callback  how to extract body cell from a NodeStateContainer. Will be called for each [[org.wa9nnn.fdcluster.store.network.cluster.NodeStateContainer]]
-     * @return a row for the table
+     * @param rowHeader
+     * @param callback
+     * @return
      */
     def buildRow(rowHeader: String, callback: NodeStateContainer ⇒ Any): Row = {
       MetadataRow(Cell(rowHeader), orderedNodes.map(nodeAddress ⇒ {
@@ -86,14 +93,14 @@ class ClusterTable extends LazyLogging {
       buildRow("HTTP", ns => Cell(ns.nodeAddress.hostName)
         .withUrl(ns.nodeAddress.url.toExternalForm)),
       buildRow("Age", ns => Cell().asColoredAge(ns.nodeStatus.stamp)),
-      buildRow("QSOs",ns =>  Cell(ns.nodeStatus.qsoCount).withToolTip(
+      buildRow("QSOs", ns => Cell(ns.nodeStatus.qsoCount).withToolTip(
         """How many QSO stored at this node.
           |This should be the same accross all nodes in the cluster.""".stripMargin)),
       buildRow("Journal", ns => Cell(ns.nodeStatus.journal.map(_.journalFileName).getOrElse("--"))
-      .withToolTip(
-        """Name of the file that where QSo are journaled.
-          |This should be the same accross all nodes in the cluster.
-          |""".stripMargin)),
+        .withToolTip(
+          """Name of the file that where QSo are journaled.
+            |This should be the same accross all nodes in the cluster.
+            |""".stripMargin)),
       buildRow("Band", _.nodeStatus.currentStation.bandName),
       buildRow("Mode", _.nodeStatus.currentStation.modeName),
       buildRow("Operator", _.nodeStatus.currentStation.operator),

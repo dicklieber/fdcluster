@@ -259,6 +259,8 @@ class StoreLogic @Inject()(na: NodeAddress,
             mergeCount = mergeCount + 1
           case Dup(_) ⇒
             existedCount = existedCount + 1
+          case FailedToAdd(exception) =>
+            throw exception
         }
       }
       }
