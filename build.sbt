@@ -38,21 +38,24 @@ scalaVersion := "2.13.5"
 
 import scala.util.Properties
 
-
-//sourceDirectories in(Compile, TwirlKeys.compileTemplates) := (unmanagedSourceDirectories in Compile).value
-
-val osType: SettingKey[String] = SettingKey[String]("osType")
-
-osType := {
-  if (Properties.isLinux)
-    "linux"
-  else if (Properties.isMac)
-    "mac"
-  else if (Properties.isWin)
-    "win"
-  else
-    throw new Exception(s"unknown os: ${Properties.osName}")
+lazy val javaFXModules = {
+  // Determine OS version of JavaFX binaries
+  lazy val osName = System.getProperty("os.name") match {
+    case n if n.startsWith("Linux")   => "linux"
+    case n if n.startsWith("Mac")     => "mac"
+    case n if n.startsWith("Windows") => "win"
+    case _                            =>
+      throw new Exception("Unknown platform!")
+  }
+  // Create dependencies for JavaFX modules
+  Seq("base", "controls",  "graphics", "media")
+    .map( m=> "org.openjfx" % s"javafx-$m" % "15.0.1" classifier osName)
 }
+
+libraryDependencies ++= javaFXModules
+
+
+
 
 val javafxLib = file(sys.env.get("JAVAFX_LIB").getOrElse("Environmental variable JAVAFX_LIB is not set"))
 lazy val akkaHttpVersion = "10.2.4"
@@ -77,11 +80,12 @@ libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-core" % logbackVersion,
   "com.github.andyglow" %% "typesafe-config-scala" % "1.1.0" % Compile,
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
-  // JavaFX 11 jars are distributed for each platform
-  "org.openjfx" % "javafx-controls" % "11.0.1" classifier osType.value,
-  "org.openjfx" % "javafx-graphics" % "11.0.1" classifier osType.value,
-  "org.openjfx" % "javafx-media" % "11.0.1" classifier osType.value,
-  "org.openjfx" % "javafx-base" % "11.0.1" classifier osType.value,
+//  // JavaFX 11 jars are distributed for each platform
+//
+//  "org.openjfx" % "javafx-controls" % "11.0.1" classifier osType.value,
+//  "org.openjfx" % "javafx-graphics" % "11.0.1" classifier osType.value,
+//  "org.openjfx" % "javafx-media" % "11.0.1" classifier osType.value,
+//  "org.openjfx" % "javafx-base" % "11.0.1" classifier osType.value,
   "nl.grons" %% "metrics4-scala" % "4.1.19",
   "io.dropwizard.metrics" % "metrics-core" % "4.1.2",
   "io.dropwizard.metrics" % "metrics-graphite" % "4.1.2",
