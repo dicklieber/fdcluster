@@ -29,12 +29,12 @@ import _root_.scalafx.scene.layout.{BorderPane, HBox, Pane, VBox}
 import akka.actor.ActorRef
 import akka.pattern.ask
 import akka.util.Timeout
-import com.google.inject.{Inject, Injector}
 import com.google.inject.name.Named
+import com.google.inject.{Inject, Injector}
+import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import org.scalafx.extras.onFX
-import org.wa9nnn.fdcluster.contest.{ContestDialog, JournalManager}
+import org.wa9nnn.fdcluster.contest.{JournalProperty, OkToLogGate}
 import org.wa9nnn.fdcluster.javafx.entry.section.SectionField
-import org.wa9nnn.fdcluster.javafx.menu.FdClusterMenu
 import org.wa9nnn.fdcluster.javafx.{CallSignField, ClassField, StatusMessage, StatusPane}
 import org.wa9nnn.fdcluster.model
 import org.wa9nnn.fdcluster.model.MessageFormats._
@@ -48,23 +48,23 @@ import javax.inject.Singleton
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}
-import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 
 /**
  * Create ScalaFX UI for field day entry mode.
  */
 @Singleton
-class EntryTab @Inject()( injector: Injector,
-                          currentStationPanel: CurrentStationPanel,
-                          contestProperty: ContestProperty,
-                          nodeAddress: NodeAddress,
-                          classField: ClassField,
-                          @Named("qsoMetadata") qsoMetadataProperty: ObjectProperty[QsoMetadata],
-                          currentStationProperty: CurrentStationProperty,
-                          statsPane: StatsPane,
-                          statusPane: StatusPane,
-                          journalManager: JournalManager,
-                          @Named("store") store: ActorRef,
+class EntryTab @Inject()(injector: Injector,
+                         currentStationPanel: CurrentStationPanel,
+                         contestProperty: ContestProperty,
+                         nodeAddress: NodeAddress,
+                         classField: ClassField,
+                         @Named("qsoMetadata") qsoMetadataProperty: ObjectProperty[QsoMetadata],
+                         currentStationProperty: CurrentStationProperty,
+                         statsPane: StatsPane,
+                         statusPane: StatusPane,
+                         journalManager: JournalProperty,
+                         @Named("store") store: ActorRef,
+                         okToLogGate: OkToLogGate,
                         ) extends Tab with StructuredLogging {
   private implicit val timeout: Timeout = Timeout(5, TimeUnit.SECONDS)
   text = "Entry"
@@ -98,17 +98,6 @@ class EntryTab @Inject()( injector: Injector,
       ourExchangeLabel.text = ex.display
       ourExchangeMnomicLabel.text = ex.mnomonics
     }
-  }
-
-
-  val notReadyPane: BorderPane = new BorderPane {
-    center = new VBox(new Label("Not ready, setup or wait for another node to sync."),
-      new Hyperlink("Contest Setup") {
-        onAction = event => {
-          injector.instance[ContestDialog].show()
-        }
-      }
-    )
   }
 
 
@@ -171,19 +160,20 @@ class EntryTab @Inject()( injector: Injector,
       qsoSubmit.sad()
     }
   }
-  content = setOk(journalManager.okToLogProperty.value)
-  journalManager.okToLogProperty.onChange { (_, _, nv) =>
+
+
+  content = setOk(okToLogGate.value)
+  okToLogGate.onChange { (_, _, nv) =>
     onFX {
       content = setOk(nv)
     }
   }
 
-
   def setOk(ok: Boolean): Pane = {
     if (ok)
       entryPane
     else
-      notReadyPane
+      injector.instance[NotReadyPane]
   }
 
   def save(): Unit = {

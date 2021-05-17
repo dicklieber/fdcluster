@@ -34,9 +34,12 @@ import scala.jdk.CollectionConverters._
  * @param instance  from application.conf or command line e.g -Dinstance=2
  * @param httpPort  as opposed to the multicast port.
  */
-case class NodeAddress (ipAddress: String = "localhost", hostName: String = "localhost", instance: Int = 0, httpPort: Int = 8000) extends Ordered[NodeAddress] {
+case class NodeAddress(ipAddress: String = "", hostName: String = "localhost", instance: Int = 0, httpPort: Int = 8000) extends Ordered[NodeAddress] {
   val display: String = {
-    s"$hostName:$instance ($ipAddress)"
+    if (ipAddress == "")
+      "Not Set"
+    else
+      s"$hostName:$instance ($ipAddress)"
   }
 
   val qsoNode: String = {

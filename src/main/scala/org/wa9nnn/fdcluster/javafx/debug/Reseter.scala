@@ -6,11 +6,11 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class Reseter @Inject()(storeSender: StoreSender) {
-def reset() = {
-  // stop entry
-  // stop cluster access
-  // rename directory tp <diretory>.<filestamp>
-  // ClearStore
-  // enable cluser access
-}
+  def reset() = {
+    // stop entry
+    // stop cluster access
+    // rename directory tp <diretory>.<filestamp>
+    // ClearStore
+    // enable cluser access
+  }
 }

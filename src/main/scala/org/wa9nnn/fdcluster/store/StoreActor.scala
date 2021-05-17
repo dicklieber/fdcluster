@@ -32,7 +32,6 @@ import org.wa9nnn.fdcluster.ClusterControl
 import org.wa9nnn.fdcluster.Markers.syncMarker
 import org.wa9nnn.fdcluster.adif.AdiExporter
 import org.wa9nnn.fdcluster.cabrillo.{CabrilloExportRequest, CabrilloGenerator}
-import org.wa9nnn.fdcluster.contest.Journal
 import org.wa9nnn.fdcluster.javafx.menu.ImportRequest
 import org.wa9nnn.fdcluster.javafx.sync._
 import org.wa9nnn.fdcluster.model.MessageFormats._
@@ -114,6 +113,7 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
 
     case qc: QsosFromNode =>
       qc.qsos.foreach(store.addRecord)
+      logger.error(s"Got to so-called unreachable code!!!!!!!")
 
 
     case d: DistributedQsoRecord ⇒

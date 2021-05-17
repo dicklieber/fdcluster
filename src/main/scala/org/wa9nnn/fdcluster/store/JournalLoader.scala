@@ -21,7 +21,7 @@ package org.wa9nnn.fdcluster.store
 
 import com.typesafe.scalalogging.LazyLogging
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics
-import org.wa9nnn.fdcluster.contest.JournalManager
+import org.wa9nnn.fdcluster.contest.JournalProperty
 import org.wa9nnn.fdcluster.javafx.entry.RunningTaskInfoConsumer
 import org.wa9nnn.fdcluster.javafx.runningtask.RunningTask
 import org.wa9nnn.fdcluster.model.MessageFormats._
@@ -45,7 +45,7 @@ import scala.util.Using
  * @param runningTaskInfoConsumer progress UI
  */
 class JournalLoader @Inject()(storeSender: StoreSender,
-                              journalManager: JournalManager,
+                              journalManager: JournalProperty,
                               val runningTaskInfoConsumer: RunningTaskInfoConsumer) {
   def startLoad(qsoAdder: QsoAdder): Unit = {
     new Task(runningTaskInfoConsumer)(qsoAdder)

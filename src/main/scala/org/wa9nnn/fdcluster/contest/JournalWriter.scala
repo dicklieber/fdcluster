@@ -19,7 +19,7 @@ package org.wa9nnn.fdcluster.contest
 
 import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.model.MessageFormats._
-import org.wa9nnn.fdcluster.model.{NodeAddress, QsoRecord}
+import org.wa9nnn.fdcluster.model.{JournalHeader, NodeAddress, QsoRecord}
 import play.api.libs.json.Json
 
 import java.io.IOException
@@ -34,7 +34,7 @@ import scala.util.Try
  * @param nodeAddress     us.
  */
 @Singleton
-class JournalWriter @Inject()(val journalManager: JournalManager, nodeAddress: NodeAddress) extends LazyLogging {
+class JournalWriter @Inject()(val journalManager: JournalProperty, nodeAddress: NodeAddress) extends LazyLogging {
 
   /**
    * creating the file with header as needed.
@@ -48,7 +48,7 @@ class JournalWriter @Inject()(val journalManager: JournalManager, nodeAddress: N
     value.foreach { filePath =>
       if (!Files.exists(filePath) || Files.size(filePath) == 0) {
         try {
-          val json = Json.toJson(JournalHeader(journalManager._currentJournal.get, nodeAddress)).toString()
+          val json = Json.toJson(JournalHeader(journalManager.value, nodeAddress)).toString()
           Files.writeString(filePath, json + "\n", StandardOpenOption.CREATE, StandardOpenOption.WRITE)
         } catch {
           case e:Exception =>

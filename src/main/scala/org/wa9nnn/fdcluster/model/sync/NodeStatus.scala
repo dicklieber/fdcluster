@@ -20,12 +20,11 @@
 package org.wa9nnn.fdcluster.model.sync
 
 import org.wa9nnn.fdcluster.BuildInfo
-import org.wa9nnn.fdcluster.contest.{Contest, Journal}
-import org.wa9nnn.fdcluster.model.MessageFormats._
-import org.wa9nnn.fdcluster.model.{CurrentStation, NodeAddress, QsoMetadata}
+import org.wa9nnn.fdcluster.contest.Contest
+import org.wa9nnn.fdcluster.model.{CurrentStation, Journal, NodeAddress, QsoMetadata}
 import org.wa9nnn.fdcluster.store.network.FdHour
 
-import java.time.{Duration, Instant, LocalDateTime}
+import java.time.Instant
 
 /**
  *
@@ -43,8 +42,8 @@ case class NodeStatus(nodeAddress: NodeAddress,
                       qsoHourDigests: List[QsoHourDigest],
                       qsoMetadata: QsoMetadata,
                       currentStation: CurrentStation,
-                      contest: Contest,
-                      journal: Option[Journal] = None,
+                      maybeContest: Option[Contest] = None,
+                      maybeJournal: Option[Journal] = None,
                       stamp: Instant = Instant.now(),
                       v: String = BuildInfo.canonicalVersion) extends ClusterMessage {
 

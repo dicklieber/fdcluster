@@ -31,14 +31,15 @@ import scala.util.{Failure, Success, Try}
 trait Persistence {
   /**
    *
-   * @param product a case class that has Format implicit. Usually in [[org.wa9nnn.fdcluster.model.MessageFormats]]
-   * @param writes [[play.api.libs.json.Format]]
+   * @param candidate a case class that has Format implicit. Usually in [[org.wa9nnn.fdcluster.model.MessageFormats]]
+   * @param p         do this if file product was newer and save actually happened.
+   * @param writes    [[play.api.libs.json.Format]]
    * @tparam T must be a case class
    * @return
    */
-  def saveToFile[T: ClassTag](product: T)(implicit writes: Writes[T]): Try[String]
+  def saveToFile[T <: Product : ClassTag](candidate: T)(implicit writes: Writes[T]): Unit
 
-  def loadFromFile[T: ClassTag](f: () => T)(implicit writes: Reads[T]): T
+  def loadFromFile[T: ClassTag](f: () => T)(implicit reads: Reads[T]): T
 }
 
 /**
@@ -56,19 +57,17 @@ class PersistenceImpl @Inject()(fileManager: FileContext) extends Persistence wi
 
   /**
    *
-   * @param product a case class to be saved
-   * @param writes  from [[org.wa9nnn.fdcluster.model.MessageFormats]]
+   * @param candidate a case class to be saved
+   * @param writes    from [[org.wa9nnn.fdcluster.model.MessageFormats]]
    * @tparam T of case class product.
    * @return file path or error
    */
-  override def saveToFile[T: ClassTag](product: T)(implicit writes: Writes[T]): Try[String] = {
-    assert(product.isInstanceOf[Product], s"$product is not a case class!")
+  override def saveToFile[T <: Product : ClassTag](candidate: T)(implicit writes: Writes[T]): Unit = {
     Try {
       val path = pathForClass[T]
       Files.createDirectories(path.getParent)
-      val sJson = Json.prettyPrint(Json.toJson(product))
+      val sJson = Json.prettyPrint(Json.toJson(candidate))
       Files.writeString(path, sJson, TRUNCATE_EXISTING, WRITE, CREATE)
-      path.toAbsolutePath.toString
     }
   }
 

@@ -26,7 +26,6 @@ import play.api.libs.json.{Reads, Writes}
 import java.nio.file.{Files, Path, Paths}
 import java.time.ZonedDateTime
 import scala.reflect.ClassTag
-import scala.util.Try
 
 /**
  * All access to various files should go through this.
@@ -46,9 +45,9 @@ class FileContext extends Persistence {
 
   val persistenceDelegate: Persistence = new PersistenceImpl(this)
 
-  override def saveToFile[T: ClassTag](product: T)(implicit writes: Writes[T]): Try[String] = persistenceDelegate.saveToFile(product)
+  override def saveToFile[T <: Product : ClassTag](product: T)(implicit writes: Writes[T]): Unit = persistenceDelegate.saveToFile(product)
 
-  override def loadFromFile[T: ClassTag](f: () => T)(implicit writes: Reads[T]): T = persistenceDelegate.loadFromFile(f)
+  override def loadFromFile[T: ClassTag](f: () => T)(implicit reads: Reads[T]): T = persistenceDelegate.loadFromFile(f)
 
   /**
    *

@@ -17,70 +17,67 @@
 
 package org.wa9nnn.fdcluster.contest
 
-import org.wa9nnn.fdcluster.FileContext
-import org.wa9nnn.fdcluster.javafx.GridOfControls
+import _root_.scalafx.Includes._
 import _root_.scalafx.scene.control.{Button, Hyperlink, Label, TitledPane}
 import _root_.scalafx.scene.layout.VBox
-import _root_.scalafx.Includes._
+import com.wa9nnn.util.TimeConverters.local
+import org.wa9nnn.fdcluster.FileContext
+import org.wa9nnn.fdcluster.javafx.GridOfControls
+import org.wa9nnn.fdcluster.model.{AllContestRules, ContestProperty}
 import scalafx.beans.property.StringProperty
 import scalafx.geometry.Insets
-import org.wa9nnn.fdcluster.contest.JournalManager.notSet
 
 import java.awt.Desktop
 import javax.inject.Inject
-import com.wa9nnn.util.TimeConverters.local
-import org.wa9nnn.fdcluster.model.ContestProperty
 
 /**
  * Allow user to create a new Journal file.
- * Journals are name based on [[org.wa9nnn.fdcluster.contest.Journal]] object
  *
- * @param journalProperty manages the [[Journal]]
+ * @param journalProperty
  * @param fileContext     so we can make link to the journals directory.
  */
-class JournalDialogPane @Inject()(journalProperty: JournalManager, fileContext: FileContext, contestProperty: ContestProperty) {
+class JournalDialogPane @Inject()(journalProperty: JournalProperty,
+                                  fileContext: FileContext,
+                                  contestProperty: ContestProperty,
+                                  allContestRules: AllContestRules) {
   val gridOfControls = new GridOfControls()
   private val desktop = Desktop.getDesktop
-
-  import org.wa9nnn.fdcluster.contest.JournalManager.tp2String
 
   private val currentFile: StringProperty = gridOfControls.add("Current", "--")
   private val newJournalButton = new Button("New Journal")
   gridOfControls.add(newJournalButton,
     1, gridOfControls.row.getAndIncrement())
-
+  if (allContestRules.inSchedule)
+    gridOfControls.add(new Label(s"${contestProperty.contestName} is ongoing, do you really want to restart!") {
+      styleClass += "warning"
+    }, 1, gridOfControls.row.getAndIncrement()
+    )
   val lastGoc = new GridOfControls(5 -> 5, Insets(5.0))
-  val maybeJournal: Option[Journal] = journalProperty._currentJournal
 
-  val lastFrom: StringProperty = lastGoc.add("From", maybeJournal.map(_.nodeAddress.display).getOrElse(notSet))
-  val lastAt: StringProperty = lastGoc.add("At", maybeJournal.map(_.stamp).getOrElse(notSet))
+
+  val lastFrom: StringProperty = lastGoc.add("From", "-")
+  val lastAt: StringProperty = lastGoc.add("At", "-")
   updateLast() // starting values.
   gridOfControls.add("Last Changed", lastGoc)
 
   gridOfControls.addControl("Journal Files", new Hyperlink(fileContext.journalDir.toString) {
     tooltip = "A new file will not exist until a QSO is written to it."
-    onAction = event => {
+    onAction = _ => {
       desktop.open(fileContext.journalDir.toFile)
     }
   })
 
   def updateLast(): Unit = {
-    journalProperty._currentJournal match {
-      case Some(journal) =>
-        currentFile.value = journal.journalFileName
-        lastFrom.value = journal.nodeAddress.display
-        lastAt.value = journal.stamp
-      case None =>
-        currentFile.value = "--"
-        lastFrom.value = "--"
-        lastAt.value = "--"
-    }
+    val journal = journalProperty.value
+    currentFile.value = journal.journalFileName
+    lastFrom.value = journal.nodeAddress.display
+    lastAt.value = journal.stamp
   }
 
-  journalProperty.journalFilePathProperty.onChange { (_, _, _) =>
-    updateLast()
+  journalProperty.onChange {
+    (_, _, _) =>
+      updateLast()
   }
-
 
   newJournalButton.onAction = () => {
     journalProperty.createNewJournal()
@@ -108,11 +105,11 @@ class JournalDialogPane @Inject()(journalProperty: JournalManager, fileContext: 
     )
     collapsible = false
   }
-
   {
     pane.visible = contestProperty.okToLogProperty.value
-    contestProperty.okToLogProperty.onChange { (_, _, nv) =>
-      pane.visible = nv
+    contestProperty.okToLogProperty.onChange {
+      (_, _, nv) =>
+        pane.visible = nv
     }
   }
 

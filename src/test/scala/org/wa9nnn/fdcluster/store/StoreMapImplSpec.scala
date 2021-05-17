@@ -22,7 +22,7 @@ import org.apache.commons.io.FileUtils._
 import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
 import org.specs2.specification.After
-import org.wa9nnn.fdcluster.contest.{JournalManager, JournalWriter}
+import org.wa9nnn.fdcluster.contest.{JournalProperty, JournalWriter}
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.{FileContext, MockFileContext}
@@ -40,7 +40,7 @@ class StoreMapImplSpec extends Specification with After with Mockito {
   val allQsos = new ObservableBuffer[QsoRecord]()
 
   val commandLine: CommandLine = mock[CommandLine].is("skipJournal") returns false
-  private val journalManager = mock[JournalManager]
+  private val journalManager = mock[JournalProperty]
   private val journalLoader: JournalLoader = mock[JournalLoader]
   private val journalWriter = mock[JournalWriter]
   private val storeMapImpl = new StoreLogic(na = NodeAddress(),

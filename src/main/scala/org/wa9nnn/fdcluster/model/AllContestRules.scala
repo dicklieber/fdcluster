@@ -27,7 +27,7 @@ import javax.inject.{Inject, Singleton}
 import scala.jdk.CollectionConverters._
 
 @Singleton
-class AllContestRules @Inject()(config: Config, contestProperty: ContestProperty)  {
+class AllContestRules @Inject()(config: Config, contestProperty: ContestProperty) {
 
   private val configs: Seq[Config] = config.getObjectList("fdcluster.contests").asScala.map(_.toConfig).toSeq
   private val (defaults, contestConfigs) = configs.partition(_.getString("contestName") == "")
@@ -36,17 +36,19 @@ class AllContestRules @Inject()(config: Config, contestProperty: ContestProperty
   val contestNames: Seq[String] = contestConfigs.map(_.getString("contestName")).sorted
   val byContestName: Map[String, ContestRules] = contestConfigs.map(ContestRules(_, defaultConfig)).map(cr => cr.contestName -> cr).toMap
 
-  private def rules(contestName:String):ContestRules = byContestName.getOrElse(contestName, byContestName.head._2)
-  contestProperty.onChange{(_,_,nv) =>
+  private def rules(contestName: String): ContestRules = byContestName.getOrElse(contestName, byContestName.head._2)
+
+  contestProperty.onChange { (_, _, nv) =>
     contestRulesProperty.value = rules(nv.contestName)
   }
 
-  val contestRulesProperty: ObjectProperty[ContestRules] =  ObjectProperty[ContestRules](rules(contestProperty.contestName))
-  def currentRules:ContestRules = contestRulesProperty.value
+  val contestRulesProperty: ObjectProperty[ContestRules] = ObjectProperty[ContestRules](rules(contestProperty.contestName))
 
+  def currentRules: ContestRules = contestRulesProperty.value
 
 
   def scheduleMessage: Message = contestRulesProperty.value.scheduleMessage
 
+  def inSchedule: Boolean = contestRulesProperty.value.inSchedule()
 }
 

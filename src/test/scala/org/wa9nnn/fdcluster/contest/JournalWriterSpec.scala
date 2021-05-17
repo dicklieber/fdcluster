@@ -2,15 +2,14 @@ package org.wa9nnn.fdcluster.contest
 
 import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
-import org.wa9nnn.fdcluster.model.{NodeAddress, Qso, QsoMetadata, QsoRecord}
-import play.api.libs.json.Json
-
-import java.nio.file.Files
-import scala.jdk.CollectionConverters.CollectionHasAsScala
 import org.wa9nnn.fdcluster.model.MessageFormats._
+import org.wa9nnn.fdcluster.model.{Journal, JournalHeader, NodeAddress, QsoRecord}
+import play.api.libs.json.Json
 import scalafx.beans.property.ObjectProperty
 
+import java.nio.file.Files
 import java.time.Instant
+import scala.jdk.CollectionConverters.CollectionHasAsScala
 import scala.util.Try
 
 class JournalWriterSpec extends Specification with Mockito {
@@ -18,10 +17,10 @@ class JournalWriterSpec extends Specification with Mockito {
   "JournalWriterSpec" >> {
     "happy path" >> {
       val journalStamp = Instant.now()
-      val journalProperty = mock[JournalManager]
+      val journalProperty = mock[JournalProperty]
       val ourNodeAddress = NodeAddress()
       val journal = Journal.apply("Test", ourNodeAddress, stamp = journalStamp)
-      journalProperty._currentJournal returns (Some(journal))
+      journalProperty.value returns journal
       val path = Files.createTempFile(journal.journalFileName, "")
       journalProperty.journalFilePathProperty returns ObjectProperty(Try(path))
       val journalWriter = new JournalWriter(journalProperty, ourNodeAddress)

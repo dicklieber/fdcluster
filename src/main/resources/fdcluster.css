@@ -134,6 +134,12 @@
     -fx-text-fill: green;
 }
 
+.warning {
+    -fx-text-fill: red;
+    -fx-font-size: larger;
+    -fx-font-weight: bold;
+}
+
 .hiDick {
     -fx-text-fill: blue;
     -fx-font-weight: bold;

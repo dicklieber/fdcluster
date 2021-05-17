@@ -24,7 +24,7 @@ import com.google.inject.Injector
 import com.google.inject.name.Named
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import org.wa9nnn.fdcluster.cabrillo.{CabrilloDialog, CabrilloExportRequest}
-import org.wa9nnn.fdcluster.contest.ContestDialog
+import org.wa9nnn.fdcluster.contest.{ContestDialog, OkToLogGate}
 import org.wa9nnn.fdcluster.contest.fieldday.{SummaryEngine, WinterFieldDaySettings}
 import org.wa9nnn.fdcluster.dupsheet.GenerateDupSheet
 import org.wa9nnn.fdcluster.javafx.debug.{DebugRemoveDialog, ResetDialog}
@@ -60,6 +60,7 @@ class FdClusterMenu @Inject()(
                                summaryEngine: SummaryEngine,
                                metricsReporter: MetricsReporter,
                                clusterControl: ClusterControl,
+                               okToLogGate: OkToLogGate,
                                debugRemoveDialog: DebugRemoveDialog) extends StructuredLogging {
   private implicit val timeout: Timeout = Timeout(5 seconds)
   private val desktop = Desktop.getDesktop
@@ -81,18 +82,6 @@ class FdClusterMenu @Inject()(
     text = "Clear QSOs on this node"
     onAction = { _: ActionEvent =>
       store ! ClearStore
-    }
-  }
-  private val debugDemoBulkMenuItem = new MenuItem {
-    text = "Add fake QSOs."
-    onAction = { _: ActionEvent =>
-      val dialog = injector.instance[BuildLoadDialog]
-      dialog.showAndWait() match {
-        case Some(blr) =>
-          store ! blr
-        case None =>
-      }
-
     }
   }
   private val debugRandomKillerMenuItem = new MenuItem {
@@ -204,6 +193,7 @@ class FdClusterMenu @Inject()(
     }
   }
 
+
   private val generateTimed = new MenuItem {
     text = "Generate Timed"
     onAction = { _ =>
@@ -212,6 +202,18 @@ class FdClusterMenu @Inject()(
       }
     }
   }
+
+  okToLogGate.onChange { (_, _, nv) =>
+    disable(!nv)
+  }
+
+  disable(!okToLogGate.value)
+
+  def disable(disable: Boolean):Unit = {
+    generateTimed.disable =disable
+
+  }
+
 
   private val upDown = new MenuItem {
     text = "Cluster"
@@ -243,7 +245,6 @@ class FdClusterMenu @Inject()(
           dumpStatsMenuItem,
           debugClearStoreMenuItem,
           debugRandomKillerMenuItem,
-          debugDemoBulkMenuItem,
           generateTimed,
           metricsMenuItem,
         )

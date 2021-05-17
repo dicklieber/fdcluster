@@ -20,7 +20,7 @@
 package org.wa9nnn.fdcluster.model
 
 import org.wa9nnn.fdcluster.cabrillo.{CabrilloExportRequest, CabrilloValue, CabrilloValues}
-import org.wa9nnn.fdcluster.contest.{Contest, Journal, JournalHeader}
+import org.wa9nnn.fdcluster.contest.Contest
 import org.wa9nnn.fdcluster.javafx.entry.section.Section
 import org.wa9nnn.fdcluster.javafx.menu.{BuildLoadRequest, ImportRequest}
 import org.wa9nnn.fdcluster.javafx.sync._
@@ -52,9 +52,9 @@ object MessageFormats {
   implicit val entcFromat: Format[EntryCategory] = c(Json.format[EntryCategory])
   implicit val fdcFromat: Format[FdClass] = Json.format[FdClass]
   implicit val sectFromat: Format[Section] = Json.format[Section]
-//  implicit val excFromat: Format[Exchange] = Json.format[Exchange]
   implicit val fdHourFormat: Format[FdHour] = Json.format[FdHour]
   implicit val nodeAddressFormat: Format[NodeAddress] = Json.format[NodeAddress]
+  implicit val journalFormat: Format[Journal] = Json.format[Journal]
   implicit val stepFormat: Format[Step] = Json.format[Step]
   implicit val tidFormat: Format[TransactionId] = Json.format[TransactionId]
   implicit val rqfhFormat: Format[RequestQsosForHour] = Json.format[RequestQsosForHour]
@@ -62,7 +62,6 @@ object MessageFormats {
   implicit val uuidsRequestFormat: Format[RequestUuidsForHour] = Json.format[RequestUuidsForHour]
   implicit val cf: Format[Contest] = Json.format[Contest]
   implicit val bandFormat: Format[AvailableBand] = Json.format[AvailableBand]
-//  implicit val bandModeFormat: Format[BandMode] = Json.format[BandMode]
   implicit val bandModeOpFormat: Format[CurrentStation] = Json.format[CurrentStation]
   implicit val qsoFormat: Format[Qso] = Json.format[Qso]
   implicit val uuidsFormat: Format[UuidsAtHost] = Json.format[UuidsAtHost]
@@ -73,7 +72,6 @@ object MessageFormats {
   implicit val qsosFromNodeFormat: Format[QsosFromNode] = Json.format[QsosFromNode]
   implicit val qsoHourDigestFormat: Format[QsoHourDigest] = Json.format[QsoHourDigest]
   implicit val qsoPeriodFormat: Format[QsoHour] = Json.format[QsoHour]
-  implicit val jFormat: Format[Journal] = Json.format[Journal]
   implicit val nodeStatsFormat: Format[NodeStatus] = Json.format[NodeStatus]
   implicit val jsonContainerFormat: Format[JsonContainer] = Json.format[JsonContainer]
   implicit val jhFormat: Format[JournalHeader] = Json.format[JournalHeader]

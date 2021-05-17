@@ -3,8 +3,9 @@ package org.wa9nnn.fdcluster.model.sync
 import akka.actor.{Actor, ActorRef, Props}
 import akka.pattern.ask
 import akka.util.Timeout
+import org.wa9nnn.fdcluster.model.MessageFormats._
 import com.google.inject.name.Named
-import org.wa9nnn.fdcluster.contest.JournalManager
+import org.wa9nnn.fdcluster.contest.JournalProperty
 import org.wa9nnn.fdcluster.http.HttpClientActor
 import org.wa9nnn.fdcluster.javafx.sync._
 import org.wa9nnn.fdcluster.model.{ContestProperty, CurrentStation, NodeAddress, QsoMetadata}
@@ -21,7 +22,7 @@ class ClusterActor(nodeAddress: NodeAddress,
                    @Named("nodeStatusQueue") nodeStatusQueue: ActorRef,
                    clusterState: ClusterState,
                    contestProperty: ContestProperty,
-                   journalManager: JournalManager,
+                   journalProperty: JournalProperty,
                   ) extends Actor with StructuredLogging {
   private implicit val timeout: Timeout = Timeout(5 seconds)
   context.system.scheduler.scheduleAtFixedRate(2 seconds, 17 seconds, self, Purge)
@@ -34,7 +35,7 @@ class ClusterActor(nodeAddress: NodeAddress,
     qsoHourDigests = List.empty,
     qsoMetadata = QsoMetadata(),
     currentStation = CurrentStation(),
-    contest = contestProperty.value)
+    maybeContest = Option(contestProperty.value))
 
   override def receive: Receive = {
 
@@ -43,16 +44,16 @@ class ClusterActor(nodeAddress: NodeAddress,
     case ns: NodeStatus ⇒
       logger.trace(s"Got NodeStatus from ${ns.nodeAddress}")
       clusterState.update(ns)
-      nodeStatusQueue ! ns
-      contestProperty.saveIfNewer(ns.contest)
+      if (ns.nodeAddress == nodeAddress) {
+        ourNodeStatus = ns
+      } else {
+        journalProperty.update(ns.maybeJournal)
+        contestProperty.update(ns.maybeContest)
+        nodeStatusQueue ! ns
 
       (nodeStatusQueue ? NextNodeStatus).mapTo[Option[NodeStatus]].map {
         {
           _.map { ns =>
-            if (ns.nodeAddress == nodeAddress) {
-              ourNodeStatus = ns
-            } else {
-              ns.journal.foreach(journalManager.updateJournal)
 
 
               val messages = ns.qsoHourDigests.flatMap { otherQsoHourDigest: QsoHourDigest =>

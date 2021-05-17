@@ -30,7 +30,7 @@ case class ContestRules(contestName: String,
 
   val key: String = contestName.filter(_.isUpper)
 
-  def inSchedule(candidate: Instant): Boolean = fieldDaySchedule.inSchedule(candidate)
+  def inSchedule(candidate: Instant = Instant.now()): Boolean = fieldDaySchedule.inSchedule(candidate)
 
 
   def scheduleMessage: Message = {

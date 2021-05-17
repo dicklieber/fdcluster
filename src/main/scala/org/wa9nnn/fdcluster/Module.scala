@@ -25,7 +25,7 @@ import com.github.racc.tscg.TypesafeConfigModule
 import com.google.inject.{AbstractModule, Injector, Provides}
 import configs.Config
 import net.codingwell.scalaguice.{ScalaModule, ScalaMultibinder}
-import org.wa9nnn.fdcluster.contest.JournalManager
+import org.wa9nnn.fdcluster.contest.{JournalProperty, OkToLogContributer}
 import org.wa9nnn.fdcluster.javafx.entry.{RunningTaskInfoConsumer, RunningTaskPane, StatsPane}
 import org.wa9nnn.fdcluster.metrics.MetricsReporter
 import org.wa9nnn.fdcluster.model._
@@ -84,6 +84,10 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
       val qsoListeners = ScalaMultibinder.newSetBinder[AddQsoListener](binder)
       qsoListeners.addBinding.to[StatsPane]
       qsoListeners.addBinding.to[QsoCountCollector]
+
+      val okToLog = ScalaMultibinder.newSetBinder[OkToLogContributer](binder)
+      okToLog.addBinding.to[JournalProperty]
+      okToLog.addBinding.to[ContestProperty]
     }
     catch {
       case e: Throwable ⇒
@@ -109,7 +113,7 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
                         @Named("nodeStatusQueue") nodestatusQueue: ActorRef,
                         clusterState: ClusterState,
                         contestProperty: ContestProperty,
-                        journalManager: JournalManager
+                        journalManager: JournalProperty
                        ): ActorRef = {
     actorSystem.actorOf(Props(
       new ClusterActor(nodeAddress, storeActor, nodestatusQueue, clusterState, contestProperty, journalManager)),

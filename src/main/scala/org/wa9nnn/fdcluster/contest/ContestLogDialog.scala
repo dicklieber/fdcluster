@@ -18,6 +18,7 @@
 package org.wa9nnn.fdcluster.contest
 
 import _root_.scalafx.scene.control.Dialog
+import org.wa9nnn.fdcluster.model.Journal
 
 class ContestLogDialog extends Dialog[Journal]{
 

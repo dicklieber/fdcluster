@@ -28,7 +28,7 @@ import _root_.scalafx.collections.ObservableBuffer
 import _root_.scalafx.geometry.{Insets, Pos}
 import _root_.scalafx.scene.control._
 import _root_.scalafx.scene.layout.VBox
-
+import MessageFormats._
 import javax.inject.Inject
 
 case class ContestDialogPane @Inject()(contestProperty: ContestProperty,
@@ -113,7 +113,7 @@ case class ContestDialogPane @Inject()(contestProperty: ContestProperty,
           contestName = contestCB.value,
           nodeAddress = nodeAddress)
 
-        contestProperty.save(newContest)
+        contestProperty.update(Option(newContest))
     }
 
   gridOfControls.add("Exchange", exchangePane)

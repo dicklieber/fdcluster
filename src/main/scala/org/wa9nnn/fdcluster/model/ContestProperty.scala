@@ -36,92 +36,40 @@ import scala.util.{Failure, Success, Using}
  * @param fileContext saves and loads any a case class.
  */
 @Singleton
-class ContestProperty @Inject()(fileContext: FileContext) extends ObjectProperty[Contest]
-  with OkToLogContributer with StructuredLogging {
+class ContestProperty @Inject()(fileContext: FileContext) extends PersistableProperty[Contest](fileContext){
 
 
-  private val initContest: Contest = fileContext.loadFromFile[Contest](() => Contest(nodeAddress = fileContext.nodeAddress))
-  value = initContest
+  /**
+   * provide a new default instance of T. Needed when there is no file persisted/
+   *
+   * @return
+   */
+  override def defaultInstance: Contest = new Contest(nodeAddress = fileContext.nodeAddress)
+
 
   def contest: Contest = value
 
   def callSign: String = value.callSign
 
-  val contestNameProperty: StringProperty = StringProperty(initContest.contestName)
+  lazy val contestNameProperty: StringProperty = new StringProperty()
 
   def contestName: String = contestNameProperty.value
 
-  val ourExchangeProperty: ObjectProperty[Exchange] = ObjectProperty[Exchange](initContest.ourExchange)
+  lazy val ourExchangeProperty: ObjectProperty[Exchange] = new ObjectProperty[Exchange]()
 
   def ourExchange: Exchange = ourExchangeProperty.value
 
-  val logotypeImageProperty: ObjectProperty[Image] = new ObjectProperty[Image]()
-
-  onChange { (_, old, contest) =>
+  onChanged(value)
+  /**
+   * Invoked initially and when the property changes.
+   */
+  override def onChanged(contest: Contest): Unit = {
     contestNameProperty.value = contest.contestName
     ourExchangeProperty.value = contest.ourExchange
-
-    setUpImage(contest.contestName)
-    whenTraceEnabled(() => s"contestProperty changed from : $old to: $contest ")
-
-    contestOK
-  }
-
-
-  def setUpImage(eventName: String): Unit = {
-    val imagePath: String = s"/images/$eventName.png"
-    Using(getClass.getResourceAsStream(imagePath)) { is =>
-      new Image(is, 150.0, 150.0, true, true)
-    } match {
-      case Failure(exception) =>
-        logger.error(s"loading: $imagePath", exception)
-      case Success(image) =>
-        logotypeImageProperty.setValue(image)
-    }
-
-    try {
-      {
-        DockIcon(imagePath)
-      }
-    } catch {
-      case e: java.lang.NoClassDefFoundError =>
-        logger.debug("Icon switch", e)
-      case et: Throwable =>
-        logger.debug("Icon switch", et)
-
-    }
-  }
-
-  def save(contest: Contest): Unit = {
-    value = contest
-    fileContext.saveToFile(value) match {
-      case Failure(exception) =>
-        logger.error("Saving ContestProperty", exception)
-      case Success(path) =>
-        whenDebugEnabled { () =>
-          s"Saved $value to $path."
-        }
-    }
-  }
-
-  def saveIfNewer(contest: Contest): Unit = {
-    if (contest.stamp.isAfter(value.stamp)) {
-      logger.info(s"New Contest from ${contest.nodeAddress.display}")
-      save(contest)
-    }
+    okToLogProperty.value = contest.isOk
   }
 
   override def update(v: Contest): Unit =
     throw new IllegalStateException("Use save or saveIfNewer!")
-
-  override val okToLogProperty: BooleanProperty = new BooleanProperty {
-
-  }
-
-  def contestOK(): Unit = {
-    val value1 = value
-      okToLogProperty.value = Option(value1).exists(_.isOk)
-  }
-  contestOK()
 }
 

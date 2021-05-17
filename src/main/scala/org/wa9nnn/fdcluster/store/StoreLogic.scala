@@ -22,7 +22,7 @@ import _root_.scalafx.collections.ObservableBuffer
 import akka.actor.ActorRef
 import com.google.inject.name.Named
 import nl.grons.metrics4.scala.DefaultInstrumented
-import org.wa9nnn.fdcluster.contest.{JournalManager, JournalWriter}
+import org.wa9nnn.fdcluster.contest.{JournalProperty, JournalWriter}
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHour}
@@ -47,7 +47,7 @@ class StoreLogic @Inject()(na: NodeAddress,
                            contestProperty: ContestProperty,
                            journalLoader: JournalLoader,
                            journalWriter: JournalWriter,
-                           journalManager: JournalManager,
+                           journalManager: JournalProperty,
                            listeners: immutable.Set[AddQsoListener]
                           )
   extends StructuredLogging with DefaultInstrumented with QsoSource with QsoAdder {
@@ -97,7 +97,6 @@ class StoreLogic @Inject()(na: NodeAddress,
   metrics.gauge("qso count") {
     qsoBuffer.size
   }
-  private val qsosDigestTimer = metrics.timer("qsos digest")
   private val hourDigestsTimer = metrics.timer("hours digest")
   private var loadingIndicesFlag = false
 
@@ -287,8 +286,14 @@ class StoreLogic @Inject()(na: NodeAddress,
     val rate = qsoMeter.fifteenMinuteRate
     val currentStation = CurrentStation()
 
-    sync.NodeStatus(nodeAddress, byUuid.size, hourDigests, qsoMetadata.value, currentStation, contestProperty.value,
-      journal = journalManager._currentJournal)
+    sync.NodeStatus(
+      nodeAddress = nodeAddress,
+      qsoCount = byUuid.size,
+      qsoHourDigests = hourDigests,
+      qsoMetadata = qsoMetadata.value,
+      currentStation = currentStation,
+      maybeContest = Option(contestProperty.value),
+      maybeJournal = Option(journalManager.value))
 
   }
 

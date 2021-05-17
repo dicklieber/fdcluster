@@ -13,7 +13,7 @@ class NodeStatusQueueSpec extends Specification {
     qsoHourDigests = List.empty,
     currentStation = CurrentStation(),
     qsoMetadata = QsoMetadata(),
-    contest = Contest()
+    maybeContest = Some(Contest())
   )
 
   "NodeStatusQueue" >> {

@@ -96,7 +96,7 @@ class ClusterTable extends LazyLogging {
       buildRow("QSOs", ns => Cell(ns.nodeStatus.qsoCount).withToolTip(
         """How many QSO stored at this node.
           |This should be the same accross all nodes in the cluster.""".stripMargin)),
-      buildRow("Journal", ns => Cell(ns.nodeStatus.journal.map(_.journalFileName).getOrElse("--"))
+      buildRow("Journal", ns => Cell(ns.nodeStatus.maybeJournal.map(_.journalFileName).getOrElse("--"))
         .withToolTip(
           """Name of the file that where QSo are journaled.
             |This should be the same accross all nodes in the cluster.

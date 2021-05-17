@@ -19,25 +19,26 @@
 
 package org.wa9nnn.fdcluster.javafx
 
-import com.google.inject.Guice
-import net.codingwell.scalaguice.InjectorExtensions._
-import org.wa9nnn.fdcluster.{Module, NetworkPane}
-import org.wa9nnn.fdcluster.http.Server
-import org.wa9nnn.fdcluster.javafx.cluster.ClusterTab
-import org.wa9nnn.fdcluster.javafx.data.DataTab
-import org.wa9nnn.fdcluster.javafx.entry.{EntryTab, RunningTaskPane, StatisticsTab}
-import org.wa9nnn.fdcluster.javafx.menu.FdClusterMenu
-import org.wa9nnn.fdcluster.model.{AllContestRules, ContestProperty, NodeAddress}
-import org.wa9nnn.util.{CommandLine, StructuredLogging}
 import _root_.scalafx.application.JFXApp.PrimaryStage
 import _root_.scalafx.application.{JFXApp, Platform}
 import _root_.scalafx.scene.Scene
 import _root_.scalafx.scene.control.{Tab, TabPane}
 import _root_.scalafx.scene.image.{Image, ImageView}
 import _root_.scalafx.scene.layout.{BorderPane, GridPane}
-import scalafx.Includes._
+import com.google.inject.Guice
+import com.wa9nnn.util.macos.DockIcon
+import net.codingwell.scalaguice.InjectorExtensions._
+import org.wa9nnn.fdcluster.http.Server
+import org.wa9nnn.fdcluster.javafx.cluster.ClusterTab
+import org.wa9nnn.fdcluster.javafx.data.DataTab
+import org.wa9nnn.fdcluster.javafx.entry.{EntryTab, RunningTaskPane, StatisticsTab}
+import org.wa9nnn.fdcluster.javafx.menu.FdClusterMenu
+import org.wa9nnn.fdcluster.model.{AllContestRules, ContestProperty, NodeAddress}
+import org.wa9nnn.fdcluster.{Module, NetworkPane}
+import org.wa9nnn.util.{CommandLine, StructuredLogging}
 
 import java.awt.Desktop
+import scala.util.{Failure, Success, Using}
 
 /**
  * Main for FDLog
@@ -74,10 +75,8 @@ object FdCluster extends JFXApp with StructuredLogging {
       tabPane.selectionModel.value.select(t)
     )
   }
-  contestProperty.logotypeImageProperty.onChange { (_, _, newImage: Image) =>
-    imageView.image = newImage
-  }
-  private val imageView = new ImageView(contestProperty.logotypeImageProperty.value) {
+
+  private val imageView = new ImageView() {
     styleClass += "contestLogo"
   }
   val bottomPane: GridPane = {
@@ -134,8 +133,33 @@ object FdCluster extends JFXApp with StructuredLogging {
 
   // This can hang, calling com.apple.eawt.Application
   // if invoked too early.
-  contestProperty.setUpImage(contestProperty.contestName)
+  setUpImage(contestProperty.contestName)
 
+  contestProperty.onChange { (_, _, nv) =>
+    setUpImage(nv.contestName)
+  }
 
+  def setUpImage(contestName: String): Unit = {
+    val imagePath: String = s"/images/$contestName.png"
+    Using(getClass.getResourceAsStream(imagePath)) { is =>
+      new Image(is, 150.0, 150.0, true, true)
+    } match {
+      case Failure(exception) =>
+        logger.error(s"loading: $imagePath", exception)
+      case Success(image) =>
+        imageView.image = image
+    }
+
+    try {
+      {
+        DockIcon(imagePath)
+      }
+    } catch {
+      case e: java.lang.NoClassDefFoundError =>
+        logger.debug("Icon switch", e)
+      case et: Throwable =>
+        logger.debug("Icon switch", et)
+    }
+  }
 
 }

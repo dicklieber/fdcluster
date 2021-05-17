@@ -1,9 +1,9 @@
 
 package org.wa9nnn.fdcluster.contest
 
-import org.wa9nnn.fdcluster.model.{Exchange, NodeAddress}
+import com.wa9nnn.util.TimeConverters.fileStamp
 import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
-import com.wa9nnn.util.TimeConverters.{fileStamp, timeFmt}
+import org.wa9nnn.fdcluster.model.{Exchange, NodeAddress, Stamped}
 
 import java.time.{Instant, LocalDate}
 
@@ -23,8 +23,7 @@ case class Contest(callSign: CallSign = "",
                    nodeAddress: NodeAddress = NodeAddress(),
                    journalStart: Option[Instant] = None,
                    stamp: Instant = Instant.now()
-                  ) {
-
+                  ) extends Stamped[Contest] {
 
   def checkValid(): Unit = {
     if (!isOk) {
@@ -47,29 +46,3 @@ case class Contest(callSign: CallSign = "",
   }
 }
 
-/**
- *
- * @param journalFileName     name of file contestname+YYYMMddHHmmssz.json, obtained from [[com.wa9nnn.util.TimeConverters#fileStamp(java.time.Instant]])
- * @param nodeAddress         who started the instance.
- * @param stamp               when this was created. Newer always replaces older, anywhere in the cluster.
- */
-case class Journal private(journalFileName: String, nodeAddress: NodeAddress, stamp: Instant = Instant.now()) {
-
-}
-
-object Journal {
-  def apply(contestName: String, nodeAddress: NodeAddress): Journal = {
-    val instant = Instant.now()
-    val fileName = contestName + fileStamp(instant) + ".json"
-    new Journal(fileName, nodeAddress, instant)
-  }
-}
-
-
-/**
- * JSON of this is the 1st line in the journal.
- *
- * @param journal        as sent around the cluster.
- * @param ourNodeAddress so we can tell whose journal this is.
- */
-case class JournalHeader(journal: Journal, ourNodeAddress: NodeAddress)

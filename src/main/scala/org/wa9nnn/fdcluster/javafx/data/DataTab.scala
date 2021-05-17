@@ -30,7 +30,7 @@ import _root_.scalafx.scene.layout.{HBox, VBox}
 import akka.util.Timeout
 import com.google.inject.Inject
 import org.scalafx.extras.onFX
-import org.wa9nnn.fdcluster.contest.JournalManager
+import org.wa9nnn.fdcluster.contest.JournalProperty
 import org.wa9nnn.fdcluster.javafx.entry.Sections
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.QsoRecord
@@ -44,13 +44,13 @@ import java.time.format.DateTimeFormatter
 import java.time.{Instant, ZonedDateTime}
 import java.util.concurrent.TimeUnit
 import scala.util.Try
-import org.wa9nnn.fdcluster.contest.JournalManager._
+import org.wa9nnn.fdcluster.contest.JournalProperty._
 import org.wa9nnn.fdcluster.javafx.FdCluster.dataTab
 
 /**
  * Create JavaFX UI to view QSOs.
  */
-class DataTab @Inject()(journalManager: JournalManager, storeLogic: StoreLogic) extends Tab {
+class DataTab @Inject()(journalManager: JournalProperty, storeLogic: StoreLogic) extends Tab {
   text = "Data"
   closable = false
 
