@@ -21,3 +21,5 @@ conf/generated.keystore
 /src/test/test.iml
 .bsp
 /.bsp/
+.bsp/
+sbt.json
