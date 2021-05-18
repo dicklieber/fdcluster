@@ -50,7 +50,7 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
   val nodeAddress: NodeAddress = injector.instance[NodeAddress]
   val config: Config = injector.instance[Config]
   val randomQso: RandomQsoGenerator = injector.instance[RandomQsoGenerator]
-  val multicastSender: ActorRef = injector.instance[ActorRef]( Names.named("multicastSender"))
+  val multicastSender: ActorRef = injector.instance[ActorRef](Names.named("multicastSender"))
   val store: StoreLogic = injector.instance[StoreLogic]
   val clusterControl = injector.instance[ClusterControl]
 
@@ -58,13 +58,13 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
 
   context.system.scheduler.scheduleAtFixedRate(2 seconds, 7 seconds, self, StatusPing)
 
-//  journalLoader().pipeTo(self)
+  //  journalLoader().pipeTo(self)
 
   override def receive: Receive = {
     /**
      * Finish up sync with data from another node
      */
-    case  QsosFromNode(qsos, _) =>
+    case QsosFromNode(qsos, _) =>
       logger.debug(syncMarker, s"got ${qsos.size}")
       store.merge(qsos)
 
@@ -152,7 +152,7 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
       importTask(path, store)
 
     case search: Search =>
-      sender ! store.search(search)
+      sender() ! store.search(search)
 
     case gr: GenerateRandomQsos =>
       randomQso(gr) {

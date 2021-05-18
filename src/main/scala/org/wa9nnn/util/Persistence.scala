@@ -19,6 +19,7 @@
 
 package org.wa9nnn.util
 
+import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.FileContext
 import play.api.libs.json._
 
@@ -48,7 +49,7 @@ trait Persistence {
  *
  * @param fileManager where to write files
  */
-class PersistenceImpl @Inject()(fileManager: FileContext) extends Persistence with StructuredLogging {
+class PersistenceImpl @Inject()(fileManager: FileContext) extends Persistence with LazyLogging {
   val path: Path = fileManager.varDirectory
   Files.createDirectories(path)
   if (!Files.isDirectory(path)) {

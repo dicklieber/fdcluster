@@ -19,24 +19,24 @@
 
 package org.wa9nnn.fdcluster.javafx.entry
 
+import _root_.scalafx.application.Platform
+import _root_.scalafx.scene.control.Label
+import _root_.scalafx.scene.layout.{Pane, VBox}
 import akka.actor.ActorRef
 import akka.pattern.ask
 import akka.util.Timeout
+import com.typesafe.scalalogging.LazyLogging
 import org.scalafx.extras.onFX
-import org.wa9nnn.fdcluster.model.{BandMode, QsoMetadata}
 import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
+import org.wa9nnn.fdcluster.model.{BandMode, QsoMetadata}
 import org.wa9nnn.fdcluster.store.{Search, SearchResult}
-import org.wa9nnn.util.{StructuredLogging, WithDisposition}
-import _root_.scalafx.application.Platform
-import _root_.scalafx.beans.property.ObjectProperty
-import _root_.scalafx.scene.control.Label
-import _root_.scalafx.scene.layout.{Pane, VBox}
+import org.wa9nnn.util.WithDisposition
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
-class ActionResult(storeActor: ActorRef, qsoMetadata: QsoMetadata)(implicit timeout: Timeout) extends StructuredLogging {
+class ActionResult(storeActor: ActorRef, qsoMetadata: QsoMetadata)(implicit timeout: Timeout) extends LazyLogging {
 
   def potentiaDup(partial: CallSign): Unit = {
     val bm=BandMode()//todo when we re do station panel in EntryScene

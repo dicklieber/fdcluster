@@ -26,6 +26,7 @@ import _root_.scalafx.scene.control.{Tab, TabPane}
 import _root_.scalafx.scene.image.{Image, ImageView}
 import _root_.scalafx.scene.layout.{BorderPane, GridPane}
 import com.google.inject.Guice
+import com.typesafe.scalalogging.LazyLogging
 import com.wa9nnn.util.macos.DockIcon
 import net.codingwell.scalaguice.InjectorExtensions._
 import org.wa9nnn.fdcluster.http.Server
@@ -35,7 +36,7 @@ import org.wa9nnn.fdcluster.javafx.entry.{EntryTab, RunningTaskPane, StatisticsT
 import org.wa9nnn.fdcluster.javafx.menu.FdClusterMenu
 import org.wa9nnn.fdcluster.model.{AllContestRules, ContestProperty, NodeAddress}
 import org.wa9nnn.fdcluster.{Module, NetworkPane}
-import org.wa9nnn.util.{CommandLine, StructuredLogging}
+import org.wa9nnn.util.CommandLine
 
 import java.awt.Desktop
 import scala.util.{Failure, Success, Using}
@@ -43,7 +44,7 @@ import scala.util.{Failure, Success, Using}
 /**
  * Main for FDLog
  */
-object FdCluster extends JFXApp with StructuredLogging {
+object FdCluster extends JFXApp with LazyLogging {
   private val injector = Guice.createInjector(new Module(parameters))
   private val entryTab = injector.instance[EntryTab]
   private val dataTab = injector.instance[DataTab]

@@ -19,18 +19,18 @@
 
 package org.wa9nnn.fdcluster.cabrillo
 
+import _root_.scalafx.beans.property.ObjectProperty
+import com.typesafe.scalalogging.LazyLogging
 import com.wa9nnn.cabrillo.model.{SimpleTagValue, TagValue}
 import org.wa9nnn.fdcluster.model.MessageFormats._
-import org.wa9nnn.util.{StructuredLogging, Persistence}
-import _root_.scalafx.beans.property.ObjectProperty
+import org.wa9nnn.util.Persistence
 
 import javax.inject.Inject
 
 /**
  * User provided values.
- * @param preferences
  */
-class CabrilloValuesStore @Inject()(preferences: Persistence) extends ObjectProperty[CabrilloExportRequest] with StructuredLogging {
+class CabrilloValuesStore @Inject()(preferences: Persistence) extends ObjectProperty[CabrilloExportRequest] with LazyLogging {
   value = preferences.loadFromFile[CabrilloExportRequest](() => CabrilloExportRequest())
 
   onChange { (_, _, newValue) =>

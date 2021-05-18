@@ -18,14 +18,19 @@
 
 package org.wa9nnn.fdcluster.javafx.menu
 
+import _root_.scalafx.Includes._
+import _root_.scalafx.application.Platform
+import _root_.scalafx.event.ActionEvent
+import _root_.scalafx.scene.control._
 import akka.actor.ActorRef
 import akka.util.Timeout
 import com.google.inject.Injector
 import com.google.inject.name.Named
+import com.typesafe.scalalogging.LazyLogging
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import org.wa9nnn.fdcluster.cabrillo.{CabrilloDialog, CabrilloExportRequest}
-import org.wa9nnn.fdcluster.contest.{ContestDialog, OkToLogGate}
 import org.wa9nnn.fdcluster.contest.fieldday.{SummaryEngine, WinterFieldDaySettings}
+import org.wa9nnn.fdcluster.contest.{ContestDialog, OkToLogGate}
 import org.wa9nnn.fdcluster.dupsheet.GenerateDupSheet
 import org.wa9nnn.fdcluster.javafx.debug.{DebugRemoveDialog, ResetDialog}
 import org.wa9nnn.fdcluster.metrics.MetricsReporter
@@ -34,11 +39,6 @@ import org.wa9nnn.fdcluster.rig.RigDialog
 import org.wa9nnn.fdcluster.store.ClearStore
 import org.wa9nnn.fdcluster.tools.RandomQsoDialog
 import org.wa9nnn.fdcluster.{ClusterControl, FileContext, QsoCountCollector}
-import org.wa9nnn.util.StructuredLogging
-import _root_.scalafx.Includes._
-import _root_.scalafx.application.Platform
-import _root_.scalafx.event.ActionEvent
-import _root_.scalafx.scene.control._
 
 import java.awt.Desktop
 import java.io.{PrintWriter, StringWriter}
@@ -47,11 +47,11 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.duration.DurationInt
 import scala.language.postfixOps
 import scala.util.{Failure, Success, Try, Using}
+
 @Singleton
 class FdClusterMenu @Inject()(
                                injector: Injector,
                                @Named("store") store: ActorRef,
-                               @Named("cluster") cluster: ActorRef,
                                aboutDialog: AboutDialog,
                                nodeAddress: NodeAddress,
                                fileManager: FileContext,
@@ -61,10 +61,10 @@ class FdClusterMenu @Inject()(
                                metricsReporter: MetricsReporter,
                                clusterControl: ClusterControl,
                                okToLogGate: OkToLogGate,
-                               debugRemoveDialog: DebugRemoveDialog) extends StructuredLogging {
+                               debugRemoveDialog: DebugRemoveDialog) extends LazyLogging {
   private implicit val timeout: Timeout = Timeout(5 seconds)
   private val desktop = Desktop.getDesktop
-   private val contestetupMenuItem: MenuItem = new MenuItem {
+  private val contestetupMenuItem: MenuItem = new MenuItem {
     text = "Contest Setup"
     onAction = { _: ActionEvent =>
       injector.instance[ContestDialog].showAndWait()
@@ -185,10 +185,6 @@ class FdClusterMenu @Inject()(
           logger.error("Generating Dup", exception)
         case Success(qsoCount) =>
           Desktop.getDesktop.open(dupFile.path.toFile)
-          logJson("Dup Write")
-            .++("path" -> dupFile.path)
-            .++("qsoCount" -> qsoCount)
-            .info()
       }
     }
   }
@@ -209,8 +205,8 @@ class FdClusterMenu @Inject()(
 
   disable(!okToLogGate.value)
 
-  def disable(disable: Boolean):Unit = {
-    generateTimed.disable =disable
+  def disable(disable: Boolean): Unit = {
+    generateTimed.disable = disable
 
   }
 

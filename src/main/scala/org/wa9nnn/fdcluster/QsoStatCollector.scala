@@ -1,13 +1,10 @@
 
 package org.wa9nnn.fdcluster
 
-import com.google.inject.name.Named
+import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.FieldCount.Sorter
 import org.wa9nnn.fdcluster.javafx.entry.Sections
 import org.wa9nnn.fdcluster.model.QsoRecord
-import org.wa9nnn.util.StructuredLogging
-import _root_.scalafx.collections.ObservableBuffer
-import _root_.scalafx.collections.ObservableBuffer.Change
 import org.wa9nnn.fdcluster.store.AddQsoListener
 
 import java.util.concurrent.atomic.AtomicInteger
@@ -21,7 +18,7 @@ import scala.collection.mutable
  * @param allQsos the data
  */
 @Singleton
-class QsoCountCollector @Inject()() extends AddQsoListener with StructuredLogging {
+class QsoCountCollector @Inject()() extends AddQsoListener with LazyLogging {
   override def add(qsoRecord: QsoRecord): Unit = {
     collectors.foreach(_.ingest(qsoRecord))
   }
@@ -35,7 +32,7 @@ class QsoCountCollector @Inject()() extends AddQsoListener with StructuredLoggin
     StatCollector("Area","US callSign area, CA for Canada or DX for other places."){ q => Sections.callAreaForSection(q.qso.exchange.sectionCode)},
     StatCollector("Band","Worked"){_.qso.bandMode.bandName},
     StatCollector("Mode","Contest Mode"){_.qso.bandMode.modeName},
-    StatCollector("Operator", "Operator's Callsign. As set on the Entry Tab."){_.qsoMetadata.operator},
+    StatCollector("Operator", "Operator's CallSign. As set on the Entry Tab."){_.qsoMetadata.operator},
     StatCollector("Rig", "Rig description. As set on the Entry Tab."){_.qsoMetadata.rig},
     StatCollector("Antenna","Antenna. As set on the Entry Tab."){_.qsoMetadata.ant},
     StatCollector("Node", "In Cluster"){_.qsoMetadata.node},
@@ -52,7 +49,7 @@ class QsoCountCollector @Inject()() extends AddQsoListener with StructuredLoggin
 
 }
 
-case class StatCollector(name: String, tooltip: String)(fieldExtractor: (QsoRecord) => String) extends Ordered[StatCollector] {
+case class StatCollector(name: String, tooltip: String)(fieldExtractor: QsoRecord => String) extends Ordered[StatCollector] {
 
   private val countsPerThing: mutable.Map[String, AtomicInteger] = TrieMap[String, AtomicInteger]()
 

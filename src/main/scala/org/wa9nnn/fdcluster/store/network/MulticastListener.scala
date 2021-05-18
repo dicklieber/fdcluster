@@ -3,6 +3,7 @@ package org.wa9nnn.fdcluster.store.network
 import akka.actor.ActorRef
 import com.google.inject.name.Named
 import com.typesafe.config.Config
+import com.typesafe.scalalogging.LazyLogging
 import nl.grons.metrics4.scala
 import nl.grons.metrics4.scala.DefaultInstrumented
 import org.wa9nnn.fdcluster.ClusterControl
@@ -25,7 +26,7 @@ class MulticastListener @Inject()(
                                    @Named("store") val store: ActorRef,
                                    val config: Config,
                                    clusterControl: ClusterControl)
-  extends MulticastActor with Runnable with DefaultInstrumented {
+  extends MulticastActor with Runnable with DefaultInstrumented with LazyLogging {
   private val messagesMeter: scala.Meter = metrics.meter("messages")
 
   private var multicastSocket = new MulticastSocket(port)
@@ -74,11 +75,8 @@ class MulticastListener @Inject()(
       rec <- jc.received()
     } {
       messagesMeter.mark()
-      whenTraceEnabled {
-        () =>
-          s"Got: $jc from  ${
-            datagramPacket.getAddress
-          }"
+      logger.whenTraceEnabled {
+         logger.trace( s"Got: $jc from  ${datagramPacket.getAddress}")
       }
       rec match {
         case sm: StoreMessage =>

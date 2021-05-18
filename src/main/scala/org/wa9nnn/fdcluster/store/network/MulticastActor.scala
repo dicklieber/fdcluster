@@ -19,15 +19,13 @@
 
 package org.wa9nnn.fdcluster.store.network
 
-import akka.actor.Actor
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
-import org.wa9nnn.util.StructuredLogging
 
 import java.net.InetAddress
 import java.time.Duration
 
-trait MulticastActor extends  StructuredLogging {
+trait MulticastActor extends  LazyLogging {
   val config: Config //= context.system.settings.config
   private val multicastConfig = config.getConfig("fdcluster.multicast")
   val port: Int = multicastConfig.getInt("port")

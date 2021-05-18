@@ -18,14 +18,13 @@
 package org.wa9nnn.util
 
 import akka.actor.{Actor, DeadLetter}
+import com.typesafe.scalalogging.LazyLogging
 
-class DeadLetterMonitorActor extends Actor with StructuredLogging {
+class DeadLetterMonitorActor extends Actor with LazyLogging {
 
   def receive: Receive = {
     case d: DeadLetter =>
-      logJson("DeadLetter")
-        .++("sender" -> d.sender, "recipient" -> d.recipient, "message" -> d.message)
-        .error()
+      logger.error(s"DeadLetter sender:${d.sender} recipient: ${d.recipient} message: ${d.message}")
 
     case x => logger.info(s"Unexpected message: $x")
   }

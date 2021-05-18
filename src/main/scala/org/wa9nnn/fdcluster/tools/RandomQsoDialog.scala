@@ -19,21 +19,25 @@
 
 package org.wa9nnn.fdcluster.tools
 
-import org.wa9nnn.fdcluster.javafx.GridOfControls
-import org.wa9nnn.util.StructuredLogging
 import _root_.scalafx.scene.control.{ButtonType, Dialog}
+import com.typesafe.scalalogging.LazyLogging
+import javafx.scene.control.DialogPane
+import org.wa9nnn.fdcluster.javafx.GridOfControls
+import scalafx.beans.property.{IntegerProperty, ObjectProperty}
 
-class RandomQsoDialog(generateRandomQsos: GenerateRandomQsos = GenerateRandomQsos()) extends Dialog[GenerateRandomQsos] with StructuredLogging {
+import java.time.Duration
+
+class RandomQsoDialog(generateRandomQsos: GenerateRandomQsos = GenerateRandomQsos()) extends Dialog[GenerateRandomQsos] with LazyLogging {
   title = "Random Qso Generator"
   headerText = "Create a contests worth of QSOs"
 
 
-  val dp = dialogPane()
+  val dp: DialogPane = dialogPane()
   private val dialogGrid = new GridOfControls()
   dp.setContent(dialogGrid)
-  val ntoGen = dialogGrid.addInt("Qso count", generateRandomQsos.ntoGen)
-  val hoursBefore = dialogGrid.addInt("Hours before", generateRandomQsos.hoursBefore)
-  val between = dialogGrid.addDuration("Duration between", generateRandomQsos.between)
+  val ntoGen: IntegerProperty = dialogGrid.addInt("Qso count", generateRandomQsos.ntoGen)
+  val hoursBefore: IntegerProperty = dialogGrid.addInt("Hours before", generateRandomQsos.hoursBefore)
+  val between: ObjectProperty[Duration] = dialogGrid.addDuration("Duration between", generateRandomQsos.between)
 
   dp.getButtonTypes.addAll(ButtonType.OK, ButtonType.Cancel)
 

@@ -1,17 +1,14 @@
 
 package org.wa9nnn.fdcluster.javafx.entry
 
-import akka.actor.{ActorSystem, Cancellable}
+import _root_.scalafx.geometry.Orientation
+import _root_.scalafx.scene.control.{Button, Label, ScrollPane}
+import _root_.scalafx.scene.layout._
+import akka.actor.ActorSystem
 import com.google.inject.Inject
-import org.scalafx.extras.onFX
 import org.wa9nnn.fdcluster.FieldCount.Sorter
 import org.wa9nnn.fdcluster.{FieldCount, QsoCountCollector, StatCollector}
-import org.wa9nnn.util.StructuredLogging
-import _root_.scalafx.geometry.Orientation
-import _root_.scalafx.scene.control.{Button, Label, ScrollPane, Tab}
-import _root_.scalafx.scene.layout._
 
-import java.time.Duration
 import javax.inject.Singleton
 
 @Singleton

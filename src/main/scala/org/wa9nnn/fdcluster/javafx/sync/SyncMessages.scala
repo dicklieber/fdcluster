@@ -21,11 +21,11 @@ package org.wa9nnn.fdcluster.javafx.sync
 
 import akka.http.scaladsl.model.Uri.Path
 import akka.http.scaladsl.model.{ContentTypes, HttpRequest}
+import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.http.DestinationActor
 import org.wa9nnn.fdcluster.model.MessageFormats.{Uuid, _}
 import org.wa9nnn.fdcluster.model.{NodeAddress, QsoRecord}
 import org.wa9nnn.fdcluster.store.network.FdHour
-import org.wa9nnn.util.StructuredLogging
 import play.api.libs.json.{JsObject, Json}
 
 import java.time.Instant
@@ -169,7 +169,7 @@ object RequestQsosForHour {
 case class TransactionId private(otherNode: NodeAddress,
                                  thisNode: NodeAddress,
                                  fdHour: FdHour,
-                                 steps: List[Step], start: Instant = Instant.now()) extends StructuredLogging {
+                                 steps: List[Step], start: Instant = Instant.now()) extends LazyLogging  {
   def duration: java.time.Duration = java.time.Duration.between(start, Instant.now())
 
   def addStep(clazz: Class[_]): TransactionId = {

@@ -12,10 +12,10 @@ import javax.inject.{Inject, Singleton}
 class BandModeBreakDown @Inject()(qsoSource: QsoSource, allContestRules: AllContestRules) {
 
   /**
-   * Produces the BandModeBreakDown [[Table]] for the summary HTML page.
+   * Produces the BandModeBreakDown [[com.wa9nnn.util.tableui.Table]] for the summary HTML page.
    *
    * @param power watts or "kw"
-   * @return a [[Table]] that
+   * @return a [[com.wa9nnn.util.tableui.Table]] that
    */
   def apply(power: String): Table = {
     val powerCell: Cell = Cell(power)

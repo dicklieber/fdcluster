@@ -19,10 +19,11 @@
 
 package org.wa9nnn.fdcluster.store.network
 
-import akka.actor.{Actor, ActorRef, Props}
+import akka.actor.{Actor, ActorRef}
 import akka.io.{IO, Udp}
 import akka.util.ByteString
 import com.typesafe.config.Config
+import com.typesafe.scalalogging.LazyLogging
 import nl.grons.metrics4.scala.DefaultInstrumented
 import org.wa9nnn.fdcluster.ClusterControl
 import org.wa9nnn.fdcluster.store.JsonContainer
@@ -30,7 +31,7 @@ import org.wa9nnn.fdcluster.store.JsonContainer
 import java.net.InetSocketAddress
 
 class MultcastSenderActor(val config: Config,
-                          clusterControl: ClusterControl) extends Actor with MulticastActor with DefaultInstrumented {
+                          clusterControl: ClusterControl) extends Actor with MulticastActor with DefaultInstrumented with LazyLogging{
 
   import context.system
 
@@ -44,9 +45,8 @@ class MultcastSenderActor(val config: Config,
   def ready(send: ActorRef): Receive = {
     case something: JsonContainer =>
       val bytes: Array[Byte] = something.bytes
-      whenTraceEnabled { () =>
-        val str = new String(bytes)
-        s"Sending: $something to $multicastGroup:$port"
+      logger.whenTraceEnabled {
+       logger.trace(s"Sending: $something to $multicastGroup:$port")
       }
       if (clusterControl.isUp)
         send ! Udp.Send(ByteString(bytes), new InetSocketAddress(multicastGroup, port))

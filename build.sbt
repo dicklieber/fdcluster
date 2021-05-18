@@ -4,10 +4,6 @@ name := "fdcluster"
 
 maintainer := "wa9nnn@u505.com"
 
-
-//lazy val `fdcluster` = (project in file("."))
-//lazy val root = (project in file("."))
-//enablePlugins(JavaAppPackaging, JlinkPlugin, GitPlugin, SbtTwirl, WindowsPlugin)
 enablePlugins(JavaAppPackaging, JlinkPlugin, GitPlugin, BuildInfoPlugin, SbtTwirl, WindowsPlugin)
 buildInfoKeys ++= Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, maintainer,
   git.gitCurrentTags, git.gitCurrentBranch, git.gitHeadCommit, git.gitHeadCommitDate, git.baseVersion)
@@ -19,24 +15,27 @@ buildInfoOptions ++= Seq(
   BuildInfoOption.Traits("org.wa9nnn.fdcluster.BuildInfoBase")
 )
 
-
-//Compile / sourceDirectories := (Compile / unmanagedSourceDirectories).value
 Compile / sourceDirectories := (Compile / unmanagedSourceDirectories).value
-
 
 Compile / mainClass  := Some("org.wa9nnn.fdcluster.javafx.FdCluster")
 Compile / discoveredMainClasses := Seq()
+
+//scalacOptions ++= Seq(
+//  "-encoding", "utf8", // Option and arguments on same line
+//  "-Xfatal-warnings",  // New lines for each options
+////  "-deprecation",
+//  "-unchecked",
+//  "-language:implicitConversions",
+//  "-language:higherKinds",
+//  "-language:existentials",
+//  "-language:postfixOps"
+//)
 
 // wix build information
 wixProductId := "268963af-6f14-445a-bcc7-21775b5bdcc5"
 wixProductUpgradeId := "6b10420e-df5b-4c6c-9ca0-c12daf4b239d"
 
-//sources in doc in Compile := List()
-
 scalaVersion := "2.13.5"
-
-
-import scala.util.Properties
 
 lazy val javaFXModules = {
   // Determine OS version of JavaFX binaries
@@ -53,8 +52,6 @@ lazy val javaFXModules = {
 }
 
 libraryDependencies ++= javaFXModules
-
-
 
 
 val javafxLib = file(sys.env.get("JAVAFX_LIB").getOrElse("Environmental variable JAVAFX_LIB is not set"))
@@ -80,12 +77,6 @@ libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-core" % logbackVersion,
   "com.github.andyglow" %% "typesafe-config-scala" % "1.1.0" % Compile,
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
-//  // JavaFX 11 jars are distributed for each platform
-//
-//  "org.openjfx" % "javafx-controls" % "11.0.1" classifier osType.value,
-//  "org.openjfx" % "javafx-graphics" % "11.0.1" classifier osType.value,
-//  "org.openjfx" % "javafx-media" % "11.0.1" classifier osType.value,
-//  "org.openjfx" % "javafx-base" % "11.0.1" classifier osType.value,
   "nl.grons" %% "metrics4-scala" % "4.1.19",
   "io.dropwizard.metrics" % "metrics-core" % "4.1.2",
   "io.dropwizard.metrics" % "metrics-graphite" % "4.1.2",

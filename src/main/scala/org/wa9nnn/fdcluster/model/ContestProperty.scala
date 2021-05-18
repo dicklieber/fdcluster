@@ -25,7 +25,6 @@ import com.wa9nnn.util.macos.DockIcon
 import org.wa9nnn.fdcluster.FileContext
 import org.wa9nnn.fdcluster.contest.{Contest, OkToLogContributer}
 import org.wa9nnn.fdcluster.model.MessageFormats._
-import org.wa9nnn.util.StructuredLogging
 
 import javax.inject.{Inject, Singleton}
 import scala.util.{Failure, Success, Using}

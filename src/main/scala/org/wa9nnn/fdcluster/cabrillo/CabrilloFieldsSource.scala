@@ -24,9 +24,9 @@ import _root_.scalafx.scene.control.{ComboBox, Control, Label, TextField, TextAr
 import _root_.scalafx.scene.layout.GridPane
 import com.github.andyglow.config._
 import com.typesafe.config.Config
+import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.cabrillo.CabrilloFieldsSource._
-import org.wa9nnn.fdcluster.model.{AllContestRules, Bands, ContestRules, ModeFactory}
-import org.wa9nnn.util.StructuredLogging
+import org.wa9nnn.fdcluster.model.AllContestRules
 
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
@@ -35,19 +35,18 @@ import scala.util.{Failure, Success, Try}
 
 class CabrilloFieldsSource @Inject()(config: Config,
                                      allContestRules: AllContestRules,
-                                    )extends StructuredLogging {
+                                    ) extends LazyLogging {
 
   private def parseChoices(choices: String): Seq[String] = {
-    choices match
-      {
-        case "$bands" =>
-          allContestRules.currentRules.bands.bands
-        case "$modes" =>
-          allContestRules.currentRules.modes.modes
-        case x =>
-          x.split("""\s+""")
-      }
+    choices match {
+      case "$bands" =>
+        allContestRules.currentRules.bands.bands
+      case "$modes" =>
+        allContestRules.currentRules.modes.modes
+      case x =>
+        x.split("""\s+""")
     }
+  }
 
   def cabrilloFields(implicit savedValues: CabrilloValues): Seq[Field] = {
     val cc: Seq[String] = config.get[List[String]]("fdcluster.cabrillo.fields")
@@ -74,7 +73,7 @@ class CabrilloFieldsSource @Inject()(config: Config,
 }
 
 object CabrilloFieldsSource {
-  val combo: Regex = """Combo:\s*(\w+)\s*([\-\w]+)\s*\[\s*(.*)\w*\]\s*""".r
+  val combo: Regex = """Combo:\s*(\w+)\s*([\-\w]+)\s*\[\s*(.*)\w*]\s*""".r
   val textArea: Regex = """TextArea:\s*(\w+)\s*([\-\w]+)""".r
   val text: Regex = """Text:\s*([/\w]+)\s*([\-\w]+)""".r
 

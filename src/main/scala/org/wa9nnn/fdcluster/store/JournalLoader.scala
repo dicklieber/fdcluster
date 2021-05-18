@@ -52,7 +52,7 @@ class JournalLoader @Inject()(storeSender: StoreSender,
 
   }
 
-  class Task(val runningTaskInfoConsumer: RunningTaskInfoConsumer) extends RunningTask {
+  class Task(val runningTaskInfoConsumer: RunningTaskInfoConsumer) extends RunningTask with LazyLogging {
 
     override def taskName: String = "Journal Loader"
 
@@ -107,12 +107,7 @@ class JournalLoader @Inject()(storeSender: StoreSender,
                   case 25 =>
                     logger.error("More than 25 errors, stopping logging!")
                   case x if x < 25 =>
-                    logJson("Journal Error")
-                      .++("line" -> lineNumber.get,
-                        "error" -> e.getClass.getName,
-                        "qso" -> line,
-                      )
-                      .error()
+                    logger.error(s"Journal Error line:${lineNumber.get} error: ${e.getClass.getName} qso: $line")
                 }
             }
           }
@@ -123,15 +118,7 @@ class JournalLoader @Inject()(storeSender: StoreSender,
         val d: String = org.wa9nnn.util.TimeHelpers.durationToString(duration)
         val c: Int = lineNumber.get()
         val qsoPerSecond: Double = c.toDouble / duration.getSeconds.toDouble
-        logger.info(f"loaded $c%,d records in $d ($qsoPerSecond%.2f/per sec)")
-        logJson("load journal")
-          .++(
-            "qsos" -> c,
-            "qsoPerSecond" -> qsoPerSecond,
-            "meanLineLength" -> qsoLineLengths.getMean,
-            "journal" -> journalFilePath
-          )
-          .info()
+        logger.info(f"loaded $c%,d records in $d ($qsoPerSecond%.2f/per sec) meanLineLength: ${qsoLineLengths.getMean}")
       }
     }
   }

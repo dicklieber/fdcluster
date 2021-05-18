@@ -19,9 +19,10 @@
 
 package org.wa9nnn.fdcluster.javafx.runningtask
 
+import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.javafx.entry.{RunningTaskInfo, RunningTaskInfoConsumer, StyledText}
-import org.wa9nnn.util.StructuredLogging
-import java.time.{Duration, Instant}
+
+import java.time.Instant
 
 /**
  * Something that runs in the background
@@ -30,7 +31,7 @@ import java.time.{Duration, Instant}
  * Implementations need to provide taskName and runningTaskInfoConsumer
  * call done when finished.
  */
-trait RunningTask extends StructuredLogging{
+trait RunningTask extends LazyLogging{
   def taskName: String
   val runningTaskInfoConsumer:RunningTaskInfoConsumer
   val start: Instant =  Instant.now()
@@ -62,12 +63,7 @@ trait RunningTask extends StructuredLogging{
 
   def done():Unit = {
     runningTaskInfoConsumer.update(info)
-    logJson(taskName)
-      .++("Duration" -> Duration.between(start, Instant.now()))
-      .++("QSOs" -> n)
     timer.cancel()
     runningTaskInfoConsumer.done()
   }
-
-
 }

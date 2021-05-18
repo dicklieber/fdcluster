@@ -44,10 +44,10 @@ case class SequentialChar private(chars: String, parent: Option[SequentialChar] 
   var parentValue:CallSign = pvalue()
 
   def next: CallSign = {
-    val next1: String = it.next
+    val next1: String = it.next()
     val str = if (next1 == reset) {
       parentValue = pvalue()
-      it.next //skip past resest
+      it.next() //skip past resest
     } else {
       next1
     }

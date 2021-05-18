@@ -3,15 +3,15 @@ package org.wa9nnn.fdcluster.model.sync
 import akka.actor.{Actor, ActorRef, Props}
 import akka.pattern.ask
 import akka.util.Timeout
-import org.wa9nnn.fdcluster.model.MessageFormats._
 import com.google.inject.name.Named
+import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.contest.JournalProperty
 import org.wa9nnn.fdcluster.http.HttpClientActor
 import org.wa9nnn.fdcluster.javafx.sync._
+import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.{ContestProperty, CurrentStation, NodeAddress, QsoMetadata}
 import org.wa9nnn.fdcluster.store.DumpCluster
 import org.wa9nnn.fdcluster.store.network.cluster.ClusterState
-import org.wa9nnn.util.StructuredLogging
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
@@ -23,7 +23,7 @@ class ClusterActor(nodeAddress: NodeAddress,
                    clusterState: ClusterState,
                    contestProperty: ContestProperty,
                    journalProperty: JournalProperty,
-                  ) extends Actor with StructuredLogging {
+                  ) extends Actor with LazyLogging {
   private implicit val timeout: Timeout = Timeout(5 seconds)
   context.system.scheduler.scheduleAtFixedRate(2 seconds, 17 seconds, self, Purge)
 
@@ -62,11 +62,9 @@ class ClusterActor(nodeAddress: NodeAddress,
                   case Some(ourQsoHourDigest: QsoHourDigest) =>
                     if (ourQsoHourDigest.digest == otherQsoHourDigest.digest) {
                       // we match them, nothing to do
-                      whenTraceEnabled(() => s"$fdHour matches")
                       Seq.empty
 
                     } else {
-                      whenTraceEnabled(() => s"$fdHour unmatched digest starting uuid process to $ns.")
                       Seq(SendContainer(RequestUuidsForHour(fdHour, ns.nodeAddress, nodeAddress, getClass), ns.nodeAddress))
                     }
                   case None => // we dont have this hour

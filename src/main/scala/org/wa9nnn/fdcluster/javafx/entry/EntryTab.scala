@@ -31,6 +31,7 @@ import akka.pattern.ask
 import akka.util.Timeout
 import com.google.inject.name.Named
 import com.google.inject.{Inject, Injector}
+import com.typesafe.scalalogging.LazyLogging
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import org.scalafx.extras.onFX
 import org.wa9nnn.fdcluster.contest.{JournalProperty, OkToLogGate}
@@ -40,7 +41,7 @@ import org.wa9nnn.fdcluster.model
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.store.{AddResult, Added, Dup, FailedToAdd}
-import org.wa9nnn.util.{StructuredLogging, WithDisposition}
+import org.wa9nnn.util.WithDisposition
 import play.api.libs.json.Json
 
 import java.util.concurrent.TimeUnit
@@ -65,7 +66,7 @@ class EntryTab @Inject()(injector: Injector,
                          journalManager: JournalProperty,
                          @Named("store") store: ActorRef,
                          okToLogGate: OkToLogGate,
-                        ) extends Tab with StructuredLogging {
+                        ) extends Tab with LazyLogging {
   private implicit val timeout: Timeout = Timeout(5, TimeUnit.SECONDS)
   text = "Entry"
   closable = false

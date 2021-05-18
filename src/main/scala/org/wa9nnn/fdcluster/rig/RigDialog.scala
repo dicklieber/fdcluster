@@ -25,15 +25,15 @@ import _root_.scalafx.scene.control.ComboBox.sfxComboBox2jfx
 import _root_.scalafx.scene.control._
 import _root_.scalafx.util.StringConverter
 import com.typesafe.config.Config
+import com.typesafe.scalalogging.LazyLogging
 import javafx.collections.ObservableList
 import javafx.event.EventHandler
 import javafx.scene.control
 import org.wa9nnn.fdcluster.javafx.GridOfControls
 import org.wa9nnn.fdcluster.rig.SerialPortSettings.baudRates
-import org.wa9nnn.util.StructuredLogging
 import scalafx.collections.ObservableBuffer
 import scalafx.scene.image
-import scalafx.scene.image.{Image, ImageView}
+import scalafx.scene.image.Image
 import scalafx.scene.input.{Clipboard, ClipboardContent, DataFormat}
 import scalafx.scene.layout.{BorderPane, HBox, VBox}
 
@@ -42,7 +42,7 @@ import java.net.URI
 import javax.inject.Inject
 import scala.util.{Failure, Success, Using}
 
-class RigDialog @Inject()(rigStore: RigStore, rigList: Rigctld, config: Config) extends Dialog[RigSettings] with StructuredLogging {
+class RigDialog @Inject()(rigStore: RigStore, rigList: Rigctld, config: Config) extends Dialog[RigSettings] with LazyLogging {
 
   val initRigSettings: RigSettings = rigStore.rigSettings.value
 

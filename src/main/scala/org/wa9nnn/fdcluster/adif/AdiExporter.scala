@@ -19,12 +19,13 @@
 
 package org.wa9nnn.fdcluster.adif
 
+import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.BuildInfo
 import org.wa9nnn.fdcluster.javafx.entry.RunningTaskInfoConsumer
 import org.wa9nnn.fdcluster.javafx.runningtask.RunningTask
 import org.wa9nnn.fdcluster.model.{AdifExportRequest, QsoRecord}
 import org.wa9nnn.fdcluster.store.QsoSource
-import org.wa9nnn.util.{StructuredLogging, TimeHelpers}
+import org.wa9nnn.util.TimeHelpers
 
 import java.io.PrintWriter
 import java.nio.file.Files
@@ -33,7 +34,7 @@ import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import scala.util.{Try, Using}
 
-class AdiExporter @Inject()(qsoSource: QsoSource, val runningTaskInfoConsumer: RunningTaskInfoConsumer) extends StructuredLogging with RunningTask {
+class AdiExporter @Inject()(qsoSource: QsoSource, val runningTaskInfoConsumer: RunningTaskInfoConsumer) extends LazyLogging with RunningTask {
   val taskName = "Export ADIF"
 
   private def print(s: String = "")(implicit writer: PrintWriter): Unit = {

@@ -1,9 +1,9 @@
 package org.wa9nnn.fdcluster.javafx.entry
 
-import akka.actor.{ActorSystem, Cancellable}
-import org.scalafx.extras.onFX
-import org.wa9nnn.util.StructuredLogging
 import _root_.scalafx.scene.control.Tab
+import akka.actor.{ActorSystem, Cancellable}
+import com.typesafe.scalalogging.LazyLogging
+import org.scalafx.extras.onFX
 
 import java.time.Duration
 import scala.concurrent.ExecutionContextExecutor
@@ -11,7 +11,7 @@ import scala.concurrent.ExecutionContextExecutor
 /**
  * A [[Tab]] that automatically refreshes when in view (i.e. selected)
  */
-trait AutoRefreshTab extends Tab with StructuredLogging{
+trait AutoRefreshTab extends Tab with LazyLogging{
   // Subclass imlementes this to refresh the daga displayed
   def refresh():Unit
   val actorSystem:ActorSystem

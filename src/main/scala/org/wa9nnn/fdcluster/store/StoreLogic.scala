@@ -21,6 +21,7 @@ import _root_.scalafx.beans.property.ObjectProperty
 import _root_.scalafx.collections.ObservableBuffer
 import akka.actor.ActorRef
 import com.google.inject.name.Named
+import com.typesafe.scalalogging.LazyLogging
 import nl.grons.metrics4.scala.DefaultInstrumented
 import org.wa9nnn.fdcluster.contest.{JournalProperty, JournalWriter}
 import org.wa9nnn.fdcluster.model.MessageFormats._
@@ -28,7 +29,6 @@ import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHour}
 import org.wa9nnn.fdcluster.store
 import org.wa9nnn.fdcluster.store.network.FdHour
-import org.wa9nnn.util.StructuredLogging
 
 import java.security.SecureRandom
 import java.util.UUID
@@ -50,7 +50,7 @@ class StoreLogic @Inject()(na: NodeAddress,
                            journalManager: JournalProperty,
                            listeners: immutable.Set[AddQsoListener]
                           )
-  extends StructuredLogging with DefaultInstrumented with QsoSource with QsoAdder {
+  extends LazyLogging with DefaultInstrumented with QsoSource with QsoAdder {
   /*
   QSOs live in these three structures. Since QsoRecord is immutable all three structures are simply references.
    */
@@ -283,7 +283,6 @@ class StoreLogic @Inject()(na: NodeAddress,
         .map(_.hourDigest).toList
         .sortBy(_.fdHour)
     }
-    val rate = qsoMeter.fifteenMinuteRate
     val currentStation = CurrentStation()
 
     sync.NodeStatus(

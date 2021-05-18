@@ -7,7 +7,7 @@ import java.nio.file.Paths
 import scala.jdk.CollectionConverters.SetHasAsScala
 import scala.sys.exit
 
-object ConfigApp extends  StructuredLogging {
+object ConfigApp extends LazyLogging {
   def apply: Config = {
     try {
       val builtinConfig = ConfigFactory.load()

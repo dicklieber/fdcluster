@@ -97,22 +97,18 @@ class AboutDialog @Inject()(appInfo: AppInfo, fileManager: FileContext, nodeAddr
       }
     })
 
-    goc.add("Credits",Credits(
+    goc.add("Credits", Credits(
       Credit("Icons made by", "https://www.freepik.com", Some("Freepik"))
     ))
 
-
-
-goc.add("ClassPath", System.getProperty("java.class.path").split(":").mkString("\n"))
-
-
+//    goc.add("ClassPath", System.getProperty("java.class.path").split(":").mkString("\n"))
 
     val dialogPane1 = dialogPane()
     dialogPane1.getStylesheets.add(cssUrl)
 
     dialogPane1.setContent(new VBox(goc,
       new HBox(
-        new Label("© 2020  Dick Lieber, WA9NNN") {
+        new Label("© 2020, 2021  Dick Lieber, WA9NNN") {
           styleClass += "parenthetic"
 
         },
@@ -130,18 +126,16 @@ goc.add("ClassPath", System.getProperty("java.class.path").split(":").mkString("
 
     showAndWait()
   }
-
 }
 
+case class Credits(credits: Credit*) extends GridOfControls(5 -> 5, Insets(2)) {
 
-case class Credits(credits:Credit*) extends GridOfControls(5->5, Insets(2)) {
-
-  credits.foreach{credit =>
+  credits.foreach { credit =>
     addControl(credit.name, credit.hyperLink)
   }
 }
 
-case class Credit(name: String, url: String, link:Option[String] = None)(implicit desktop: Desktop) {
+case class Credit(name: String, url: String, link: Option[String] = None)(implicit desktop: Desktop) {
   def hyperLink: Hyperlink = {
     new Hyperlink(link.getOrElse(url)) {
       onAction = event => {

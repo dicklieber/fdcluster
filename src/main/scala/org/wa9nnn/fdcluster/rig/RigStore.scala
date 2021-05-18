@@ -20,8 +20,9 @@
 package org.wa9nnn.fdcluster.rig
 
 import org.wa9nnn.fdcluster.model.MessageFormats._
-import org.wa9nnn.util.{Persistence, StructuredLogging}
+import org.wa9nnn.util.{Persistence}
 import _root_.scalafx.beans.property.{IntegerProperty, ObjectProperty, StringProperty}
+import com.typesafe.scalalogging.LazyLogging
 
 import javax.inject.{Inject, Singleton}
 
@@ -31,7 +32,7 @@ import javax.inject.{Inject, Singleton}
  * @param preferences default or runtime, override with a mock Preferences for unit testing
  */
 @Singleton
-class RigStore @Inject()(persistence: Persistence) extends StructuredLogging {
+class RigStore @Inject()(persistence: Persistence) extends LazyLogging {
 
   val rigFrequencyDisplay: StringProperty = new StringProperty()
   val rigFrequency = new IntegerProperty()

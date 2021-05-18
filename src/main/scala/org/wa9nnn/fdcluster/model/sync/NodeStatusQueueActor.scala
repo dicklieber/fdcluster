@@ -1,12 +1,12 @@
 package org.wa9nnn.fdcluster.model.sync
 
 import akka.actor.{Actor, ActorRef}
-import org.wa9nnn.util.StructuredLogging
+import com.typesafe.scalalogging.LazyLogging
 
 /**
  * Wraps the [[NodeStatusQueue]] to provide the thread-safety of an actor.
  */
-class NodeStatusQueueActor extends Actor with StructuredLogging {
+class NodeStatusQueueActor extends Actor with LazyLogging {
   private val nodeStatusQueue = new NodeStatusQueue
 
   override def receive: Receive = {

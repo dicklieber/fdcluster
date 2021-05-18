@@ -21,11 +21,11 @@ package org.wa9nnn.fdcluster.store.network.cluster
 
 import com.github.andyglow.config._
 import com.typesafe.config.Config
+import com.typesafe.scalalogging.LazyLogging
 import nl.grons.metrics4.scala.DefaultInstrumented
 import org.wa9nnn.fdcluster.model.NodeAddress
 import org.wa9nnn.fdcluster.model.sync.NodeStatus
 import org.wa9nnn.fdcluster.store.network.FdHour
-import org.wa9nnn.util.StructuredLogging
 
 import java.time.{Duration, Instant}
 import javax.inject.{Inject, Singleton}
@@ -38,7 +38,7 @@ import scala.collection.concurrent.TrieMap
  * @param ourNodeAddress who we are.
  */
 @Singleton
-class ClusterState @Inject()(ourNodeAddress: NodeAddress, config: Config) extends StructuredLogging with DefaultInstrumented {
+class ClusterState @Inject()(ourNodeAddress: NodeAddress, config: Config) extends LazyLogging with DefaultInstrumented {
 
   private val nodeStatusLife: Duration = config.get[Duration]("fdcluster.cluster.nodeStatusLife")
 
@@ -63,8 +63,7 @@ class ClusterState @Inject()(ourNodeAddress: NodeAddress, config: Config) extend
       .foreach(nsc => {
         val nodeStatus = nsc.nodeStatus
         val nodeAddress = nodeStatus.nodeAddress
-        logJson("Node")
-          .++("node" -> nodeAddress, "last" -> nodeStatus.stamp)
+
         nodes.remove(nodeAddress)
       })
   }

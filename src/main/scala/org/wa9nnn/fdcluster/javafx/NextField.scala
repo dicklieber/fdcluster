@@ -19,17 +19,18 @@
 
 package org.wa9nnn.fdcluster.javafx
 
-import org.wa9nnn.fdcluster.javafx.entry.FieldValidator
-import org.wa9nnn.util.InputHelper.forceCaps
-import org.wa9nnn.util.{StructuredLogging, WithDisposition}
 import _root_.scalafx.beans.binding.{Bindings, BooleanBinding}
 import _root_.scalafx.beans.property.BooleanProperty
 import _root_.scalafx.scene.control.TextInputControl
+import com.typesafe.scalalogging.LazyLogging
+import org.wa9nnn.fdcluster.javafx.entry.FieldValidator
+import org.wa9nnn.util.InputHelper.forceCaps
+import org.wa9nnn.util.WithDisposition
 
 /**
  * Most of the common logic for any qso input field.
  */
-trait NextField extends TextInputControl with WithDisposition with StructuredLogging {
+trait NextField extends TextInputControl with WithDisposition with LazyLogging {
   forceCaps(this)
   styleClass += "qsoField"
   sad()
@@ -42,17 +43,6 @@ trait NextField extends TextInputControl with WithDisposition with StructuredLog
 
   val validProperty: BooleanProperty = new BooleanProperty()
   validProperty.value = false
-
-  if (logger.isTraceEnabled()) {
-    validProperty.onChange((_, _, nv) =>
-      logger.trace(s"valid: $nv")
-    )
-
-    text.onChange((_, _, nv) =>
-      logger.trace(s"text: $nv")
-    )
-  }
-
   validProperty.onChange{(_,_,nv) =>
     disposition(nv)
   }

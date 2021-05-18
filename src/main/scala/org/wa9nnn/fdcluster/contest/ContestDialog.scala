@@ -18,12 +18,12 @@
 
 package org.wa9nnn.fdcluster.contest
 
-import com.google.inject.Injector
-import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
-import org.wa9nnn.util.StructuredLogging
 import _root_.scalafx.Includes._
 import _root_.scalafx.scene.control._
 import _root_.scalafx.scene.layout.HBox
+import com.google.inject.Injector
+import com.typesafe.scalalogging.LazyLogging
+import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 
 import javax.inject.Inject
 
@@ -31,7 +31,7 @@ import javax.inject.Inject
  * UI for things that need to be setup for the contest.
  *
  */
-class ContestDialog @Inject()(injector: Injector) extends Dialog[Contest] with StructuredLogging {
+class ContestDialog @Inject()(injector: Injector) extends Dialog[Contest] with LazyLogging {
   val dp: DialogPane = dialogPane()
 
   private val cancelButton = ButtonType.Cancel

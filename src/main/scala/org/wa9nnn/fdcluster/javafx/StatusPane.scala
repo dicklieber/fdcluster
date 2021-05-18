@@ -19,13 +19,14 @@
 
 package org.wa9nnn.fdcluster.javafx
 
-import org.scalafx.extras.onFX
-import org.wa9nnn.util.{DelayedFuture, Disposition, StructuredLogging, WithDisposition}
 import _root_.scalafx.animation.FadeTransition
 import _root_.scalafx.collections.ObservableBuffer
 import _root_.scalafx.scene.control.Label
 import _root_.scalafx.scene.layout.{Pane, VBox}
 import _root_.scalafx.util
+import com.typesafe.scalalogging.LazyLogging
+import org.scalafx.extras.onFX
+import org.wa9nnn.util.{DelayedFuture, Disposition, WithDisposition}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext.Implicits._
@@ -35,8 +36,7 @@ import scala.concurrent.duration.{Duration, FiniteDuration, SECONDS}
  * One of timely status info
  */
 @Singleton
-class StatusPane @Inject() extends StructuredLogging {
-  loggerName("Status")
+class StatusPane @Inject() extends LazyLogging {
   private val messageLabel = new Label with WithDisposition {
     styleClass += "statusLine"
   }
@@ -56,9 +56,6 @@ class StatusPane @Inject() extends StructuredLogging {
       messageLabel.styleClass = ObservableBuffer.from(statusMessage.styleClasses)
       messageLabel.disposition(statusMessage.disposition)
       messageLabel.text = statusMessage.text
-      statusMessage.nexus.foreach { nexus =>
-        logJson(nexus) ++ ("msg" -> statusMessage.text)
-      }
     }
 
     DelayedFuture(statusMessage.duration) {

@@ -19,15 +19,15 @@
 
 package org.wa9nnn.fdcluster.dupsheet
 
+import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.model.{ContestProperty, QsoRecord}
 import org.wa9nnn.fdcluster.store.QsoSource
-import org.wa9nnn.util.StructuredLogging
 
 import java.io.PrintWriter
 import javax.inject.{Inject, Singleton}
 @Singleton
 class GenerateDupSheet @Inject()(qsoSource: QsoSource,
-                                 contestProperty:ContestProperty) extends StructuredLogging {
+                                 contestProperty:ContestProperty) extends LazyLogging {
   /**
    *
    * @param pw where to write to.

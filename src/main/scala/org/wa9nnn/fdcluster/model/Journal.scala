@@ -6,7 +6,7 @@ import java.time.Instant
 
 /**
  * Holds the journal filename along with some metadata about when and where is was set.
- * @param journalFileName     name of file contestname+YYYMMddHHmmssz.json, obtained from [[com.wa9nnn.util.TimeConverters#fileStamp(java.time.Instant]])
+ * @param journalFileName     name of file contestname+YYYMMddHHmmssz.json.
  * @param nodeAddress         who started the instance.
  * @param stamp               when this was created. Newer always replaces older, anywhere in the cluster.
  */
