@@ -2,6 +2,7 @@
 package org.wa9nnn.fdcluster.contest
 
 import com.wa9nnn.util.TimeConverters.fileStamp
+import org.wa9nnn.fdcluster.javafx.NamedCellProvider
 import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
 import org.wa9nnn.fdcluster.model.{Exchange, NodeAddress, Stamped}
 
@@ -23,7 +24,7 @@ case class Contest(callSign: CallSign = "",
                    nodeAddress: NodeAddress = NodeAddress(),
                    journalStart: Option[Instant] = None,
                    stamp: Instant = Instant.now()
-                  ) extends Stamped[Contest] {
+                  ) extends NamedCellProvider[Contest] with  Stamped[Contest]{
 
   def checkValid(): Unit = {
     if (!isOk) {

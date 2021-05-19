@@ -28,7 +28,7 @@ import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import nl.grons.metrics4.scala.DefaultInstrumented
-import org.wa9nnn.fdcluster.ClusterControl
+import org.wa9nnn.fdcluster.NetworkControl
 import org.wa9nnn.fdcluster.Markers.syncMarker
 import org.wa9nnn.fdcluster.adif.AdiExporter
 import org.wa9nnn.fdcluster.cabrillo.{CabrilloExportRequest, CabrilloGenerator}
@@ -52,7 +52,7 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
   val randomQso: RandomQsoGenerator = injector.instance[RandomQsoGenerator]
   val multicastSender: ActorRef = injector.instance[ActorRef](Names.named("multicastSender"))
   val store: StoreLogic = injector.instance[StoreLogic]
-  val clusterControl = injector.instance[ClusterControl]
+  val clusterControl = injector.instance[NetworkControl]
 
   logger.info(s"StoreActor: ${self.path}")
 

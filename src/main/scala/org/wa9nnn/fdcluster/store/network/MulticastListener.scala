@@ -6,7 +6,7 @@ import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import nl.grons.metrics4.scala
 import nl.grons.metrics4.scala.DefaultInstrumented
-import org.wa9nnn.fdcluster.ClusterControl
+import org.wa9nnn.fdcluster.NetworkControl
 import org.wa9nnn.fdcluster.model.sync.{ClusterMessage, StoreMessage}
 import org.wa9nnn.fdcluster.store.JsonContainer
 
@@ -25,7 +25,7 @@ class MulticastListener @Inject()(
                                    @Named("cluster") val cluster: ActorRef,
                                    @Named("store") val store: ActorRef,
                                    val config: Config,
-                                   clusterControl: ClusterControl)
+                                   clusterControl: NetworkControl)
   extends MulticastActor with Runnable with DefaultInstrumented with LazyLogging {
   private val messagesMeter: scala.Meter = metrics.meter("messages")
 

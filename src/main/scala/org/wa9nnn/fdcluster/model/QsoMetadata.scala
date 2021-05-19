@@ -20,6 +20,7 @@
 package org.wa9nnn.fdcluster.model
 
 import org.wa9nnn.fdcluster.BuildInfo
+import org.wa9nnn.fdcluster.javafx.NamedCellProvider
 import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
 
 
@@ -37,5 +38,7 @@ case class QsoMetadata(operator: CallSign = "",
                        ant: String = "",
                        node: String = "localhost;1",
                        contestId: String = "FD2021WA9NNN",
-                       v: String = BuildInfo.canonicalVersion)
+                       v: String = BuildInfo.canonicalVersion) extends NamedCellProvider {
+
+}
 

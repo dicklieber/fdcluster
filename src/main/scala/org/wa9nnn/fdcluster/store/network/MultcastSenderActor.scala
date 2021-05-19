@@ -25,13 +25,13 @@ import akka.util.ByteString
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import nl.grons.metrics4.scala.DefaultInstrumented
-import org.wa9nnn.fdcluster.ClusterControl
+import org.wa9nnn.fdcluster.NetworkControl
 import org.wa9nnn.fdcluster.store.JsonContainer
 
 import java.net.InetSocketAddress
 
 class MultcastSenderActor(val config: Config,
-                          clusterControl: ClusterControl) extends Actor with MulticastActor with DefaultInstrumented with LazyLogging{
+                          clusterControl: NetworkControl) extends Actor with MulticastActor with DefaultInstrumented with LazyLogging{
 
   import context.system
 

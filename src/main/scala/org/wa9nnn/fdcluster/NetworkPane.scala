@@ -1,6 +1,7 @@
 package org.wa9nnn.fdcluster
 
 import com.typesafe.scalalogging.LazyLogging
+import org.wa9nnn.fdcluster.store.network.cluster.ClusterState
 import scalafx.beans.property.BooleanProperty
 import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.layout.GridPane
@@ -9,9 +10,9 @@ import javax.inject.{Inject, Singleton}
 import scala.util.Using
 
 @Singleton
-class NetworkPane @Inject()(clusterControl: ClusterControl) extends GridPane {
+class NetworkPane @Inject()(clusterControl: NetworkControl, clusterState: ClusterState) extends GridPane {
 
-  private val networkUpDown: ToggleImages = ToggleImages("share-link.png", "broken-link.png", clusterControl:ClusterControl)
+  private val networkUpDown: ToggleImages = ToggleImages("share-link.png", "broken-link.png", clusterControl:NetworkControl)
 
   add(networkUpDown, 0, 0)
 

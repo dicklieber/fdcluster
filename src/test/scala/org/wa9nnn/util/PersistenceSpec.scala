@@ -7,8 +7,6 @@ import org.wa9nnn.fdcluster.MockFileContext
 import org.wa9nnn.fdcluster.model.CurrentStation
 import org.wa9nnn.fdcluster.model.MessageFormats._
 
-import java.nio.file.{Files, Paths}
-
 
 trait PreferencesContext extends ForEach[Persistence] {
   def foreach[R: AsResult](r: Persistence => R): Result = {

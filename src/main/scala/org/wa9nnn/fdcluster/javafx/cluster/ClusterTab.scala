@@ -24,8 +24,10 @@ import akka.util.Timeout
 import com.google.inject.Inject
 import com.google.inject.name.Named
 import org.wa9nnn.fdcluster.javafx.entry.AutoRefreshTab
+import org.wa9nnn.fdcluster.model.sync.NodeStatus
 import org.wa9nnn.fdcluster.store.DumpCluster
 import org.wa9nnn.fdcluster.store.network.cluster.NodeStateContainer
+import scalafx.scene.control.Tab
 
 import java.util.concurrent.TimeUnit
 import scala.concurrent.Future
@@ -33,22 +35,9 @@ import scala.concurrent.Future
 /**
  * Create JavaFX UI to view status of each node in the cluster.
  */
-class ClusterTab @Inject()(@Inject() @Named("cluster") store: ActorRef, val actorSystem: ActorSystem) extends AutoRefreshTab {
-  implicit val timeout: Timeout = Timeout(5, TimeUnit.SECONDS)
-
-
-  private val clusterTable = new ClusterTable
+class ClusterTab @Inject()(clusterTable: ClusterTable) extends Tab {
 
   text = "Cluster"
-  content = clusterTable.tableView
+  content = clusterTable
   closable = false
-  refresh()
-
-  def refresh(): Unit = {
-    val future: Future[Iterable[NodeStateContainer]] = (store ? DumpCluster).mapTo[Iterable[NodeStateContainer]]
-    future.foreach { clusters: Iterable[NodeStateContainer] =>
-
-      clusterTable.refresh(clusters)
-    }
-  }
 }

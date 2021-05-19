@@ -38,7 +38,7 @@ import org.wa9nnn.fdcluster.model.{ContestProperty, ExportFile, NodeAddress}
 import org.wa9nnn.fdcluster.rig.RigDialog
 import org.wa9nnn.fdcluster.store.ClearStore
 import org.wa9nnn.fdcluster.tools.RandomQsoDialog
-import org.wa9nnn.fdcluster.{ClusterControl, FileContext, QsoCountCollector}
+import org.wa9nnn.fdcluster.{NetworkControl, FileContext, QsoCountCollector}
 
 import java.awt.Desktop
 import java.io.{PrintWriter, StringWriter}
@@ -59,7 +59,7 @@ class FdClusterMenu @Inject()(
                                contestProperty: ContestProperty,
                                summaryEngine: SummaryEngine,
                                metricsReporter: MetricsReporter,
-                               clusterControl: ClusterControl,
+                               clusterControl: NetworkControl,
                                okToLogGate: OkToLogGate,
                                debugRemoveDialog: DebugRemoveDialog) extends LazyLogging {
   private implicit val timeout: Timeout = Timeout(5 seconds)

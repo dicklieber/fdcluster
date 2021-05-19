@@ -7,7 +7,7 @@ import java.lang
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class ClusterControl @Inject()() extends BooleanProperty with LazyLogging {
+class NetworkControl @Inject()() extends BooleanProperty with LazyLogging {
   value = false
   def isUp: Boolean = value
 

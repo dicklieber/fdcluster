@@ -291,8 +291,8 @@ class StoreLogic @Inject()(na: NodeAddress,
       qsoHourDigests = hourDigests,
       qsoMetadata = qsoMetadata.value,
       currentStation = currentStation,
-      maybeContest = Option(contestProperty.value),
-      maybeJournal = Option(journalManager.value))
+      contest = contestProperty.value,
+      journal = journalManager.value)
 
   }
 

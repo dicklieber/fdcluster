@@ -20,11 +20,13 @@
 package org.wa9nnn.fdcluster.model.sync
 
 import com.wa9nnn.util.tableui.Cell
+import org.wa9nnn.fdcluster.javafx.{NamedCellProvider, NamedValue, NamedValueCollector, ValueName}
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.{QsoRecord, sync}
 import org.wa9nnn.fdcluster.store.network.FdHour
 
 import java.security.MessageDigest
+import scala.collection.mutable
 
 /**
  *
@@ -53,9 +55,9 @@ case class QsoHour(fdHour: FdHour, qsos: List[QsoRecord]) {
     super.toString
   }
 
-//  def toCell():Cell = {
-//
-//  }
+  //  def toCell():Cell = {
+  //
+  //  }
 }
 
 object QsoHour {
@@ -73,7 +75,7 @@ object QsoHour {
  * @param digest      of all the QsoIDs in this hour.
  * @param size        number of Qsos in this hour.  //todo Do we actually need this? isn't the digest sufficient?
  */
-case class QsoHourDigest(fdHour: FdHour, digest: Digest, size: Int) {
+case class QsoHourDigest(fdHour: FdHour, digest: Digest, size: Int) extends NamedCellProvider {
 
   override def toString: Node = {
     super.toString
@@ -87,6 +89,10 @@ case class QsoHourDigest(fdHour: FdHour, digest: Digest, size: Int) {
       Cell(s"$size: ${DigestFormat(digest)}")
         .withToolTip("Qso Count: ${qsoHourDigest.size}\ndigest: ${qsoHourDigest.digest}\nDigest is based on all the QSO UUIDs in the hour.")
     }
+  }
+
+  override def collectNamedValues(namedValueCollector: NamedValueCollector): Unit = {
+    namedValueCollector(NamedValue(ValueName(getClass, fdHour.display), digest))
   }
 }
 

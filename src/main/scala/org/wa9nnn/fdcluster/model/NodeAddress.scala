@@ -21,6 +21,7 @@ package org.wa9nnn.fdcluster.model
 
 import akka.http.scaladsl.model.Uri
 import org.wa9nnn.fdcluster.FileContext
+import org.wa9nnn.fdcluster.javafx.{NamedCellProvider, NamedValue, NamedValueCollector, ValueName}
 
 import java.net.{Inet4Address, InetAddress, NetworkInterface, URL}
 import scala.jdk.CollectionConverters._
@@ -34,7 +35,13 @@ import scala.jdk.CollectionConverters._
  * @param instance  from application.conf or command line e.g -Dinstance=2
  * @param httpPort  as opposed to the multicast port.
  */
-case class NodeAddress(ipAddress: String = "", hostName: String = "localhost", instance: Int = 0, httpPort: Int = 8000) extends Ordered[NodeAddress] {
+case class NodeAddress(ipAddress: String = "", hostName: String = "localhost", instance: Int = 0, httpPort: Int = 8000) extends NamedCellProvider[NodeAddress] with Ordered[NodeAddress] {
+
+  override def collectNamedValues(namedValueCollector: NamedValueCollector): Unit = {
+    namedValueCollector(NamedValue(ValueName( getClass, "Node"), display))
+    namedValueCollector(NamedValue(ValueName(getClass, "HTTP"), uri))
+  }
+
   val display: String = {
     if (ipAddress == "")
       "Not Set"
@@ -80,7 +87,6 @@ object NodeAddress {
 
     val inetAddress = determineIp()
     val address = inetAddress.getHostAddress
-    val name = inetAddress.getHostName
     NodeAddress(ipAddress = address,
       hostName = InetAddress.getLocalHost.getHostName,
       fileManager.instance,

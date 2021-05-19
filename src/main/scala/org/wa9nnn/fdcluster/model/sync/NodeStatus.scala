@@ -21,6 +21,7 @@ package org.wa9nnn.fdcluster.model.sync
 
 import org.wa9nnn.fdcluster.BuildInfo
 import org.wa9nnn.fdcluster.contest.Contest
+import org.wa9nnn.fdcluster.javafx.NamedCellProvider
 import org.wa9nnn.fdcluster.model.{CurrentStation, Journal, NodeAddress, QsoMetadata}
 import org.wa9nnn.fdcluster.store.network.FdHour
 
@@ -34,7 +35,7 @@ import java.time.Instant
  * @param qsoMetadata      band, mode, operator etc.
  * @param currentStation   band mode and current operator
  * @param stamp            when this message was generated.
- * @param v                FDCLuster Version that built this so we can detect mismatched versions.
+ * @param ver                FDCLuster Version that built this so we can detect mismatched versions.
  *
  */
 case class NodeStatus(nodeAddress: NodeAddress,
@@ -42,16 +43,24 @@ case class NodeStatus(nodeAddress: NodeAddress,
                       qsoHourDigests: List[QsoHourDigest],
                       qsoMetadata: QsoMetadata,
                       currentStation: CurrentStation,
-                      maybeContest: Option[Contest] = None,
-                      maybeJournal: Option[Journal] = None,
+                      contest: Contest,
+                      journal: Journal,
                       stamp: Instant = Instant.now(),
-                      v: String = BuildInfo.canonicalVersion) extends ClusterMessage {
+                      ver: String = BuildInfo.canonicalVersion) extends NamedCellProvider[NodeStatus] with  ClusterMessage{
 
 
   assert(currentStation != null, "null BandModeOperator")
 
   def digestForHour(fdHour: FdHour): Option[QsoHourDigest] = {
     qsoHourDigests.find(_.fdHour == fdHour)
+  }
+
+  /**
+   *
+   * @return [[FdHour]]s in the node
+   */
+  def knownHours: Set[FdHour] = {
+    qsoHourDigests.map(_.fdHour).toSet
   }
 
 }

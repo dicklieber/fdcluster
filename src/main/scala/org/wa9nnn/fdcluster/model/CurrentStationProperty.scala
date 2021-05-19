@@ -3,6 +3,7 @@ package org.wa9nnn.fdcluster.model
 
 import _root_.scalafx.beans.binding.Bindings
 import _root_.scalafx.beans.property.{ObjectProperty, StringProperty}
+import org.wa9nnn.fdcluster.javafx.NamedCellProvider
 import org.wa9nnn.fdcluster.model.CurrentStation.{Band, Mode}
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.util.Persistence
@@ -63,6 +64,8 @@ class CurrentStationProperty @Inject()(persistence: Persistence)
 object CurrentStation {
   type Band = String
   type Mode = String
+
+
 }
 
 /**
@@ -74,10 +77,20 @@ object CurrentStation {
  * @param antenna  and this antenna free form.
  */
 case class CurrentStation(bandName: Band = "20m", modeName: Mode = "PH",
-                          operator: CallSign = "", rig: String = "", antenna: String = "") {
+                          operator: CallSign = "", rig: String = "", antenna: String = "")
+  extends NamedCellProvider[CurrentStation] {
   override def toString: String = s"$bandName $modeName $operator"
 
   lazy val bandMode: BandMode = BandMode(bandName, modeName)
-}
 
+
+//  override def namedValues = NamedValues(List(
+//    NamedValue("Band Mode", bandMode.toString),
+//    NamedValue("Operator", operator)
+//  ))
+
+//  override def namedValues: NamedValues = {
+//    super.namedValues
+//  }
+}
 

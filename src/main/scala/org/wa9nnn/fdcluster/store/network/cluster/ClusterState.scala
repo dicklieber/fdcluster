@@ -26,10 +26,12 @@ import nl.grons.metrics4.scala.DefaultInstrumented
 import org.wa9nnn.fdcluster.model.NodeAddress
 import org.wa9nnn.fdcluster.model.sync.NodeStatus
 import org.wa9nnn.fdcluster.store.network.FdHour
+import org.wa9nnn.fdcluster.store.network.cluster.ClusterState.NodeStatusProperty
+import scalafx.beans.property.ObjectProperty
+import scalafx.collections.ObservableMap
 
 import java.time.{Duration, Instant}
 import javax.inject.{Inject, Singleton}
-import scala.collection.concurrent.TrieMap
 
 /**
  * Mutable state of all nodes in the cluster, including this one.
@@ -42,7 +44,7 @@ class ClusterState @Inject()(ourNodeAddress: NodeAddress, config: Config) extend
 
   private val nodeStatusLife: Duration = config.get[Duration]("fdcluster.cluster.nodeStatusLife")
 
-  private val nodes: TrieMap[NodeAddress, NodeStateContainer] = TrieMap.empty
+  val nodes: ObservableMap[NodeAddress, NodeStatusProperty] = ObservableMap[NodeAddress, NodeStatusProperty]()
 
   def size: Int = nodes.size
 
@@ -50,39 +52,47 @@ class ClusterState @Inject()(ourNodeAddress: NodeAddress, config: Config) extend
     size
   }
 
+
   def update(nodeStatus: NodeStatus): Unit = {
     val nodeAddress = nodeStatus.nodeAddress
-    val nodeState = nodes.getOrElseUpdate(nodeAddress, new NodeStateContainer(nodeStatus, ourNodeAddress))
-    nodeState.update(nodeStatus)
+    // don't consder using getOrElseUpdate as it will notify befoe the value is initialized!
+    nodes.get(nodeAddress) match {
+      case Some(value) =>
+        value.value = nodeStatus
+      case None =>
+        nodes.put(nodeAddress, ObjectProperty(nodeStatus))
+    }
   }
 
   def purge(): Unit = {
     val tooOldStamp = Instant.now().minus(nodeStatusLife)
     nodes.values
-      .filter(_.nodeStatus.stamp.isBefore(tooOldStamp))
-      .foreach(nsc => {
-        val nodeStatus = nsc.nodeStatus
-        val nodeAddress = nodeStatus.nodeAddress
-
-        nodes.remove(nodeAddress)
+      .map(_.value)
+      .filter(_.stamp.isBefore(tooOldStamp))
+      .foreach(ns => {
+        nodes.remove(ns.nodeAddress)
       })
   }
 
-  def dump: Iterable[NodeStateContainer] = {
-    nodes.values
+  def dump: Iterable[NodeStatus] = {
+    nodes.values.map(_.value)
   }
 
   def knownHoursInCluster: List[FdHour] = {
     val setBuilder = Set.newBuilder[FdHour]
     for {
-      nodeStateContainer <- nodes.values
-      hourInNode <- nodeStateContainer.knownHours
+      nodeStateProperty <- nodes.values
+      hourInNode <- nodeStateProperty.value.knownHours
     } {
       setBuilder += hourInNode
     }
     setBuilder.result().toList.sorted
   }
 
+}
+
+object ClusterState {
+  type NodeStatusProperty = ObjectProperty[NodeStatus]
 }
 
 

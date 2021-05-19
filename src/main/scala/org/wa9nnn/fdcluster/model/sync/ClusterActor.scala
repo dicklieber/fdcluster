@@ -35,7 +35,9 @@ class ClusterActor(nodeAddress: NodeAddress,
     qsoHourDigests = List.empty,
     qsoMetadata = QsoMetadata(),
     currentStation = CurrentStation(),
-    maybeContest = Option(contestProperty.value))
+    contest = contestProperty.value,
+    journal = journalProperty.value
+  )
 
   override def receive: Receive = {
 
@@ -47,8 +49,8 @@ class ClusterActor(nodeAddress: NodeAddress,
       if (ns.nodeAddress == nodeAddress) {
         ourNodeStatus = ns
       } else {
-        journalProperty.update(ns.maybeJournal)
-        contestProperty.update(ns.maybeContest)
+        journalProperty.update(ns.journal)
+        contestProperty.update(ns.contest)
         nodeStatusQueue ! ns
 
       (nodeStatusQueue ? NextNodeStatus).mapTo[Option[NodeStatus]].map {

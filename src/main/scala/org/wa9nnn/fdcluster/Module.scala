@@ -125,7 +125,7 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
   @Named("multicastSender")
   def clusterStoreActor(actorSystem: ActorSystem,
                         config: Config,
-                        clusterControl: ClusterControl
+                        clusterControl: NetworkControl
                        ): ActorRef = {
     actorSystem.actorOf(Props(
       new MultcastSenderActor(config, clusterControl)),
