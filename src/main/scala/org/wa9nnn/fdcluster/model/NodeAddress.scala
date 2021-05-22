@@ -35,10 +35,12 @@ import scala.jdk.CollectionConverters._
  * @param instance  from application.conf or command line e.g -Dinstance=2
  * @param httpPort  as opposed to the multicast port.
  */
-case class NodeAddress(ipAddress: String = "", hostName: String = "localhost", instance: Int = 0, httpPort: Int = 8000) extends NamedCellProvider[NodeAddress] with Ordered[NodeAddress] {
+case class NodeAddress(ipAddress: String = "", hostName: String = "localhost", instance: Option[Int] = None) extends NamedCellProvider[NodeAddress] with Ordered[NodeAddress] {
+
+  val httpPort: Int = instance.map(i => 8080 + i).getOrElse(8080)
 
   override def collectNamedValues(namedValueCollector: NamedValueCollector): Unit = {
-    namedValueCollector(NamedValue(ValueName( getClass, "Node"), display))
+    namedValueCollector(NamedValue(ValueName(getClass, "Node"), display))
     namedValueCollector(NamedValue(ValueName(getClass, "HTTP"), uri))
   }
 
@@ -46,7 +48,7 @@ case class NodeAddress(ipAddress: String = "", hostName: String = "localhost", i
     if (ipAddress == "")
       "Not Set"
     else
-      s"$hostName:$instance ($ipAddress)"
+      s"$hostName${instance.map(i => s":$i").getOrElse("")} ($ipAddress)"
   }
 
   val qsoNode: String = {
@@ -70,15 +72,13 @@ case class NodeAddress(ipAddress: String = "", hostName: String = "localhost", i
   val inetAddress: InetAddress = InetAddress.getByName(ipAddress)
 
   override def compare(that: NodeAddress): Int = {
-    that match {
-      case address: NodeAddress =>
-        var ret = address.ipAddress compareTo that.ipAddress
-        if (ret == 0) {
-          ret = this.instance compareTo that.instance
-        }
-        ret
-      case _ => -1
-    }
+    var ret = ipAddress compareTo that.ipAddress
+    if (ret == 0) {
+      val thisI = instance.getOrElse(-1)
+      val thatI = that.instance.getOrElse(-1)
+      thisI.compareTo(thatI)
+    } else
+      ret
   }
 }
 
@@ -89,8 +89,7 @@ object NodeAddress {
     val address = inetAddress.getHostAddress
     NodeAddress(ipAddress = address,
       hostName = InetAddress.getLocalHost.getHostName,
-      fileManager.instance,
-      fileManager.httpPort)
+      fileManager.instance)
   }
 
   /**

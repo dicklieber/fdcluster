@@ -33,7 +33,7 @@ import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}
 
 @Singleton
-class ActionResult extends Label("todo") with WithDisposition with LazyLogging {
+class ActionResult extends Label("") with WithDisposition with LazyLogging {
   val tp: StringProperty = text
 
   def sadMessage(str: String): Unit = {

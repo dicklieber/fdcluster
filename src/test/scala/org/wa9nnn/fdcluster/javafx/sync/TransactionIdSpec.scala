@@ -8,7 +8,7 @@ import org.wa9nnn.fdcluster.model.MessageFormats._
 
 class TransactionIdSpec extends Specification {
   val nodeAddress0 = NodeAddress()
-  val nodeAddress1 = NodeAddress(instance = 1)
+  val nodeAddress1 = NodeAddress(instance = Option(1))
   val fdHour = FdHour(15, 0)
   val transactionId = TransactionId(nodeAddress0, nodeAddress1, fdHour, getClass)
 "TransactionId" >> {

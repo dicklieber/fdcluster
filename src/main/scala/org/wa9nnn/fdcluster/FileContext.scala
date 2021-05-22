@@ -32,7 +32,7 @@ import scala.reflect.ClassTag
  */
 class FileContext extends Persistence {
   val userDir: Path = Paths.get(System.getProperty("user.home")).toAbsolutePath
-  val instance: Int = System.getProperty("instance", "1").toInt
+  val instance: Option[Int] = Option(System.getProperty("instance")).map(_.toInt)
   val directory: Path = userDir.resolve(s"fdcluster${instance}")
   val nodeAddress: NodeAddress = NodeAddress(this)
 
@@ -70,11 +70,6 @@ class FileContext extends Persistence {
     val dir: String = directory.resolve(contestName).toAbsolutePath.toString
     ExportFile(dir, s"$fileBase.${extension.dropWhile(_ == '.')}")
   }
-
-  def httpPort: Int = {
-    8080 + instance
-  }
-
 }
 
 

@@ -18,7 +18,6 @@ class FileContextSpec extends Specification  with Mockito {
     fileManager.logFile must endWith("/fdcluster42/logs/fdcluster.log")
     fileManager.journalDir must beEqualTo (directory.resolve("journal"))
     fileManager.varDirectory must beEqualTo (directory.resolve("var"))
-    fileManager.httpPort must beEqualTo (8080 + 42)
   }
   "defaultExportFile" >> {
     val contestProperty = mock[ContestProperty]
