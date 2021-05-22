@@ -113,7 +113,7 @@ case class ContestDialogPane @Inject()(contestProperty: ContestProperty,
           contestName = contestCB.value,
           nodeAddress = nodeAddress)
 
-        contestProperty.update(Option(newContest))
+        contestProperty.update(newContest)
     }
 
   gridOfControls.add("Exchange", exchangePane)

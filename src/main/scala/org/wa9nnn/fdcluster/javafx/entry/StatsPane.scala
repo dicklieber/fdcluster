@@ -24,8 +24,8 @@ import _root_.scalafx.scene.control.Label
 import _root_.scalafx.scene.layout.{GridPane, Pane}
 import _root_.scalafx.scene.text.Text
 import org.scalafx.extras.onFX
-import org.wa9nnn.fdcluster.model.CurrentStation.Mode
-import org.wa9nnn.fdcluster.model.QsoRecord
+import org.wa9nnn.fdcluster.model.Station.Mode
+import org.wa9nnn.fdcluster.model.Qso
 import org.wa9nnn.fdcluster.store.AddQsoListener
 
 import java.util.concurrent.atomic.AtomicInteger
@@ -64,9 +64,8 @@ class StatsPane extends AddQsoListener {
   }
   val pane: Pane = gridPane
 
-
-  override def add(qsoRecord: QsoRecord): Unit = {
-    val mode: Mode = qsoRecord.qso.bandMode.modeName
+  override def add(qso: Qso): Unit = {
+    val mode: Mode = qso.bandMode.modeName
     map(mode).increment()
 
     val tots: (Int, Int) = nonTotals.foldLeft(0, 0) { (accum: (Int, Int), kind: Kind) =>

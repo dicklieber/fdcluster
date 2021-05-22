@@ -19,7 +19,7 @@ package org.wa9nnn.fdcluster.contest
 
 import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.model.MessageFormats._
-import org.wa9nnn.fdcluster.model.{JournalHeader, NodeAddress, QsoRecord}
+import org.wa9nnn.fdcluster.model.{JournalHeader, NodeAddress, Qso}
 import play.api.libs.json.Json
 
 import java.io.IOException
@@ -39,9 +39,9 @@ class JournalWriter @Inject()(val journalManager: JournalProperty, nodeAddress: 
   /**
    * creating the file with header as needed.
    *
-   * @param qsoRecord of interest.
+   * @param Qso of interest.
    */
-  def write(qsoRecord: QsoRecord): Unit = {
+  def write(qso: Qso): Qso = {
     val value: Try[Path] = journalManager.journalFilePathProperty.value
     if(value.isFailure)
       throw new IllegalStateException(s"No journal!")
@@ -55,7 +55,7 @@ class JournalWriter @Inject()(val journalManager: JournalProperty, nodeAddress: 
             logger.error(s"Writing header to $filePath", e)
         }
       }
-      val lineOfJson = Json.toJson(qsoRecord).toString() + "\n"
+      val lineOfJson = Json.toJson(qso).toString() + "\n"
       try {
         Files.writeString(filePath, lineOfJson, StandardOpenOption.WRITE, StandardOpenOption.APPEND)
       } catch {
@@ -63,5 +63,6 @@ class JournalWriter @Inject()(val journalManager: JournalProperty, nodeAddress: 
           logger.error(s"Writing QSO: $lineOfJson to $filePath", e)
       }
     }
+  qso
   }
 }

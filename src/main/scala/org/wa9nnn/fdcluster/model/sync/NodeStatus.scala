@@ -22,7 +22,7 @@ package org.wa9nnn.fdcluster.model.sync
 import org.wa9nnn.fdcluster.BuildInfo
 import org.wa9nnn.fdcluster.contest.Contest
 import org.wa9nnn.fdcluster.javafx.NamedCellProvider
-import org.wa9nnn.fdcluster.model.{CurrentStation, Journal, NodeAddress, QsoMetadata}
+import org.wa9nnn.fdcluster.model.{Station, Journal, NodeAddress, QsoMetadata}
 import org.wa9nnn.fdcluster.store.network.FdHour
 
 import java.time.Instant
@@ -42,7 +42,7 @@ case class NodeStatus(nodeAddress: NodeAddress,
                       qsoCount: Int,
                       qsoHourDigests: List[QsoHourDigest],
                       qsoMetadata: QsoMetadata,
-                      currentStation: CurrentStation,
+                      currentStation: Station,
                       contest: Contest,
                       journal: Journal,
                       stamp: Instant = Instant.now(),

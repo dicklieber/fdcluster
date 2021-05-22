@@ -22,23 +22,21 @@ package org.wa9nnn.fdcluster.model.sync
 import com.wa9nnn.util.tableui.Cell
 import org.wa9nnn.fdcluster.javafx.{NamedCellProvider, NamedValue, NamedValueCollector, ValueName}
 import org.wa9nnn.fdcluster.model.MessageFormats._
-import org.wa9nnn.fdcluster.model.{QsoRecord, sync}
+import org.wa9nnn.fdcluster.model.{Qso, sync}
 import org.wa9nnn.fdcluster.store.network.FdHour
 
 import java.security.MessageDigest
-import scala.collection.mutable
 
 /**
  *
  * @param fdHour      hour this is for..
  * @param qsos        QSOs in this hour.
  */
-case class QsoHour(fdHour: FdHour, qsos: List[QsoRecord]) {
-
+case class QsoHour(fdHour: FdHour, qsos: List[Qso]) {
+import org.wa9nnn.util.UuidUtil._
   lazy val hourDigest: QsoHourDigest = {
     val messageDigest: MessageDigest = MessageDigest.getInstance("SHA-256")
-    import org.wa9nnn.util.UuidUtil.uuidToBytes
-    qsos.foreach(qr ⇒ messageDigest.update(qr.qso.uuid))
+    qsos.foreach(qr ⇒ messageDigest.update(qr.uuid))
     val bytes = messageDigest.digest()
     val encoder = java.util.Base64.getEncoder
     val bytes1 = encoder.encode(bytes)
@@ -47,7 +45,7 @@ case class QsoHour(fdHour: FdHour, qsos: List[QsoRecord]) {
   }
 
   lazy val qsoIds: QsoHourIds = {
-    val ids = qsos.map(_.qso.uuid)
+    val ids = qsos.map(_.uuid)
     QsoHourIds(fdHour, ids)
   }
 
@@ -61,7 +59,7 @@ case class QsoHour(fdHour: FdHour, qsos: List[QsoRecord]) {
 }
 
 object QsoHour {
-  def apply(qsos: List[QsoRecord]): QsoHour = {
+  def apply(qsos: List[Qso]): QsoHour = {
     assert(qsos.nonEmpty, "Must have some qsos in an hour.")
     val startOfHour = qsos.head.fdHour
     QsoHour(startOfHour, qsos)

@@ -1,8 +1,8 @@
 package org.wa9nnn.fdcluster.contest.fieldday
 
 import _root_.com.wa9nnn.util.tableui.{Cell, _}
-import org.wa9nnn.fdcluster.model.CurrentStation.Band
-import org.wa9nnn.fdcluster.model.{AllContestRules, QsoRecord}
+import org.wa9nnn.fdcluster.model.Station.Band
+import org.wa9nnn.fdcluster.model.{AllContestRules, Qso}
 import org.wa9nnn.fdcluster.store.QsoSource
 
 import java.util.concurrent.atomic.AtomicInteger
@@ -24,8 +24,8 @@ class BandModeBreakDown @Inject()(qsoSource: QsoSource, allContestRules: AllCont
     val rows: Seq[Row] = {
       qsoSource.qsoIterator
         .toSeq
-        .groupBy(_.qso.bandMode.bandName)
-        .map { bq: (Band, Seq[QsoRecord]) =>
+        .groupBy(_.bandMode.bandName)
+        .map { bq: (Band, Seq[Qso]) =>
           SumBandRow(bq, powerCell).toRow
         }.toSeq
     }
@@ -37,17 +37,17 @@ class BandModeBreakDown @Inject()(qsoSource: QsoSource, allContestRules: AllCont
 
   }
 
-  case class SumBandRow(bq: (Band, Seq[QsoRecord]), powerCell: Cell) extends RowSource {
+  case class SumBandRow(bq: (Band, Seq[Qso]), powerCell: Cell) extends RowSource {
     // Start with entry for each possible mode.
     private val modeCounts: Map[String, AtomicInteger] =
       allContestRules.currentRules.modes.modes.map { availableMode =>
         availableMode -> new AtomicInteger()
       }.toMap
 
-    val (band: Band, qsos: Seq[QsoRecord]) = bq
+    val (band: Band, qsos: Seq[Qso]) = bq
 
-    qsos.foreach { qsoRecord =>
-      val mode = qsoRecord.qso.bandMode.modeName
+    qsos.foreach { qso =>
+      val mode = qso.bandMode.modeName
       modeCounts.get(mode) match {
         case Some(atomicInteger) =>
           atomicInteger.incrementAndGet()

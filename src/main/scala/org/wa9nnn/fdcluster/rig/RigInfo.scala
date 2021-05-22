@@ -4,8 +4,8 @@ import akka.actor.ActorSystem
 import com.typesafe.scalalogging.LazyLogging
 import org.scalafx.extras.onFX
 import org.wa9nnn.fdcluster.javafx.StatusPane
-import org.wa9nnn.fdcluster.model.CurrentStation.Band
-import org.wa9nnn.fdcluster.model.{AllContestRules, CurrentStationProperty}
+import org.wa9nnn.fdcluster.model.Station.Band
+import org.wa9nnn.fdcluster.model.{AllContestRules, StationProperty}
 import scalafx.beans.property.StringProperty
 
 import javax.inject.{Inject, Singleton}
@@ -16,7 +16,7 @@ import scala.util.Try
 
 @Singleton
 class RigInfo @Inject()(rigStore: RigStore, actorSystem: ActorSystem,
-                        currentStationProperty: CurrentStationProperty,
+                        currentStationProperty: StationProperty,
                         allContestRules: AllContestRules,
                         statusPane: StatusPane
                        ) extends Runnable with LazyLogging {

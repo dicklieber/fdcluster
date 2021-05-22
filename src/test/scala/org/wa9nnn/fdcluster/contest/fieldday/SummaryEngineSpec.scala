@@ -28,12 +28,12 @@ class SummaryEngineSpec extends Specification with Mockito {
       val eventProperty: StringProperty = new StringProperty("FieldDay")
       contestProperty.contestNameProperty returns eventProperty
       val allContestRules = mock[AllContestRules]
-      val allQsos: Seq[QsoRecord] = Seq(
-        QsoRecord(Qso("KD9BYW", Exchange(), BandMode()), QsoMetadata()),
-        QsoRecord(Qso("KD9BYW", Exchange(),  BandMode("160m")), QsoMetadata()),
-        QsoRecord(Qso("KD9BYW",  Exchange(), BandMode(modeName = "DI")), QsoMetadata()),
-        QsoRecord(Qso("NE9A", Exchange(), BandMode(modeName = "DI")), QsoMetadata()),
-        QsoRecord(Qso("W9BBQ", Exchange(), BandMode(modeName = "DI")), QsoMetadata()),
+      val allQsos: Seq[Qso] = Seq(
+        Qso("KD9BYW", Exchange(), BandMode(), QsoMetadata()),
+        Qso("KD9BYW", Exchange(),  BandMode("160m"), QsoMetadata()),
+        Qso("KD9BYW",  Exchange(), BandMode(modeName = "DI"), QsoMetadata()),
+        Qso("NE9A", Exchange(), BandMode(modeName = "DI"), QsoMetadata()),
+        Qso("W9BBQ", Exchange(), BandMode(modeName = "DI"), QsoMetadata()),
       )
 
       val qsoSource = mock[QsoSource]

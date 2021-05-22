@@ -9,7 +9,7 @@ import org.wa9nnn.fdcluster.contest.JournalProperty
 import org.wa9nnn.fdcluster.http.HttpClientActor
 import org.wa9nnn.fdcluster.javafx.sync._
 import org.wa9nnn.fdcluster.model.MessageFormats._
-import org.wa9nnn.fdcluster.model.{ContestProperty, CurrentStation, NodeAddress, QsoMetadata}
+import org.wa9nnn.fdcluster.model.{ContestProperty, Station, NodeAddress, QsoMetadata}
 import org.wa9nnn.fdcluster.store.DumpCluster
 import org.wa9nnn.fdcluster.store.network.cluster.ClusterState
 
@@ -34,7 +34,7 @@ class ClusterActor(nodeAddress: NodeAddress,
     qsoCount = 0,
     qsoHourDigests = List.empty,
     qsoMetadata = QsoMetadata(),
-    currentStation = CurrentStation(),
+    currentStation = Station(),
     contest = contestProperty.value,
     journal = journalProperty.value
   )

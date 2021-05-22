@@ -21,7 +21,7 @@ package org.wa9nnn.fdcluster.model
 
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
-import org.wa9nnn.fdcluster.model.CurrentStation._
+import org.wa9nnn.fdcluster.model.Station._
 
 import scala.jdk.CollectionConverters._
 

@@ -21,60 +21,48 @@ package org.wa9nnn.fdcluster.javafx.entry
 
 import _root_.scalafx.Includes._
 import _root_.scalafx.beans.binding.{Bindings, ObjectBinding}
-import _root_.scalafx.beans.property.ObjectProperty
 import _root_.scalafx.event.ActionEvent
 import _root_.scalafx.geometry.{Insets, Pos}
 import _root_.scalafx.scene.control._
 import _root_.scalafx.scene.layout.{BorderPane, HBox, Pane, VBox}
-import akka.actor.ActorRef
-import akka.pattern.ask
-import akka.util.Timeout
-import com.google.inject.name.Named
 import com.google.inject.{Inject, Injector}
 import com.typesafe.scalalogging.LazyLogging
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import org.scalafx.extras.onFX
-import org.wa9nnn.fdcluster.contest.{JournalProperty, OkToLogGate}
+import org.wa9nnn.fdcluster.contest.OkToLogGate
 import org.wa9nnn.fdcluster.javafx.entry.section.SectionField
 import org.wa9nnn.fdcluster.javafx.{CallSignField, ClassField, StatusMessage, StatusPane}
-import org.wa9nnn.fdcluster.model
-import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
-import org.wa9nnn.fdcluster.store.{AddResult, Added, Dup, FailedToAdd}
+import org.wa9nnn.fdcluster.store.{AddResult, StoreSender}
 import org.wa9nnn.util.WithDisposition
-import play.api.libs.json.Json
 
-import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import scala.util.{Failure, Success, Try}
+import scala.util.Try
 
 /**
  * Create ScalaFX UI for field day entry mode.
  */
 @Singleton
 class EntryTab @Inject()(injector: Injector,
-                         currentStationPanel: CurrentStationPanel,
+                         currentStationPanel: StationPanel,
                          contestProperty: ContestProperty,
                          nodeAddress: NodeAddress,
                          classField: ClassField,
-                         @Named("qsoMetadata") qsoMetadataProperty: ObjectProperty[QsoMetadata],
-                         currentStationProperty: CurrentStationProperty,
+                         qsoBuilder: QsoBuilder,
+                         currentStationProperty: StationProperty,
                          statsPane: StatsPane,
                          statusPane: StatusPane,
-                         journalManager: JournalProperty,
-                         @Named("store") store: ActorRef,
+                         storeSender: StoreSender,
                          okToLogGate: OkToLogGate,
+                         callSignField: CallSignField,
+                         actionResult: ActionResult,
                         ) extends Tab with LazyLogging {
-  private implicit val timeout: Timeout = Timeout(5, TimeUnit.SECONDS)
+  //  private implicit val timeout: Timeout = Timeout(5, TimeUnit.SECONDS)
   text = "Entry"
   closable = false
 
-  var actionResult: ActionResult = new ActionResult(store, qsoMetadataProperty.value)
-  val callSignField: CallSignField = new CallSignField(actionResult) {
-    styleClass += "qsoCallSign"
-  }
 
   val qsoSection: SectionField = new SectionField() {
     styleClass += "qsoSection"
@@ -114,7 +102,7 @@ class EntryTab @Inject()(injector: Injector,
       new VBox(
         new Label("CallSign"),
         callSignField,
-        actionResult.pane,
+        actionResult,
         statsPane.pane,
       ),
       new VBox(
@@ -178,51 +166,38 @@ class EntryTab @Inject()(injector: Injector,
   }
 
   def save(): Unit = {
-    val potentialQso: Qso = readQso()
+    val potentialQso: Qso = qsoBuilder.qso(
+      callSign = callSignField.text.value,
+      exchange = Exchange(classField.text.value, qsoSection.text.value),
+      bandMode = currentStationProperty.bandMode
+    )
     if (potentialQso.callSign == contestProperty.callSign) {
-      actionResult.showSad(s"Can't work our own station: \n${potentialQso.callSign}!")
+      actionResult.sadMessage(s"Can't work our own station: \n${potentialQso.callSign}!")
     }
     else {
-      val future: Future[AddResult] = (store ? potentialQso).mapTo[AddResult]
+      val future: Future[AddResult] = storeSender ?[AddResult] potentialQso
       future onComplete { tr: Try[AddResult] =>
-        actionResult.clear()
-        tr match {
-          case Failure(exception) =>
-            logger.error(s"adding QSO: $potentialQso", exception)
-          case Success(Dup(dupQso)) =>
-            actionResult.addSad(s"Duplicate:\n${dupQso.qso.callSign} ${dupQso.qso.bandMode}")
-            logger.info(s"Dup: ${Json.toJson(dupQso.qso).toString()}")
-          case Success(Added(qsoRecord)) =>
-            actionResult.addHappy(s"Added:\n${qsoRecord.qso.callSign} ${qsoRecord.qso.exchange}") //        actionResult.happy(
-            logger.info(s"Added: ${Json.toJson(qsoRecord).toString}")
-            if (qsoRecord.qso.callSign == "WA9NNN") {
-              onFX {
-                statusPane.message(StatusMessage("Thanks for using fdcluster, from Dick Lieber WA9NNN", styleClasses = Seq("hiDick")))
-              }
-            }
-          case Success(FailedToAdd(exception)) =>
-            actionResult.addSad(s"Failed to add QSO! Err: ${exception.getMessage}")
-            logger.error(s"Failed to ad QSO", exception)
+        clear()
+        val triedQso = tr.get.triedQso
+        actionResult(triedQso)
 
+        if (triedQso.isSuccess && triedQso.get.callSign == "WA9NNN") {
+          onFX {
+            statusPane.message(StatusMessage("Thanks for using fdcluster, from Dick Lieber WA9NNN", styleClasses = Seq("hiDick")))
+          }
         }
-        onFX {
-          actionResult.done()
-          clear()
-        }
+
       }
     }
   }
 
   private def clear(): Unit = {
-    callSignField.reset()
-    classField.reset()
-    qsoSection.reset()
-    callSignField.requestFocus()
-  }
-
-  def readQso(): Qso = {
-    val exchange = Exchange(classField.text.value, qsoSection.text.value)
-    model.Qso(callSignField.text.value, exchange, currentStationProperty.bandMode)
+    onFX {
+      callSignField.reset()
+      classField.reset()
+      qsoSection.reset()
+      callSignField.requestFocus()
+    }
   }
 
   /**
@@ -247,7 +222,6 @@ class EntryTab @Inject()(injector: Injector,
     )
   }, currentStationProperty, contestProperty)
 
-  qsoMetadataProperty <== qsoMetadataBinding
 
 }
 

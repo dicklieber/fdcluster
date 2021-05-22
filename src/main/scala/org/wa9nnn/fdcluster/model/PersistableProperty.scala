@@ -26,11 +26,11 @@ abstract class PersistableProperty[T <: Stamped[_] : ClassTag](fileContext: File
    * If the candidate is newer than the current value then persist the new value, update the property
    *
    */
-  def update(maybeCandidate: Option[T])(implicit writes: Writes[T]): Unit = {
-    maybeCandidate.filter(_.stamp isAfter value.stamp).foreach { t =>
-      fileContext.saveToFile(t)
-      value = t
-    }
+  def update(candidate: T)(implicit writes: Writes[T]): Unit = {
+    if(candidate.stamp isAfter value.stamp)
+      fileContext.saveToFile(candidate)
+
+    super.update(candidate)
   }
 
   val init: T = fileContext.loadFromFile[T] {
@@ -45,3 +45,4 @@ abstract class PersistableProperty[T <: Stamped[_] : ClassTag](fileContext: File
   }
 
 }
+

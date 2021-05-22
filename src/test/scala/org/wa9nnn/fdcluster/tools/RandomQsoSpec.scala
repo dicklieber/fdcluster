@@ -22,7 +22,7 @@ import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
 import org.wa9nnn.fdcluster.javafx.entry.{RunningTaskInfo, RunningTaskInfoConsumer}
 import org.wa9nnn.fdcluster.model.MessageFormats._
-import org.wa9nnn.fdcluster.model.{AllContestRules, Qso}
+import org.wa9nnn.fdcluster.model.{AllContestRules, Qso, QsoBuilder}
 import play.api.libs.json.Json
 
 class RandomQsoSpec extends Specification with Mockito{
@@ -35,7 +35,8 @@ class RandomQsoSpec extends Specification with Mockito{
     }
 
    val allContestRules =  mock[AllContestRules]
-    val randomQso = new RandomQsoGenerator(allContestRules, rtc)
+    val qsoBuilder = mock[QsoBuilder]
+    val randomQso = new RandomQsoGenerator(allContestRules, qsoBuilder, rtc)
     "nextQso" in {
       val b = Array.newBuilder[Qso]
       for (_ <-  0 to 10) {

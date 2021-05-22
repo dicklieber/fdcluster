@@ -26,7 +26,7 @@ import _root_.scalafx.scene.layout.GridPane
 import javafx.collections.ObservableList
 import org.wa9nnn.fdcluster.javafx.GridOfControls
 import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
-import org.wa9nnn.fdcluster.model.{AllContestRules, ContestRules, CurrentStationProperty, KnownOperatorsProperty}
+import org.wa9nnn.fdcluster.model.{AllContestRules, ContestRules, StationProperty, KnownOperatorsProperty}
 import org.wa9nnn.fdcluster.rig.RigInfo
 import org.wa9nnn.util.InputHelper.forceCaps
 import scalafx.collections.ObservableBuffer
@@ -42,10 +42,10 @@ import javax.inject.Inject
  * @param bandFactory        available bands and modes.
  * @param knownOperatorsProperty Operators who have used fdcluster.
  */
-class CurrentStationPanel @Inject()(currentStationProperty: CurrentStationProperty,
-                                    allContestRules: AllContestRules,
-                                    knownOperatorsProperty: KnownOperatorsProperty,
-                                    rigInfo: RigInfo) {
+class StationPanel @Inject()(currentStationProperty: StationProperty,
+                             allContestRules: AllContestRules,
+                             knownOperatorsProperty: KnownOperatorsProperty,
+                             rigInfo: RigInfo) {
   val rigState = new Label()
  rigState.text <== rigInfo.rigState
 

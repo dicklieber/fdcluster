@@ -67,12 +67,9 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
       bind[Persistence]
         .to[PersistenceImpl]
         .asEagerSingleton()
-      bind[ObjectProperty[QsoMetadata]]
-        .annotatedWithName("qsoMetadata")
-        .toInstance(ObjectProperty(QsoMetadata()))
-      bind[ObjectProperty[CurrentStation]]
+      bind[ObjectProperty[Station]]
         .annotatedWithName("currentStation")
-        .toInstance(ObjectProperty(CurrentStation()))
+        .toInstance(ObjectProperty(Station()))
       val runningTaskPane = new RunningTaskPane
       bind[RunningTaskPane].toInstance(runningTaskPane)
       bind[RunningTaskInfoConsumer].toInstance(runningTaskPane)
@@ -80,7 +77,7 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
       bind[Config].toInstance(config)
       install(TypesafeConfigModule.fromConfigWithPackage(config, "org.wa9nnn"))
       bind[MetricsReporter].asEagerSingleton()
-
+      bind[QsoBuilder].to [OsoMetadataProperty]
       val qsoListeners = ScalaMultibinder.newSetBinder[AddQsoListener](binder)
       qsoListeners.addBinding.to[StatsPane]
       qsoListeners.addBinding.to[QsoCountCollector]

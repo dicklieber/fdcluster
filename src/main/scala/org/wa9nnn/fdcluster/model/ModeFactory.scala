@@ -1,7 +1,7 @@
 package org.wa9nnn.fdcluster.model
 
 import com.typesafe.config.{Config, ConfigFactory, ConfigValue}
-import org.wa9nnn.fdcluster.model.CurrentStation.Mode
+import org.wa9nnn.fdcluster.model.Station.Mode
 
 import java.util
 import javax.inject.{Inject, Singleton}

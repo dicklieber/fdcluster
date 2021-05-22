@@ -27,50 +27,38 @@ import play.api.libs.json.Json
 import java.time.Instant
 import java.util.UUID
 
-/**
- * * One contact with another station.
- * * Things that are relevant for the contest plus a UUID.
- *
- * @param callSign of the worked station.
- * @param exchange from the worked station.
- * @param bandMode that was used.
- * @param stamp    when QSO occurred.
- * @param uuid     id unique QSO id in time & space.
- */
-case class Qso(callSign: CallSign,
-               exchange: Exchange,
-               bandMode: BandMode,
-               stamp: Instant = Instant.now(),
-               uuid: UUID = UUID.randomUUID) {
-  def isDup(that: Qso): Boolean = {
-    this.callSign == that.callSign &&
-      this.bandMode == that.bandMode
-  }
-}
-
 
 /**
  * This is what's in the store and journal.log.
  *
- * @param qso         info from worked station.
+ * @param callSign    of the worked station.
+ * @param exchange    from the worked station.
+ * @param bandMode    that was used.
+ * @param stamp       when QSO occurred.
+ * @param uuid        id unique QSO id in time & space.
  * @param qsoMetadata info about ur station.
  */
-case class QsoRecord(qso: Qso, qsoMetadata: QsoMetadata) extends Ordered[QsoRecord] {
-  def callsign: CallSign = qso.callSign
-
-  lazy val display: String = s"$callsign on ${qso.bandMode} in $fdHour"
-
-  override def hashCode: Int = qso.uuid.hashCode()
-
-  def dup(qso: Qso): Boolean = {
-    this.qso.isDup(qso)
+case class Qso(callSign: CallSign,
+               exchange: Exchange,
+               bandMode: BandMode,
+               qsoMetadata: QsoMetadata,
+               stamp: Instant = Instant.now(),
+               uuid: UUID = UUID.randomUUID
+              ) extends Ordered[Qso] {
+  def isDup(that: Qso): Boolean = {
+    this.callSign == that.callSign &&
+      this.bandMode == that.bandMode
   }
 
+  lazy val display: String = s"$callSign on $bandMode in $fdHour"
 
-  override def compare(that: QsoRecord): Int = this.callsign compareTo that.callsign
+  override def hashCode: Int = uuid.hashCode()
+
+
+  override def compare(that: Qso): Int = this.callSign compareTo that.callSign
 
   lazy val fdHour: FdHour = {
-    FdHour(qso.stamp)
+    FdHour(stamp)
   }
 
   def toByteString: ByteString = {
@@ -86,9 +74,14 @@ case class QsoRecord(qso: Qso, qsoMetadata: QsoMetadata) extends Ordered[QsoReco
   }
 }
 
-object QsoRecord {
-  def apply(json: String): QsoRecord = {
-    Json.parse(json).as[QsoRecord]
+object Qso {
+  def apply(callSign: CallSign,
+            exchange: Exchange,
+            bandMode: BandMode) (implicit qsoMetadata: QsoMetadata):Qso = {
+    new Qso(callSign, exchange, bandMode, qsoMetadata)
+  }
+  def apply(json: String): Qso = {
+    Json.parse(json).as[Qso]
   }
 }
 
@@ -96,16 +89,11 @@ object QsoRecord {
 /**
  * This is what gets multi-casted to cluster.
  *
- * @param qsoRecord   the new QSO
+ * @param qso         the new QSO
  * @param nodeAddress where this came from.
- * @param size        number of QSOs in the database on this node. (Includes the new QSO)
  */
-case class DistributedQsoRecord(qsoRecord: QsoRecord, nodeAddress: NodeAddress, size: Int) extends StoreMessage
+case class DistributedQso(qso: Qso, nodeAddress: NodeAddress) extends StoreMessage
 
-object DistributedQsoRecord {
-  val qsoVersion = "1:"
-
-}
 
 
 

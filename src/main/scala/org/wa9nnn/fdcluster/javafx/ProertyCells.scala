@@ -2,37 +2,11 @@ package org.wa9nnn.fdcluster.javafx
 
 import com.wa9nnn.util.tableui.Cell
 import org.wa9nnn.fdcluster.javafx.NamedCellProvider.omitFieldNames
+import org.wa9nnn.util.ClassName
 import scalafx.scene.control.Label
 
 import scala.collection.mutable
 import scala.reflect.{ClassTag, classTag}
-
-//
-//case class PropertyCells(cells: Seq[CellProperty] = Seq.empty) {
-//  def apply(namedValue: NamedValue): PropertyCells = {
-//    copy(cells = CellProperty(namedValue) +: cells)
-//  }
-//
-//  def apply(namedValues: NamedValues): PropertyCells = {
-//    copy(cells = namedValues.flatMap { namedValue =>
-//      namedValue.value match {
-//        case p: NamedCellProvider[_] =>
-//          p.collectNamedValues.map(CellProperty(_))
-//        case _ =>
-//          Seq(CellProperty(namedValue))
-//      }
-//    } ++: cells)
-//  }
-//
-
-//  def update(namedCellProvider: T): Unit = {
-//    val map: Map[String, Any] = namedCellProvider.namedValues.toMap
-//    cells.foreach { cp: CellProperty =>
-//      cp.value(map(cp.name))
-//    }
-//  }
-
-//}
 
 
 abstract class NamedCellProvider[T: ClassTag] extends Product {
@@ -52,15 +26,20 @@ object NamedCellProvider {
   val omitFieldNames = Set("stamp", "v")
 }
 
-
 case class NamedValue(name: ValueName, value: Any)
 
-case class ValueName(clazz: Class[_], name: String) extends Ordered[ValueName] {
+case class ValueName(className: String, name: String) extends Ordered[ValueName] {
   override def compare(that: ValueName): Int = {
-    var ret = clazz.getName.compareTo(that.clazz.getTypeName)
+    var ret = className.compareTo(that.className)
     if (ret == 0)
       ret = name.compareTo(that.name)
     ret
+  }
+}
+
+object ValueName {
+  def apply(clazz: Class[_], name: String): ValueName = {
+    new ValueName(ClassName.last(clazz), name)
   }
 }
 
@@ -68,11 +47,11 @@ case class ValueName(clazz: Class[_], name: String) extends Ordered[ValueName] {
  * A Label that can be updated
  *
  * @param name         of field.
- * @param value starting.
+ * @param value        starting.
  */
 case class CellProperty(name: ValueName, value: Any) extends Label with Ordered[CellProperty] {
-//  text = Cell(s"${name.clazz}\t${name.name}\t$initialValue").value
-    text = Cell(value).value
+  //  text = Cell(s"${name.clazz}\t${name.name}\t$initialValue").value
+  text = Cell(value).value
 
   def value(newVal: Any): Unit = {
     text = Cell(newVal).value

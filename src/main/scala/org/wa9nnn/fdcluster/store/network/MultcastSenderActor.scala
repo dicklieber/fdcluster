@@ -22,6 +22,7 @@ package org.wa9nnn.fdcluster.store.network
 import akka.actor.{Actor, ActorRef}
 import akka.io.{IO, Udp}
 import akka.util.ByteString
+import com.google.inject.name.Named
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import nl.grons.metrics4.scala.DefaultInstrumented
@@ -29,9 +30,10 @@ import org.wa9nnn.fdcluster.NetworkControl
 import org.wa9nnn.fdcluster.store.JsonContainer
 
 import java.net.InetSocketAddress
+import javax.inject.{Inject, Singleton}
 
 class MultcastSenderActor(val config: Config,
-                          clusterControl: NetworkControl) extends Actor with MulticastActor with DefaultInstrumented with LazyLogging{
+                          clusterControl: NetworkControl) extends Actor with MulticastActor with DefaultInstrumented with LazyLogging {
 
   import context.system
 
@@ -46,7 +48,7 @@ class MultcastSenderActor(val config: Config,
     case something: JsonContainer =>
       val bytes: Array[Byte] = something.bytes
       logger.whenTraceEnabled {
-       logger.trace(s"Sending: $something to $multicastGroup:$port")
+        logger.trace(s"Sending: $something to $multicastGroup:$port")
       }
       if (clusterControl.isUp)
         send ! Udp.Send(ByteString(bytes), new InetSocketAddress(multicastGroup, port))
@@ -56,3 +58,9 @@ class MultcastSenderActor(val config: Config,
   }
 }
 
+@Singleton
+class MulticastSender @Inject()(@Named("multicastSender") multicastSender: ActorRef) {
+  def !(jsonContainer: JsonContainer): Unit = {
+    multicastSender ! jsonContainer
+  }
+}

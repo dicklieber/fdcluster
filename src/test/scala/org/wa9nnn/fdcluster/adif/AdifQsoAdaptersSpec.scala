@@ -1,11 +1,12 @@
 package org.wa9nnn.fdcluster.adif
 
+import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
-import org.wa9nnn.fdcluster.model.{Qso, QsoRecord}
+import org.wa9nnn.fdcluster.model.{ContestProperty, Qso}
 
 import scala.io.Source
 
-class AdifQsoAdaptersSpec extends Specification {
+class AdifQsoAdaptersSpec extends Specification with Mockito {
 
   private val sAdif =
     """ADIF Export from N3FJP's ARRL Field Day Contest Log 6.3
@@ -48,11 +49,11 @@ class AdifQsoAdaptersSpec extends Specification {
 
   val adifFile: AdifFile = AdifCollector.read(Source.fromString(sAdif))
   private val adifQso: AdifQso = adifFile.records.head
-
+implicit val contestProperty = mock[ContestProperty]
   "AdifQsoAdaptersSpec" should {
     "happy" in {
-      val qso: QsoRecord = AdifQsoAdapter(adifQso)
-      qso.qso.callSign must beEqualTo("K0USA")
+      val qso: Qso = AdifQsoAdapter(adifQso)
+      qso.callSign must beEqualTo("K0USA")
     }
     "no ARRL_Sect" in {
       val toRemove = AdifEntry("ARRL_SECT", "ENY")

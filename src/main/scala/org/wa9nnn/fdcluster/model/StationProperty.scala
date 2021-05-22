@@ -4,22 +4,22 @@ package org.wa9nnn.fdcluster.model
 import _root_.scalafx.beans.binding.Bindings
 import _root_.scalafx.beans.property.{ObjectProperty, StringProperty}
 import org.wa9nnn.fdcluster.javafx.NamedCellProvider
-import org.wa9nnn.fdcluster.model.CurrentStation.{Band, Mode}
+import org.wa9nnn.fdcluster.model.Station.{Band, Mode}
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.util.Persistence
 
 import javax.inject.{Inject, Singleton}
 
 /**
- * a [[CurrentStation]] in an ObjectProperty
+ * a [[Station]] in an ObjectProperty
  * With convenience properties and current value accessors.
  */
 @Singleton
-class CurrentStationProperty @Inject()(persistence: Persistence)
-  extends ObjectProperty[CurrentStation](
+class StationProperty @Inject()(persistence: Persistence)
+  extends ObjectProperty[Station](
     null,
-    "CurrentStation",
-    persistence.loadFromFile[CurrentStation](() => CurrentStation())) {
+    "Station",
+    persistence.loadFromFile[Station](() => Station())) {
 
   private val currentVals = value
 
@@ -45,9 +45,9 @@ class CurrentStationProperty @Inject()(persistence: Persistence)
 
   def bandMode: BandMode = BandMode(bandName, modeName)
 
-  val b = Bindings.createObjectBinding[CurrentStation](
+  val b = Bindings.createObjectBinding[Station](
     () => {
-      val r = CurrentStation(bandNameProperty.value, modeNameProperty.value,
+      val r = Station(bandNameProperty.value, modeNameProperty.value,
         operatorProperty.value,
         rigProperty.value, antennaProperty.value)
       r
@@ -61,7 +61,7 @@ class CurrentStationProperty @Inject()(persistence: Persistence)
   }
 }
 
-object CurrentStation {
+object Station {
   type Band = String
   type Mode = String
 
@@ -76,21 +76,11 @@ object CurrentStation {
  * @param rig      using this rig free form.
  * @param antenna  and this antenna free form.
  */
-case class CurrentStation(bandName: Band = "20m", modeName: Mode = "PH",
-                          operator: CallSign = "", rig: String = "", antenna: String = "")
-  extends NamedCellProvider[CurrentStation] {
+case class Station(bandName: Band = "20m", modeName: Mode = "PH",
+                   operator: CallSign = "", rig: String = "", antenna: String = "")
+  extends NamedCellProvider[Station] {
   override def toString: String = s"$bandName $modeName $operator"
 
   lazy val bandMode: BandMode = BandMode(bandName, modeName)
-
-
-//  override def namedValues = NamedValues(List(
-//    NamedValue("Band Mode", bandMode.toString),
-//    NamedValue("Operator", operator)
-//  ))
-
-//  override def namedValues: NamedValues = {
-//    super.namedValues
-//  }
 }
 

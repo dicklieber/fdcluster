@@ -19,29 +19,33 @@
 
 package org.wa9nnn.fdcluster.javafx
 
-import org.wa9nnn.fdcluster.javafx.entry.ActionResult
 import _root_.scalafx.Includes._
 import _root_.scalafx.scene.control.TextField
 import _root_.scalafx.scene.input.{KeyCode, KeyEvent}
+import org.wa9nnn.fdcluster.javafx.entry.ActionResult
+import org.wa9nnn.fdcluster.store.DupQsoDetector
+
+import javax.inject.Inject
 
 /**
  * Callsign entry field
  * sad or happy as validated while typing.
  *
  */
-class CallSignField(actionResult: ActionResult) extends TextField with NextField {
+class CallSignField @Inject()(actionResult: ActionResult, dupQsoDetector: DupQsoDetector) extends TextField with NextField {
+  styleClass += "qsoCallSign"
 
   setFieldValidator(CallsignValidator)
-  text.onChange { (_, _, nv) =>
-    actionResult.clear()
-    if (!validProperty.value) {
-      if (text.value.isEmpty) {
-
-      } else {
-        actionResult.potentiaDup(nv)
-      }
-    }
-  }
+//  text.onChange { (_, _, nv) =>
+//    actionResult.clear()
+//    if (!validProperty.value) {
+//      if (text.value.isEmpty) {
+//
+//      } else {
+//        actionResult.potentiaDup(nv)
+//      }
+//    }
+//  }
 
   onKeyPressed = { event: KeyEvent =>
     val key: KeyCode = event.code
@@ -49,7 +53,18 @@ class CallSignField(actionResult: ActionResult) extends TextField with NextField
       event.consume()
       val str: String = key.name
       onDoneFunction(str)
+    }else{
+      val text1 = event.text
+//      actionResult.apply( dupQsoDetector(text.value))
     }
   }
+  onKeyReleased = event => {
+    val text1 = event.getText
+    event.toString
+    actionResult.apply( dupQsoDetector(text.value))
+  }
+//  onAction = event => {
+//    actionResult.apply( dupQsoDetector(text.value))
+//  }
 }
 

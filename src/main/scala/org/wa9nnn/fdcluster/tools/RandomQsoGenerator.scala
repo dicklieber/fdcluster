@@ -19,13 +19,15 @@ package org.wa9nnn.fdcluster.tools
 
 import org.wa9nnn.fdcluster.javafx.entry.{NullRunningTaskConsumer, RunningTaskInfoConsumer}
 import org.wa9nnn.fdcluster.javafx.runningtask.RunningTask
-import org.wa9nnn.fdcluster.model.{AllContestRules, EntryCategories, Qso}
+import org.wa9nnn.fdcluster.model.{AllContestRules, EntryCategories, Qso, QsoBuilder}
 
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 
-class RandomQsoGenerator @Inject()(allContestRules: AllContestRules, val runningTaskInfoConsumer: RunningTaskInfoConsumer = new NullRunningTaskConsumer()) {
+class RandomQsoGenerator @Inject()(allContestRules: AllContestRules,
+                                   qsoBuilder: QsoBuilder,
+                                   val runningTaskInfoConsumer: RunningTaskInfoConsumer = new NullRunningTaskConsumer()) {
 
  val entryCategories: EntryCategories =  allContestRules.currentRules.categories
 
@@ -44,9 +46,8 @@ class RandomQsoGenerator @Inject()(allContestRules: AllContestRules, val running
     def apply(gr: GenerateRandomQsos)(f: Qso => Unit): Unit = {
       totalIterations = gr.ntoGen
       var lastStamp = Instant.now().minus(gr.hoursBefore, ChronoUnit.HOURS)
-
       for (_ <- 0 until  gr.ntoGen) {
-        f(Qso(callSign.next, randomExchange.next(), bandMode.next , lastStamp))
+        f(qsoBuilder.qso(callSign.next, randomExchange.next(), bandMode.next, lastStamp))
         countOne()
         lastStamp = lastStamp.plus(gr.between)
       }

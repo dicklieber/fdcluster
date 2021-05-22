@@ -19,17 +19,15 @@
 
 package org.wa9nnn.fdcluster.adif
 
-import org.wa9nnn.fdcluster.model.{BandMode, Exchange, Qso, QsoMetadata, QsoRecord}
-import org.wa9nnn.fdcluster.{model, _}
+import org.wa9nnn.fdcluster._
+import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.util.TimeHelpers.utcZoneId
+import org.wa9nnn.util.UuidUtil.{fromBase64, toBase64}
 
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatter.BASIC_ISO_DATE
 import java.time.{Instant, LocalDate, LocalTime, ZonedDateTime}
-import java.util.UUID
 import scala.language.implicitConversions
-import org.wa9nnn.util.UuidUtil
-import org.wa9nnn.util.UuidUtil.{fromBase64, toBase64}
 
 object AdifQsoAdapter {
   private val timeFormat = DateTimeFormatter.ofPattern("HHmmss")
@@ -37,11 +35,11 @@ object AdifQsoAdapter {
   /**
    * //todo error & various formats handling
    *
-   * @param adif Qso
-   * @return model Qso
+   * @param adif the Adif Qso
+   * @return the FcCluster Qso
    * @throws MissingRequiredTag if required tag not found
    */
-  def apply(adif: AdifQso): QsoRecord = {
+  def apply(adif: AdifQso)(implicit contestProperty: ContestProperty): Qso = {
     val map = adif.toMap
     /**
      * Allows a 'm' string, e.g. m"BAND" to lookup the key in the map and throw appropriate exception for missing tag.
@@ -72,24 +70,29 @@ object AdifQsoAdapter {
         LocalTime.parse(m"TIME_ON", timeFormat),
         utcZoneId).toInstant
     }
-    val qso = Qso(callSign = m"CALL",
+    val contest = contestProperty.value
+    Qso(callSign = m"CALL",
       bandMode = bandMode,
       exchange = exchange,
       stamp = stamp,
-      uuid = fromBase64(m"APP_FDC_UUID")
+      uuid = fromBase64(m"APP_FDC_UUID"),
+      qsoMetadata = QsoMetadata(
+        operator = m"OPERATOR",
+        rig = m"MY_RIG",
+        ant = m"MY_ANTENNA",
+        node = contest.nodeAddress.display,
+        contestId = contest.id,
+        v = BuildInfo.canonicalVersion
+      )
     )
-    val qsoMetadata: QsoMetadata = {
-      QsoMetadata()
-    }
-    QsoRecord(qso, qsoMetadata)
+
   }
 
-  def apply(qsoRecord: QsoRecord): adif.AdifQso = {
+  def apply(qso: Qso): adif.AdifQso = {
     implicit def e(t2: (String, String)): AdifEntry = {
       AdifEntry(t2._1, t2._2)
     }
 
-    val qso = qsoRecord.qso
     val zdt = ZonedDateTime.ofInstant(qso.stamp, utcZoneId)
     val builder = new AdifQsoBuilder()
     builder("APP_FDC_UUID", toBase64(qso.uuid))
@@ -100,7 +103,7 @@ object AdifQsoAdapter {
     builder("MODE", qso.bandMode.modeName)
     builder("CLASS", qso.exchange.entryClass)
     builder("ARRL_SECT", qso.exchange.sectionCode)
-    val qsoMetadata = qsoRecord.qsoMetadata
+    val qsoMetadata = qso.qsoMetadata
     builder("MY_RIG", qsoMetadata.rig)
     builder("MY_ANTENNA", qsoMetadata.ant)
     builder("OPERATOR", qsoMetadata.operator)

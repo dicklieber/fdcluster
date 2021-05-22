@@ -1,20 +1,20 @@
 package org.wa9nnn.fdcluster.model
 
 import org.specs2.mutable.Specification
-import MessageFormats._
+import org.wa9nnn.fdcluster.tools.MockQso
 
 class QsoRecordSpec extends Specification {
   "QsoRecord" >> {
-    val qsoRecord = QsoRecord(Qso("WA9NNN", Exchange(), BandMode()), QsoMetadata())
+    val qso = MockQso.qso.copy(callSign = "WA9NNN")
     "json line round trip" >> {
-      val jsonLine = qsoRecord.toJsonLine
-      val backAgain = QsoRecord(jsonLine)
-      backAgain must beEqualTo(qsoRecord)
+      val jsonLine = qso.toJsonLine
+      val backAgain = Qso(jsonLine)
+      backAgain must beEqualTo(qso)
     }
     "json pretty round trip" >> {
-      val json = qsoRecord.toJsonPretty
-      val backAgain = QsoRecord(json)
-      backAgain must beEqualTo(qsoRecord)
+      val json = qso.toJsonPretty
+      val backAgain = Qso(json)
+      backAgain must beEqualTo(qso)
     }
   }
 }

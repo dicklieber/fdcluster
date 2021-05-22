@@ -25,7 +25,7 @@ import org.wa9nnn.fdcluster.contest.JournalProperty
 import org.wa9nnn.fdcluster.javafx.entry.RunningTaskInfoConsumer
 import org.wa9nnn.fdcluster.javafx.runningtask.RunningTask
 import org.wa9nnn.fdcluster.model.MessageFormats._
-import org.wa9nnn.fdcluster.model.QsoRecord
+import org.wa9nnn.fdcluster.model.Qso
 import org.wa9nnn.util.BoolConverter.s2b
 import play.api.libs.json.Json
 
@@ -44,11 +44,11 @@ import scala.util.Using
  * @param journalManager          access to journal
  * @param runningTaskInfoConsumer progress UI
  */
-class JournalLoader @Inject()(storeSender: StoreSender,
+class JournalLoader @Inject()(
                               journalManager: JournalProperty,
                               val runningTaskInfoConsumer: RunningTaskInfoConsumer) {
-  def startLoad(qsoAdder: QsoAdder): Unit = {
-    new Task(runningTaskInfoConsumer)(qsoAdder)
+  def startLoad(f:( Qso) => Unit): Unit = {
+    new Task(runningTaskInfoConsumer)(f)
 
   }
 
@@ -56,7 +56,7 @@ class JournalLoader @Inject()(storeSender: StoreSender,
 
     override def taskName: String = "Journal Loader"
 
-    def apply(qsoAdder: QsoAdder): Unit = {
+    def apply(qsoAdder:( Qso) => Unit): Unit = {
       try {
         if (System.getProperty("skipJournal", "false")) throw new SkipJournal
         journalManager.journalFilePathProperty.value.foreach { journalFilePath =>
@@ -78,10 +78,9 @@ class JournalLoader @Inject()(storeSender: StoreSender,
       finally {
         done()
       }
-      storeSender ! BufferReady
     }
 
-    private def processLines(journalFilePath: Path, qsoAdder: QsoAdder) = {
+    private def processLines(journalFilePath: Path, qsoAdder:( Qso) => Unit) = {
       val qsoLineLengths = new SummaryStatistics()
       val lineNumber = new AtomicInteger()
       val errorCount = new AtomicInteger()
@@ -95,9 +94,8 @@ class JournalLoader @Inject()(storeSender: StoreSender,
                 //todo check header
               } else {
                 countOne()
-                val qsoRecord = Json.parse(line).as[QsoRecord]
-                //              allQsos.addOne(qsoRecord) // todo consider batching up and using addAll instead of addOne
-                qsoAdder.addRecord(qsoRecord)
+                val Qso = Json.parse(line).as[Qso]
+                qsoAdder(Qso)
               }
             }
             catch {

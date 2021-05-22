@@ -37,7 +37,6 @@ class JournalProperty @Inject()(
                                  storeSender: StoreSender
                                )
   extends PersistableProperty[Journal](fileContext) {
-  //todo _currentJournal and journalFilePathProperty are too much alike. Both ar used to control things. Only one should be exposed.
 
   lazy val journalFilePathProperty: ObjectProperty[Try[Path]] = ObjectProperty[Try[Path]](Failure(new IllegalStateException()))
 
@@ -60,8 +59,6 @@ class JournalProperty @Inject()(
     }
 
     okToLogProperty.value = journalFilePathProperty.value.isSuccess
-    storeSender ! ClearStore
-
   }
 
   okToLogProperty.value = journalFilePathProperty.value.isSuccess
@@ -74,7 +71,9 @@ class JournalProperty @Inject()(
     contest.checkValid()
     val id = contest.id
     val journal = Journal(id, fileContext.nodeAddress)
-    update(Some(journal))
+    update(journal)
+    storeSender ! ClearStore
+
   }
 
 }

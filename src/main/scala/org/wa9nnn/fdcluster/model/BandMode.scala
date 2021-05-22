@@ -1,6 +1,6 @@
 package org.wa9nnn.fdcluster.model
 
-import org.wa9nnn.fdcluster.model.CurrentStation.{Band, Mode}
+import org.wa9nnn.fdcluster.model.Station.{Band, Mode}
 import play.api.libs.json._
 
 /**
@@ -8,11 +8,16 @@ import play.api.libs.json._
  */
 case class BandMode(bandName: Band = "20m", modeName: Mode = "PH") {
   override def toString: String = s"$bandName $modeName"
-
 }
 
 object BandMode {
   private val Parse = """\s*([\d.]+[a-z]+)\s+([A-Z]{2})\s*""".r
+
+  def apply(s:String):BandMode = {
+    val Parse(bandName, modeName) = s
+    new BandMode(bandName, modeName)
+  }
+
   /**
    * to make JSON a bit more compact
    */

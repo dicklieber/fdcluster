@@ -19,8 +19,8 @@
 
 package org.wa9nnn.fdcluster.tools
 
-import org.wa9nnn.fdcluster.model.CurrentStation.{Band, Mode}
-import org.wa9nnn.fdcluster.model.{BandMode, Bands, CurrentStation, ModeFactory}
+import org.wa9nnn.fdcluster.model.Station.{Band, Mode}
+import org.wa9nnn.fdcluster.model.{BandMode, Bands, Station, ModeFactory}
 
 import java.security.SecureRandom
 import javax.inject.Inject

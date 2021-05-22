@@ -19,7 +19,7 @@ package org.wa9nnn.fdcluster.store
 
 import java.time.Instant
 import org.wa9nnn.fdcluster.model.MessageFormats.{Node, Uuid}
-import org.wa9nnn.fdcluster.model.{NodeAddress, QsoRecord}
+import org.wa9nnn.fdcluster.model.{NodeAddress, Qso}
 
 /**
  * Ids on a node.
@@ -54,15 +54,15 @@ object NodeIuids {
  * @param node     where this came from.
  * @param records  on node.
  */
-case class NodeDatabase(records: Seq[QsoRecord], node: NodeAddress, stamp: Instant = Instant.now())
+case class NodeDatabase(records: Seq[Qso], node: NodeAddress, stamp: Instant = Instant.now())
 
 object NodeDatabase {
-  def apply(contacts: Seq[QsoRecord])(implicit node: NodeAddress): NodeDatabase = NodeDatabase(contacts, node)
+  def apply(contacts: Seq[Qso])(implicit node: NodeAddress): NodeDatabase = NodeDatabase(contacts, node)
 }
 
 /**
  *
- * @param qsoRecord just added record
- * @param qsoCount number of QsoRecords in the sending node.
+ * @param Qso just added record
+ * @param qsoCount number of Qsos in the sending node.
  */
-case class NewQso(qsoRecord: QsoRecord, qsoCount:Int)
+case class NewQso(Qso: Qso, qsoCount:Int)

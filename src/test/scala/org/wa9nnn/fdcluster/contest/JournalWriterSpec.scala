@@ -3,7 +3,8 @@ package org.wa9nnn.fdcluster.contest
 import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
 import org.wa9nnn.fdcluster.model.MessageFormats._
-import org.wa9nnn.fdcluster.model.{Journal, JournalHeader, NodeAddress, QsoRecord}
+import org.wa9nnn.fdcluster.model.{Journal, JournalHeader, NodeAddress, Qso}
+import org.wa9nnn.fdcluster.tools.MockQso
 import play.api.libs.json.Json
 import scalafx.beans.property.ObjectProperty
 
@@ -13,7 +14,7 @@ import scala.jdk.CollectionConverters.CollectionHasAsScala
 import scala.util.Try
 
 class JournalWriterSpec extends Specification with Mockito {
-  val qsoRecord: QsoRecord = org.wa9nnn.fdcluster.tools.MockQso.qsoRecord
+  val qso: Qso = MockQso.qso
   "JournalWriterSpec" >> {
     "happy path" >> {
       val journalStamp = Instant.now()
@@ -25,7 +26,7 @@ class JournalWriterSpec extends Specification with Mockito {
       journalProperty.journalFilePathProperty returns ObjectProperty(Try(path))
       val journalWriter = new JournalWriter(journalProperty, ourNodeAddress)
       try {
-        journalWriter.write(qsoRecord)
+        journalWriter.write(qso)
       } catch {
         case e: Exception =>
           throw e
@@ -36,9 +37,9 @@ class JournalWriterSpec extends Specification with Mockito {
         val journalHeader = Json.parse(lines.head).as[JournalHeader]
         journalHeader.journal must beEqualTo(journal)
         journalHeader.ourNodeAddress must beEqualTo(ourNodeAddress)
-        Json.parse(lines(1)).as[QsoRecord] must beEqualTo(qsoRecord)
+        Json.parse(lines(1)).as[Qso] must beEqualTo(qso)
 
-        journalWriter.write(qsoRecord) // write another
+        journalWriter.write(qso) // write another
         val lines1: List[Node] = Files.readAllLines(path).asScala.toList
         lines1 must haveLength(3)
 

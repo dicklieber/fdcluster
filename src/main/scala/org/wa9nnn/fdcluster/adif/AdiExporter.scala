@@ -23,7 +23,7 @@ import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.BuildInfo
 import org.wa9nnn.fdcluster.javafx.entry.RunningTaskInfoConsumer
 import org.wa9nnn.fdcluster.javafx.runningtask.RunningTask
-import org.wa9nnn.fdcluster.model.{AdifExportRequest, QsoRecord}
+import org.wa9nnn.fdcluster.model.{AdifExportRequest, Qso}
 import org.wa9nnn.fdcluster.store.QsoSource
 import org.wa9nnn.util.TimeHelpers
 
@@ -69,7 +69,7 @@ class AdiExporter @Inject()(qsoSource: QsoSource, val runningTaskInfoConsumer: R
 
 
       //records
-      qsoSource.qsoIterator.foreach { qso: QsoRecord =>
+      qsoSource.qsoIterator.foreach { qso: Qso =>
         AdifQsoAdapter(qso).entries.toSeq.sorted.foreach(adifentry =>
           print(adifentry))
         countOne()

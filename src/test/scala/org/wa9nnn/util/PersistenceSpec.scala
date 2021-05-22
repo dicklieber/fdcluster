@@ -4,7 +4,7 @@ import org.specs2.execute.{AsResult, Result}
 import org.specs2.mutable.Specification
 import org.specs2.specification.ForEach
 import org.wa9nnn.fdcluster.MockFileContext
-import org.wa9nnn.fdcluster.model.CurrentStation
+import org.wa9nnn.fdcluster.model.Station
 import org.wa9nnn.fdcluster.model.MessageFormats._
 
 
@@ -20,20 +20,20 @@ trait PreferencesContext extends ForEach[Persistence] {
 class PersistenceSpec extends Specification with PreferencesContext {
   "Persistence" >> {
     "roundTrip" >> { persistence: Persistence =>
-      val currentStation = new CurrentStation(
+      val currentStation = new Station(
         "20M",
         "DI",
         rig = "IC-705",
         operator = "WA9NNN",
         antenna = "Wold River Coils")
       persistence.saveToFile(currentStation)
-      val backAgain: CurrentStation = persistence.loadFromFile[CurrentStation](() => CurrentStation())
+      val backAgain: Station = persistence.loadFromFile[Station](() => Station())
       backAgain must beEqualTo(currentStation)
     }
 
     "nofile" >> { persistence: Persistence =>
-      val instance = persistence.loadFromFile[CurrentStation](() => CurrentStation())
-      instance must beAnInstanceOf[CurrentStation]
+      val instance = persistence.loadFromFile[Station](() => Station())
+      instance must beAnInstanceOf[Station]
     }
   }
 }

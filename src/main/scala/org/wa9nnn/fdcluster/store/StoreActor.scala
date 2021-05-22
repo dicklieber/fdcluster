@@ -28,8 +28,8 @@ import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import nl.grons.metrics4.scala.DefaultInstrumented
-import org.wa9nnn.fdcluster.NetworkControl
 import org.wa9nnn.fdcluster.Markers.syncMarker
+import org.wa9nnn.fdcluster.NetworkControl
 import org.wa9nnn.fdcluster.adif.AdiExporter
 import org.wa9nnn.fdcluster.cabrillo.{CabrilloExportRequest, CabrilloGenerator}
 import org.wa9nnn.fdcluster.javafx.menu.ImportRequest
@@ -52,7 +52,7 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
   val randomQso: RandomQsoGenerator = injector.instance[RandomQsoGenerator]
   val multicastSender: ActorRef = injector.instance[ActorRef](Names.named("multicastSender"))
   val store: StoreLogic = injector.instance[StoreLogic]
-  val clusterControl = injector.instance[NetworkControl]
+  val clusterControl: NetworkControl = injector.instance[NetworkControl]
 
   logger.info(s"StoreActor: ${self.path}")
 
@@ -66,22 +66,21 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
      */
     case QsosFromNode(qsos, _) =>
       logger.debug(syncMarker, s"got ${qsos.size}")
-      store.merge(qsos)
+      qsos.foreach(store.ingestAndPersist)
 
 
     case BufferReady =>
-      store.loadLocalIndices()
       clusterControl.up()
-    case potentialQso: Qso ⇒
-      val addResult: AddResult = store.add(potentialQso)
-      addResult match {
-        case Added(addedQsoRecord) ⇒
-          val record = DistributedQsoRecord(addedQsoRecord, nodeAddress, store.size)
-          multicastSender ! JsonContainer(record)
-        case unexpected ⇒
-          logger.error(s"Received: $unexpected")
+
+    case potentialQso: Qso =>
+
+      val triedQso = store.ingestAndPersist(potentialQso)
+      triedQso.foreach { qso =>
+        val record = DistributedQso(qso, nodeAddress)
+        multicastSender ! JsonContainer(record)
       }
-      sender ! addResult // send back to caller with all info allows UI to show what was recorded or dup
+
+      sender ! AddResult(triedQso)
 
     case request: RequestUuidsForHour =>
       val uuids: List[Uuid] = store.uuidForHour(request.fdHour)
@@ -97,7 +96,7 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
     case rqfu: RequestQsosForUuids =>
       logger.debug(rqfu.toString)
 
-      val qsos: List[QsoRecord] = rqfu.uuids.flatMap(uuid =>
+      val qsos: List[Qso] = rqfu.uuids.flatMap(uuid =>
         store.get(uuid)
       )
       val qsosFromNode = QsosFromNode(qsos, rqfu.transactionId.addStep(getClass))
@@ -106,24 +105,24 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
 
 
     case rqfh: RequestQsosForHour =>
-      val qsos: List[QsoRecord] = store.getQsos(rqfh.fdHour)
+      val qsos: List[Qso] = store.getQsos(rqfh.fdHour)
       val qsosFromNode = QsosFromNode(qsos, rqfh.transactionId.addStep(getClass))
       logger.debug(qsosFromNode.toString)
       sender ! qsosFromNode
 
     case qc: QsosFromNode =>
-      qc.qsos.foreach(store.addRecord)
+      qc.qsos.foreach(store.ingest)
       logger.error(s"Got to so-called unreachable code!!!!!!!")
 
 
-    case d: DistributedQsoRecord ⇒
-      val qsoRecord = d.qsoRecord
-      val remoteNodeAddress = qsoRecord.qsoMetadata.node
+    case d: DistributedQso ⇒
+      val qso = d.qso
+      val remoteNodeAddress = qso.qsoMetadata.node
       if (remoteNodeAddress != nodeAddress) {
-        logger.debug(s"Ingesting ${qsoRecord.qso} from $remoteNodeAddress")
-        store.addRecord(qsoRecord)
+        logger.debug(s"Ingesting $qso from $remoteNodeAddress")
+        store.ingestAndPersist(qso)
       } else {
-        logger.debug(s"Ignoring our own QsoRecord: ${qsoRecord.qso}")
+        logger.debug(s"Ignoring our own Qso: $qso")
       }
 
     case fdHour: FdHour ⇒
@@ -134,7 +133,7 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
 
 
     case ClearStore =>
-      store.debugClear()
+      store.clear()
 
     case DebugKillRandom(nToKill) =>
       store.debugKillRandom(nToKill)
@@ -152,18 +151,23 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
       importTask(path, store)
 
     case search: Search =>
-      sender() ! store.search(search)
+      val origSender = sender()
+      val searchResult: SearchResult = store.search(search)
+//      sender ! searchResult
+      origSender ! searchResult
 
     case gr: GenerateRandomQsos =>
       randomQso(gr) {
         qso =>
-          store.add(qso)
+          store.ingestAndPersist(qso)
       }
 
-    case scala.util.Failure(e) =>
+    case scala.util.Failure(e)
+    =>
       logger.error("Unexpected Failure", e)
 
-    case Failure(e) =>
+    case Failure(e)
+    =>
       logger.error("Unexpected Failure", e)
 
     case x ⇒
@@ -206,7 +210,7 @@ case object BufferReady
 
 case class Search(partial: String, bandMode: BandMode, max: Int = 15)
 
-case class SearchResult(qsos: Seq[QsoRecord], fullCount: Int) {
+case class SearchResult(qsos: Seq[Qso], fullCount: Int, search:Search) {
   def display(): String = {
     val length = qsos.length
     if (length < fullCount)

@@ -23,6 +23,7 @@ import org.wa9nnn.fdcluster.adif
 import org.wa9nnn.fdcluster.adif.{AdifCollector, AdifFile, AdifQsoAdapter}
 import org.wa9nnn.fdcluster.javafx.entry.RunningTaskInfoConsumer
 import org.wa9nnn.fdcluster.javafx.runningtask.RunningTask
+import org.wa9nnn.fdcluster.model.{ContestProperty, NodeAddress}
 import org.wa9nnn.fdcluster.store.StoreLogic
 
 import javax.inject.Inject
@@ -34,7 +35,7 @@ import scala.io.Source
  * @param store where to put
  * @param runningTaskInfoConsumer progress UI
  */
-class ImportAdifTask @Inject()(val runningTaskInfoConsumer: RunningTaskInfoConsumer) extends RunningTask {
+class ImportAdifTask @Inject()(implicit val runningTaskInfoConsumer: RunningTaskInfoConsumer, contestProperty: ContestProperty) extends RunningTask {
   override val taskName: String = "Import ADIF"
 
   def apply(sPath: String, store: StoreLogic) {
@@ -44,8 +45,8 @@ class ImportAdifTask @Inject()(val runningTaskInfoConsumer: RunningTaskInfoConsu
     totalIterations = adifQsos.size
 
     adifQsos.foreach { adifQso =>
-      val qsoRecord = AdifQsoAdapter(adifQso)
-      val maybeProblem = store.importQsoRecord(qsoRecord)
+      val qso = AdifQsoAdapter(adifQso)
+      val maybeProblem = store.ingestAndPersist(qso)
       //todo how to report dups to user?
       countOne()
     }

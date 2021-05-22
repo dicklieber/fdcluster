@@ -9,9 +9,9 @@ import _root_.scalafx.beans.property.ObjectProperty
 import javax.inject.{Inject, Singleton}
 @Singleton
 class BandModeQsoMetadata @Inject()(
-                                    nodeAddress: NodeAddress,
-                                    @Named("currentStation") currentStationProperty: ObjectProperty[CurrentStation],
-                                    contestPropertyObject: ContestProperty) {
+                                     nodeAddress: NodeAddress,
+                                     @Named("currentStation") currentStationProperty: ObjectProperty[Station],
+                                     contestPropertyObject: ContestProperty) {
 
 //  private val contestProperty: ObjectProperty[Contest] = contestPropertyObject.contestProperty
 //

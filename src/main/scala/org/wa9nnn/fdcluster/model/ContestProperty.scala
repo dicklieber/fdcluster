@@ -52,7 +52,12 @@ class ContestProperty @Inject()(fileContext: FileContext) extends PersistablePro
 
   lazy val contestNameProperty: StringProperty = new StringProperty()
 
-  def contestName: String = contestNameProperty.value
+  def contestName: String = contestNameProperty.value match {
+    case "FD" => "ARRL-FIELD-DAY"
+      // Winter Fields not in ADIF Contest ID Enumeration at least on 5/19/2021 https://adif.org/312/ADIF_312.htm#Contest_ID
+    case x =>
+      x
+  }
 
   lazy val ourExchangeProperty: ObjectProperty[Exchange] = new ObjectProperty[Exchange]()
 
@@ -68,7 +73,5 @@ class ContestProperty @Inject()(fileContext: FileContext) extends PersistablePro
     okToLogProperty.value = contest.isOk
   }
 
-  override def update(v: Contest): Unit =
-    throw new IllegalStateException("Use save or saveIfNewer!")
 }
 

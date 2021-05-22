@@ -19,82 +19,62 @@
 
 package org.wa9nnn.fdcluster.javafx.entry
 
-import _root_.scalafx.application.Platform
 import _root_.scalafx.scene.control.Label
-import _root_.scalafx.scene.layout.{Pane, VBox}
-import akka.actor.ActorRef
-import akka.pattern.ask
-import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
-import org.scalafx.extras.onFX
-import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
-import org.wa9nnn.fdcluster.model.{BandMode, QsoMetadata}
-import org.wa9nnn.fdcluster.store.{Search, SearchResult}
+import org.scalafx.extras.{onFX, onFXAndWait}
+import org.wa9nnn.fdcluster.model.Qso
+import org.wa9nnn.fdcluster.store.SearchResult
 import org.wa9nnn.util.WithDisposition
+import scalafx.beans.property.StringProperty
 
+import javax.inject.Singleton
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import scala.util.{Failure, Success}
+import scala.util.{Failure, Success, Try}
 
-class ActionResult(storeActor: ActorRef, qsoMetadata: QsoMetadata)(implicit timeout: Timeout) extends LazyLogging {
+@Singleton
+class ActionResult extends Label("todo") with WithDisposition with LazyLogging {
+  val tp: StringProperty = text
 
-  def potentiaDup(partial: CallSign): Unit = {
-    val bm=BandMode()//todo when we re do station panel in EntryScene
-    val future: Future[SearchResult] = (storeActor ? Search(partial, bm)).mapTo[SearchResult]
-    future.onComplete {
+  def sadMessage(str: String): Unit = {
+    text = str
+    sad()
+  }
+
+
+  def apply(f: Try[Qso]): Unit = {
+    onFX(f match {
       case Failure(exception) =>
-        logger.error(s"Search for dup: $partial", exception)
-      case Success(searchResult: SearchResult) =>
-        Platform.runLater {
-          clear()
-          searchResult.qsos.foreach { qsoRecord =>
-//            val qsoBandMode = qsoRecord.qso.bandMode
-            add(new Label(s"${qsoRecord.qso.callSign}") {
-              styleClass.addAll("qsoField", "sadQso", "sad")
-            })
-          }
-          add(new Label(searchResult.display()))
-          onFX {
-            done()
-          }
+        text = exception.getMessage
+        sad()
+      case Success(qso) =>
+        tp.value = s"Added ${qso.callSign}"
+        happy()
+    })
+  }
+
+  def apply(eventualSearchresult: Future[SearchResult]): Unit = {
+    eventualSearchresult.foreach { searchResult =>
+      logger.whenTraceEnabled {
+        logger.trace(s"Action : $searchResult")
+      }
+
+      val value: String = searchResult.qsos.map(qso =>
+        qso.callSign).mkString("\n")
+      eventualSearchresult.foreach { searchResult =>
+        logger.whenTraceEnabled {
+          logger.trace(s"Action s: $value")
         }
+        onFXAndWait {
+          text = value
+        }
+      }
     }
   }
 
-  def children(value: Seq[Label]): Unit = {
-    vbox.children = value
+  def clear(): Unit = {
+    text = ""
+    neutral()
   }
 
-  def showSad(text: String): Unit = {
-    vbox.children = Seq(new Label(text))
-  }
-
-  private val accum = Seq.newBuilder[Label]
-  private val vbox = new VBox()
-
-  def add(text: Label): Unit = {
-    accum += text
-  }
-
-  def addHappy(str: String): Unit = {
-    accum += new Label(str) with WithDisposition {
-      happy()
-    }
-  }
-
-  def addSad(str: String): Unit = {
-    accum += new Label(str) with WithDisposition {
-      sad()
-    }
-  }
-
-
-  def done(): Unit = {
-    val value = accum.result()
-    vbox.children = value
-  }
-
-  def clear(): Unit = accum.clear()
-
-  val pane: Pane = vbox
 }

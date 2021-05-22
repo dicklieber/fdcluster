@@ -19,17 +19,15 @@
 
 package org.wa9nnn.fdcluster.cabrillo
 
-import com.google.inject.name.Named
 import com.wa9nnn.cabrillo.model.{SimpleTagValue, TagValue}
 import com.wa9nnn.cabrillo.{Builder, CabrilloWriter}
 import org.wa9nnn.fdcluster.BuildInfo
 import org.wa9nnn.fdcluster.cabrillo.QsoFD.cabrilloDtFormat
 import org.wa9nnn.fdcluster.javafx.entry.RunningTaskInfoConsumer
 import org.wa9nnn.fdcluster.javafx.runningtask.RunningTask
-import org.wa9nnn.fdcluster.model.{ContestProperty, QsoRecord, Qso => fdQso}
-import org.wa9nnn.util.TimeHelpers
-import _root_.scalafx.collections.ObservableBuffer
+import org.wa9nnn.fdcluster.model.{ContestProperty, Qso => fdQso}
 import org.wa9nnn.fdcluster.store.QsoSource
+import org.wa9nnn.util.TimeHelpers
 
 import java.io.PrintWriter
 import java.nio.file.{Files, Paths}
@@ -44,7 +42,6 @@ class CabrilloGenerator @Inject()(qsoSource: QsoSource,
   override def taskName: String = "Cabrillo Generator"
 
 
-
   def apply(cabrilloExportRequest: CabrilloExportRequest): Unit = {
     val builder = new Builder()
     builder + ("CREATED-BY", s"${BuildInfo.name} ${BuildInfo.version}")
@@ -54,8 +51,8 @@ class CabrilloGenerator @Inject()(qsoSource: QsoSource,
     cabrilloExportRequest.cabrilloValues.fieldValues.foreach { cv =>
       builder.+(cv.tagValue)
     }
-    qsoSource.qsoIterator.foreach(qsoRecord => {
-      builder + qso(qsoRecord.qso)
+    qsoSource.qsoIterator.foreach((fdqso: fdQso) => {
+      builder + qso(fdqso)
       countOne()
     }
     )

@@ -20,7 +20,7 @@
 package org.wa9nnn.fdcluster.dupsheet
 
 import com.typesafe.scalalogging.LazyLogging
-import org.wa9nnn.fdcluster.model.{ContestProperty, QsoRecord}
+import org.wa9nnn.fdcluster.model.{ContestProperty, Qso}
 import org.wa9nnn.fdcluster.store.QsoSource
 
 import java.io.PrintWriter
@@ -40,13 +40,13 @@ class GenerateDupSheet @Inject()(qsoSource: QsoSource,
     pw.print("Dupe Sheet\r\n")
 
     var count = 0
-    qsoSource.qsoIterator.groupBy(qsoRecord =>
-      qsoRecord.qso.bandMode)
+    qsoSource.qsoIterator.groupBy(qso =>
+      qso.bandMode)
       .foreach { case (bandMode, ob) =>
         val head = s"$bandMode"
         pw.print("\r\n" + head + "\r\n")
-        val callSigns = ob.map((qsoRecord: QsoRecord) =>
-          qsoRecord.qso.callSign
+        val callSigns = ob.map((qso: Qso) =>
+          qso.callSign
         )
         callSigns.toSeq.sorted.foreach(cs => {
           pw.print(s"$cs\r\n")

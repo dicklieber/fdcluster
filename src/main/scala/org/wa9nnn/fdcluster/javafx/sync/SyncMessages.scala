@@ -24,7 +24,7 @@ import akka.http.scaladsl.model.{ContentTypes, HttpRequest}
 import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.http.DestinationActor
 import org.wa9nnn.fdcluster.model.MessageFormats.{Uuid, _}
-import org.wa9nnn.fdcluster.model.{NodeAddress, QsoRecord}
+import org.wa9nnn.fdcluster.model.{NodeAddress, Qso}
 import org.wa9nnn.fdcluster.store.network.FdHour
 import play.api.libs.json.{JsObject, Json}
 
@@ -89,7 +89,7 @@ case class UuidsAtHost(nodeAddress: NodeAddress, uuids: List[Uuid], transactionI
   override def toString: Node = f"${uuids.length} uuids from $nodeAddress"
 }
 
-case class QsosFromNode(qsos: List[QsoRecord], transactionId: TransactionId) extends ResponseMessage with JsonRequestResponse {
+case class QsosFromNode(qsos: List[Qso], transactionId: TransactionId) extends ResponseMessage with JsonRequestResponse {
   def size: Int = qsos.size
 
   override def toString: String = s"QsosFromNode for ${qsos.length} qsos"

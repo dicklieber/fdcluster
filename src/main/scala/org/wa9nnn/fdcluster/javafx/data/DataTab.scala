@@ -23,7 +23,6 @@ import _root_.scalafx.Includes._
 import _root_.scalafx.beans.property.{ReadOnlyObjectWrapper, ReadOnlyStringWrapper}
 import _root_.scalafx.collections.ObservableBuffer
 import _root_.scalafx.geometry.Pos
-import _root_.scalafx.scene.Node
 import _root_.scalafx.scene.control.TableColumn._
 import _root_.scalafx.scene.control._
 import _root_.scalafx.scene.layout.{HBox, VBox}
@@ -31,9 +30,10 @@ import akka.util.Timeout
 import com.google.inject.Inject
 import org.scalafx.extras.onFX
 import org.wa9nnn.fdcluster.contest.JournalProperty
+import org.wa9nnn.fdcluster.contest.JournalProperty._
 import org.wa9nnn.fdcluster.javafx.entry.Sections
 import org.wa9nnn.fdcluster.model.MessageFormats._
-import org.wa9nnn.fdcluster.model.QsoRecord
+import org.wa9nnn.fdcluster.model.Qso
 import org.wa9nnn.fdcluster.store.StoreLogic
 import org.wa9nnn.util.TimeHelpers
 import play.api.libs.json.Json
@@ -44,8 +44,6 @@ import java.time.format.DateTimeFormatter
 import java.time.{Instant, ZonedDateTime}
 import java.util.concurrent.TimeUnit
 import scala.util.Try
-import org.wa9nnn.fdcluster.contest.JournalProperty._
-import org.wa9nnn.fdcluster.javafx.FdCluster.dataTab
 
 /**
  * Create JavaFX UI to view QSOs.
@@ -62,9 +60,9 @@ class DataTab @Inject()(journalManager: JournalProperty, storeLogic: StoreLogic)
     formatter.format(ZonedDateTime.ofInstant(instant, TimeHelpers.utcZoneId))
   }
 
-  //  private val allQsoBuffer: ObservableBuffer[QsoRecord] = StoreMapImpl.allQsos
+  //  private val allQsoBuffer: ObservableBuffer[Qso] = StoreMapImpl.allQsos
   private val sizeLabel = new Label("--")
-  private val qsoBuffer: ObservableBuffer[QsoRecord] = storeLogic.qsoBuffer
+  private val qsoBuffer: ObservableBuffer[Qso] = storeLogic.qsoBuffer
   sizeLabel.text = f"${qsoBuffer.size}%,d"
   qsoBuffer.onChange((ob, _) ⇒
     onFX {
@@ -72,13 +70,13 @@ class DataTab @Inject()(journalManager: JournalProperty, storeLogic: StoreLogic)
     }
   )
 
-  var tableView: TableView[QsoRecord] = new TableView[QsoRecord](qsoBuffer) {
+  var tableView: TableView[Qso] = new TableView[Qso](qsoBuffer) {
     columns ++= List(
-      new TableColumn[QsoRecord, Instant] {
+      new TableColumn[Qso, Instant] {
         text = "Stamp"
         tooltip = "Times in UTC"
-        cellFactory = { _: TableColumn[QsoRecord, Instant] ⇒
-          new TableCell[QsoRecord, Instant]() {
+        cellFactory = { _: TableColumn[Qso, Instant] ⇒
+          new TableCell[Qso, Instant]() {
             styleClass += "dateTime"
             item.onChange { (_, oldValue, newValue) => {
 
@@ -89,16 +87,16 @@ class DataTab @Inject()(journalManager: JournalProperty, storeLogic: StoreLogic)
           }
         }
         cellValueFactory = { q =>
-          val ldt: Instant = q.value.qso.stamp
+          val ldt: Instant = q.value.stamp
           val wrapper = ReadOnlyObjectWrapper(ldt)
           wrapper
         }
         prefWidth = 150
       },
-      new TableColumn[QsoRecord, String] {
+      new TableColumn[Qso, String] {
         text = "CallSign"
-        cellFactory = { _: TableColumn[QsoRecord, String] ⇒
-          new TableCell[QsoRecord, String]() {
+        cellFactory = { _: TableColumn[Qso, String] ⇒
+          new TableCell[Qso, String]() {
             styleClass += "dateTime"
             item.onChange { (_, _, newValue) => {
               text = newValue
@@ -108,36 +106,36 @@ class DataTab @Inject()(journalManager: JournalProperty, storeLogic: StoreLogic)
         }
 
         cellValueFactory = { q =>
-          val wrapper = ReadOnlyStringWrapper(q.value.qso.callSign)
+          val wrapper = ReadOnlyStringWrapper(q.value.callSign)
           wrapper
         }
         prefWidth = 75
       },
-      new TableColumn[QsoRecord, String] {
+      new TableColumn[Qso, String] {
         text = "Band"
         cellValueFactory = { q =>
-          ReadOnlyStringWrapper(q.value.qso.bandMode.bandName)
+          ReadOnlyStringWrapper(q.value.bandMode.bandName)
         }
         prefWidth = 50
       },
-      new TableColumn[QsoRecord, String] {
+      new TableColumn[Qso, String] {
         text = "Mode"
         cellValueFactory = { q =>
-          ReadOnlyStringWrapper(q.value.qso.bandMode.modeName)
+          ReadOnlyStringWrapper(q.value.bandMode.modeName)
         }
         prefWidth = 50
       },
-      new TableColumn[QsoRecord, String] {
+      new TableColumn[Qso, String] {
         text = "Class"
         cellValueFactory = { q =>
-          ReadOnlyStringWrapper(q.value.qso.exchange.entryClass)
+          ReadOnlyStringWrapper(q.value.exchange.entryClass)
         }
         prefWidth = 50
       },
-      new TableColumn[QsoRecord, String] {
+      new TableColumn[Qso, String] {
         text = "Section"
         cellValueFactory = { q =>
-          val sectionCode: String = q.value.qso.exchange.sectionCode
+          val sectionCode: String = q.value.exchange.sectionCode
           val name: String = {
             try {
               Sections.byCode(sectionCode).name

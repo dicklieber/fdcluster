@@ -1,29 +1,24 @@
 package org.wa9nnn.fdcluster.store
 
-import akka.util.ByteString
+import _root_.scalafx.collections.ObservableBuffer
 import com.google.inject.name.Named
 import nl.grons.metrics4.scala.{DefaultInstrumented, Timer}
 import org.apache.commons.codec.binary.{Base64InputStream, Base64OutputStream}
-import org.wa9nnn.fdcluster.model.MessageFormats.Uuid
-import org.wa9nnn.fdcluster.model.{NodeAddress, QsoMetadata, QsoRecord}
+import org.wa9nnn.fdcluster.model.MessageFormats.{Uuid, _}
+import org.wa9nnn.fdcluster.model.{NodeAddress, Qso}
 import play.api.libs.json.Json
-import _root_.scalafx.beans.property.ObjectProperty
-import _root_.scalafx.collections.ObservableBuffer
-import _root_.scalafx.Includes._
-import org.wa9nnn.fdcluster.model.MessageFormats._
 
-import java.io.{BufferedReader, ByteArrayInputStream, ByteArrayOutputStream, InputStreamReader, StringWriter}
+import java.io.{BufferedReader, ByteArrayInputStream, ByteArrayOutputStream, InputStreamReader}
 import java.nio.ByteBuffer
-import java.util.UUID
 import java.util.zip.{GZIPInputStream, GZIPOutputStream}
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class SquozeQsos @Inject()(nodeAddress: NodeAddress, @Named("allQsos") allQsos: ObservableBuffer[QsoRecord])
+class SquozeQsos @Inject()(nodeAddress: NodeAddress, @Named("allQsos") allQsos: ObservableBuffer[Qso])
   extends DefaultInstrumented {
 
   private val uuidEncode: Timer = metrics.timer("uuidEncode")
-  private val qsoRecordEncode: Timer = metrics.timer("qsoRecordEncode")
+  private val QsoEncode: Timer = metrics.timer("QsoEncode")
 
 
   def encodeUuids(): NodeUuids = {
@@ -43,7 +38,7 @@ class SquozeQsos @Inject()(nodeAddress: NodeAddress, @Named("allQsos") allQsos: 
       val byteBuffer = ByteBuffer.allocate(allQsos.size * 16)
       allQsos.foreach(qr => {
 //        val uuid = UUID.fromString(qr.qso.uuid)
-        val uuid = qr.qso.uuid
+        val uuid = qr.uuid
         byteBuffer.putLong(uuid.getLeastSignificantBits)
         byteBuffer.putLong(uuid.getMostSignificantBits)
       })
@@ -90,7 +85,7 @@ class SquozeQsos @Inject()(nodeAddress: NodeAddress, @Named("allQsos") allQsos: 
 
 }
 
-class QsoDecoder(nodeQsos: NodeUuids) extends Iterator[QsoRecord] {
+class QsoDecoder(nodeQsos: NodeUuids) extends Iterator[Qso] {
 
   val gZIPInputStream = new GZIPInputStream(new Base64InputStream(new ByteArrayInputStream(nodeQsos.blob.getBytes)))
   val reader = new BufferedReader(new InputStreamReader(gZIPInputStream))
@@ -99,9 +94,9 @@ class QsoDecoder(nodeQsos: NodeUuids) extends Iterator[QsoRecord] {
     reader.ready()
   }
 
-  override def next(): QsoRecord = {
+  override def next(): Qso = {
     val str = reader.readLine()
-    QsoRecord(str)
+    Qso(str)
   }
 }
 

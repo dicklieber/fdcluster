@@ -2,7 +2,7 @@ package org.wa9nnn.fdcluster.store.network
 
 import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.contest.Contest
-import org.wa9nnn.fdcluster.model.DistributedQsoRecord
+import org.wa9nnn.fdcluster.model.DistributedQso
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.sync.NodeStatus
 import org.wa9nnn.fdcluster.store.JsonContainer
@@ -12,8 +12,8 @@ object MessageDecoder extends LazyLogging {
   def apply(jsonContainer: JsonContainer): Option[Any] = {
     val jsObject = Json.parse(jsonContainer.json)
     jsonContainer.className.split("""\.""").last match {
-      case "DistributedQsoRecord" ⇒
-        Some(jsObject.as[DistributedQsoRecord])
+      case "DistributedQso" ⇒
+        Some(jsObject.as[DistributedQso])
       case "NodeStatus" ⇒
         Some(jsObject.as[NodeStatus])
       case "Contest" =>

@@ -22,6 +22,11 @@ package org.wa9nnn.fdcluster.model
 import org.wa9nnn.fdcluster.BuildInfo
 import org.wa9nnn.fdcluster.javafx.NamedCellProvider
 import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
+import scalafx.beans.binding.Bindings
+import scalafx.beans.property.ObjectProperty
+
+import java.time.Instant
+import javax.inject.{Inject, Singleton}
 
 
 /**
@@ -38,7 +43,39 @@ case class QsoMetadata(operator: CallSign = "",
                        ant: String = "",
                        node: String = "localhost;1",
                        contestId: String = "FD2021WA9NNN",
-                       v: String = BuildInfo.canonicalVersion) extends NamedCellProvider {
+                       v: String = BuildInfo.canonicalVersion) extends NamedCellProvider
 
+@Singleton
+class OsoMetadataProperty @Inject()(stationProperty: StationProperty, contestProperty: ContestProperty, nodeAddress: NodeAddress)
+  extends ObjectProperty[QsoMetadata](null, "Station") with QsoBuilder {
+
+
+  def set(): QsoMetadata = {
+    val station: Station = stationProperty.value
+    QsoMetadata(
+      operator = station.operator,
+      rig = station.rig,
+      ant = station.antenna,
+      node = nodeAddress.display,
+      contestId = contestProperty.value.id
+    )
+  }
+
+  value = set()
+  private val b = Bindings.createObjectBinding[QsoMetadata](
+    () => set(),
+    stationProperty, contestProperty
+  )
+  this <== b
+
+  override def qso(callSign: CallSign, exchange: Exchange, bandMode: BandMode, stamp:Instant = Instant.now): Qso = {
+    Qso(callSign, exchange, bandMode, value)
+  }
 }
 
+trait QsoBuilder {
+  def qso(callSign: CallSign,
+          exchange: Exchange,
+          bandMode: BandMode,
+          stamp:Instant = Instant.now): Qso
+}
