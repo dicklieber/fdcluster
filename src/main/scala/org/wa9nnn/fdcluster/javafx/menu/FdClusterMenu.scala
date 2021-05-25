@@ -34,11 +34,12 @@ import org.wa9nnn.fdcluster.contest.{ContestDialog, OkToLogGate}
 import org.wa9nnn.fdcluster.dupsheet.GenerateDupSheet
 import org.wa9nnn.fdcluster.javafx.debug.{DebugRemoveDialog, ResetDialog}
 import org.wa9nnn.fdcluster.metrics.MetricsReporter
-import org.wa9nnn.fdcluster.model.{ContestProperty, ExportFile, NodeAddress}
+import org.wa9nnn.fdcluster.model.{ContestProperty, ExportFile}
 import org.wa9nnn.fdcluster.rig.RigDialog
 import org.wa9nnn.fdcluster.store.ClearStore
 import org.wa9nnn.fdcluster.tools.RandomQsoDialog
-import org.wa9nnn.fdcluster.{NetworkControl, FileContext, QsoCountCollector}
+import org.wa9nnn.fdcluster.{FileContext, QsoCountCollector}
+import scalafx.scene.control.Alert.AlertType
 
 import java.awt.Desktop
 import java.io.{PrintWriter, StringWriter}
@@ -53,21 +54,26 @@ class FdClusterMenu @Inject()(
                                injector: Injector,
                                @Named("store") store: ActorRef,
                                aboutDialog: AboutDialog,
-                               nodeAddress: NodeAddress,
                                fileManager: FileContext,
                                generateDupSheet: GenerateDupSheet,
                                contestProperty: ContestProperty,
                                summaryEngine: SummaryEngine,
                                metricsReporter: MetricsReporter,
-                               clusterControl: NetworkControl,
                                okToLogGate: OkToLogGate,
                                debugRemoveDialog: DebugRemoveDialog) extends LazyLogging {
   private implicit val timeout: Timeout = Timeout(5 seconds)
   private val desktop = Desktop.getDesktop
-  private val contestetupMenuItem: MenuItem = new MenuItem {
-    text = "Contest Setup"
+  private val contestSetupMenuItem: MenuItem = new MenuItem {
+    text = "Pre Contest Setup"
     onAction = { _: ActionEvent =>
       injector.instance[ContestDialog].showAndWait()
+    }
+  }
+  private val postContestMenuItem: MenuItem = new MenuItem {
+    text = "Post Contest"
+    onAction = { _: ActionEvent =>
+      new Alert(AlertType.Information, "Todo!").showAndWait()
+//      injector.instance[ContestDialog].showAndWait()
     }
   }
   private val dumpStatsMenuItem = new MenuItem {
@@ -183,7 +189,7 @@ class FdClusterMenu @Inject()(
       r match {
         case Failure(exception) =>
           logger.error("Generating Dup", exception)
-        case Success(qsoCount) =>
+        case Success(_) =>
           Desktop.getDesktop.open(dupFile.path.toFile)
       }
     }
@@ -248,7 +254,8 @@ class FdClusterMenu @Inject()(
       new Menu("Contest") {
         mnemonicParsing = true
         items = List(
-          contestetupMenuItem,
+          contestSetupMenuItem,
+          postContestMenuItem
         )
       },
       new Menu("_Help") {
