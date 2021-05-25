@@ -8,6 +8,8 @@ public enum ValueName {
     Node("Source"),
     HTTP("A link to that node."),
     QsoCount("Number of QSOs at the node. Should  be the same across all nodes."),
+    Band("That this station is operating on ."),
+    Mode("CW, PH or DI"),
     Operator("Who is running the station. User provided in the Station Panel."),
     Rig("Free-form text. User provided in the Station Panel."),
     Antenna("Free-form text. User provided in the Station Panel."),

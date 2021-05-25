@@ -4,9 +4,11 @@ import com.wa9nnn.util.DurationFormat
 import com.wa9nnn.util.tableui.Cell
 import org.scalafx.extras.onFX
 import scalafx.css.Styleable
-import scalafx.scene.control.Label
+import scalafx.scene.control.{Control, Hyperlink, Label, Labeled}
 import scalafx.scene.layout.HBox
 
+import java.awt.Desktop
+import java.net.URI
 import java.time.Instant
 import java.util.{Timer, TimerTask}
 
@@ -18,46 +20,90 @@ import java.util.{Timer, TimerTask}
  * @param initialValue first time, later update via update method.
  */
 class PropertyCell(valueName: ValueName, initialValue: Any = "") extends HBox {
-  private val label = new Label()
-  private val pane:Styleable = this
-  label.tooltip = valueName.getToolTip
-
-  children = Seq(label)
+  private val pane: Styleable = this
   styleClass += "clusterCell"
-  update(initialValue)
+
   var startAge: Option[Instant] = None
+  var maybeTimer: Option[Timer] = None
+
+  update(initialValue)
 
   def update(value: Any): Unit = {
-    value match {
-      case instant: Instant =>
-        startAge = Option(instant)
-        new Timer(true).scheduleAtFixedRate(new TimerTask {
-          override def run(): Unit = {
-            val start = startAge.get
+    cleanup()
 
-            onFX {
-              NodeAgeColor(start, pane)
-              label.text = DurationFormat.apply(start)
+    val control: Control = value match {
+      case instant: Instant =>
+        // want to dislay age, updafed in real-time.
+        handleAge(instant)
+      case cell: Cell =>
+        //Already a Cell
+        val control: Labeled = cell.href.map { link =>
+          implicit val desktop: Desktop = Desktop.getDesktop
+          new Hyperlink(link.url) {
+            onAction = event => {
+              desktop.browse(new URI(link.url))
             }
           }
-        }, 250, 750)
+        }.getOrElse(new Label(cell.value))
+        cell.tooltip.foreach {
+          control.tooltip = _
+        }
+        control.styleClass ++= cell.cssClass
+        control
+
       case _ =>
-    }
-    if (value.isInstanceOf[Instant]) {
-    }
+        // make a Cell use that to populate a Label
+        new Label(Cell(value).value)
 
+    }
+    control.tooltip =  valueName.getToolTip
     onFX {
-      label.text = Cell(value).value
+      children = Seq(control)
     }
-  }
-
-  override def toString(): String = {
-    s"PropertyCell: $valueName: ${label.text.value}"
   }
 
   def cleanup(): Unit = {
-
+    maybeTimer.foreach { t =>
+      t.cancel()
+      maybeTimer = None
+    }
+    startAge = None
   }
+
+  def handleAge(instant: Instant): Control = {
+    startAge = Option(instant)
+    val timer = new Timer("PropertyCellTimer", true)
+    val label = new Label()
+    timer.scheduleAtFixedRate(new TimerTask {
+      override def run(): Unit = {
+        val start = startAge.get
+
+        onFX {
+          NodeAgeColor(start, pane)
+          label.text = DurationFormat.apply(start)
+        }
+      }
+    }, 0, 750)
+    maybeTimer = Option(timer)
+    label
+  }
+
+//  def makeControl(value: Any): Control = {
+//    val cell = Cell(value)
+//    val control: Labeled = cell.href.map { link =>
+//      implicit val desktop: Desktop = Desktop.getDesktop
+//      new Hyperlink(link.url) {
+//        onAction = event => {
+//          desktop.browse(new URI(link.url))
+//        }
+//      }
+//    }.getOrElse(new Label(cell.value))
+//    control.tooltip = valueName.getToolTip
+//    control
+//    //    children = Seq(control)
+//  }
 }
+
+
 
 

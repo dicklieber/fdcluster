@@ -20,6 +20,7 @@
 package org.wa9nnn.fdcluster.model
 
 import akka.http.scaladsl.model.Uri
+import com.wa9nnn.util.tableui.Cell
 import org.wa9nnn.fdcluster.FileContext
 import org.wa9nnn.fdcluster.javafx.ValuesForNode
 import org.wa9nnn.fdcluster.javafx.cluster.NodeValueProvider
@@ -44,7 +45,7 @@ case class NodeAddress(ipAddress: String = "", hostName: String = "localhost", i
     import org.wa9nnn.fdcluster.javafx.cluster.ValueName._
 
     namedValueCollector(Node, display)
-    namedValueCollector(HTTP, uri)
+    namedValueCollector(HTTP, Cell(url.toExternalForm).withUrl(url))
   }
 
   val display: String = {

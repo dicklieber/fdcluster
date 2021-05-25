@@ -87,6 +87,8 @@ case class Station(bandName: Band = "20m", modeName: Mode = "PH",
   override def collectNamedValues(namedValueCollector: ValuesForNode): Unit = {
     import org.wa9nnn.fdcluster.javafx.cluster.ValueName._
 
+    namedValueCollector(Band, bandName)
+    namedValueCollector(Mode, modeName)
     namedValueCollector(Operator, operator)
     namedValueCollector(Rig, rig)
     namedValueCollector(Antenna, antenna)
