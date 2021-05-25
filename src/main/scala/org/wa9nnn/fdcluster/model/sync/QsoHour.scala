@@ -20,7 +20,6 @@
 package org.wa9nnn.fdcluster.model.sync
 
 import com.wa9nnn.util.tableui.Cell
-import org.wa9nnn.fdcluster.javafx.{NamedCellProvider, NamedValue, NamedValueCollector, ValueName}
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.{Qso, sync}
 import org.wa9nnn.fdcluster.store.network.FdHour
@@ -73,7 +72,7 @@ object QsoHour {
  * @param digest      of all the QsoIDs in this hour.
  * @param size        number of Qsos in this hour.  //todo Do we actually need this? isn't the digest sufficient?
  */
-case class QsoHourDigest(fdHour: FdHour, digest: Digest, size: Int) extends NamedCellProvider {
+case class QsoHourDigest(fdHour: FdHour, digest: Digest, size: Int)  {
 
   override def toString: Node = {
     super.toString
@@ -89,9 +88,6 @@ case class QsoHourDigest(fdHour: FdHour, digest: Digest, size: Int) extends Name
     }
   }
 
-  override def collectNamedValues(namedValueCollector: NamedValueCollector): Unit = {
-    namedValueCollector(NamedValue(ValueName(getClass, fdHour.display), digest))
-  }
 }
 
 case class QsoHourIds(startOfHour: FdHour, qsiIds: List[Uuid])

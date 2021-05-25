@@ -3,9 +3,10 @@ package org.wa9nnn.fdcluster.model
 
 import _root_.scalafx.beans.binding.Bindings
 import _root_.scalafx.beans.property.{ObjectProperty, StringProperty}
-import org.wa9nnn.fdcluster.javafx.NamedCellProvider
-import org.wa9nnn.fdcluster.model.Station.{Band, Mode}
+import org.wa9nnn.fdcluster.javafx.ValuesForNode
+import org.wa9nnn.fdcluster.javafx.cluster.NodeValueProvider
 import org.wa9nnn.fdcluster.model.MessageFormats._
+import org.wa9nnn.fdcluster.model.Station.{Band, Mode}
 import org.wa9nnn.util.Persistence
 
 import javax.inject.{Inject, Singleton}
@@ -78,9 +79,18 @@ object Station {
  */
 case class Station(bandName: Band = "20m", modeName: Mode = "PH",
                    operator: CallSign = "", rig: String = "", antenna: String = "")
-  extends NamedCellProvider[Station] {
+  extends NodeValueProvider {
   override def toString: String = s"$bandName $modeName $operator"
 
   lazy val bandMode: BandMode = BandMode(bandName, modeName)
+
+  override def collectNamedValues(namedValueCollector: ValuesForNode): Unit = {
+    import org.wa9nnn.fdcluster.javafx.cluster.ValueName._
+
+    namedValueCollector(Operator, operator)
+    namedValueCollector(Rig, rig)
+    namedValueCollector(Antenna, antenna)
+
+  }
 }
 

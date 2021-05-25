@@ -20,7 +20,8 @@
 package org.wa9nnn.fdcluster.model
 
 import org.wa9nnn.fdcluster.BuildInfo
-import org.wa9nnn.fdcluster.javafx.NamedCellProvider
+import org.wa9nnn.fdcluster.javafx.{NamedCellProvider, ValuesForNode}
+import org.wa9nnn.fdcluster.javafx.cluster.NodeValueProvider
 import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
 import scalafx.beans.binding.Bindings
 import scalafx.beans.property.ObjectProperty
@@ -43,7 +44,7 @@ case class QsoMetadata(operator: CallSign = "",
                        ant: String = "",
                        node: String = "localhost;1",
                        contestId: String = "FD2021WA9NNN",
-                       v: String = BuildInfo.canonicalVersion) extends NamedCellProvider
+                       v: String = BuildInfo.canonicalVersion)
 
 @Singleton
 class OsoMetadataProperty @Inject()(stationProperty: StationProperty, contestProperty: ContestProperty, nodeAddress: NodeAddress)

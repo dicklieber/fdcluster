@@ -17,7 +17,6 @@
 
 package org.wa9nnn.fdcluster.store
 
-import com.codahale.metrics.SharedMetricRegistries
 import org.apache.commons.io.FileUtils._
 import org.specs2.execute.{AsResult, Result}
 import org.specs2.mock.Mockito
@@ -28,7 +27,6 @@ import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.store.network.MulticastSender
 import org.wa9nnn.fdcluster.{FileContext, MockFileContext}
-import org.wa9nnn.util.{CommandLine, Persistence, PersistenceImpl}
 import scalafx.collections.ObservableBuffer
 
 import java.nio.file.{Files, Path}
@@ -42,6 +40,7 @@ trait StoreLogicContext extends ForEach[StoreLogic] with Mockito {
     val journalManager = mock[JournalProperty]
     val journalLoader = mock[JournalLoader]
     val journalWriter = mock[JournalWriter]
+    val stationProperty = mock[StationProperty]
     val contestProperty: ContestProperty = mock[ContestProperty]
     val storeSender: StoreSender = mock[StoreSender]
     val multicastSender: MulticastSender = mock[MulticastSender]
@@ -55,7 +54,8 @@ trait StoreLogicContext extends ForEach[StoreLogic] with Mockito {
       journalLoader = journalLoader,
       journalWriter = journalWriter,
       listeners = Set(listener),
-      storeSender = storeSender
+      storeSender = storeSender,
+      stationProperty = stationProperty
     )
 
 

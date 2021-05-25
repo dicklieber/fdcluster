@@ -9,5 +9,4 @@ import java.time.Instant
 trait Stamped[T <: Stamped[T]] extends Product{
   val stamp: Instant
 
-
 }

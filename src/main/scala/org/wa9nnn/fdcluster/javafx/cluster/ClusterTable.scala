@@ -1,176 +1,127 @@
-/*
- * Copyright (C) 2021  Dick Lieber, WA9NNN
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
-
 package org.wa9nnn.fdcluster.javafx.cluster
 
-import _root_.scalafx.collections.ObservableMap
-import _root_.scalafx.scene.control.TableView
-import com.typesafe.scalalogging.LazyLogging
+import com.wa9nnn.util.tableui.Cell
+import javafx.scene.Node
 import org.scalafx.extras.onFX
+import org.wa9nnn.fdcluster.javafx.ValuesForNode
+import org.wa9nnn.fdcluster.javafx.cluster.PropertyNames.rows
 import org.wa9nnn.fdcluster.model.NodeAddress
-import org.wa9nnn.fdcluster.store.network.cluster.{ClusterState, NodeStateContainer}
-import scalafx.scene.layout.HBox
+import scalafx.scene.layout.GridPane
 
 import javax.inject.{Inject, Singleton}
 import scala.collection.concurrent.TrieMap
 
-/**
- * Produce a [[TableView]]  of a collection of [[NodeStateContainer]]s.
- */
 @Singleton
-class ClusterTable @Inject()(clusterState: ClusterState) extends HBox with LazyLogging {
+class ClusterTable @Inject()(implicit nodeAddress: NodeAddress) extends GridPane {
+  styleClass += "clusterTable"
+  val nodeColumns = new NodeColumns()
 
-  private val clusterColumnMap = new TrieMap[NodeAddress, ClusterColumn]()
+  def update(values: ValuesForNode): Unit = {
 
-  clusterState.nodes.onChange { (_, change) =>
-    change match {
-      case ObservableMap.Add(key, added) =>
-        clusterColumnMap.put(key, new ClusterColumn(added))
-      case ObservableMap.Remove(key, removed) =>
-        clusterColumnMap.remove(key)
-      case ObservableMap.Replace(key, added, _) =>
-        logger.error(s"Should never replace a node!")
-        clusterColumnMap.replace(key, new ClusterColumn(added))
-      case _ =>
-        logger.info("unexpected")
-    }
+    if (nodeColumns.update(values))
+      updateGridLayout()
+
+  }
+
+  this.getRowConstraints
+
+  def updateGridLayout() {
     onFX {
-      children = clusterColumnMap.values.toSeq.sortBy(_.nodeStatusProperty.value.nodeAddress)
+      children.clear()
+
+      rows.foreach { case (name, row) =>
+        add(new PropertyCell(name, name.getDisplay) {
+          styleClass += "clusterRowHeader"
+        }, 0, row)
+      }
+
+      for {
+        col: CellsForNode <- nodeColumns.cols
+        row <- rows
+      } {
+        val propertyCell: PropertyCell = col.cellValue(row._1)
+        add(propertyCell, col.column, row._2)
+      }
     }
   }
 
-  /*
-    private val data: ObservableBuffer[Row] = ObservableBuffer.from(Seq.empty[Row])
-    val tableView = new TableView[Row](data)
+}
 
-    def refresh(nodes: Iterable[NodeStatus]): Unit = {
-      implicit val byAddress: mutable.Map[NodeAddress, NodeStatus] = new TrieMap[NodeAddress, NodeStatus]()
-      val hours: mutable.Set[FdHour] = mutable.Set.empty
-      nodes.foreach { nodeStatus ⇒
-        byAddress.put(nodeStatus.nodeAddress, nodeStatus)
-        nodeStatus.qsoHourDigests.foreach(qsoHourDigest ⇒
-          hours add qsoHourDigest.fdHour
-        )
+/**
+ * Hold the [[PropertyCell]]s for a node.
+ * Values for the cells can be updated when a new [[org.wa9nnn.fdcluster.model.sync.NodeStatus]] is received.
+ *
+ * @param nodeAddress from whom we got this.
+ */
+class NodeColumns(implicit nodeAddress: NodeAddress) {
+  val map = new TrieMap[NodeAddress, CellsForNode]()
+
+  /**
+   *
+   * @param valuesForNode from a [[NodeStatus]]
+   * @return new column that needs to be layed out..
+   */
+  def update(valuesForNode: ValuesForNode): Boolean = {
+    var changedLayout = false
+    val r: CellsForNode = map.getOrElseUpdate(valuesForNode.nodeAddress, {
+      val usedColumnIndices: List[Int] = map.values.map(_.column).toList
+      var nextAvailableColumn = 1
+      while (usedColumnIndices.contains(nextAvailableColumn)) {
+        nextAvailableColumn += 1
       }
+      changedLayout = true
+      CellsForNode(valuesForNode.nodeAddress, nextAvailableColumn)
 
-      val orderedNodes: List[NodeAddress] = byAddress.keySet.toList.sorted
+    })
+    r.update(valuesForNode)
+    changedLayout
+  }
 
-      //    /**
-      //     *
-      //     * @param rowHeader string for 1st column
-      //     * @param callback  how to extract body cell from a NodeStateContainer. Will be called for each NodeStateContainer.
-      //     * @return a row for the table
-      //     */
+  /**
+   * Used to layout the cells in a grid.
+   *
+   * @return
+   */
+  def cols: Iterable[CellsForNode] = {
+    map.values
+  }
+}
 
-      /**
-       *
-       * @param rowHeader
-       * @param callback
-       * @return
-       */
-      def buildRow(rowHeader: String, callback: NodeStatus ⇒ Any): Row = {
-        MetadataRow(Cell(rowHeader), orderedNodes.map(nodeAddress ⇒ {
-          val container = byAddress(nodeAddress)
-          Cell(callback(container))
-        }))
+/**
+ *
+ * @param values to get names, setup cells and set initial values.
+ * @param column where in the grid.
+ */
+case class CellsForNode(nodeAddress: NodeAddress, column: Int)(implicit ourNodeAddress: NodeAddress) {
+  val map: TrieMap[ValueName, PropertyCell] = new TrieMap[ValueName, PropertyCell]()
+
+  private val initialValue = if (nodeAddress == ourNodeAddress)
+    Cell("Us").withStyle("ourNode")
+  else
+    ""
+  map.put(PropertyNames.colHeaderName,
+    new PropertyCell(PropertyNames.colHeaderName, initialValue)
+  )
+  ValueName.values().foreach(n => map.put(n, new PropertyCell(n)))
+
+
+  def cellValue(name: ValueName): PropertyCell = {
+    map.getOrElse(name, new PropertyCell(name,s"No cell for name: $name"))
+  }
+
+  def update(namedValues: ValuesForNode): Unit = {
+    namedValues.result.foreach { nv =>
+      try {
+        map(nv.name).update(nv.value)
+      } catch {
+        case e: Exception =>
+          e.printStackTrace()
       }
-
-      def buildHours: List[Row] = {
-        hours.toList.sorted.map { fdHour: FdHour ⇒
-          val digestAndContainers = orderedNodes.map { nodeAddress ⇒
-            val container = byAddress(nodeAddress)
-            val maybeDigest: Option[QsoHourDigest] = container.digestForHour(fdHour)
-            val qhd: QsoHourDigest = maybeDigest match {
-              case Some(qhd: QsoHourDigest) ⇒
-                qhd
-              case None ⇒
-                QsoHourDigest(fdHour, "--", 0)
-            }
-            qhd -> container
-          }
-
-          HourRow(fdHour.toCell, digestAndContainers)
-        }
-      }
-
-      val rows: List[Row] = List(
-        buildRow("HTTP", ns => Cell(ns.nodeAddress.hostName)
-          .withUrl(ns.nodeAddress.url.toExternalForm)),
-        buildRow("Age", ns => Cell().asColoredAge(ns.nodeStatus.stamp)),
-        buildRow("QSOs", ns => Cell(ns.nodeStatus.qsoCount).withToolTip(
-          """How many QSO stored at this node.
-            |This should be the same accross all nodes in the cluster.""".stripMargin)),
-        buildRow("Journal", ns => Cell(ns.nodeStatus.maybeJournal.map(_.journalFileName).getOrElse("--"))
-          .withToolTip(
-            """Name of the file that where QSo are journaled.
-              |This should be the same accross all nodes in the cluster.
-              |""".stripMargin)),
-        buildRow("Band", _.nodeStatus.currentStation.bandName),
-        buildRow("Mode", _.nodeStatus.currentStation.modeName),
-        buildRow("Operator", _.nodeStatus.currentStation.operator),
-        buildRow("Rig", _.nodeStatus.currentStation.rig),
-        buildRow("Antenna", _.nodeStatus.currentStation.antenna),
-      ) ++ buildHours
-
-      data.clear()
-      data.addAll(rows: _*)
-
-      def buildColumns: Seq[TableColumn[Row, Cell]] = {
-        val colTexts: List[String] = orderedNodes.map(_.display)
-
-        colTexts.zipWithIndex.map(e ⇒
-          new TableColumn[Row, Cell] {
-            sortable = false
-            val colIndex = e._2
-            text = e._1
-            cellValueFactory = { x: TableColumn.CellDataFeatures[Row, Cell] ⇒
-              val row: Row = x.value
-              val r: Cell = row.cells(colIndex)
-              new ObjectProperty(row, "row", r)
-            }
-
-            cellFactory = { _: TableColumn[Row, Cell] =>
-              new FdClusterTableCell[Row]
-            }
-          }
-        )
-      }
-
-      val rowHeaderCol = new TableColumn[Row, Cell] {
-        text = "Node"
-        cellFactory = { _: TableColumn[Row, Cell] =>
-          new FdClusterTableCell[Row]
-        }
-        cellValueFactory = { q: TableColumn.CellDataFeatures[Row, Cell] ⇒
-          val r = new ObjectProperty(q.value, name = "rowHeader", q.value.rowHeader)
-          r
-        }
-        sortable = false
-      }
-
-      onFX {
-        tableView.columns.clear()
-        tableView.columns += rowHeaderCol
-        buildColumns.foreach(tc ⇒
-          tableView.columns += tc
-        )
-      }
-    }*/
+    }
+  }
+  def cleanup:Unit = {
+    map.values.foreach(_.cleanup())
+  }
 }
 
 

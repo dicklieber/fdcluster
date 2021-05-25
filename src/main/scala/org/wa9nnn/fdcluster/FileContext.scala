@@ -33,7 +33,7 @@ import scala.reflect.ClassTag
 class FileContext extends Persistence {
   val userDir: Path = Paths.get(System.getProperty("user.home")).toAbsolutePath
   val instance: Option[Int] = Option(System.getProperty("instance")).map(_.toInt)
-  val directory: Path = userDir.resolve(s"fdcluster${instance}")
+  val directory: Path = userDir.resolve(s"fdcluster${instance.getOrElse("")}")
   val nodeAddress: NodeAddress = NodeAddress(this)
 
   val logsDirectory: Path = directory.resolve("logs")
@@ -70,6 +70,19 @@ class FileContext extends Persistence {
     val dir: String = directory.resolve(contestName).toAbsolutePath.toString
     ExportFile(dir, s"$fileBase.${extension.dropWhile(_ == '.')}")
   }
+
+
+  /**
+   *
+   * @param tag provided by scala because of [T: ClassTag]
+   * @tparam T of a case class that has a Writes[T]. in org.wa9nnn.fdcluster.model.MessageFormats
+   * @return path of file for this case class.
+   */
+   def pathForClass[T: ClassTag]()(implicit tag: ClassTag[T]): Path = {
+    val last = tag.toString.split("""\.""").last
+    varDirectory.resolve(last + ".json")
+  }
+
 }
 
 

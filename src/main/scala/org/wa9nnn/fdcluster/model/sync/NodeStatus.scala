@@ -21,35 +21,52 @@ package org.wa9nnn.fdcluster.model.sync
 
 import org.wa9nnn.fdcluster.BuildInfo
 import org.wa9nnn.fdcluster.contest.Contest
-import org.wa9nnn.fdcluster.javafx.NamedCellProvider
-import org.wa9nnn.fdcluster.model.{Station, Journal, NodeAddress, QsoMetadata}
+import org.wa9nnn.fdcluster.javafx.ValuesForNode
+import org.wa9nnn.fdcluster.javafx.cluster.ValueName
+import org.wa9nnn.fdcluster.model.{Journal, NodeAddress, Station}
 import org.wa9nnn.fdcluster.store.network.FdHour
 
 import java.time.Instant
 
 /**
  *
- * @param nodeAddress      our IP and instance.
- * @param qsoCount         of QSOs in db.
- * @param qsoHourDigests   for quickly determining what we have.
- * @param qsoMetadata      band, mode, operator etc.
- * @param currentStation   band mode and current operator
- * @param stamp            when this message was generated.
+ * @param nodeAddress        our IP and instance.
+ * @param qsoCount           of QSOs in db.
+ * @param qsoHourDigests     for quickly determining what we have.
+ * @param qsoMetadata        band, mode, operator etc.
+ * @param station            band mode and current operator
+ * @param stamp              when this message was generated.
  * @param ver                FDCLuster Version that built this so we can detect mismatched versions.
  *
  */
 case class NodeStatus(nodeAddress: NodeAddress,
-                      qsoCount: Int,
-                      qsoHourDigests: List[QsoHourDigest],
-                      qsoMetadata: QsoMetadata,
-                      currentStation: Station,
-                      contest: Contest,
-                      journal: Journal,
+                      qsoCount: Int = 0,
+                      qsoHourDigests: List[QsoHourDigest] = List.empty,
+                      station: Station = Station(),
+                      contest: Option[Contest] = None,
+                      journal: Option[Journal] = None,
+                      osName: String = System.getProperty("os.name"),
                       stamp: Instant = Instant.now(),
-                      ver: String = BuildInfo.canonicalVersion) extends NamedCellProvider[NodeStatus] with  ClusterMessage{
+                      ver: String = BuildInfo.canonicalVersion) extends ClusterMessage {
 
+  assert(station != null, "null BandModeOperator")
 
-  assert(currentStation != null, "null BandModeOperator")
+  def values: ValuesForNode = {
+    import org.wa9nnn.fdcluster.javafx.cluster.ValueName._
+    val collector = ValuesForNode(nodeAddress, qsoHourDigests)
+    nodeAddress.collectNamedValues(collector)
+    collector(QsoCount, qsoCount)
+    station.collectNamedValues(collector)
+    contest.foreach { contest =>
+      collector(CallSign, contest.callSign)
+      collector(ValueName.Contest, contest.id)
+    }
+    collector(ValueName.Journal, journal.map(_.journalFileName).getOrElse("Not Set"))
+    collector(Stamp, stamp)
+    collector(Version, ver)
+    collector(OS, osName)
+    collector
+  }
 
   def digestForHour(fdHour: FdHour): Option[QsoHourDigest] = {
     qsoHourDigests.find(_.fdHour == fdHour)

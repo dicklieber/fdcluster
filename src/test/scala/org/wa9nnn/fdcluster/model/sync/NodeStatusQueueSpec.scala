@@ -2,7 +2,7 @@ package org.wa9nnn.fdcluster.model.sync
 
 import org.specs2.mutable.Specification
 import org.wa9nnn.fdcluster.contest.Contest
-import org.wa9nnn.fdcluster.model.{Station, Journal, NodeAddress, QsoMetadata}
+import org.wa9nnn.fdcluster.model.{Journal, NodeAddress, Station}
 
 import java.time.Instant
 
@@ -11,10 +11,9 @@ class NodeStatusQueueSpec extends Specification {
   val ns0: NodeStatus = NodeStatus(nodeAddress = address0,
     qsoCount = 42,
     qsoHourDigests = List.empty,
-    currentStation = Station(),
-    qsoMetadata = QsoMetadata(),
-    contest = Contest(),
-    journal = Journal()
+    station = Station(),
+    contest = Option(Contest()),
+    journal = Option(Journal())
   )
 
   "NodeStatusQueue" >> {

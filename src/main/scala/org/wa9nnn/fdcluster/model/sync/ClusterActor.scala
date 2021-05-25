@@ -9,7 +9,7 @@ import org.wa9nnn.fdcluster.contest.JournalProperty
 import org.wa9nnn.fdcluster.http.HttpClientActor
 import org.wa9nnn.fdcluster.javafx.sync._
 import org.wa9nnn.fdcluster.model.MessageFormats._
-import org.wa9nnn.fdcluster.model.{ContestProperty, Station, NodeAddress, QsoMetadata}
+import org.wa9nnn.fdcluster.model.{ContestProperty, NodeAddress}
 import org.wa9nnn.fdcluster.store.DumpCluster
 import org.wa9nnn.fdcluster.store.network.cluster.ClusterState
 
@@ -17,6 +17,15 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
+/**
+ * Handles [[NodeStatus]] messages from all nodes, including our own.
+ * @param nodeAddress
+ * @param store
+ * @param nodeStatusQueue
+ * @param clusterState
+ * @param contestProperty
+ * @param journalProperty
+ */
 class ClusterActor(nodeAddress: NodeAddress,
                    @Named("store") store: ActorRef,
                    @Named("nodeStatusQueue") nodeStatusQueue: ActorRef,
@@ -29,15 +38,7 @@ class ClusterActor(nodeAddress: NodeAddress,
 
   private val httpClient: ActorRef = context.actorOf(Props(classOf[HttpClientActor], store, context.self))
 
-  private var ourNodeStatus: NodeStatus = NodeStatus(
-    nodeAddress = nodeAddress,
-    qsoCount = 0,
-    qsoHourDigests = List.empty,
-    qsoMetadata = QsoMetadata(),
-    currentStation = Station(),
-    contest = contestProperty.value,
-    journal = journalProperty.value
-  )
+  private var ourNodeStatus: NodeStatus = NodeStatus(nodeAddress = nodeAddress)
 
   override def receive: Receive = {
 
@@ -49,13 +50,13 @@ class ClusterActor(nodeAddress: NodeAddress,
       if (ns.nodeAddress == nodeAddress) {
         ourNodeStatus = ns
       } else {
-        journalProperty.update(ns.journal)
-        contestProperty.update(ns.contest)
+        ns.journal.foreach(journal => journalProperty.update(journal))
+        ns.contest.foreach(contest => contestProperty.update(contest))
         nodeStatusQueue ! ns
 
-      (nodeStatusQueue ? NextNodeStatus).mapTo[Option[NodeStatus]].map {
-        {
-          _.map { ns =>
+        (nodeStatusQueue ? NextNodeStatus).mapTo[Option[NodeStatus]].map {
+          {
+            _.map { ns =>
 
 
               val messages = ns.qsoHourDigests.flatMap { otherQsoHourDigest: QsoHourDigest =>

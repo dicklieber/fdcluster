@@ -47,10 +47,10 @@ trait Persistence {
  * A simple persistence engine that between case classes and files
  * Files are persisted in the basePath directory using a file name that is the class name (without path)
  *
- * @param fileManager where to write files
+ * @param fileContext where to write files
  */
-class PersistenceImpl @Inject()(fileManager: FileContext) extends Persistence with LazyLogging {
-  val path: Path = fileManager.varDirectory
+class PersistenceImpl @Inject()(fileContext: FileContext) extends Persistence with LazyLogging {
+  val path: Path = fileContext.varDirectory
   Files.createDirectories(path)
   if (!Files.isDirectory(path)) {
     throw new IllegalStateException(s"${path.toAbsolutePath.toString} does not exist or can't be created!")
@@ -65,7 +65,7 @@ class PersistenceImpl @Inject()(fileManager: FileContext) extends Persistence wi
    */
   override def saveToFile[T <: Product : ClassTag](candidate: T)(implicit writes: Writes[T]): Unit = {
     Try {
-      val path = pathForClass[T]
+      val path = fileContext.pathForClass[T]
       Files.createDirectories(path.getParent)
       val sJson = Json.prettyPrint(Json.toJson(candidate))
       Files.writeString(path, sJson, TRUNCATE_EXISTING, WRITE, CREATE)
@@ -78,29 +78,18 @@ class PersistenceImpl @Inject()(fileManager: FileContext) extends Persistence wi
    * @tparam T of case class saved via [[saveToFile()]]
    */
   private def loadFromFile[T: ClassTag]()(implicit writes: Reads[T]): Try[T] = {
-    val path1 = pathForClass[T]
-    logger.debug(s"Trying $path1")
+    val path = fileContext.pathForClass[T]
+    logger.debug(s"Trying $path")
     val r = Try {
-      Json.parse(Files.readString(path1)).as[T]
+      Json.parse(Files.readString(path)).as[T]
     }
     r match {
       case Failure(exception) =>
-        logger.debug(s"$path1", exception)
+        logger.debug(s"$path", exception)
       case Success(value) =>
         logger.debug(s"Loaded: $value")
     }
     r
-  }
-
-  /**
-   *
-   * @param tag provided by scala because of [T: ClassTag]
-   * @tparam T of a case class that has a Writes[T]. in org.wa9nnn.fdcluster.model.MessageFormats
-   * @return path of file for this case class.
-   */
-  private def pathForClass[T: ClassTag]()(implicit tag: ClassTag[T]): Path = {
-    val last = tag.toString.split("""\.""").last
-    path.resolve(last + ".json")
   }
 
   /**

@@ -84,6 +84,33 @@
     -fx-pref-width: 400;
 }
 
+.clusterTable {
+    -fx-padding: 2;
+    /*visibility: collapse;*/
+}
+
+.clusterCornerCell {
+    -fx-border-width: 1;
+}
+
+.clusterRowHeader {
+    -fx-background-color: lightGrey;
+    -fx-border-width: 0 1 1 4;
+    /*-fx-border-width: 1;*/
+    /*-fx-border-color: black*/
+    /*.root { display: block; -fx-background-color: olivedrab; } .fontStyle{ -fx-font-size: 16; -fx-font-family: "Comic Sans MS"; } .button{ } .label{ -fx-text-fill: blue; } .hbox { -fx-padding: 15; -fx-spacing: 10; } .borders{ -fx-border-color: black; -fx-border-style: dashed; -fx-border-width: 2; }*/
+}
+
+.clusterCell {
+    -fx-border-width: 0 1 1 0;
+    -fx-border-color: black;
+    -fx-padding: 3;
+}
+
+.ourNode {
+    -fx-font-weight: bold;
+    -fx-background-color: lightBlue
+}
 
 .bordered-titled-title {
     -fx-border-style: dashed;
@@ -244,6 +271,9 @@
 }
 
 .ageCurrent {
+    -fx-background-color: #a2f604;
+}
+.ageNotCurrent {
     -fx-background-color: #A6FF0059;
 }
 

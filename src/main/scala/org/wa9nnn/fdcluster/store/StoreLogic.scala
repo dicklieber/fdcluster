@@ -40,6 +40,7 @@ import scala.util.Try
 class StoreLogic @Inject()(na: NodeAddress,
                            qsoMetadataProperty: OsoMetadataProperty,
                            contestProperty: ContestProperty,
+                           stationProperty: StationProperty,
                            journalLoader: JournalLoader,
                            val journalWriter: JournalWriter,
                            journalManager: JournalProperty,
@@ -169,17 +170,14 @@ class StoreLogic @Inject()(na: NodeAddress,
         .map(_.hourDigest).toList
         .sortBy(_.fdHour)
 
-    val currentStation = Station()
 
     sync.NodeStatus(
       nodeAddress = nodeAddress,
       qsoCount = byUuid.size,
       qsoHourDigests = hourDigests,
-      qsoMetadata = qsoMetadataProperty.value,
-      currentStation = currentStation,
-      contest = contestProperty.value,
-      journal = journalManager.value)
-
+      station = stationProperty.value,
+      contest = contestProperty.maybeValue,
+      journal = journalManager.maybeValue)
   }
 
   def uuidForHour(fdHour: FdHour): List[Uuid] = {

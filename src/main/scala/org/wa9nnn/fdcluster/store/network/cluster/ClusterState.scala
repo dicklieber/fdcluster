@@ -23,6 +23,7 @@ import com.github.andyglow.config._
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import nl.grons.metrics4.scala.DefaultInstrumented
+import org.wa9nnn.fdcluster.javafx.cluster.ClusterTable
 import org.wa9nnn.fdcluster.model.NodeAddress
 import org.wa9nnn.fdcluster.model.sync.NodeStatus
 import org.wa9nnn.fdcluster.store.network.FdHour
@@ -40,7 +41,7 @@ import javax.inject.{Inject, Singleton}
  * @param ourNodeAddress who we are.
  */
 @Singleton
-class ClusterState @Inject()(ourNodeAddress: NodeAddress, config: Config) extends LazyLogging with DefaultInstrumented {
+class ClusterState @Inject()(ourNodeAddress: NodeAddress, clusterTable: ClusterTable, config: Config) extends LazyLogging with DefaultInstrumented {
 
   private val nodeStatusLife: Duration = config.get[Duration]("fdcluster.cluster.nodeStatusLife")
 
@@ -54,14 +55,7 @@ class ClusterState @Inject()(ourNodeAddress: NodeAddress, config: Config) extend
 
 
   def update(nodeStatus: NodeStatus): Unit = {
-    val nodeAddress = nodeStatus.nodeAddress
-    // don't consder using getOrElseUpdate as it will notify befoe the value is initialized!
-    nodes.get(nodeAddress) match {
-      case Some(value) =>
-        value.value = nodeStatus
-      case None =>
-        nodes.put(nodeAddress, ObjectProperty(nodeStatus))
-    }
+    clusterTable.update( nodeStatus.values)
   }
 
   def purge(): Unit = {
