@@ -80,7 +80,7 @@ object AdifQsoAdapter {
         operator = m"OPERATOR",
         rig = m"MY_RIG",
         ant = m"MY_ANTENNA",
-        node = contest.nodeAddress.display,
+        node = contest.nodeAddress.displayWithIp,
         contestId = contest.id,
         v = BuildInfo.canonicalVersion
       )

@@ -32,6 +32,7 @@ import org.wa9nnn.fdcluster.cabrillo.{CabrilloDialog, CabrilloExportRequest}
 import org.wa9nnn.fdcluster.contest.fieldday.{SummaryEngine, WinterFieldDaySettings}
 import org.wa9nnn.fdcluster.contest.{ContestDialog, OkToLogGate}
 import org.wa9nnn.fdcluster.dupsheet.GenerateDupSheet
+import org.wa9nnn.fdcluster.javafx.cluster.FdHoursDialog
 import org.wa9nnn.fdcluster.javafx.debug.{DebugRemoveDialog, ResetDialog}
 import org.wa9nnn.fdcluster.metrics.MetricsReporter
 import org.wa9nnn.fdcluster.model.{ContestProperty, ExportFile}
@@ -204,6 +205,12 @@ class FdClusterMenu @Inject()(
       }
     }
   }
+  private val fdHours = new MenuItem {
+    text = "FdHours Syncing"
+    onAction = { _ =>
+      injector.instance[FdHoursDialog].showAndWait()
+    }
+  }
 
   okToLogGate.onChange { (_, _, nv) =>
     disable(!nv)
@@ -243,6 +250,7 @@ class FdClusterMenu @Inject()(
       }, new Menu("_Debug") {
         mnemonicParsing = true
         items = List(
+          fdHours,
           upDown,
           dumpStatsMenuItem,
           debugClearStoreMenuItem,

@@ -26,12 +26,12 @@ import com.google.inject.{AbstractModule, Injector, Provides}
 import configs.Config
 import net.codingwell.scalaguice.{ScalaModule, ScalaMultibinder}
 import org.wa9nnn.fdcluster.contest.{JournalProperty, OkToLogContributer}
+import org.wa9nnn.fdcluster.javafx.cluster.{ClusterTable, FdHours}
 import org.wa9nnn.fdcluster.javafx.entry.{RunningTaskInfoConsumer, RunningTaskPane, StatsPane}
 import org.wa9nnn.fdcluster.metrics.MetricsReporter
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.model.sync.{ClusterActor, NodeStatusQueueActor}
 import org.wa9nnn.fdcluster.store._
-import org.wa9nnn.fdcluster.store.network.cluster.ClusterState
 import org.wa9nnn.fdcluster.store.network.{MultcastSenderActor, MulticastListener}
 import org.wa9nnn.util._
 
@@ -49,10 +49,10 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
   override def configure(): Unit = {
     try {
       val fileManager = new FileContext()
-      bind[FileContext] .toInstance(fileManager)
+      bind[FileContext].toInstance(fileManager)
       // File manager must be invoked before any logging is done as logback.xml uses the system property  "log.file.path"
       // which gets set by the FileManager.
-      val config:Config= ConfigApp.apply
+      val config: Config = ConfigApp.apply
       bind[CommandLine].toInstance(new CommandLineScalaFxImpl(parameters))
       bind[MulticastListener].asEagerSingleton()
       val actorSystem = ActorSystem("default", config)
@@ -77,7 +77,7 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
       bind[Config].toInstance(config)
       install(TypesafeConfigModule.fromConfigWithPackage(config, "org.wa9nnn"))
       bind[MetricsReporter].asEagerSingleton()
-      bind[QsoBuilder].to [OsoMetadataProperty]
+      bind[QsoBuilder].to[OsoMetadataProperty]
       val qsoListeners = ScalaMultibinder.newSetBinder[AddQsoListener](binder)
       qsoListeners.addBinding.to[StatsPane]
       qsoListeners.addBinding.to[QsoCountCollector]
@@ -108,12 +108,13 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
                         nodeAddress: NodeAddress,
                         @Named("store") storeActor: ActorRef,
                         @Named("nodeStatusQueue") nodestatusQueue: ActorRef,
-                        clusterState: ClusterState,
                         contestProperty: ContestProperty,
-                        journalManager: JournalProperty
+                        journalProperty: JournalProperty,
+                        clusterTable: ClusterTable,
+                        fdHours: FdHours
                        ): ActorRef = {
     actorSystem.actorOf(Props(
-      new ClusterActor(nodeAddress, storeActor, nodestatusQueue, clusterState, contestProperty, journalManager)),
+      new ClusterActor(nodeAddress, storeActor, nodestatusQueue, contestProperty, journalProperty, clusterTable, fdHours)),
       "cluster")
   }
 

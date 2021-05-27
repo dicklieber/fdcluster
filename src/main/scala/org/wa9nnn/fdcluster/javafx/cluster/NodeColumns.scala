@@ -3,6 +3,7 @@ package org.wa9nnn.fdcluster.javafx.cluster
 import org.wa9nnn.fdcluster.model.NodeAddress
 import org.wa9nnn.fdcluster.model.sync.NodeStatus
 
+import java.time.Instant
 import javax.inject.{Inject, Singleton}
 import scala.collection.concurrent.TrieMap
 
@@ -12,7 +13,19 @@ import scala.collection.concurrent.TrieMap
  *
  */
 @Singleton
-class NodeColumns @Inject()(fdHours: FdHours, ourNodeAddress: NodeAddress) {
+class NodeColumns @Inject()( ourNodeAddress: NodeAddress) {
+//  def purge(): Unit = {
+//    val tooOldStamp = Instant.now().minus(nodeStatusLife)
+//    nodes.values
+//      .map(_.value)
+//      .filter(_.stamp.isBefore(tooOldStamp))
+//      .foreach(ns => {
+//        nodes.remove(ns.nodeAddress)
+//      })
+//  }
+
+
+
   def nodeCells: Seq[NodeCells] = {
     map
       .values
@@ -29,11 +42,10 @@ class NodeColumns @Inject()(fdHours: FdHours, ourNodeAddress: NodeAddress) {
    */
   def update(nodeStatus: NodeStatus): Boolean = {
     var changedLayout = false
-    fdHours.update(nodeStatus)
 
     val r: NodeCells = map.getOrElseUpdate(nodeStatus.nodeAddress, {
       changedLayout = true
-      NodeCells(nodeStatus.nodeAddress, fdHours, ourNodeAddress)
+      NodeCells(nodeStatus.nodeAddress, ourNodeAddress)
 
     })
 

@@ -55,7 +55,7 @@ class OsoMetadataProperty @Inject()(stationProperty: StationProperty, contestPro
       operator = station.operator,
       rig = station.rig,
       ant = station.antenna,
-      node = nodeAddress.display,
+      node = nodeAddress.displayWithIp,
       contestId = contestProperty.value.id
     )
   }

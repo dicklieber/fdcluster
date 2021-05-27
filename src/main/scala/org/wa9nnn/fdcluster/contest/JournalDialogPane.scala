@@ -70,7 +70,7 @@ class JournalDialogPane @Inject()(journalProperty: JournalProperty,
   def updateLast(): Unit = {
     val journal = journalProperty.value
     currentFile.value = journal.journalFileName
-    lastFrom.value = journal.nodeAddress.display
+    lastFrom.value = journal.nodeAddress.displayWithIp
     lastAt.value = journal.stamp
   }
 

@@ -120,7 +120,7 @@ case class ContestDialogPane @Inject()(contestProperty: ContestProperty,
   private val contest: Contest = contestProperty.contest
 
   val lastGoc = new GridOfControls(5 -> 5, Insets(5.0))
-  lastGoc.add("From", contest.nodeAddress.display)
+  lastGoc.add("From", contest.nodeAddress.displayWithIp)
   lastGoc.add("At", contest.stamp)
   gridOfControls.add("Last Changed", lastGoc)
 

@@ -123,7 +123,6 @@ class AboutDialog @Inject()(appInfo: AppInfo, fileManager: FileContext, nodeAddr
       }
     )
     )
-
     showAndWait()
   }
 }

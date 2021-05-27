@@ -110,7 +110,7 @@ object FdCluster extends JFXApp with LazyLogging {
 
 
   stage = new PrimaryStage() {
-    title = "FDCluster @ " + nodeAddress.display
+    title = "FDCluster @ " + nodeAddress.displayWithIp
     scene = ourScene
     private val externalForm: String = getClass.getResource("/images/FieldDay.png").toExternalForm
     icons += new Image(externalForm)

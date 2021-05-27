@@ -45,7 +45,7 @@ case class NodeStatus(nodeAddress: NodeAddress,
                       journal: Option[Journal] = None,
                       osName: String = System.getProperty("os.name"),
                       stamp: Instant = Instant.now(),
-                      ver: String = BuildInfo.canonicalVersion) extends ClusterMessage {
+                      ver: String = BuildInfo.version) extends ClusterMessage {
 
   assert(station != null, "null BandModeOperator")
 

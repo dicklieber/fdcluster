@@ -7,11 +7,10 @@ import com.google.inject.name.Named
 import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.contest.JournalProperty
 import org.wa9nnn.fdcluster.http.HttpClientActor
+import org.wa9nnn.fdcluster.javafx.cluster.{ClusterTable, FdHours}
 import org.wa9nnn.fdcluster.javafx.sync._
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.{ContestProperty, NodeAddress}
-import org.wa9nnn.fdcluster.store.DumpCluster
-import org.wa9nnn.fdcluster.store.network.cluster.ClusterState
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
@@ -19,19 +18,14 @@ import scala.language.postfixOps
 
 /**
  * Handles [[NodeStatus]] messages from all nodes, including our own.
- * @param nodeAddress
- * @param store
- * @param nodeStatusQueue
- * @param clusterState
- * @param contestProperty
- * @param journalProperty
  */
 class ClusterActor(nodeAddress: NodeAddress,
                    @Named("store") store: ActorRef,
                    @Named("nodeStatusQueue") nodeStatusQueue: ActorRef,
-                   clusterState: ClusterState,
                    contestProperty: ContestProperty,
                    journalProperty: JournalProperty,
+                   clusterTable: ClusterTable,
+                   fdHours: FdHours,
                   ) extends Actor with LazyLogging {
   private implicit val timeout: Timeout = Timeout(5 seconds)
   context.system.scheduler.scheduleAtFixedRate(2 seconds, 17 seconds, self, Purge)
@@ -46,7 +40,8 @@ class ClusterActor(nodeAddress: NodeAddress,
 
     case ns: NodeStatus ⇒
       logger.trace(s"Got NodeStatus from ${ns.nodeAddress}")
-      clusterState.update(ns)
+      fdHours.update(ns)
+      clusterTable.update(ns)
       if (ns.nodeAddress == nodeAddress) {
         ourNodeStatus = ns
       } else {
@@ -57,8 +52,6 @@ class ClusterActor(nodeAddress: NodeAddress,
         (nodeStatusQueue ? NextNodeStatus).mapTo[Option[NodeStatus]].map {
           {
             _.map { ns =>
-
-
               val messages = ns.qsoHourDigests.flatMap { otherQsoHourDigest: QsoHourDigest =>
                 val fdHour = otherQsoHourDigest.fdHour
                 ourNodeStatus.digestForHour(fdHour) match {
@@ -85,9 +78,7 @@ class ClusterActor(nodeAddress: NodeAddress,
       }
 
     case Purge =>
-      clusterState.purge()
-    case DumpCluster ⇒
-      sender ! clusterState.dump
+      //todo purge
 
     case done: Done =>
     //todo keeps track of entire transaction

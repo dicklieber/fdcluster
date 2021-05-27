@@ -11,11 +11,11 @@ import javax.inject.{Inject, Singleton}
 import scala.collection.concurrent.TrieMap
 
 @Singleton
-class ClusterTable @Inject()(nodeColumns: NodeColumns, fdHours: FdHours) extends GridPane {
+class ClusterTable @Inject()(nodeColumns: NodeColumns) extends GridPane {
   styleClass += "clusterTable"
 
   def update(nodeStatus: NodeStatus): Unit = {
-    if (nodeColumns.update(nodeStatus) || fdHours.update(nodeStatus))
+    if (nodeColumns.update(nodeStatus) )
       updateGridLayout()
   }
 
@@ -25,13 +25,13 @@ class ClusterTable @Inject()(nodeColumns: NodeColumns, fdHours: FdHours) extends
     onFX {
       children.clear()
       // row headers
-      val namesWithIndex = fdHours.rowNames.zipWithIndex
+      val namesWithIndex = ValueName.values().zipWithIndex
       namesWithIndex.foreach { case (propertyCellName, row) =>
         add(new PropertyCell(propertyCellName, propertyCellName.name) {
           styleClass += "clusterRowHeader"
         }, 0, row)
       }
-
+      // node values e.g. body
       for {
         (cells: NodeCells, col) <- nodeColumns.nodeCells.zipWithIndex
         (name, row) <- namesWithIndex

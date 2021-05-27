@@ -47,11 +47,17 @@ case class NodeAddress(ipAddress: String = "", hostName: String = "localhost", i
     namedValueCollector(HTTP, Cell(url.toExternalForm).withUrl(url))
   }
 
-  val display: String = {
+  val displayWithIp: String = {
     if (ipAddress == "")
       "Not Set"
     else
       s"$hostName${instance.map(i => s":$i").getOrElse("")} ($ipAddress)"
+  }
+  val display: String = {
+    if (ipAddress == "")
+      "Not Set"
+    else
+      s"$hostName${instance.map(i => s":$i").getOrElse("")}"
   }
 
   val qsoNode: String = {
