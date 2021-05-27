@@ -3,6 +3,7 @@ package org.wa9nnn.fdcluster.javafx.cluster
 import com.wa9nnn.util.DurationFormat
 import com.wa9nnn.util.tableui.Cell
 import org.scalafx.extras.onFX
+import org.wa9nnn.fdcluster.model.sync.QsoHourDigest
 import scalafx.css.Styleable
 import scalafx.scene.control.{Control, Hyperlink, Label, Labeled}
 import scalafx.scene.layout.HBox
@@ -19,7 +20,7 @@ import java.util.{Timer, TimerTask}
  *
  * @param initialValue first time, later update via update method.
  */
-class PropertyCell(valueName: ValueName, initialValue: Any = "") extends HBox {
+class PropertyCell(valueName: PropertyCellName, initialValue: Any = "") extends HBox {
   private val pane: Styleable = this
   styleClass += "clusterCell"
 
@@ -33,14 +34,18 @@ class PropertyCell(valueName: ValueName, initialValue: Any = "") extends HBox {
 
     val control: Control = value match {
       case instant: Instant =>
-        // want to dislay age, updafed in real-time.
+        // want to display age, updated by a timer.
         handleAge(instant)
+
+      case qhd:QsoHourDigest=>
+        new Label(qhd.toCell.value)
+
       case cell: Cell =>
         //Already a Cell
         val control: Labeled = cell.href.map { link =>
           implicit val desktop: Desktop = Desktop.getDesktop
           new Hyperlink(link.url) {
-            onAction = event => {
+            onAction = _ => {
               desktop.browse(new URI(link.url))
             }
           }
@@ -56,7 +61,7 @@ class PropertyCell(valueName: ValueName, initialValue: Any = "") extends HBox {
         new Label(Cell(value).value)
 
     }
-    control.tooltip =  valueName.getToolTip
+    control.tooltip =  valueName.toolTip
     onFX {
       children = Seq(control)
     }

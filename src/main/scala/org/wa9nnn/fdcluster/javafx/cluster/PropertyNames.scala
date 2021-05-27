@@ -6,5 +6,4 @@ object PropertyNames {
   val rowNames: List[ValueName] =  ValueName.values().toList
 
   val colHeaderName: ValueName = rowNames.head
-  val rows: List[(ValueName, Int)] = rowNames.zipWithIndex
 }

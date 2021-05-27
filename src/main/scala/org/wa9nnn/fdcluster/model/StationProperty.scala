@@ -3,8 +3,7 @@ package org.wa9nnn.fdcluster.model
 
 import _root_.scalafx.beans.binding.Bindings
 import _root_.scalafx.beans.property.{ObjectProperty, StringProperty}
-import org.wa9nnn.fdcluster.javafx.ValuesForNode
-import org.wa9nnn.fdcluster.javafx.cluster.NodeValueProvider
+import org.wa9nnn.fdcluster.javafx.cluster.{NamedValueCollector, NodeValueProvider}
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.Station.{Band, Mode}
 import org.wa9nnn.util.Persistence
@@ -46,7 +45,7 @@ class StationProperty @Inject()(persistence: Persistence)
 
   def bandMode: BandMode = BandMode(bandName, modeName)
 
-  val b = Bindings.createObjectBinding[Station](
+  private val b = Bindings.createObjectBinding[Station](
     () => {
       val r = Station(bandNameProperty.value, modeNameProperty.value,
         operatorProperty.value,
@@ -84,7 +83,7 @@ case class Station(bandName: Band = "20m", modeName: Mode = "PH",
 
   lazy val bandMode: BandMode = BandMode(bandName, modeName)
 
-  override def collectNamedValues(namedValueCollector: ValuesForNode): Unit = {
+  override def collectNamedValues(namedValueCollector: NamedValueCollector): Unit = {
     import org.wa9nnn.fdcluster.javafx.cluster.ValueName._
 
     namedValueCollector(Band, bandName)

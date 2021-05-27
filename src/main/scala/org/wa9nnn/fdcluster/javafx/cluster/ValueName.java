@@ -3,8 +3,8 @@ package org.wa9nnn.fdcluster.javafx.cluster;
 /**
  * In order that willl appear in Cluster Table.
  */
-public enum ValueName {
-    Header("", ""),
+public enum ValueName implements PropertyCellName {
+//    Header("", ""),
     Node("Source"),
     HTTP("A link to that node."),
     QsoCount("Number of QSOs at the node. Should  be the same across all nodes."),
@@ -37,7 +37,7 @@ public enum ValueName {
         return display;
     }
 
-    public String getToolTip() {
+    public String toolTip() {
         return toolTip;
     }
 }

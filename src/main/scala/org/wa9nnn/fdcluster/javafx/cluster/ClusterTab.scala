@@ -20,6 +20,7 @@ package org.wa9nnn.fdcluster.javafx.cluster
 
 import akka.actor.{ActorRef, ActorSystem}
 import akka.pattern.ask
+import scalafx.Includes
 import akka.util.Timeout
 import com.google.inject.Inject
 import com.google.inject.name.Named
@@ -27,7 +28,7 @@ import org.wa9nnn.fdcluster.javafx.entry.AutoRefreshTab
 import org.wa9nnn.fdcluster.model.sync.NodeStatus
 import org.wa9nnn.fdcluster.store.DumpCluster
 import org.wa9nnn.fdcluster.store.network.cluster.NodeStateContainer
-import scalafx.scene.control.Tab
+import scalafx.scene.control.{ScrollPane, Tab}
 
 import java.util.concurrent.TimeUnit
 import scala.concurrent.Future
@@ -38,6 +39,10 @@ import scala.concurrent.Future
 class ClusterTab @Inject()(clusterTable: ClusterTable) extends Tab {
 
   text = "Cluster"
-  content = clusterTable
+  private val scrollPane = new ScrollPane()
+  scrollPane.content= clusterTable
+  content = scrollPane
   closable = false
+
+
 }

@@ -2,7 +2,8 @@ package org.wa9nnn.fdcluster.model
 
 import com.wa9nnn.util.TimeConverters.fileStamp
 
-import java.time.Instant
+import java.time.{Instant, LocalDateTime, ZoneId, ZonedDateTime}
+import java.time.format.DateTimeFormatter
 
 /**
  * Holds the journal filename along with some metadata about when and where is was set.
@@ -19,9 +20,13 @@ case class Journal(journalFileName: String = "", nodeAddress: NodeAddress = Node
 }
 
 object Journal {
+  private val fileStamp = DateTimeFormatter.ofPattern("YYYYMMddHHmmss")
+
+
   def apply(contestName: String, nodeAddress: NodeAddress): Journal = {
     val instant = Instant.now()
-    val fileName = contestName + fileStamp(instant) + ".json"
+    val str = fileStamp.format(LocalDateTime.now())
+    val fileName = contestName + str + ".json"
     new Journal(fileName, nodeAddress, instant)
   }
 

@@ -20,8 +20,6 @@
 package org.wa9nnn.fdcluster.model
 
 import org.wa9nnn.fdcluster.BuildInfo
-import org.wa9nnn.fdcluster.javafx.{NamedCellProvider, ValuesForNode}
-import org.wa9nnn.fdcluster.javafx.cluster.NodeValueProvider
 import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
 import scalafx.beans.binding.Bindings
 import scalafx.beans.property.ObjectProperty
@@ -70,7 +68,7 @@ class OsoMetadataProperty @Inject()(stationProperty: StationProperty, contestPro
   this <== b
 
   override def qso(callSign: CallSign, exchange: Exchange, bandMode: BandMode, stamp:Instant = Instant.now): Qso = {
-    Qso(callSign, exchange, bandMode, value)
+    Qso(callSign, exchange, bandMode, value, stamp)
   }
 }
 

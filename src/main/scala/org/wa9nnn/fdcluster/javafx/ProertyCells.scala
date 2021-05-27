@@ -29,13 +29,5 @@ case class CellProperty(namedValue: NamedValue) extends Label{
 }
 
 
-case class ValuesForNode(nodeAddress: NodeAddress, qsoHourDigests:List[QsoHourDigest])  {
-  private val parameters: mutable.Builder[NamedValue, List[NamedValue]] = List.newBuilder[NamedValue]
 
-  def apply(name: ValueName, value: Any): Unit = {
-    parameters += NamedValue( name, value)
-  }
-
-  def result: List[NamedValue] = parameters.result()
-}
 

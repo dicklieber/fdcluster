@@ -20,23 +20,20 @@
 package org.wa9nnn.fdcluster.store.network
 
 import com.typesafe.scalalogging.LazyLogging
-import org.wa9nnn.fdcluster.javafx.cluster.LabelSource
-import org.wa9nnn.util.TimeHelpers.{msHour, utcZoneId}
-import _root_.scalafx.scene.control.Labeled
 import com.wa9nnn.util.tableui.Cell
+import org.wa9nnn.fdcluster.javafx.cluster.PropertyCellName
+import org.wa9nnn.util.TimeHelpers.utcZoneId
 
 import java.time.{Instant, ZonedDateTime}
 import scala.collection.concurrent.TrieMap
-import scala.collection.mutable
 
 /**
  * Id of a collection of QSOs in a calendar hour.
  * Its just a LocalDateTime with only any hour.
  *
  */
-case class FdHour private(day: Int, hour: Int) extends Ordered[FdHour] with LabelSource {
+case class FdHour private(day: Int, hour: Int) extends Ordered[FdHour] with PropertyCellName {
   def toCell: Cell = Cell(display)
-
 
   val display: String = f"$day:$hour%02d"
   override val toolTip = s"utc date: $day hour: $hour"
@@ -65,12 +62,8 @@ case class FdHour private(day: Int, hour: Int) extends Ordered[FdHour] with Labe
       ret
   }
 
+  override def name: String = display
 
-  override def setLabel(labeled: Labeled): Unit = {
-    labeled.tooltip = s"utc date: $day hour: $hour"
-
-    labeled.text = toString
-  }
 }
 
 object FdHour extends LazyLogging {

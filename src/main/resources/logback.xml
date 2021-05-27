@@ -27,12 +27,13 @@
     <logger name="org.wa9nnn.fdcluster.javafx.entry.EntryTab" level="INFO"/>
     <logger name="org.wa9nnn.fdcluster.javafx.entry.StatisticsTab" level="INFO"/>
     <logger name="org.wa9nnn.fdcluster.model.sync.ClusterActor" level="INFO"/>
-    <logger name="org.wa9nnn.fdcluster.javafx.entry.ActionResult" level="TRACE"/>
+    <logger name="org.wa9nnn.fdcluster.javafx.entry.ActionResult" level="INFO"/>
     <logger name="org.wa9nnn.fdcluster.store.StoreActor" level="INFO"/>
-    <logger name="org.wa9nnn.fdcluster.store.StoreLogic" level="TRACE"/>
+    <logger name="org.wa9nnn.fdcluster.store.StoreLogic" level="INFO"/>
     <logger name="org.wa9nnn.fdcluster.store.network" level="INFO"/>
     <logger name="org.wa9nnn.fdcluster.model.sync.NodeStatusQueueActor" level="INFO"/>
     <logger name="org.wa9nnn.fdcluster.javafx.entry.StatisticsTab" level="INFO"/>
+    <logger name="org.wa9nnn.fdcluster.javafx.cluster.FdHours" level="DEBUG"/>
 
 
     <root level="DEBUG">

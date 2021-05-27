@@ -55,7 +55,7 @@ class ClusterState @Inject()(ourNodeAddress: NodeAddress, clusterTable: ClusterT
 
 
   def update(nodeStatus: NodeStatus): Unit = {
-    clusterTable.update( nodeStatus.values)
+    clusterTable.update( nodeStatus)
   }
 
   def purge(): Unit = {
@@ -72,16 +72,6 @@ class ClusterState @Inject()(ourNodeAddress: NodeAddress, clusterTable: ClusterT
     nodes.values.map(_.value)
   }
 
-  def knownHoursInCluster: List[FdHour] = {
-    val setBuilder = Set.newBuilder[FdHour]
-    for {
-      nodeStateProperty <- nodes.values
-      hourInNode <- nodeStateProperty.value.knownHours
-    } {
-      setBuilder += hourInNode
-    }
-    setBuilder.result().toList.sorted
-  }
 
 }
 

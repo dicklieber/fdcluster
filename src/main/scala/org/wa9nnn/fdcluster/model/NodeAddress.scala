@@ -22,8 +22,7 @@ package org.wa9nnn.fdcluster.model
 import akka.http.scaladsl.model.Uri
 import com.wa9nnn.util.tableui.Cell
 import org.wa9nnn.fdcluster.FileContext
-import org.wa9nnn.fdcluster.javafx.ValuesForNode
-import org.wa9nnn.fdcluster.javafx.cluster.NodeValueProvider
+import org.wa9nnn.fdcluster.javafx.cluster.{NamedValueCollector, NodeValueProvider}
 
 import java.net.{Inet4Address, InetAddress, NetworkInterface, URL}
 import scala.jdk.CollectionConverters._
@@ -41,10 +40,10 @@ case class NodeAddress(ipAddress: String = "", hostName: String = "localhost", i
 
   val httpPort: Int = instance.map(i => 8080 + i).getOrElse(8080)
 
-  override def collectNamedValues(namedValueCollector: ValuesForNode): Unit = {
+  override def collectNamedValues(namedValueCollector: NamedValueCollector): Unit = {
     import org.wa9nnn.fdcluster.javafx.cluster.ValueName._
 
-    namedValueCollector(Node, display)
+    namedValueCollector(Node, hostName)
     namedValueCollector(HTTP, Cell(url.toExternalForm).withUrl(url))
   }
 

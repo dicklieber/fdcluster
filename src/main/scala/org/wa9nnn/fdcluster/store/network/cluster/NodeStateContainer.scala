@@ -23,7 +23,6 @@ import akka.http.scaladsl.model.Uri
 
 import java.net.URL
 import java.time.LocalDateTime
-import org.wa9nnn.fdcluster.javafx.cluster.StyledAny
 import org.wa9nnn.fdcluster.model.NodeAddress
 import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHourDigest}
 import org.wa9nnn.fdcluster.store.network.{FdHour, cluster}
@@ -36,9 +35,6 @@ import org.wa9nnn.fdcluster.store.network.{FdHour, cluster}
 class NodeStateContainer(initialNodeStatus: NodeStatus, ourNodeAddress: NodeAddress) {
    val isUs: Boolean = initialNodeStatus.nodeAddress == ourNodeAddress
 
-  def styleForUs(sa: StyledAny): StyledAny = {
-      sa.withCssClass(cssStyles)
-  }
   lazy val cssStyles: Seq[String] =   {
     if (isUs) {
       Seq("ourNode")

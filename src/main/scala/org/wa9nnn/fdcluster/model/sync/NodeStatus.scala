@@ -21,8 +21,7 @@ package org.wa9nnn.fdcluster.model.sync
 
 import org.wa9nnn.fdcluster.BuildInfo
 import org.wa9nnn.fdcluster.contest.Contest
-import org.wa9nnn.fdcluster.javafx.ValuesForNode
-import org.wa9nnn.fdcluster.javafx.cluster.ValueName
+import org.wa9nnn.fdcluster.javafx.cluster.{NamedValue, NamedValueCollector, ValueName}
 import org.wa9nnn.fdcluster.model.{Journal, NodeAddress, Station}
 import org.wa9nnn.fdcluster.store.network.FdHour
 
@@ -33,7 +32,6 @@ import java.time.Instant
  * @param nodeAddress        our IP and instance.
  * @param qsoCount           of QSOs in db.
  * @param qsoHourDigests     for quickly determining what we have.
- * @param qsoMetadata        band, mode, operator etc.
  * @param station            band mode and current operator
  * @param stamp              when this message was generated.
  * @param ver                FDCLuster Version that built this so we can detect mismatched versions.
@@ -51,9 +49,9 @@ case class NodeStatus(nodeAddress: NodeAddress,
 
   assert(station != null, "null BandModeOperator")
 
-  def values: ValuesForNode = {
-    import org.wa9nnn.fdcluster.javafx.cluster.ValueName._
-    val collector = ValuesForNode(nodeAddress, qsoHourDigests)
+  def values: Iterable[NamedValue] = {
+    import ValueName._
+    val collector = new NamedValueCollector()
     nodeAddress.collectNamedValues(collector)
     collector(QsoCount, qsoCount)
     station.collectNamedValues(collector)
@@ -65,7 +63,10 @@ case class NodeStatus(nodeAddress: NodeAddress,
     collector(Stamp, stamp)
     collector(Version, ver)
     collector(OS, osName)
-    collector
+    qsoHourDigests.foreach { qsd =>
+      collector(qsd.fdHour, qsd)
+    }
+    collector.result
   }
 
   def digestForHour(fdHour: FdHour): Option[QsoHourDigest] = {
