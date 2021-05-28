@@ -54,6 +54,7 @@ case class NodeStatus(nodeAddress: NodeAddress,
     val collector = new NamedValueCollector()
     nodeAddress.collectNamedValues(collector)
     collector(QsoCount, qsoCount)
+    collector(FdHours, qsoHourDigests.length)
     station.collectNamedValues(collector)
     contest.foreach { contest =>
       collector(CallSign, contest.callSign)

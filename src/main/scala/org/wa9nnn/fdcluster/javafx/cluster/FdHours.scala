@@ -1,87 +1,148 @@
 package org.wa9nnn.fdcluster.javafx.cluster
 
 import com.typesafe.scalalogging.LazyLogging
+import org.wa9nnn.fdcluster.contest.JournalProperty
 import org.wa9nnn.fdcluster.model.NodeAddress
-import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHourDigest}
+import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoDigestPropertyCell}
 import org.wa9nnn.fdcluster.store.network.FdHour
-import scalafx.beans.property.ObjectProperty
-import scalafx.collections.ObservableBuffer
+import scalafx.beans.property.IntegerProperty
 
+import java.time.Instant
 import javax.inject.{Inject, Singleton}
 import scala.collection.concurrent.TrieMap
 
+/**
+ * Holds a cluster status for FdHours
+ */
 @Singleton
-class FdHours @Inject()() extends LazyLogging {
-  val rows: TrieMap[FdHour, Row] =  TrieMap[FdHour, Row]()
-  val buffer: ObservableBuffer[Row] = ObservableBuffer[Row]()
+class FdHours @Inject()(journalProperty: JournalProperty) extends LazyLogging {
+  private val data: Matrix[FdHour, NodeAddress, QsoDigestPropertyCell] = new Matrix[FdHour, NodeAddress, QsoDigestPropertyCell]
+  private val metadataMap: TrieMap[NodeAddress, NodeMetadata] = new TrieMap[NodeAddress, NodeMetadata]()
 
-  def knownNodes: List[NodeAddress] = (
-    for {
-      row <- rows.values
-      node <- row.nodes
-    } yield {
-      node
-    }).toList.distinct.sorted
+  val layoutVersion: IntegerProperty = new IntegerProperty
 
-
-  def knownHours: List[FdHour] = {
-    rows.keys.toList.sorted
-  }
-
-  def rowNames: List[PropertyCellName] = {
-    ValueName.values.toList ++ knownHours
+  journalProperty.journalFilePathProperty.onChange { (_, _, _) =>
+    data.clear()
+    metadataMap.values.foreach(_.clear())
+    metadataMap.clear()
+    layoutVersion.value = layoutVersion.value + 1
   }
 
   /**
    *
-   * @param nodeStatus
-   * @return true if we added one or more FdHour row, indicating that the gridPane needs to laid out again.
+   * @param nodeStatus incoming.
+   * @return true if we added one or more FdHour row, indicating that the gridPane needs to be refreshed.
    */
-  def update(nodeStatus: NodeStatus): Boolean = {
-    var addedFdHours = Seq.empty[FdHour]
+  def update(nodeStatus: NodeStatus): Unit = {
+    val nodeAddress = nodeStatus.nodeAddress
+
+    val startMatrixSize = data.size
+
+    metadataMap.getOrElseUpdate(nodeAddress, NodeMetadata(nodeAddress)).update(nodeStatus)
     nodeStatus.qsoHourDigests.foreach { qhd =>
-      val fdHour = qhd.fdHour
-      rows.getOrElseUpdate(fdHour, {
-        addedFdHours = addedFdHours :+ fdHour
-
-        val row = Row(fdHour)
-        buffer.addOne(row)
-        row
-
-      }).update(nodeStatus.nodeAddress, qhd)
+      val cell: QsoDigestPropertyCell = data.getOrElseUpdate(Key(qhd.fdHour, nodeAddress), {
+        qhd.PropertyCell
+      })
+      cell.update(qhd)
     }
-    if (addedFdHours.nonEmpty) {
-      logger.whenDebugEnabled {
-        logger.debug(s"Discovered new FdHours: ${addedFdHours.map(_.display).mkString(", ")}")
-      }
+    if (startMatrixSize != data.size) {
+      layoutVersion.value = layoutVersion.value + 1
     }
-    addedFdHours.nonEmpty
   }
 
   def clear(): Unit = {
-    rows.clear()
+    data.clear()
+  }
+
+  def rows: List[FdHour] = data.rows
+
+  /**
+   * iCol in  [[ColInfo]] might not be consistent if [[update()]] returned true.
+   *
+   * @return
+   */
+  def metadataColumns: List[ColInfo] =
+    metadataMap.
+      toList.sortBy(_._1)
+      .zipWithIndex
+      .map { case ((na: NodeAddress, nodeMetadata: NodeMetadata), iCol) =>
+        ColInfo(na, nodeMetadata, iCol)
+      }
+
+  def get(fdHour: FdHour, nodeAddress: NodeAddress): Option[QsoDigestPropertyCell] = {
+    data.get(fdHour, nodeAddress)
   }
 }
 
-case class Row(fdHour: FdHour) {
-  protected val map = new TrieMap[NodeAddress, ObjectProperty[QsoHourDigest]]()
+case class ColInfo(nodeAddress: NodeAddress, nodeMetadata: NodeMetadata, iCol: Int)
 
-  def digest(nodeAddress: NodeAddress):ObjectProperty[QsoHourDigest] = {
-    map(nodeAddress)
+case class NodeMetadata(nodeAddress: NodeAddress,
+                        ageCell: SimplePropertyCell = SimplePropertyCell(),
+                        qsoCountCell: SimplePropertyCell = SimplePropertyCell.css("number", "clusterCell")) {
+  def update(nodeStatus: NodeStatus): Unit = {
+    ageCell.update(nodeStatus.stamp)
+    qsoCountCell.update(nodeStatus.qsoCount)
   }
 
-  def allMatching: Boolean = {
-    val values = map.values
-    values.tail.forall(_ == values.head)
+  def clear(): Unit = {
+    ageCell.clear()
+  }
+}
+
+object NodeMetadata {
+  def apply(nodeAddress: NodeAddress, stamp: Instant): NodeMetadata = {
+    new NodeMetadata(nodeAddress, SimplePropertyCell(nodeAddress, stamp))
+  }
+}
+
+case class Key[R <: Ordered[R], C <: Ordered[C]](row: R, column: C)
+
+/**
+ *
+ * @tparam R row
+ * @tparam C column
+ * @tparam T cell what's at an RxC location in the matrix
+ */
+class Matrix[R <: Ordered[R], C <: Ordered[C], T] {
+
+  private val data = new TrieMap[Key[R, C], T]()
+
+  def size: Int = data.size
+
+  def foreachCol(col: C, f: (T) => Unit): Unit =
+    data.keys.filter(_.column == col).foreach { k =>
+      f(data(k))
+    }
+
+  /**
+   *
+   * @param key with R & C.
+   * @param op  expression that computes the value to store if not already present.
+   * @return previous value or None
+   */
+  def getOrElseUpdate(key: Key[R, C], op: => T): T = {
+    data.getOrElseUpdate(key, op)
   }
 
-  def update(nodeAddress: NodeAddress, qsoHourDigest: QsoHourDigest): Unit = {
-    map.getOrElseUpdate(nodeAddress, ObjectProperty[QsoHourDigest](qsoHourDigest))
+
+  def rows: List[R] = {
+    data.keys.foldLeft(Set.empty[R]) { case (set, key) =>
+      set + key.row
+    }.toList.sorted
   }
 
-  def purge(nodeAddress: NodeAddress): Unit = {
-    map.remove(nodeAddress)
+  def get(row: R, col: C): Option[T] = {
+    data.get(Key(row, col))
   }
 
-  def nodes: Iterable[NodeAddress] = map.keys
+  def columns: List[C] = {
+    data.keys.foldLeft(Set.empty[C]) { case (set, key) =>
+      set + key.column
+    }.toList.sorted
+  }
+
+  def clear(): Unit = {
+    data.clear()
+  }
+
 }

@@ -22,7 +22,7 @@ package org.wa9nnn.fdcluster.model
 import akka.http.scaladsl.model.Uri
 import com.wa9nnn.util.tableui.Cell
 import org.wa9nnn.fdcluster.FileContext
-import org.wa9nnn.fdcluster.javafx.cluster.{NamedValueCollector, NodeValueProvider}
+import org.wa9nnn.fdcluster.javafx.cluster.{NamedValueCollector, NodeValueProvider, PropertyCell, PropertyCellName, SimplePropertyCell}
 
 import java.net.{Inet4Address, InetAddress, NetworkInterface, URL}
 import scala.jdk.CollectionConverters._
@@ -36,7 +36,10 @@ import scala.jdk.CollectionConverters._
  * @param instance  from application.conf or command line e.g -Dinstance=2
  * @param httpPort  as opposed to the multicast port.
  */
-case class NodeAddress(ipAddress: String = "", hostName: String = "localhost", instance: Option[Int] = None) extends Ordered[NodeAddress] with NodeValueProvider {
+case class NodeAddress(ipAddress: String = "", hostName: String = "localhost", instance: Option[Int] = None)
+  extends Ordered[NodeAddress]
+    with NodeValueProvider
+    with PropertyCellName {
 
   val httpPort: Int = instance.map(i => 8080 + i).getOrElse(8080)
 
@@ -71,6 +74,13 @@ case class NodeAddress(ipAddress: String = "", hostName: String = "localhost", i
   val url: URL = {
     new URL("http", ipAddress, httpPort, "")
   }
+  lazy val propertyCell: PropertyCell[_] = {
+     SimplePropertyCell(this,
+      Cell(display)
+      .withToolTip(toolTip)
+      .withCssClass( "clusterRowHeader"))
+
+  }
 
   def uri: Uri = {
     Uri()
@@ -89,6 +99,10 @@ case class NodeAddress(ipAddress: String = "", hostName: String = "localhost", i
     } else
       ret
   }
+
+  override def toolTip: String = "Where this came from."
+
+  override def name: String = display
 }
 
 object NodeAddress {

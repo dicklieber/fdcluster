@@ -8,6 +8,7 @@ public enum ValueName implements PropertyCellName {
     Node("Source"),
     HTTP("A link to that node."),
     QsoCount("Number of QSOs at the node. Should  be the same across all nodes."),
+    FdHours("Number of hours with QSOs"),
     Band("That this station is operating on ."),
     Mode("CW, PH or DI"),
     Operator("Who is running the station. User provided in the Station Panel."),

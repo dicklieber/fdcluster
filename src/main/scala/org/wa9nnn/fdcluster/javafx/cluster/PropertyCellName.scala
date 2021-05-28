@@ -7,3 +7,15 @@ trait PropertyCellName {
 
  def name:String
 }
+
+object PropertyCellName {
+ val noName: StringCellName = StringCellName("")
+}
+
+/**
+ * //todo Probably need a [[PropertyCell]] that nas no name
+ *
+ * @param name
+ * @param toolTip
+ */
+case class StringCellName(name:String, toolTip:String = "") extends PropertyCellName

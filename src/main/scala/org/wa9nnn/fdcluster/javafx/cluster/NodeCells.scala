@@ -13,7 +13,7 @@ import scala.collection.concurrent.TrieMap
  * @param knownHours  so we have a cell for hour.
  */
 case class NodeCells(nodeAddress: NodeAddress, ourNode: NodeAddress) extends LazyLogging {
-  private val cells: TrieMap[PropertyCellName, PropertyCell] = TrieMap[PropertyCellName, PropertyCell]()
+  private val cells: TrieMap[PropertyCellName, SimplePropertyCell] = TrieMap[PropertyCellName, SimplePropertyCell]()
 
   /**
    *
@@ -23,11 +23,10 @@ case class NodeCells(nodeAddress: NodeAddress, ourNode: NodeAddress) extends Laz
     assert(nodeStatus.nodeAddress == nodeAddress, "Mis-match nodeAddress!")
     nodeStatus.values.foreach { namedValue =>
       cells.getOrElseUpdate(namedValue.name, {
-        new PropertyCell(namedValue.name)
+        SimplePropertyCell(namedValue.name, Seq("clusterCell"),  namedValue.value)
       }).update(namedValue.value)
     }
   }
-
 
   /**
    *
@@ -35,7 +34,7 @@ case class NodeCells(nodeAddress: NodeAddress, ourNode: NodeAddress) extends Laz
    * @return always the matching [[PropertyCell]].
    * @throws NoSuchElementException on missing PropertyCell.
    */
-  def getCell(propertyCellName: PropertyCellName): PropertyCell = {
+  def getCell(propertyCellName: PropertyCellName): PropertyCell[_] = {
     cells(propertyCellName)
   }
 }
