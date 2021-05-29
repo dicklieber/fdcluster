@@ -1,6 +1,8 @@
 
 package org.wa9nnn.fdcluster.store.network
 
+import org.wa9nnn.fdcluster.store.JsonContainer
+
 import java.net.{DatagramPacket, InetAddress, MulticastSocket}
 
 object UdpMulticastListner {
@@ -26,7 +28,10 @@ object UdpMulticastListner {
       s.receive(recv);
       val data: Array[Byte] = recv.getData
       val sData = new String(data)
-      println(s"Got: $sData from  ${recv.getAddress} ")
+      println(s"Got: ${sData.size} from  ${recv.getAddress} ")
+
+      val jsonContainer = JsonContainer(sData)
+      println(s"Got: $jsonContainer} ")
     } while (true)
     // OK, I'm done talking - leave the group...
     s.leaveGroup(group);
