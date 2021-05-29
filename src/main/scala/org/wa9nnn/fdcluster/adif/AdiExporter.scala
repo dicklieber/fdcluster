@@ -34,7 +34,7 @@ import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import scala.util.{Try, Using}
 
-class AdiExporter @Inject()(qsoSource: QsoSource, val runningTaskInfoConsumer: RunningTaskInfoConsumer) extends LazyLogging with RunningTask {
+class AdiExporter @Inject()(qsoSource: QsoSource, val runningTaskInfoConsumer: RunningTaskInfoConsumer, adifQsoAdapter: AdifQsoAdapter) extends LazyLogging with RunningTask {
   val taskName = "Export ADIF"
 
   private def print(s: String = "")(implicit writer: PrintWriter): Unit = {
@@ -70,7 +70,7 @@ class AdiExporter @Inject()(qsoSource: QsoSource, val runningTaskInfoConsumer: R
 
       //records
       qsoSource.qsoIterator.foreach { qso: Qso =>
-        AdifQsoAdapter(qso).entries.toSeq.sorted.foreach(adifentry =>
+        adifQsoAdapter(qso).entries.toSeq.sorted.foreach(adifentry =>
           print(adifentry))
         countOne()
         print(AdifResult.eor)

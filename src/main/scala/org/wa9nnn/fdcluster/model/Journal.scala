@@ -20,13 +20,15 @@ case class Journal(journalFileName: String = "", nodeAddress: NodeAddress = Node
 }
 
 object Journal {
-  private val fileStamp = DateTimeFormatter.ofPattern("YYYYMMddHHmmss")
+  private val fileStamp = DateTimeFormatter.ofPattern("YYMMdd")
 
 
-  def apply(contestName: String, nodeAddress: NodeAddress): Journal = {
-    val instant = Instant.now()
-    val str = fileStamp.format(LocalDateTime.now())
-    val fileName = contestName + str + ".json"
+  def newJournal(contestName: String, nodeAddress: NodeAddress, instant: Instant = Instant.now()): Journal = {
+    val localDateTime = LocalDateTime.ofInstant(instant, ZoneId.of("UTC"))
+    val localDate = localDateTime.toLocalDate
+    val localTime = localDateTime.toLocalTime
+    val fileName = s"$contestName${localDate.getYear}${localDate.getMonthValue}${localDate.getDayOfMonth}.${localTime.toSecondOfDay}.json"
+//    val fileName = contestName + str + ".json"
     new Journal(fileName, nodeAddress, instant)
   }
 

@@ -145,9 +145,6 @@
     -fx-text-fill: red;
 }
 
-.sameHour {
-    -fx-background-color: lightgreen;
-}
 
 .number {
     -fx-text-alignment: right;
@@ -155,8 +152,10 @@
     /*-fx-border-width:1;*/
     /*-fx-border-color: red;*/
     /*-fx-background-color: lightgreen;*/
+    /*-fx-background-color: lightgreen;*/
 
 }
+
 .ourNode {
     -fx-text-fill: gray;
 }
@@ -193,35 +192,39 @@
     -fx-font-size: 20;
 }
 
-.differentHour1 {
+.fdhSameHour {
+    -fx-background-color: lightgreen;
+}
+
+.fdhDiff0 {
     -fx-background-color: lightcoral;
 }
 
-.differentHour2 {
+.fdhDiff1 {
     -fx-background-color: moccasin;
 }
 
-.differentHour3 {
+.fdhDiff2 {
     -fx-background-color: peachpuff;
 }
 
-.differentHour4 {
+.fdhDiff3 {
     -fx-background-color: orchid;
 }
 
-.differentHour5 {
+.fdhDiff4 {
     -fx-background-color: hotpink;
 }
 
-.differentHour6 {
+.fdhDiff5 {
     -fx-background-color: sandybrown;
 }
 
-.differentHour7 {
+.fdhDiff6 {
     -fx-background-color: chocolate;
 }
 
-.differentHour8 {
+.fdhDiff7 {
     -fx-background-color: tan;
 }
 
@@ -287,6 +290,7 @@
 .ageCurrent {
     -fx-background-color: #a2f604;
 }
+
 .ageNotCurrent {
     -fx-background-color: #A6FF0059;
 }

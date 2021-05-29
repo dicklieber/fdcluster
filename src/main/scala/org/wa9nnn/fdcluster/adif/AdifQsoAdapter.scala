@@ -20,6 +20,7 @@
 package org.wa9nnn.fdcluster.adif
 
 import org.wa9nnn.fdcluster._
+import org.wa9nnn.fdcluster.contest.JournalProperty
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.util.TimeHelpers.utcZoneId
 import org.wa9nnn.util.UuidUtil.{fromBase64, toBase64}
@@ -27,9 +28,10 @@ import org.wa9nnn.util.UuidUtil.{fromBase64, toBase64}
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatter.BASIC_ISO_DATE
 import java.time.{Instant, LocalDate, LocalTime, ZonedDateTime}
+import javax.inject.Inject
 import scala.language.implicitConversions
 
-object AdifQsoAdapter {
+class AdifQsoAdapter @Inject()(journalProperty: JournalProperty, nodeAddress: NodeAddress) {
   private val timeFormat = DateTimeFormatter.ofPattern("HHmmss")
 
   /**
@@ -39,7 +41,7 @@ object AdifQsoAdapter {
    * @return the FcCluster Qso
    * @throws MissingRequiredTag if required tag not found
    */
-  def apply(adif: AdifQso)(implicit contestProperty: ContestProperty): Qso = {
+  def apply(adif: AdifQso): Qso = {
     val map = adif.toMap
     /**
      * Allows a 'm' string, e.g. m"BAND" to lookup the key in the map and throw appropriate exception for missing tag.
@@ -70,7 +72,6 @@ object AdifQsoAdapter {
         LocalTime.parse(m"TIME_ON", timeFormat),
         utcZoneId).toInstant
     }
-    val contest = contestProperty.value
     Qso(callSign = m"CALL",
       bandMode = bandMode,
       exchange = exchange,
@@ -80,8 +81,8 @@ object AdifQsoAdapter {
         operator = m"OPERATOR",
         rig = m"MY_RIG",
         ant = m"MY_ANTENNA",
-        node = contest.nodeAddress.displayWithIp,
-        contestId = contest.id,
+        node = nodeAddress.displayWithIp,
+        journal = journalProperty.value.journalFileName,
         v = BuildInfo.canonicalVersion
       )
     )

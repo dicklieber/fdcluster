@@ -21,6 +21,7 @@ import _root_.scalafx.Includes._
 import _root_.scalafx.scene.control.{Button, Hyperlink, Label, TitledPane}
 import _root_.scalafx.scene.layout.VBox
 import com.wa9nnn.util.TimeConverters.local
+import org.scalafx.extras.onFX
 import org.wa9nnn.fdcluster.FileContext
 import org.wa9nnn.fdcluster.javafx.GridOfControls
 import org.wa9nnn.fdcluster.model.{AllContestRules, ContestProperty}
@@ -68,10 +69,12 @@ class JournalDialogPane @Inject()(journalProperty: JournalProperty,
   })
 
   def updateLast(): Unit = {
-    val journal = journalProperty.value
-    currentFile.value = journal.journalFileName
-    lastFrom.value = journal.nodeAddress.displayWithIp
-    lastAt.value = journal.stamp
+    onFX{
+      val journal = journalProperty.value
+      currentFile.value = journal.journalFileName
+      lastFrom.value = journal.nodeAddress.displayWithIp
+      lastAt.value = journal.stamp
+    }
   }
 
   journalProperty.onChange {

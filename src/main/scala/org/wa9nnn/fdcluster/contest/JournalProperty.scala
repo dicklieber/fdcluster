@@ -70,7 +70,7 @@ class JournalProperty @Inject()(
     val contest = contestProperty.contest
     contest.checkValid()
     val id = contest.id
-    val journal = Journal(id, fileContext.nodeAddress)
+    val journal = Journal.newJournal(id, fileContext.nodeAddress)
     update(journal)
     storeSender ! ClearStore
 

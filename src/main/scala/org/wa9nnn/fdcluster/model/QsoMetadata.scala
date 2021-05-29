@@ -20,12 +20,15 @@
 package org.wa9nnn.fdcluster.model
 
 import org.wa9nnn.fdcluster.BuildInfo
+import org.wa9nnn.fdcluster.contest.JournalProperty
 import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
 import scalafx.beans.binding.Bindings
 import scalafx.beans.property.ObjectProperty
 
+import java.nio.file.Path
 import java.time.Instant
 import javax.inject.{Inject, Singleton}
+import scala.util.Try
 
 
 /**
@@ -41,11 +44,11 @@ case class QsoMetadata(operator: CallSign = "",
                        rig: String = "",
                        ant: String = "",
                        node: String = "localhost;1",
-                       contestId: String = "FD2021WA9NNN",
+                       journal: String = "",
                        v: String = BuildInfo.canonicalVersion)
 
 @Singleton
-class OsoMetadataProperty @Inject()(stationProperty: StationProperty, contestProperty: ContestProperty, nodeAddress: NodeAddress)
+class OsoMetadataProperty @Inject()(stationProperty: StationProperty, contestProperty: ContestProperty, nodeAddress: NodeAddress, journalProperty: JournalProperty)
   extends ObjectProperty[QsoMetadata](null, "Station") with QsoBuilder {
 
 
@@ -56,7 +59,7 @@ class OsoMetadataProperty @Inject()(stationProperty: StationProperty, contestPro
       rig = station.rig,
       ant = station.antenna,
       node = nodeAddress.displayWithIp,
-      contestId = contestProperty.value.id
+      journal = journalProperty.value.journalFileName
     )
   }
 

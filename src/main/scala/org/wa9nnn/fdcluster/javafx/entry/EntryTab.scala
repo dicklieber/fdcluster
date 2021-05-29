@@ -29,7 +29,7 @@ import com.google.inject.{Inject, Injector}
 import com.typesafe.scalalogging.LazyLogging
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import org.scalafx.extras.onFX
-import org.wa9nnn.fdcluster.contest.OkToLogGate
+import org.wa9nnn.fdcluster.contest.{JournalProperty, OkToLogGate}
 import org.wa9nnn.fdcluster.javafx.entry.section.SectionField
 import org.wa9nnn.fdcluster.javafx.{CallSignField, ClassField, StatusMessage, StatusPane}
 import org.wa9nnn.fdcluster.model._
@@ -51,7 +51,8 @@ class EntryTab @Inject()(injector: Injector,
                          nodeAddress: NodeAddress,
                          classField: ClassField,
                          qsoBuilder: QsoBuilder,
-                         currentStationProperty: StationProperty,
+                         stationProperty: StationProperty,
+                         journalProperty: JournalProperty,
                          statsPane: StatsPane,
                          statusPane: StatusPane,
                          storeSender: StoreSender,
@@ -169,7 +170,7 @@ class EntryTab @Inject()(injector: Injector,
     val potentialQso: Qso = qsoBuilder.qso(
       callSign = callSignField.text.value,
       exchange = Exchange(classField.text.value, qsoSection.text.value),
-      bandMode = currentStationProperty.bandMode
+      bandMode = stationProperty.bandMode
     )
     if (potentialQso.callSign == contestProperty.callSign) {
       actionResult.sadMessage(s"Can't work our own station: \n${potentialQso.callSign}!")
@@ -213,14 +214,14 @@ class EntryTab @Inject()(injector: Injector,
   clear()
 
   val qsoMetadataBinding: ObjectBinding[QsoMetadata] = Bindings.createObjectBinding(() => {
-    val cs = currentStationProperty.value
+    val cs = stationProperty.value
     QsoMetadata(operator = cs.operator,
       rig = cs.rig,
       ant = cs.antenna,
       node = nodeAddress.qsoNode,
-      contestId = contestProperty.contest.qsoId
+      journal = contestProperty.contest.qsoId
     )
-  }, currentStationProperty, contestProperty)
+  }, stationProperty, contestProperty)
 
 
 }

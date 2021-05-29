@@ -1,5 +1,6 @@
 package org.wa9nnn.fdcluster.javafx.cluster
 
+import com.typesafe.scalalogging.LazyLogging
 import com.wa9nnn.util.tableui.Cell
 import org.scalafx.extras.onFX
 import org.wa9nnn.fdcluster.model.sync.NodeStatus
@@ -8,7 +9,7 @@ import scalafx.scene.layout.GridPane
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class ClusterTable @Inject()(nodeColumns: NodeColumns) extends GridPane {
+class ClusterTable @Inject()(nodeColumns: NodeColumns) extends GridPane with LazyLogging {
   styleClass += "clusterTable"
 
   def update(nodeStatus: NodeStatus): Unit = {
@@ -34,8 +35,13 @@ class ClusterTable @Inject()(nodeColumns: NodeColumns) extends GridPane {
         (cells: NodeCells, col) <- nodeColumns.nodeCells.zipWithIndex
         (name, row) <- namesWithIndex
       } {
-        val propertyCell: PropertyCell[_] = cells.getCell(name)
-        add(propertyCell, col + 1, row)
+          try {
+            val propertyCell: PropertyCell[_] = cells.getCell(name)
+            add(propertyCell, col + 1, row)
+          } catch {
+            case e:NoSuchElementException =>
+              logger.debug(s"$name: name", e)
+          }
       }
     }
   }
