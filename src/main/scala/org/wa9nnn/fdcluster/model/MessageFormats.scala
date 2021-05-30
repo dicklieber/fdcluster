@@ -56,7 +56,6 @@ object MessageFormats {
   implicit val nodeAddressFormat: Format[NodeAddress] = Json.format[NodeAddress]
   implicit val journalFormat: Format[Journal] = Json.format[Journal]
   implicit val stepFormat: Format[Step] = Json.format[Step]
-  implicit val tidFormat: Format[TransactionId] = Json.format[TransactionId]
   implicit val rqfhFormat: Format[RequestQsosForHour] = Json.format[RequestQsosForHour]
   implicit val rqfuFormat: Format[RequestQsosForUuids] = Json.format[RequestQsosForUuids]
   implicit val uuidsRequestFormat: Format[RequestUuidsForHour] = Json.format[RequestUuidsForHour]

@@ -73,8 +73,7 @@ class HttpClientActor(@Named("store") store: ActorRef,
           case Failure(et) =>
             et match {
               case es:StreamTcpException =>
-                val json = sendContainer.transactionId.toPrettyJson
-                logger.error(es.getMessage + "\n" + json)
+                logger.error(s"Response", es)
             }
             logger.error(syncMarker, s"Failure", et)
         }

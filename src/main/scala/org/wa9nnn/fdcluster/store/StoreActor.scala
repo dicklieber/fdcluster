@@ -64,7 +64,7 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
     /**
      * Finish up sync with data from another node
      */
-    case QsosFromNode(qsos, _) =>
+    case QsosFromNode(qsos) =>
       logger.debug(syncMarker, s"got ${qsos.size}")
       qsos.foreach(store.ingestAndPersist)
 
@@ -84,12 +84,12 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
 
     case request: RequestUuidsForHour =>
       val uuids: List[Uuid] = store.uuidForHour(request.fdHour)
-      sender ! UuidsAtHost(nodeAddress, uuids, request.transactionId.addStep(getClass)) //to asking host.
+      sender ! UuidsAtHost(nodeAddress, uuids) //to asking host.
 
     case uuidsAtHost: UuidsAtHost =>
       logger.debug(uuidsAtHost.toString)
       val missing: Iterator[Uuid] = store.filterAlreadyPresent(uuidsAtHost.iterator)
-      val requestQsosForUuids = RequestQsosForUuids(missing.toList, uuidsAtHost.transactionId.addStep(getClass))
+      val requestQsosForUuids = RequestQsosForUuids(missing.toList)
       logger.debug(requestQsosForUuids.toString)
       sender ! requestQsosForUuids // send to cluster on this host
 
@@ -99,14 +99,14 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
       val qsos: List[Qso] = rqfu.uuids.flatMap(uuid =>
         store.get(uuid)
       )
-      val qsosFromNode = QsosFromNode(qsos, rqfu.transactionId.addStep(getClass))
+      val qsosFromNode = QsosFromNode(qsos)
       logger.debug(qsosFromNode.toString)
       sender ! qsosFromNode
 
 
     case rqfh: RequestQsosForHour =>
       val qsos: List[Qso] = store.getQsos(rqfh.fdHour)
-      val qsosFromNode = QsosFromNode(qsos, rqfh.transactionId.addStep(getClass))
+      val qsosFromNode = QsosFromNode(qsos)
       logger.debug(qsosFromNode.toString)
       sender ! qsosFromNode
 

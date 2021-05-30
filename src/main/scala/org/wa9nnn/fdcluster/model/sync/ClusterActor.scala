@@ -80,9 +80,6 @@ class ClusterActor(nodeAddress: NodeAddress,
     case Purge =>
       //todo purge
 
-    case done: Done =>
-    //todo keeps track of entire transaction
-
     case rufh: RequestUuidsForHour =>
       httpClient ! rufh
 

@@ -34,7 +34,7 @@ import java.time.Instant
  *
  * @param fdHour empty for all FdHours
  */
-case class RequestUuidsForHour(fdHour: FdHour, transactionId: TransactionId) extends Sendable {
+case class RequestUuidsForHour(fdHour: FdHour) extends Sendable {
   def jsObject: JsObject = Json.toJson(this).as[JsObject]
 
   def className: String = getClass.getName
@@ -46,12 +46,7 @@ case class RequestUuidsForHour(fdHour: FdHour, transactionId: TransactionId) ext
 
 object RequestUuidsForHour {
   def apply(fdHour: FdHour, destination: NodeAddress, origin: NodeAddress, clazz: Class[_]): RequestUuidsForHour = {
-    new RequestUuidsForHour(fdHour,
-      TransactionId(destination,
-        origin,
-        fdHour,
-        List(Step(clazz)))
-    )
+    new RequestUuidsForHour(fdHour)
   }
 }
 
@@ -63,16 +58,12 @@ case class SendContainer(message: Sendable, otherNode: NodeAddress) {
       .withEntity(ContentTypes.`application/json`, Json.prettyPrint(message.jsObject))
       .withMethod(akka.http.scaladsl.model.HttpMethods.POST)
   }
-
-  def transactionId: TransactionId = message.transactionId
 }
 
 trait Sendable {
   def className: String
 
   def path: String = ClassToPath(className)
-
-  def transactionId: TransactionId
 
   def jsObject: JsObject
 
@@ -85,11 +76,11 @@ trait Sendable {
  * @param nodeAddress where this came from. //TODO do we need this
  * @param uuids       on this node for rested FdHours (or all)
  */
-case class UuidsAtHost(nodeAddress: NodeAddress, uuids: List[Uuid], transactionId: TransactionId) extends UuidContainer {
+case class UuidsAtHost(nodeAddress: NodeAddress, uuids: List[Uuid]) extends UuidContainer {
   override def toString: Node = f"${uuids.length} uuids from $nodeAddress"
 }
 
-case class QsosFromNode(qsos: List[Qso], transactionId: TransactionId) extends ResponseMessage with JsonRequestResponse {
+case class QsosFromNode(qsos: List[Qso]) extends ResponseMessage with JsonRequestResponse {
   def size: Int = qsos.size
 
   override def toString: String = s"QsosFromNode for ${qsos.length} qsos"
@@ -104,7 +95,7 @@ case class QsosFromNode(qsos: List[Qso], transactionId: TransactionId) extends R
     Json.toJson(this).asInstanceOf[JsObject]
 }
 
-case class RequestQsosForUuids(uuids: List[Uuid] = List.empty, transactionId: TransactionId) extends Sendable {
+case class RequestQsosForUuids(uuids: List[Uuid] = List.empty) extends Sendable {
   //  def toJson: JsObject = Json.toJson(this).as[JsObject]
 
   override def parseResponse(jsObject: JsObject): ResponseMessage = {
@@ -135,7 +126,7 @@ trait ResponseMessage {
  *
  * @param fdHour of interest..
  */
-case class RequestQsosForHour(fdHour: FdHour, transactionId: TransactionId) extends Sendable {
+case class RequestQsosForHour(fdHour: FdHour) extends Sendable {
 
   override def parseResponse(jsObject: JsObject): ResponseMessage = {
     jsObject.as[QsosFromNode]
@@ -148,58 +139,11 @@ case class RequestQsosForHour(fdHour: FdHour, transactionId: TransactionId) exte
 
 object RequestQsosForHour {
   def apply(fdHour: FdHour, destination: NodeAddress, origin: NodeAddress, clazz: Class[_]): RequestQsosForHour = {
-    new RequestQsosForHour(fdHour,
-      TransactionId(destination,
-        origin,
-        fdHour,
-        List(Step(clazz)))
-    )
+    new RequestQsosForHour(fdHour)
   }
 }
 
-/**
- * Collects info about each step in syncing on [[FdHour]] thru sever back and forth between  client host and serer host.
- *
- * @param otherNode client where this started
- * @param thisNode  server where we're syncing from.
- * @param fdHour    which block this.
- * @param steps     each step along the way.
- * @param start     when the transaction started.
- */
-case class TransactionId private(otherNode: NodeAddress,
-                                 thisNode: NodeAddress,
-                                 fdHour: FdHour,
-                                 steps: List[Step], start: Instant = Instant.now()) extends LazyLogging  {
-  def duration: java.time.Duration = java.time.Duration.between(start, Instant.now())
 
-  def addStep(clazz: Class[_]): TransactionId = {
-    val transactionId = copy(steps = steps.appended(Step(clazz)))
-    logger.info(transactionId.toString)
-    transactionId
-  }
-
-  def toPrettyJson: String = Json.prettyPrint(Json.toJson(this))
-
-  override def toString: Node = {
-    val r = steps.foldLeft(s"$otherNode ==> $thisNode for $fdHour") { (accum, step) =>
-      "\n" + accum + step.toString
-    }
-    r
-  }
-}
-
-case class Done(transactionId: TransactionId) extends ResponseMessage {
-  override val destination: DestinationActor = DestinationActor.cluster
-}
-
-object TransactionId {
-  def apply(otherNode: NodeAddress,
-            thisNode: NodeAddress,
-            fdHour: FdHour,
-            clazz: Class[_]): TransactionId = {
-    new TransactionId(otherNode, thisNode, fdHour, List(Step(clazz)))
-  }
-}
 
 
 case class Step(name: String, instant: Instant = Instant.now())
