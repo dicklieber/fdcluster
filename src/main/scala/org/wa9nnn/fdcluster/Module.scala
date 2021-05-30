@@ -32,7 +32,9 @@ import org.wa9nnn.fdcluster.metrics.MetricsReporter
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.model.sync.{ClusterActor, NodeStatusQueueActor}
 import org.wa9nnn.fdcluster.store._
-import org.wa9nnn.fdcluster.store.network.{MultcastSenderActor, MulticastListener}
+import org.wa9nnn.fdcluster.store.network.broadcast.BroadcastActor
+import org.wa9nnn.fdcluster.store.network.multicast.MulticastThing
+import org.wa9nnn.fdcluster.store.network.{MultcastSenderActor, MulticastListener, JsonContainerSender}
 import org.wa9nnn.util._
 
 import javax.inject.{Named, Singleton}
@@ -54,7 +56,7 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
       // which gets set by the FileManager.
       val config: Config = ConfigApp.apply
       bind[CommandLine].toInstance(new CommandLineScalaFxImpl(parameters))
-      bind[MulticastListener].asEagerSingleton()
+//      bind[MulticastListener].asEagerSingleton()
       val actorSystem = ActorSystem("default", config)
       val deadLetterMonitorActor =
         actorSystem.actorOf(Props[DeadLetterMonitorActor],
@@ -78,6 +80,7 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
       install(TypesafeConfigModule.fromConfigWithPackage(config, "org.wa9nnn"))
       bind[MetricsReporter].asEagerSingleton()
       bind[QsoBuilder].to[OsoMetadataProperty]
+      bind[JsonContainerSender].to[MulticastThing].asEagerSingleton()
       val qsoListeners = ScalaMultibinder.newSetBinder[AddQsoListener](binder)
       qsoListeners.addBinding.to[StatsPane]
       qsoListeners.addBinding.to[QsoCountCollector]
@@ -136,6 +139,16 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
   def clusterStoreActor(actorSystem: ActorSystem): ActorRef = {
     actorSystem.actorOf(Props(new NodeStatusQueueActor()),
       "nodeStatusQueue")
+  }
+
+  @Provides
+  @Singleton
+  @Named("broadcastActor")
+  def broadcastActorProvider(actorSystem: ActorSystem,
+                              config: Config,
+                              clusterControl: NetworkControl): ActorRef = {
+    actorSystem.actorOf(Props(new BroadcastActor(clusterControl, config)),
+      "broadcastActor")
   }
 
 

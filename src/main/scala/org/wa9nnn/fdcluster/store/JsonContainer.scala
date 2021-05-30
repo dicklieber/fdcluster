@@ -1,5 +1,6 @@
 package org.wa9nnn.fdcluster.store
 
+import akka.util.ByteString
 import org.apache.commons.io.output.ByteArrayOutputStream
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.store.network.MessageDecoder
@@ -29,7 +30,11 @@ case class JsonContainer private(className: String, json: String) {
     baos.toByteArray
   }
 
-  def received():Option[Any] = {
+  def toByteString: ByteString = {
+    ByteString(bytes)
+  }
+
+  def received(): Option[Any] = {
     MessageDecoder(this)
   }
 }

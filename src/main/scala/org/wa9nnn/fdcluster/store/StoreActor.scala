@@ -36,7 +36,8 @@ import org.wa9nnn.fdcluster.javafx.menu.ImportRequest
 import org.wa9nnn.fdcluster.javafx.sync._
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
-import org.wa9nnn.fdcluster.store.network.FdHour
+import org.wa9nnn.fdcluster.store.network.{FdHour, JsonContainerSender}
+import org.wa9nnn.fdcluster.store.network.broadcast.BroadcastThing
 import org.wa9nnn.fdcluster.tools.{GenerateRandomQsos, RandomQsoGenerator}
 import org.wa9nnn.util.ImportAdifTask
 
@@ -51,6 +52,8 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
   val config: Config = injector.instance[Config]
   val randomQso: RandomQsoGenerator = injector.instance[RandomQsoGenerator]
   val multicastSender: ActorRef = injector.instance[ActorRef](Names.named("multicastSender"))
+
+  val jsonContainerSender: JsonContainerSender = injector.instance[JsonContainerSender]
   val store: StoreLogic = injector.instance[StoreLogic]
   val clusterControl: NetworkControl = injector.instance[NetworkControl]
 
@@ -76,8 +79,7 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
 
       val triedQso = store.ingestAndPersist(potentialQso)
       triedQso.foreach { qso =>
-        val record = DistributedQso(qso, nodeAddress)
-        multicastSender ! JsonContainer(record)
+        jsonContainerSender.send( JsonContainer(DistributedQso(qso, nodeAddress)))
       }
 
       sender ! AddResult(triedQso)
@@ -129,8 +131,10 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
       sender ! store.get(fdHour)
 
     case StatusPing ⇒
-      store.sendNodeStatus()
+   //todo   store.sendNodeStatus()
 
+    case RequestNodeStatus =>
+      sender ! store.nodeStatus
 
     case ClearStore =>
       store.clear()
@@ -206,6 +210,7 @@ case object ClearStore
 case class DebugKillRandom(nToKill: Int)
 
 case object BufferReady
+case object RequestNodeStatus
 
 
 case class Search(partial: String, bandMode: BandMode, max: Int = 15)

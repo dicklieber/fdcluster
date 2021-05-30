@@ -158,7 +158,7 @@ class StoreLogic @Inject()(na: NodeAddress,
 
   def size: Int = byUuid.size
 
-  private def nodeStatus: NodeStatus = {
+  def nodeStatus: NodeStatus = {
     //todo Needs some serious caching. Past hours don't usually change (unless syncing)
 
     val hourDigests =
@@ -171,13 +171,14 @@ class StoreLogic @Inject()(na: NodeAddress,
         .sortBy(_.fdHour)
 
 
-    sync.NodeStatus(
+    val r = sync.NodeStatus(
       nodeAddress = nodeAddress,
       qsoCount = byUuid.size,
       qsoHourDigests = hourDigests,
       station = stationProperty.value,
       contest = contestProperty.maybeValue,
       journal = journalManager.maybeValue)
+    r
   }
 
   def uuidForHour(fdHour: FdHour): List[Uuid] = {

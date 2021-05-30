@@ -28,21 +28,19 @@ import akka.http.scaladsl.server.directives.RouteDirectives.complete
 import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
-import org.wa9nnn.fdcluster.javafx.sync.{ClassToPath, QsosFromNode, RequestQsosForHour, RequestQsosForUuids, RequestUuidsForHour, UuidsAtHost}
+import org.wa9nnn.fdcluster.javafx.sync._
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.NodeAddress
-import org.wa9nnn.fdcluster.model.sync.QsoHour
-import org.wa9nnn.fdcluster.store.network.FdHour
+import org.wa9nnn.fdcluster.model.sync.NodeStatus
+import org.wa9nnn.fdcluster.store.RequestNodeStatus
 import play.api.libs.json.JsValue
 
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
 trait UserRoutes extends LazyLogging {
-  //  import Directives._
 
   import PlayJsonSupport._
-
 
   val nodeAddress: NodeAddress
 
@@ -67,7 +65,24 @@ trait UserRoutes extends LazyLogging {
         get {
           concat(
             pathSingleSlash {
-              complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<html><body>todo add help for API!</body></html>"))
+              complete(HttpEntity(ContentTypes.`text/html(UTF-8)`,
+                """<html><body>API<body>
+                  |<a href="/nodeStatus">nodeStatus</a>
+                  |</body>
+                  |</html>""".stripMargin))
+            },
+          )
+        }, get {
+          concat(
+            path("nodeStatus") {
+              onSuccess((
+                store ? RequestNodeStatus
+                ).mapTo[NodeStatus]) { nodeStatus ⇒
+                complete {
+                  nodeStatus
+                }
+              }
+
             },
           )
         },
