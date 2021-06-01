@@ -54,13 +54,16 @@ case class NodeAddress(ipAddress: String = "", hostName: String = "localhost", i
     if (ipAddress == "")
       "Not Set"
     else
-      s"$hostName${instance.map(i => s":$i").getOrElse("")} ($ipAddress)"
+      s"$hostName${instance.map(i => s";$i").getOrElse("")} ($ipAddress)"
   }
   val display: String = {
     if (ipAddress == "")
       "Not Set"
     else
-      s"$hostName${instance.map(i => s":$i").getOrElse("")}"
+      s"$hostName${instance.map(i => s";$i").getOrElse("")}"
+  }
+  def fileUrlSafe:String = {
+    s"$hostName${instance.map(i => s"-$i").getOrElse("")}"
   }
 
   val qsoNode: String = {

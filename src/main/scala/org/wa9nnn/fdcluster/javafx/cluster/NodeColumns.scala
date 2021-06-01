@@ -13,19 +13,7 @@ import scala.collection.concurrent.TrieMap
  *
  */
 @Singleton
-class NodeColumns @Inject()( ourNodeAddress: NodeAddress) {
-//  def purge(): Unit = {
-//    val tooOldStamp = Instant.now().minus(nodeStatusLife)
-//    nodes.values
-//      .map(_.value)
-//      .filter(_.stamp.isBefore(tooOldStamp))
-//      .foreach(ns => {
-//        nodes.remove(ns.nodeAddress)
-//      })
-//  }
-
-
-
+class NodeColumns @Inject()(ourNodeAddress: NodeAddress) {
   def nodeCells: Seq[NodeCells] = {
     map
       .values
@@ -35,6 +23,11 @@ class NodeColumns @Inject()( ourNodeAddress: NodeAddress) {
 
   val map = new TrieMap[NodeAddress, NodeCells]()
 
+  def purge(listOftheDead: List[NodeAddress]): Unit = {
+    listOftheDead.foreach {
+      map.remove
+    }
+  }
   /**
    *
    * @param nodeStatus incoming.

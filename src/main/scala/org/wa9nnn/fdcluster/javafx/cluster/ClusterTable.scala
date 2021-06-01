@@ -3,6 +3,7 @@ package org.wa9nnn.fdcluster.javafx.cluster
 import com.typesafe.scalalogging.LazyLogging
 import com.wa9nnn.util.tableui.Cell
 import org.scalafx.extras.onFX
+import org.wa9nnn.fdcluster.model.NodeAddress
 import org.wa9nnn.fdcluster.model.sync.NodeStatus
 import scalafx.scene.layout.GridPane
 
@@ -16,10 +17,15 @@ class ClusterTable @Inject()(nodeColumns: NodeColumns) extends GridPane with Laz
     if (nodeColumns.update(nodeStatus))
       updateGridLayout()
   }
+  def purge(deadNodes:List[NodeAddress]):Unit = {
+    nodeColumns.purge(deadNodes)
+    updateGridLayout
+  }
 
   this.getRowConstraints
 
   def updateGridLayout() {
+    logger.debug("updateGridLayout")
     onFX {
       children.clear()
       // row headers

@@ -26,7 +26,7 @@
     <logger name="org.wa9nnn.fdcluster.http.HttpClientActor" level="INFO"/>
     <logger name="org.wa9nnn.fdcluster.javafx.entry.EntryTab" level="INFO"/>
     <logger name="org.wa9nnn.fdcluster.javafx.entry.StatisticsTab" level="INFO"/>
-    <logger name="org.wa9nnn.fdcluster.model.sync.ClusterActor" level="INFO"/>
+    <logger name="org.wa9nnn.fdcluster.model.sync.ClusterActor" level="DEBUG"/>
     <logger name="org.wa9nnn.fdcluster.javafx.entry.ActionResult" level="INFO"/>
     <logger name="org.wa9nnn.fdcluster.store.StoreActor" level="INFO"/>
     <logger name="org.wa9nnn.fdcluster.store.StoreLogic" level="INFO"/>

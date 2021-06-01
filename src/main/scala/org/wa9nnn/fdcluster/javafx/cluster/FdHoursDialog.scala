@@ -31,8 +31,9 @@ class FdHoursDialog @Inject()(fdHours: FdHours, nodeAddress: NodeAddress) extend
   }
 
   def layout(): Unit = {
+    logger.debug("layout")
+
     gridPane.children = Seq.empty
-    logger.debug("Layout")
 
     val row = new AtomicInteger()
     gridPane.add(new Label() {

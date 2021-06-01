@@ -16,6 +16,7 @@ import scala.collection.concurrent.TrieMap
  */
 @Singleton
 class FdHours @Inject()(journalProperty: JournalProperty) extends LazyLogging {
+
   private val data: Matrix[FdHour, NodeAddress, QsoDigestPropertyCell] = new Matrix[FdHour, NodeAddress, QsoDigestPropertyCell]
   private val metadataMap: TrieMap[NodeAddress, NodeMetadata] = new TrieMap[NodeAddress, NodeMetadata]()
 
@@ -29,7 +30,7 @@ class FdHours @Inject()(journalProperty: JournalProperty) extends LazyLogging {
   }
 
   def colorHours(fdHour: FdHour): Unit ={
-    HourColorer(data.cellForRow(fdHour))
+    HourColorer(data.cellsForRow(fdHour))
   }
 
   /**
@@ -44,7 +45,7 @@ class FdHours @Inject()(journalProperty: JournalProperty) extends LazyLogging {
 
     metadataMap.getOrElseUpdate(nodeAddress, NodeMetadata(nodeAddress)).update(nodeStatus)
     nodeStatus.qsoHourDigests.foreach { qhd =>
-      val cell: QsoDigestPropertyCell = data.getOrElseUpdate(Key(qhd.fdHour, nodeAddress), {
+      val cell: QsoDigestPropertyCell = data.getOrElseUpdate(qhd.fdHour, nodeAddress, {
         qhd.PropertyCell
       })
       cell.update(qhd)
@@ -55,6 +56,15 @@ class FdHours @Inject()(journalProperty: JournalProperty) extends LazyLogging {
     }
 
   }
+
+  def purge(deadNodes: List[NodeAddress]): Unit = {
+    deadNodes.foreach{node =>
+      metadataMap.remove(node)
+      data.removeColumn(node)
+    }
+    layoutVersion.value = layoutVersion.value + 1
+  }
+
 
   def clear(): Unit = {
     data.clear()

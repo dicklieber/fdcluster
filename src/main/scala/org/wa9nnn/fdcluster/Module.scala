@@ -26,7 +26,7 @@ import com.google.inject.{AbstractModule, Injector, Provides}
 import configs.Config
 import net.codingwell.scalaguice.{ScalaModule, ScalaMultibinder}
 import org.wa9nnn.fdcluster.contest.{JournalProperty, OkToLogContributer}
-import org.wa9nnn.fdcluster.javafx.cluster.{ClusterTable, FdHours}
+import org.wa9nnn.fdcluster.javafx.cluster.{ClusterTable, FdHours, NodeHistory}
 import org.wa9nnn.fdcluster.javafx.entry.{RunningTaskInfoConsumer, RunningTaskPane, StatsPane}
 import org.wa9nnn.fdcluster.metrics.MetricsReporter
 import org.wa9nnn.fdcluster.model._
@@ -34,7 +34,7 @@ import org.wa9nnn.fdcluster.model.sync.{ClusterActor, NodeStatusQueueActor}
 import org.wa9nnn.fdcluster.store._
 import org.wa9nnn.fdcluster.store.network.broadcast.BroadcastActor
 import org.wa9nnn.fdcluster.store.network.multicast.MulticastThing
-import org.wa9nnn.fdcluster.store.network.{MultcastSenderActor, MulticastListener, JsonContainerSender}
+import org.wa9nnn.fdcluster.store.network.{JsonContainerSender, MultcastSenderActor, MulticastListener}
 import org.wa9nnn.util._
 
 import javax.inject.{Named, Singleton}
@@ -114,10 +114,11 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
                         contestProperty: ContestProperty,
                         journalProperty: JournalProperty,
                         clusterTable: ClusterTable,
-                        fdHours: FdHours
+                        fdHours: FdHours,
+                        nodeHistory: NodeHistory
                        ): ActorRef = {
     actorSystem.actorOf(Props(
-      new ClusterActor(nodeAddress, storeActor, nodestatusQueue, contestProperty, journalProperty, clusterTable, fdHours)),
+      new ClusterActor(nodeAddress, storeActor, nodestatusQueue, contestProperty, journalProperty, clusterTable, fdHours,nodeHistory)),
       "cluster")
   }
 

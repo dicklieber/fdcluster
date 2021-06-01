@@ -7,7 +7,7 @@ import com.google.inject.name.Named
 import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.contest.JournalProperty
 import org.wa9nnn.fdcluster.http.HttpClientActor
-import org.wa9nnn.fdcluster.javafx.cluster.{ClusterTable, FdHours}
+import org.wa9nnn.fdcluster.javafx.cluster.{ClusterTable, FdHours, NodeHistory}
 import org.wa9nnn.fdcluster.javafx.sync._
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.{ContestProperty, NodeAddress}
@@ -26,29 +26,31 @@ class ClusterActor(nodeAddress: NodeAddress,
                    journalProperty: JournalProperty,
                    clusterTable: ClusterTable,
                    fdHours: FdHours,
+                   nodeHistory: NodeHistory,
                   ) extends Actor with LazyLogging {
   private implicit val timeout: Timeout = Timeout(5 seconds)
-  context.system.scheduler.scheduleAtFixedRate(2 seconds, 17 seconds, self, Purge)
-
+  context.system.scheduler.scheduleAtFixedRate(17 seconds, 17 seconds, self, Purge)
   private val httpClient: ActorRef = context.actorOf(Props(classOf[HttpClientActor], store, context.self))
 
   private var ourNodeStatus: NodeStatus = NodeStatus(nodeAddress = nodeAddress)
+
 
   override def receive: Receive = {
 
     case s: SendContainer => httpClient ! s
 
     case ns: NodeStatus ⇒
-      logger.trace(s"Got NodeStatus from ${ns.nodeAddress}")
+      val theirNodeAddress = ns.nodeAddress
+      logger.trace(s"Got NodeStatus from $theirNodeAddress")
+      nodeHistory(ns.nodeAddress)
       fdHours.update(ns)
       clusterTable.update(ns)
-      if (ns.nodeAddress == nodeAddress) {
+      if (theirNodeAddress == nodeAddress) {
         ourNodeStatus = ns
       } else {
         ns.journal.foreach(journal => journalProperty.update(journal))
         ns.contest.foreach(contest => contestProperty.update(contest))
         nodeStatusQueue ! ns
-
         (nodeStatusQueue ? NextNodeStatus).mapTo[Option[NodeStatus]].map {
           {
             _.map { ns =>
@@ -77,8 +79,17 @@ class ClusterActor(nodeAddress: NodeAddress,
         }
       }
 
-    case Purge =>
-      //todo purge
+    case Purge => {
+      val deadNodes: List[NodeAddress] = nodeHistory.grimReaper()
+      if (deadNodes.nonEmpty) {
+        logger.whenDebugEnabled {
+          val str = deadNodes.map(_.display).mkString(" ")
+          logger.debug(s"DeadNodes: $str")
+        }
+        clusterTable.purge(deadNodes)
+        fdHours.purge(deadNodes)
+      }
+    }
 
     case rufh: RequestUuidsForHour =>
       httpClient ! rufh
@@ -94,3 +105,4 @@ class ClusterActor(nodeAddress: NodeAddress,
 }
 
 case object Purge
+

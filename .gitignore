@@ -23,3 +23,4 @@ conf/generated.keystore
 /.bsp/
 .bsp/
 sbt.json
+NodeVitalsSpec.scala

@@ -21,11 +21,12 @@ package org.wa9nnn.fdcluster.model
 
 import org.wa9nnn.fdcluster.cabrillo.{CabrilloExportRequest, CabrilloValue, CabrilloValues}
 import org.wa9nnn.fdcluster.contest.Contest
+import org.wa9nnn.fdcluster.javafx.cluster.FdNodeEvent
 import org.wa9nnn.fdcluster.javafx.entry.section.Section
 import org.wa9nnn.fdcluster.javafx.menu.{BuildLoadRequest, ImportRequest}
 import org.wa9nnn.fdcluster.javafx.sync._
 import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHour, QsoHourDigest, QsoHourIds}
-import org.wa9nnn.fdcluster.rig.{RigModel, RigSettings, SerialPort, SerialPortSettings}
+import org.wa9nnn.fdcluster.rig.{RigModel, RigSettings, SerialPort}
 import org.wa9nnn.fdcluster.store.JsonContainer
 import org.wa9nnn.fdcluster.store.network.FdHour
 import play.api.libs.json.{Format, Json}
@@ -54,6 +55,7 @@ object MessageFormats {
   implicit val sectFromat: Format[Section] = Json.format[Section]
   implicit val fdHourFormat: Format[FdHour] = Json.format[FdHour]
   implicit val nodeAddressFormat: Format[NodeAddress] = Json.format[NodeAddress]
+  implicit val nodeEventFormat: Format[FdNodeEvent] = Json.format[FdNodeEvent]
   implicit val journalFormat: Format[Journal] = Json.format[Journal]
   implicit val stepFormat: Format[Step] = Json.format[Step]
   implicit val rqfhFormat: Format[RequestQsosForHour] = Json.format[RequestQsosForHour]

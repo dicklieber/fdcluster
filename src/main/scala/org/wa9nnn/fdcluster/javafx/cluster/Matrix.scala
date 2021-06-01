@@ -9,27 +9,19 @@ import scala.collection.concurrent.TrieMap
  * @tparam T cell what's at an RxC location in the matrix
  */
 class Matrix[R <: Ordered[R], C <: Ordered[C], T] {
-
   private val data = new TrieMap[Key[R, C], T]()
 
   def size: Int = data.size
 
-  def foreachCol(col: C, f: T => Unit): Unit =
-    data.keys.filter(_.column == col).foreach { k =>
-      f(data(k))
-    }
-
   /**
-   *
-   * @param key with R & C.
    * @param op  expression that computes the value to store if not already present.
    * @return previous value or None
    */
-  def getOrElseUpdate(key: Key[R, C], op: => T): T = {
-    data.getOrElseUpdate(key, op)
+  def getOrElseUpdate(row: R, column: C, op: => T): T = {
+    data.getOrElseUpdate(Key(row, column), op)
   }
 
-  def cellForRow(row: R): List[T] = {
+  def cellsForRow(row: R): List[T] = {
     data
       .keys
       .filter(_.row == row)
@@ -58,4 +50,11 @@ class Matrix[R <: Ordered[R], C <: Ordered[C], T] {
     data.clear()
   }
 
+  def removeColumn(column: C): Unit = {
+    data.keys.filter(column == _.column).foreach(data.remove)
+  }
+
+  def removerow(row: R): Unit = {
+    data.keys.filter(row == _.row).foreach(data.remove)
+  }
 }
