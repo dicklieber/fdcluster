@@ -9,7 +9,7 @@ import com.google.inject.name.Named
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 
-import java.net.{DatagramPacket, DatagramSocket, InetAddress, MulticastSocket}
+import java.net.{DatagramPacket, DatagramSocket, InetAddress, MulticastSocket, NetworkInterface}
 import java.util.{Timer, TimerTask}
 import scala.compat.java8.DurationConverters.DurationOps
 import scala.concurrent.duration.DurationInt
@@ -47,7 +47,7 @@ class MulticastThing @Inject()(clusterControl: NetworkControl, config: Config,
   multicastSocket joinGroup multicastGroup
 //  socket.setBroadcast(true)
   multicastSocket.setSoTimeout(timeoutMs)
-
+   val networkInterface: NetworkInterface = multicastSocket.getNetworkInterface
   Runtime.getRuntime.addShutdownHook(new Thread(() => {
     shutdown()
   }, "Broadcast Shutdown"))

@@ -18,29 +18,31 @@
 
 package org.wa9nnn.fdcluster.javafx.menu
 
-import com.typesafe.scalalogging.LazyLogging
-import org.wa9nnn.fdcluster.{AppInfo, BuildInfo, FileContext}
-import org.wa9nnn.fdcluster.javafx.GridOfControls
 import _root_.scalafx.scene.control.{Hyperlink, _}
 import _root_.scalafx.scene.layout.{HBox, VBox}
-
-import java.awt.Desktop
-import java.lang.management.ManagementFactory
-import java.net.URI
-import java.time.{Duration, Instant}
-import org.wa9nnn.fdcluster.javafx.FdCluster
+import com.typesafe.scalalogging.LazyLogging
+import org.wa9nnn.fdcluster.javafx.GridOfControls
 import org.wa9nnn.fdcluster.model.NodeAddress
-import org.wa9nnn.util.DurationFormat
+import org.wa9nnn.fdcluster.store.network.multicast.MulticastThing
+import org.wa9nnn.fdcluster.{AppInfo, BuildInfo, FileContext}
 import scalafx.geometry.Insets
 
+import java.awt.Desktop
 import java.io.File
+import java.lang.management.ManagementFactory
+import java.net.{Inet4Address, InterfaceAddress, NetworkInterface, URI}
+import java.time.{Duration, Instant}
 import javax.inject.{Inject, Singleton}
+import scala.collection.mutable
 import scala.jdk.CollectionConverters._
 
 @Singleton
-class AboutDialog @Inject()(appInfo: AppInfo, fileManager: FileContext, nodeAddress: NodeAddress) extends Dialog with LazyLogging {
+class AboutDialog @Inject()(appInfo: AppInfo,
+                            fileManager: FileContext,
+                            nodeAddress: NodeAddress,
+                            multicastThing: MulticastThing) extends Dialog with LazyLogging {
   title = s"About ${BuildInfo.name}"
-
+  resizable = true
   private val cssUrl: String = getClass.getResource("/fdcluster.css").toExternalForm
 
   dialogPane.value.getButtonTypes.add(ButtonType.Close)
@@ -80,13 +82,41 @@ class AboutDialog @Inject()(appInfo: AppInfo, fileManager: FileContext, nodeAddr
         desktop.browse(nodeAddress.url.toURI)
       }
     })
-    val args = ManagementFactory.getRuntimeMXBean.getInputArguments.asScala.mkString("\n")
-    val control = new TextArea(args) {
-      prefRowCount = 15
+    val args = ManagementFactory.getRuntimeMXBean.getInputArguments.asScala
+    val control = new TextArea(args.mkString("\n")) {
+      prefRowCount = args.size + 1
       prefColumnCount = 70
       editable = false
     }
     goc.addControl("Command Line", control)
+
+    val ifList = NetworkInterface.getNetworkInterfaces
+      .asScala
+      .toList
+//      .filter(_.isUp)
+      .flatMap { ni: NetworkInterface =>
+        val addresses: mutable.Seq[InterfaceAddress] = ni.getInterfaceAddresses
+          .asScala
+          .filter {
+            _.getAddress.isInstanceOf[Inet4Address]
+          }
+        addresses.map { address: InterfaceAddress =>
+          val host = address.getAddress.getHostAddress
+          f"${ni.getName}%-10s\t$host%-10s"
+
+        }
+      }
+
+    val netIfControl = new TextArea(ifList.mkString("\n")) {
+      prefRowCount = ifList.size
+      prefColumnCount = 70
+      editable = false
+    }
+    goc.addControl("Network Interfaces", netIfControl)
+
+    val mcastInterface: String = multicastThing.networkInterface.getInetAddresses.asScala.toList.head.getHostAddress
+    goc.addText("Multicast Interface", mcastInterface)
+
     goc.addControl("Blame this guy", new Hyperlink("Dick Lieber WA9NNN") {
       onAction = event => {
         if (desktop.isSupported(Desktop.Action.MAIL)) {
@@ -101,7 +131,7 @@ class AboutDialog @Inject()(appInfo: AppInfo, fileManager: FileContext, nodeAddr
       Credit("Icons made by", "https://www.freepik.com", Some("Freepik"))
     ))
 
-//    goc.add("ClassPath", System.getProperty("java.class.path").split(":").mkString("\n"))
+    //    goc.add("ClassPath", System.getProperty("java.class.path").split(":").mkString("\n"))
 
     val dialogPane1 = dialogPane()
     dialogPane1.getStylesheets.add(cssUrl)
