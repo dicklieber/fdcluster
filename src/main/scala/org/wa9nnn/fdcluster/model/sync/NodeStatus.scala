@@ -43,7 +43,7 @@ case class NodeStatus(nodeAddress: NodeAddress,
                       station: Station = Station(),
                       contest: Option[Contest] = None,
                       journal: Option[Journal] = None,
-                      osName: String = System.getProperty("os.name"),
+                      osName: String = s"${System.getProperty("os.name")} ${System.getProperty("os.version")}",
                       stamp: Instant = Instant.now(),
                       ver: String = BuildInfo.version) extends ClusterMessage {
 

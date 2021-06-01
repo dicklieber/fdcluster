@@ -19,7 +19,7 @@ class ClusterTable @Inject()(nodeColumns: NodeColumns) extends GridPane with Laz
   }
   def purge(deadNodes:List[NodeAddress]):Unit = {
     nodeColumns.purge(deadNodes)
-    updateGridLayout
+    updateGridLayout()
   }
 
   this.getRowConstraints
