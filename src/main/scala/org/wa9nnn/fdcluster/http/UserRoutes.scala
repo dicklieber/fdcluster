@@ -18,6 +18,7 @@
 
 package org.wa9nnn.fdcluster.http
 
+import about.AboutTable
 import akka.actor.ActorRef
 import akka.http.scaladsl.marshalling.ToResponseMarshallable
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
@@ -28,6 +29,7 @@ import akka.http.scaladsl.server.directives.RouteDirectives.complete
 import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
+import org.wa9nnn.fdcluster.html
 import org.wa9nnn.fdcluster.javafx.sync._
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.NodeAddress
@@ -43,6 +45,7 @@ trait UserRoutes extends LazyLogging {
   import PlayJsonSupport._
 
   val nodeAddress: NodeAddress
+  val aboutTable: AboutTable
 
   /**
    * Automatically applied to convert the JsValue, e.g. {{Json.toJson(qsoHours)}} to what complete() needs.
@@ -68,12 +71,21 @@ trait UserRoutes extends LazyLogging {
               complete(HttpEntity(ContentTypes.`text/html(UTF-8)`,
                 """<html><body>API<body>
                   |<a href="/nodeStatus">nodeStatus</a>
+                  |<a href="/about">About</a>
                   |</body>
                   |</html>""".stripMargin))
             },
           )
         }, get {
           concat(
+            path("about") {
+              complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, {
+                val table = aboutTable()
+                html.AboutDialog(table).toString()
+              }
+              ))
+
+            },
             path("nodeStatus") {
               onSuccess((
                 store ? RequestNodeStatus
@@ -83,7 +95,7 @@ trait UserRoutes extends LazyLogging {
                 }
               }
 
-            },
+            }
           )
         },
         post {

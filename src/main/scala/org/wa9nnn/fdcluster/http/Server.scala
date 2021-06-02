@@ -19,6 +19,7 @@
 
 package org.wa9nnn.fdcluster.http
 
+import about.AboutTable
 import akka.actor.{ActorRef, ActorSystem}
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.marshalling.ToResponseMarshallable
@@ -45,6 +46,7 @@ import scala.util.{Failure, Success}
 class Server @Inject()(@Inject() @Named("store") val store: ActorRef,
                        system: ActorSystem,
                        config: Config,
+                       val aboutTable: AboutTable,
                        val nodeAddress: NodeAddress) extends UserRoutes with LazyLogging {
   private implicit val s = system
   implicit val executionContext: ExecutionContext = system.dispatcher

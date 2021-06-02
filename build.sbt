@@ -47,7 +47,7 @@ lazy val javaFXModules = {
       throw new Exception("Unknown platform!")
   }
   // Create dependencies for JavaFX modules
-  Seq("base", "controls",  "graphics", "media")
+  Seq("base", "controls",  "graphics", "media", "web")
     .map( m=> "org.openjfx" % s"javafx-$m" % "15.0.1" classifier osName)
 }
 

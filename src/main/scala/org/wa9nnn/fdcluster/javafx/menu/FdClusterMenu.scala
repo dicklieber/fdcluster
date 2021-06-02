@@ -22,6 +22,7 @@ import _root_.scalafx.Includes._
 import _root_.scalafx.application.Platform
 import _root_.scalafx.event.ActionEvent
 import _root_.scalafx.scene.control._
+import about.AboutDialogHtml
 import akka.actor.ActorRef
 import akka.util.Timeout
 import com.google.inject.Injector
@@ -54,7 +55,8 @@ import scala.util.{Failure, Success, Try, Using}
 class FdClusterMenu @Inject()(
                                injector: Injector,
                                @Named("store") store: ActorRef,
-                               aboutDialog: AboutDialog,
+                               aboutDialog: AboutDialogGrid,
+                               aboutDialogHtml: AboutDialogHtml,
                                fileManager: FileContext,
                                generateDupSheet: GenerateDupSheet,
                                contestProperty: ContestProperty,
@@ -97,10 +99,16 @@ class FdClusterMenu @Inject()(
       debugRemoveDialog()
     }
   }
+  private val aboutMenuItemGrid = new MenuItem {
+    text = "_About (OLD)"
+    onAction = { _: ActionEvent =>
+      aboutDialog()
+    }
+  }
   private val aboutMenuItem = new MenuItem {
     text = "_About"
     onAction = { _: ActionEvent =>
-      aboutDialog()
+      aboutDialogHtml()
     }
   }
   private val rigMenuItem = new MenuItem {
@@ -271,6 +279,7 @@ class FdClusterMenu @Inject()(
         items = List(
           //          environmentMenuItem,
           aboutMenuItem,
+          aboutMenuItemGrid
         )
       }
     )

@@ -37,10 +37,10 @@ import scala.collection.mutable
 import scala.jdk.CollectionConverters._
 
 @Singleton
-class AboutDialog @Inject()(appInfo: AppInfo,
-                            fileManager: FileContext,
-                            nodeAddress: NodeAddress,
-                            multicastThing: MulticastThing) extends Dialog with LazyLogging {
+class AboutDialogGrid @Inject()(appInfo: AppInfo,
+                                fileManager: FileContext,
+                                nodeAddress: NodeAddress,
+                                multicastThing: MulticastThing) extends Dialog with LazyLogging {
   title = s"About ${BuildInfo.name}"
   resizable = true
   private val cssUrl: String = getClass.getResource("/fdcluster.css").toExternalForm

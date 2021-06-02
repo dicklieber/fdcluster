@@ -1,0 +1,35 @@
+
+.headeredTable {
+    border-collapse: collapse;
+    border: 1px;
+    inset: 20px 100px 10px  10px;
+}
+
+.headeredTable td {
+    border: 1px solid black;
+    white-space: nowrap;
+}
+
+.headeredTable td.subHeader {
+    text-align: center;
+    font-weight: bold;
+    background-color: #bac9e7;
+}
+
+.headeredTable th {
+    border: 1px solid black;
+}
+
+.rowHeader {
+    font-weight: bold;
+    background-color: lightGrey;
+    padding: 15px;
+    text-align: left;
+
+}
+
+
+* {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+}
