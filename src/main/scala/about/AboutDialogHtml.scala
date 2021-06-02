@@ -51,7 +51,7 @@ class AboutDialogHtml @Inject()(aboutTable: AboutTable,
 
     val asHtml = html.AboutDialog(aboutTable.apply).toString()
 
-    val htmlCss: String = getClass.getResource("/main.css").toExternalForm
+    val htmlCss: String = getClass.getResource("/css/main.css").toExternalForm
 
     val engine: WebEngine = webView.engine
     engine.userStyleSheetLocation = htmlCss

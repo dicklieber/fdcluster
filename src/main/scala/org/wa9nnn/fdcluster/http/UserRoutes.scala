@@ -95,6 +95,12 @@ trait UserRoutes extends LazyLogging {
                 }
               }
 
+            },
+            pathPrefix("images") {
+              getFromResourceDirectory("images")
+            },
+            pathPrefix("css") {
+              getFromResourceDirectory("css")
             }
           )
         },
