@@ -1,0 +1,22 @@
+@(pageName:String)(content:Html)
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>main</title>
+    </head>
+    <body>
+        <table>
+            <tr>
+                <td><ul>
+                    <li><a href="/nodeStatus">NodeStatus (JSON)</a></li>
+                    <li><a href="/about">About</a></li>
+                </ul></td>
+                <td>
+                    <div id="content">@content</div>
+                </td>
+            </tr>
+        </table>
+
+</body>
+</html>

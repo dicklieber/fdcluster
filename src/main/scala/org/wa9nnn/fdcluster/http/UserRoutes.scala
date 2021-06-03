@@ -68,12 +68,10 @@ trait UserRoutes extends LazyLogging {
         get {
           concat(
             pathSingleSlash {
-              complete(HttpEntity(ContentTypes.`text/html(UTF-8)`,
-                """<html><body>API<body>
-                  |<a href="/nodeStatus">nodeStatus</a>
-                  |<a href="/about">About</a>
-                  |</body>
-                  |</html>""".stripMargin))
+              complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, {
+                html.Landing().toString()
+              }
+              ))
             },
           )
         }, get {

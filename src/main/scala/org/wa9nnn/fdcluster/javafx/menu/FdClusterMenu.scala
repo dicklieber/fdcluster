@@ -166,7 +166,7 @@ class FdClusterMenu @Inject()(
   }
 
   private val filesMenuItem = new MenuItem {
-    text = "FdCluster Files"
+    text = "main Files"
     onAction = { _ =>
       desktop.browseFileDirectory(fileManager.directory.toFile)
     }

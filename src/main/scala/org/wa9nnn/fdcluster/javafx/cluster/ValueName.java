@@ -19,7 +19,7 @@ public enum ValueName implements PropertyCellName {
     Contest("FD or WFD"),
     OS("Operating system. Can be different for each node."),
     Stamp("When the node reported this informaton."),
-    Version("Version of FdCluster. Not good to mix version of FdCluster!");
+    Version("Version of main. Not good to mix version of main!");
 
     private final String display;
     private final String toolTip;

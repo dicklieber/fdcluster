@@ -210,7 +210,7 @@ class RigDialog @Inject()(rigStore: RigStore, rigList: Rigctld, config: Config) 
 
   private val borderPane = new BorderPane() {
     top = new VBox(new Label(
-      """FdCluster uses rigctld application from Hamlib to list for frequency and mode from your radio.
+      """main uses rigctld application from Hamlib to list for frequency and mode from your radio.
         |rigctld is a application that is configured to talk to specific radios, FdCuster talks to an instance of
         |rigctld over IP.
         |You need to install Hamlib for your particular computer. See the Hamlib documentation link below.
