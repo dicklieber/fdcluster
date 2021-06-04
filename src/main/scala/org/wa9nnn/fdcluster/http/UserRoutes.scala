@@ -21,7 +21,7 @@ package org.wa9nnn.fdcluster.http
 import about.AboutTable
 import akka.actor.ActorRef
 import akka.http.scaladsl.marshalling.ToResponseMarshallable
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpRequest}
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.directives.MethodDirectives.get
@@ -32,20 +32,25 @@ import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.html
 import org.wa9nnn.fdcluster.javafx.sync._
 import org.wa9nnn.fdcluster.model.MessageFormats._
-import org.wa9nnn.fdcluster.model.NodeAddress
 import org.wa9nnn.fdcluster.model.sync.NodeStatus
+import org.wa9nnn.fdcluster.model.{ContestProperty, NodeAddress}
 import org.wa9nnn.fdcluster.store.RequestNodeStatus
+import org.wa9nnn.webclient.{QsoLogger, SignOnOff}
 import play.api.libs.json.JsValue
 
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
+//todo mmake this an injectable clas
 trait UserRoutes extends LazyLogging {
 
   import PlayJsonSupport._
 
   val nodeAddress: NodeAddress
   val aboutTable: AboutTable
+  val contestProperty: ContestProperty
+  val qsoLogger: QsoLogger
+  val signOnOff: SignOnOff
 
   /**
    * Automatically applied to convert the JsValue, e.g. {{Json.toJson(qsoHours)}} to what complete() needs.
@@ -61,9 +66,14 @@ trait UserRoutes extends LazyLogging {
   // Required by the `ask` (?) method below
   implicit lazy val timeout: Timeout = Timeout(5 seconds) // usually we'd obtain the timeout from the system's configuration
 
+  def requestMethod(req: HttpRequest): String = req.method.name
+
+
   lazy val userRoutes: Route =
-  //          DebuggingDirectives.logRequestResult(
+
     encodeResponse(
+      logRequestResult("overall")(
+
       concat(
         get {
           concat(
@@ -75,13 +85,16 @@ trait UserRoutes extends LazyLogging {
             },
           )
         }, get {
+
           concat(
+            // logs just the request method and response status at info level
+
             path("about") {
-              complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, {
-                val table = aboutTable()
-                html.AboutDialog(table).toString()
-              }
-              ))
+                complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, {
+                  val table = aboutTable()
+                  html.AboutDialog(table).toString()
+                }
+                ))
 
             },
             path("nodeStatus") {
@@ -94,16 +107,28 @@ trait UserRoutes extends LazyLogging {
               }
 
             },
+            path("contestImage") {
+              val imagePath: String = s"images/${contestProperty.contestName}.png"
+              getFromResource(imagePath)
+            },
             pathPrefix("images") {
               getFromResourceDirectory("images")
             },
             pathPrefix("css") {
               getFromResourceDirectory("css")
-            }
+            },
+            qsoLogger.qsoEntryRoute,
+            signOnOff.signonRoute,
+            signOnOff.logOutRoute,
           )
         },
         post {
+
           concat(
+
+            signOnOff.doSignonRoute,
+            signOnOff.changeStation,
+
             path({
               val str = ClassToPath(classOf[RequestUuidsForHour])
               str
@@ -143,10 +168,19 @@ trait UserRoutes extends LazyLogging {
                   }
                 }
               }
-            }
+            },
+            qsoLogger.logQsoRoute
+            //            Xyzzy.apply
+            //            path("LogQso") {
+            //              formFields("callSign", "class", "section") { (callSign, clas, section) =>
+            //                complete(s"Please log $callSign $clas $section")
+            //              }
+            //            }
           )
         }
+      )
       )
     )
 
 }
+

@@ -73,6 +73,7 @@ libraryDependencies ++= Seq(
   "com.github.kxbmap" %% "configs" % "0.6.0",
   "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
   "com.typesafe.akka" %% "akka-stream" % "2.6.4",
+  "com.typesafe.akka" %% "akka-slf4j" % "2.6.4",
   "ch.qos.logback" % "logback-classic" % logbackVersion,
   "ch.qos.logback" % "logback-core" % logbackVersion,
   "com.github.andyglow" %% "typesafe-config-scala" % "1.1.0" % Compile,

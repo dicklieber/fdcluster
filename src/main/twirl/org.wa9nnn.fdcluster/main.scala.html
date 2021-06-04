@@ -1,22 +1,33 @@
-@(pageName:String)(content:Html)
+@(pageName: String)(content: Html)
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
         <title>main</title>
+        <link rel="stylesheet" href="css/main.css"/>
     </head>
     <body>
         <table>
             <tr>
-                <td><ul>
-                    <li><a href="/nodeStatus">NodeStatus (JSON)</a></li>
-                    <li><a href="/about">About</a></li>
-                </ul></td>
+                <td>
+                    <img src="contestImage"/>
+                </td>
+            </tr>
+            <tr >
+                <td class="nav">
+                    <ul >
+                        <li><a href="/signon">Signon</a></li>
+                        <li><a href="/login">Log QSOs</a></li>
+                        <li><a href="/nodeStatus">NodeStatus (JSON)</a></li>
+                        <li><a href="/about">About</a></li>
+                        <li><a href="/logout">Signoff</a></li>
+                    </ul>
+                </td>
                 <td>
                     <div id="content">@content</div>
                 </td>
             </tr>
         </table>
 
-</body>
+    </body>
 </html>

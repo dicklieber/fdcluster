@@ -29,12 +29,14 @@ import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHour, QsoHourDigest, QsoH
 import org.wa9nnn.fdcluster.rig.{RigModel, RigSettings, SerialPort}
 import org.wa9nnn.fdcluster.store.JsonContainer
 import org.wa9nnn.fdcluster.store.network.FdHour
+import org.wa9nnn.webclient.Session
 import play.api.libs.json.{Format, Json}
 
 import java.time.LocalDateTime
 import java.time.format.{DateTimeFormatter, FormatStyle}
 import java.util.UUID
 import scala.language.implicitConversions
+import org.wa9nnn.fdcluster.model.InetAddressFormat.inetAddressFormat
 /**
  * Creates [[play.api.libs.json.Format]] needed by Play JSon to parse and render JSON for case classes.
  * Usually includes with {{import org.wa9nnn.fdcluster.model.MessageFormats._}}
@@ -64,6 +66,7 @@ object MessageFormats {
   implicit val cf: Format[Contest] = Json.format[Contest]
   implicit val bandFormat: Format[AvailableBand] = Json.format[AvailableBand]
   implicit val bandModeOpFormat: Format[Station] = Json.format[Station]
+  implicit val sessionFormat: Format[Session] = Json.format[Session]
   implicit val uuidsFormat: Format[UuidsAtHost] = Json.format[UuidsAtHost]
   implicit val qmd: Format[QsoMetadata] = Json.format[QsoMetadata]
   implicit val qsoFormat: Format[Qso] = Json.format[Qso]

@@ -1,5 +1,6 @@
 package org.wa9nnn.fdcluster.javafx.cluster
 
+import com.typesafe.scalalogging.LazyLogging
 import com.wa9nnn.util.DurationFormat
 import com.wa9nnn.util.tableui.Cell
 import org.scalafx.extras.onFX
@@ -39,7 +40,8 @@ trait PropertyCell[T] extends Pane {
 
 }
 
-case class SimplePropertyCell(override val propertyCellName: PropertyCellName, cssStyleClasses: Seq[String], initialValue: Any) extends BorderPane with PropertyCell[Any] {
+case class SimplePropertyCell(override val propertyCellName: PropertyCellName, cssStyleClasses: Seq[String], initialValue: Any)
+  extends BorderPane with PropertyCell[Any] with LazyLogging{
   val pane: BorderPane = this
   var maybeStart: Option[Instant] = None
   var maybeTimer: Option[Timer] = None
@@ -87,7 +89,12 @@ case class SimplePropertyCell(override val propertyCellName: PropertyCellName, c
       cell.tooltip.foreach {
         control.tooltip = _
       }
-      styleClass ++= cell.cssClass
+      try {
+        styleClass ++= cell.cssClass
+      } catch {
+        case e:Exception =>
+          logger.error(s"Applying ${cell.cssClass} to $styleClass",e)
+      }
       onFX {
         if(cell.cssClass.contains("number"))
           right = control

@@ -36,6 +36,7 @@ import org.wa9nnn.fdcluster.store.network.broadcast.BroadcastActor
 import org.wa9nnn.fdcluster.store.network.multicast.MulticastThing
 import org.wa9nnn.fdcluster.store.network.{JsonContainerSender, MultcastSenderActor, MulticastListener}
 import org.wa9nnn.util._
+import org.wa9nnn.webclient.SessionManager
 
 import javax.inject.{Named, Singleton}
 
@@ -140,6 +141,14 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
   def clusterStoreActor(actorSystem: ActorSystem): ActorRef = {
     actorSystem.actorOf(Props(new NodeStatusQueueActor()),
       "nodeStatusQueue")
+  }
+  @Provides
+  @Singleton
+  @Named("sessionManager")
+  def clusterStoreActor(actorSystem: ActorSystem,
+                        config: Config): ActorRef = {
+    actorSystem.actorOf(Props(new SessionManager(config)),
+      "sessionManager")
   }
 
   @Provides

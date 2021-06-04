@@ -16,7 +16,7 @@ class NodeAddressSpec extends Specification {
     "display" >> {
       val na0 = NodeAddress("10.10.10.0")
       na0.displayWithIp must beEqualTo("localhost (10.10.10.0)")
-      na1i1.displayWithIp must beEqualTo("localhost:1 (10.10.10.1)")
+      na1i1.displayWithIp must beEqualTo("localhost;1 (10.10.10.1)")
     }
     "uri" >> {
       na1i1.uri.toString() must beEqualTo ("//10.10.10.1:8081")

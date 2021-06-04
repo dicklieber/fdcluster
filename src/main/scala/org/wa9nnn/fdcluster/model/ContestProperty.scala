@@ -20,14 +20,11 @@
 package org.wa9nnn.fdcluster.model
 
 import _root_.scalafx.beans.property.{ObjectProperty, _}
-import _root_.scalafx.scene.image.Image
-import com.wa9nnn.util.macos.DockIcon
 import org.wa9nnn.fdcluster.FileContext
-import org.wa9nnn.fdcluster.contest.{Contest, OkToLogContributer}
+import org.wa9nnn.fdcluster.contest.Contest
 import org.wa9nnn.fdcluster.model.MessageFormats._
 
 import javax.inject.{Inject, Singleton}
-import scala.util.{Failure, Success, Using}
 
 /**
  * Provides access and persistence of a single [[Contest]] instance.

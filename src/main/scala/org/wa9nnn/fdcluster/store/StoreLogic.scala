@@ -18,18 +18,24 @@
 package org.wa9nnn.fdcluster.store
 
 import _root_.scalafx.collections.ObservableBuffer
+import akka.actor.ActorRef
+import akka.pattern.ask
+import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.contest.{JournalProperty, JournalWriter}
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHour}
 import org.wa9nnn.fdcluster.store.network.{FdHour, MulticastSender}
+import org.wa9nnn.webclient.{ListSessions, Session}
 
 import java.security.SecureRandom
 import java.util.UUID
-import javax.inject.{Inject, Singleton}
+import javax.inject.{Inject, Named, Singleton}
 import scala.collection.concurrent.TrieMap
 import scala.collection.immutable
+import scala.concurrent.duration.DurationInt
+import scala.concurrent.{Await, Future}
 import scala.util.Try
 
 /**
@@ -46,9 +52,11 @@ class StoreLogic @Inject()(na: NodeAddress,
                            journalManager: JournalProperty,
                            val listeners: immutable.Set[AddQsoListener],
                            storeSender: StoreSender,
-                           multicastSender: MulticastSender
+                           multicastSender: MulticastSender,
+                           @Named("sessionManager")sessionManager: ActorRef
                           )
   extends LazyLogging with QsoSource {
+  implicit lazy val timeout: Timeout = Timeout(5.seconds) // usually we'd obtain the timeout from the system's configuration
 
   /*
   QSOs live in these three structures. Since Qso is immutable all three structures are simply references.
@@ -170,6 +178,8 @@ class StoreLogic @Inject()(na: NodeAddress,
         .map(_.hourDigest).toList
         .sortBy(_.fdHour)
 
+    val eventualSessions: Future[List[Session]] = (sessionManager ? ListSessions).mapTo[List[Session]]
+    val value: Try[List[Session]] = Try(Await.result[List[Session]](eventualSessions, timeout.duration))
 
     val r = sync.NodeStatus(
       nodeAddress = nodeAddress,
@@ -177,6 +187,7 @@ class StoreLogic @Inject()(na: NodeAddress,
       qsoHourDigests = hourDigests,
       station = stationProperty.value,
       contest = contestProperty.maybeValue,
+      sessions = value.getOrElse(List.empty),
       journal = journalManager.maybeValue)
     r
   }

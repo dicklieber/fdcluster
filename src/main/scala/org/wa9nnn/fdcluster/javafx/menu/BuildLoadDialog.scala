@@ -40,7 +40,7 @@ case class BuildLoadRequest(path: String = System.getProperty("user.home"), max:
 class BuildLoadDialog @Inject()(persistence: Persistence) extends Dialog[BuildLoadRequest] {
   val blrIn: BuildLoadRequest = persistence.loadFromFile[BuildLoadRequest](() => BuildLoadRequest())
   title = "Demo Data Bulk Loader"
-  headerText = "Look, a Custom Login Dialog"
+  headerText = "Look, a Custom Signon Dialog"
   val path: StringProperty = new StringProperty(blrIn.path)
 
   resultConverter = dialogButton => {

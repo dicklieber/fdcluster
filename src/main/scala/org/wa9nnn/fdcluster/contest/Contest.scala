@@ -20,7 +20,8 @@ case class Contest(callSign: CallSign = "",
                    ourExchange: Exchange = Exchange(),
                    contestName: String = "FieldDay",
                    nodeAddress: NodeAddress = NodeAddress(),
-                   stamp: Instant = Instant.now()
+                   password:String = "",
+                   stamp: Instant = Instant.now(),
                   ) extends  Stamped[Contest]{
 
   def checkValid(): Unit = {

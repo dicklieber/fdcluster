@@ -17,6 +17,7 @@
 
 package org.wa9nnn.fdcluster.store
 
+import akka.actor.ActorRef
 import org.apache.commons.io.FileUtils._
 import org.specs2.execute.{AsResult, Result}
 import org.specs2.mock.Mockito
@@ -45,6 +46,7 @@ trait StoreLogicContext extends ForEach[StoreLogic] with Mockito {
     val storeSender: StoreSender = mock[StoreSender]
     val multicastSender: MulticastSender = mock[MulticastSender]
     val qsoMetadataProperty: OsoMetadataProperty = mock[OsoMetadataProperty]
+    val mockSessionManagerActor = mock[ActorRef]
     val storeLogic = new StoreLogic(
       na = NodeAddress(),
       qsoMetadataProperty = qsoMetadataProperty,
@@ -55,7 +57,8 @@ trait StoreLogicContext extends ForEach[StoreLogic] with Mockito {
       journalWriter = journalWriter,
       listeners = Set(listener),
       storeSender = storeSender,
-      stationProperty = stationProperty
+      stationProperty = stationProperty,
+      sessionManager = mockSessionManagerActor
     )
 
 

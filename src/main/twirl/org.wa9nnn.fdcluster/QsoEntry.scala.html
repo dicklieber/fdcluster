@@ -1,0 +1,77 @@
+@import com.wa9nnn.util.tableui.Cell
+@import com.wa9nnn.util.tableui.html.attributes
+@import org.wa9nnn.fdcluster.model.ContestRules
+@import org.wa9nnn.fdcluster.model.Station
+@(maybeMessgeCell: Option[Cell], contestRules: ContestRules, station: Station)
+@org.wa9nnn.fdcluster.html.main("Log QSOs") {
+    <table >
+        <tr>
+            <td colspan="2" class="operator">
+                Operator: @station.operator
+        </td>
+        <tr>
+            <td valign="top">
+                <form action="LogQso" method="post">
+                    <table>
+                        <tr>
+                            <td>CallSign</td>
+                            <td><input type="text" name="callSign" width="150"></td>
+                        </tr>
+                        <tr>
+                            <td>Class</td>
+                            <td><input type="text" name="class" width="15"></td>
+                        </tr>
+                        <tr>
+                            <td>Section</td>
+                            <td><input type="text" name="section" width="15"></td>
+                        </tr>
+                    </table>
+                    <input type="submit" name="logit" value="Log QSO">
+                </form>
+                @for(c <- maybeMessgeCell) {
+                    <p @attributes("class", c.cssClass) > @c.value</p>
+                }
+            </td>
+            <td valign="top">
+                <form action="changeStation" method="post">
+                    <input type="hidden" name="operator" value="@station.operator">
+                    <table>
+                        <tr>
+                            <td>Band</td>
+                            <td><select name="band" >
+                            @for(b <- contestRules.bands.bands) {
+                                <option
+                                @if(b == station.bandMode.bandName) {selected = "selected"}>
+                                    @b
+                                </option>
+                            }
+                            </select></td>
+                        </tr>
+                        <tr>
+                            <td>Mode</td>
+                            <td><select name="mode" value="Save Station">
+                            @for(b <- contestRules.modes.modes) {
+                                <option
+                                @if(b == station.bandMode.modeName) {selected = "selected"}>
+                                    @b
+                                </option>
+                            }
+                            </select></td>
+                        </tr>
+                        <tr>
+                            <td>Rig</td>
+                            <td><input type="text" name="rig">@station.rig></td></d>
+                        </tr>
+                        <tr>
+                            <td>Antenna</td>
+                            <td><input type="text" name="antenna">@station.antenna></td></d>
+                        </tr>
+                    </table>
+                    <input type="submit" name="saveStation">
+
+                </form>
+            </td>
+        </tr>
+    </table>
+
+}

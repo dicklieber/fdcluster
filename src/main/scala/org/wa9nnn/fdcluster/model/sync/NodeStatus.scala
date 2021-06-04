@@ -22,8 +22,10 @@ package org.wa9nnn.fdcluster.model.sync
 import org.wa9nnn.fdcluster.BuildInfo
 import org.wa9nnn.fdcluster.contest.Contest
 import org.wa9nnn.fdcluster.javafx.cluster.{NamedValue, NamedValueCollector, ValueName}
+import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
 import org.wa9nnn.fdcluster.model.{Journal, NodeAddress, Station}
 import org.wa9nnn.fdcluster.store.network.FdHour
+import org.wa9nnn.webclient.Session
 
 import java.time.Instant
 
@@ -43,6 +45,7 @@ case class NodeStatus(nodeAddress: NodeAddress,
                       station: Station = Station(),
                       contest: Option[Contest] = None,
                       journal: Option[Journal] = None,
+                      sessions:List[Session] = List.empty,
                       osName: String = s"${System.getProperty("os.name")} ${System.getProperty("os.version")}",
                       stamp: Instant = Instant.now(),
                       ver: String = BuildInfo.version) extends ClusterMessage {
@@ -64,6 +67,7 @@ case class NodeStatus(nodeAddress: NodeAddress,
     collector(Stamp, stamp)
     collector(Version, ver)
     collector(OS, osName)
+    collector(OpCount, osName)
     qsoHourDigests.foreach { qsd =>
       collector(qsd.fdHour, qsd)
     }

@@ -28,7 +28,8 @@ import com.google.inject.Inject
 import com.google.inject.name.Named
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
-import org.wa9nnn.fdcluster.model.NodeAddress
+import org.wa9nnn.fdcluster.model.{ContestProperty, NodeAddress}
+import org.wa9nnn.webclient.{QsoLogger, SignOnOff}
 import play.api.libs.json.{JsValue, Json}
 
 import java.net.URL
@@ -47,7 +48,11 @@ class Server @Inject()(@Inject() @Named("store") val store: ActorRef,
                        system: ActorSystem,
                        config: Config,
                        val aboutTable: AboutTable,
-                       val nodeAddress: NodeAddress) extends UserRoutes with LazyLogging {
+                       val contestProperty: ContestProperty,
+                       val nodeAddress: NodeAddress,
+                       val qsoLogger:QsoLogger,
+                       val signOnOff:SignOnOff
+                      ) extends UserRoutes with LazyLogging {
   private implicit val s = system
   implicit val executionContext: ExecutionContext = system.dispatcher
 

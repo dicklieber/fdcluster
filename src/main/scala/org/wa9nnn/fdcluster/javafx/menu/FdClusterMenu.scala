@@ -36,7 +36,7 @@ import org.wa9nnn.fdcluster.dupsheet.GenerateDupSheet
 import org.wa9nnn.fdcluster.javafx.cluster.FdHoursDialog
 import org.wa9nnn.fdcluster.javafx.debug.{DebugRemoveDialog, ResetDialog}
 import org.wa9nnn.fdcluster.metrics.MetricsReporter
-import org.wa9nnn.fdcluster.model.{ContestProperty, ExportFile}
+import org.wa9nnn.fdcluster.model.{ContestProperty, ExportFile, NodeAddress}
 import org.wa9nnn.fdcluster.rig.RigDialog
 import org.wa9nnn.fdcluster.store.ClearStore
 import org.wa9nnn.fdcluster.tools.RandomQsoDialog
@@ -63,9 +63,18 @@ class FdClusterMenu @Inject()(
                                summaryEngine: SummaryEngine,
                                metricsReporter: MetricsReporter,
                                okToLogGate: OkToLogGate,
+                               nodeAddress: NodeAddress,
                                debugRemoveDialog: DebugRemoveDialog) extends LazyLogging {
   private implicit val timeout: Timeout = Timeout(5 seconds)
   private val desktop = Desktop.getDesktop
+
+  private val webClient :MenuItem = new MenuItem{
+    text = "Use Web Client"
+    onAction = { _: ActionEvent =>
+      desktop.browse(nodeAddress.url.toURI)
+    }
+  }
+
   private val contestSetupMenuItem: MenuItem = new MenuItem {
     text = "Pre Contest Setup"
     onAction = { _: ActionEvent =>
@@ -272,6 +281,12 @@ class FdClusterMenu @Inject()(
         items = List(
           contestSetupMenuItem,
           postContestMenuItem
+        )
+      },
+      new Menu("Web"){
+        mnemonicParsing = true
+        items = List(
+          webClient,
         )
       },
       new Menu("_Help") {

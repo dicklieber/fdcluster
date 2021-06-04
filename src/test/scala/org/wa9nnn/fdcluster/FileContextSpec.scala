@@ -14,7 +14,7 @@ class FileContextSpec extends Specification  with Mockito {
   "values" >> {
     fileManager.userDir must beEqualTo (userHome)
     val directory = fileManager.directory
-    fileManager.instance must beEqualTo (42)
+    fileManager.instance must beSome(42)
     fileManager.logFile must endWith("/fdcluster42/logs/fdcluster.log")
     fileManager.journalDir must beEqualTo (directory.resolve("journal"))
     fileManager.varDirectory must beEqualTo (directory.resolve("var"))

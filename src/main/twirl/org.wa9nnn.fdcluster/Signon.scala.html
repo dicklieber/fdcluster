@@ -1,0 +1,24 @@
+@import com.wa9nnn.util.tableui.Cell
+@import com.wa9nnn.util.tableui.html.attributes
+@(maybeMessgeCell: Option[Cell] = None)
+@org.wa9nnn.fdcluster.html.main("login") {
+    <table>
+        <form action="doSignon" method="post">
+            <table>
+                <tr>
+                    <td>Your CallSign</td>
+                    <td><input type="text" name="yourCallSign"></td>
+                </tr>
+                <tr title="As setup for the contest.">
+                    <td>Password</td>
+                    <td><input type="password" name="password"></td>
+                </tr>
+            </table>
+            <input type="submit" name="submit" value="Signon">
+        </form>
+    </table>
+    @for(c <- maybeMessgeCell) {
+        <p @attributes("class", c.cssClass) > @c.value</p>
+    }
+
+}

@@ -29,11 +29,14 @@ import _root_.scalafx.geometry.{Insets, Pos}
 import _root_.scalafx.scene.control._
 import _root_.scalafx.scene.layout.VBox
 import MessageFormats._
+import org.wa9nnn.fdcluster.authorization.PasswordManager
+
 import javax.inject.Inject
 
 case class ContestDialogPane @Inject()(contestProperty: ContestProperty,
-                             contestRules: AllContestRules,
-                             nodeAddress: NodeAddress)   {
+                                       contestRules: AllContestRules,
+                                       nodeAddress: NodeAddress,
+                                       passwordManager: PasswordManager) {
   private val gridOfControls = new GridOfControls
   private val saveButton = new Button("Save to Cluster")
 
@@ -111,13 +114,20 @@ case class ContestDialogPane @Inject()(contestProperty: ContestProperty,
         val newContest = Contest(callSign = callSignProperty.value,
           ourExchange = exchange,
           contestName = contestCB.value,
+          password = passwordManager.encrypt(passwordProperty.value),
           nodeAddress = nodeAddress)
 
         contestProperty.update(newContest)
     }
 
   gridOfControls.add("Exchange", exchangePane)
+
   private val contest: Contest = contestProperty.contest
+
+  private val passwordProperty: StringProperty = gridOfControls.addText(
+    "Web Password",
+    passwordManager.decrypt(contest.password),
+    tooltip = Option("This will be used by web clients to do QSO logging. If empty Web based clients will be be enabled."))
 
   val lastGoc = new GridOfControls(5 -> 5, Insets(5.0))
   lastGoc.add("From", contest.nodeAddress.displayWithIp)

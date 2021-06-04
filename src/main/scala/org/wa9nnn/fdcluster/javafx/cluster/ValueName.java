@@ -18,7 +18,9 @@ public enum ValueName implements PropertyCellName {
     CallSign("CallSign of your station. Should  be the same across all nodes."),
     Contest("FD or WFD"),
     OS("Operating system. Can be different for each node."),
-    Stamp("When the node reported this informaton."),
+    OpCount("Number of operators at this node. At least 1, more if web clients."),
+
+    Stamp("When the node reported this information."),
     Version("Version of main. Not good to mix version of main!");
 
     private final String display;
