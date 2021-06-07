@@ -4,8 +4,13 @@ import com.typesafe.scalalogging.LazyLogging
 
 import java.net.{DatagramPacket, DatagramSocket, InetAddress, MulticastSocket}
 import java.util.{Timer, TimerTask}
+import scala.jdk.CollectionConverters.MapHasAsScala
 
 object NetworkTest extends App with LazyLogging {
+  System.getProperties.asScala.foreach{case(k,v) =>
+    println(s"$k: \t$v")
+  }
+
   private val localHost = InetAddress.getLocalHost
   val multicastAddress = InetAddress.getByName("239.73.88.0")
   logger.info(s"NetworkTest on ${localHost.getHostName}")
