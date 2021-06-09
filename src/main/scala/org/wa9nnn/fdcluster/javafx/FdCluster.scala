@@ -39,12 +39,20 @@ import org.wa9nnn.fdcluster.{Module, NetworkPane}
 import org.wa9nnn.util.CommandLine
 
 import java.awt.Desktop
+import java.lang.management.ManagementFactory
 import scala.util.{Failure, Success, Using}
 
 /**
  * Main for FDLog
  */
 object FdCluster extends JFXApp with LazyLogging {
+  println(s"JAVA_HOME: \t${System.getenv("JAVA_HOME")}")
+  println(s"java.home \t${System.getProperty("java.home")}")
+  println(s"Java Version: \t${ManagementFactory.getRuntimeMXBean.getVmVersion}")
+  println(s"Java VmName: \t${ManagementFactory.getRuntimeMXBean.getVmName}")
+  println(s"Java VmVendor: \t${ManagementFactory.getRuntimeMXBean.getVmVendor}")
+
+
   private val injector = Guice.createInjector(new Module(parameters))
   private val entryTab = injector.instance[EntryTab]
   private val dataTab = injector.instance[DataTab]

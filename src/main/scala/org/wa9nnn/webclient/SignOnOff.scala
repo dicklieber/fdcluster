@@ -66,7 +66,7 @@ class SignOnOff @Inject()(contestProperty: ContestProperty,
 
         } else {
           HttpEntity(ContentTypes.`text/html(UTF-8)`, {
-            val qsos: HtmlFormat.Appendable = html.Login(Option {
+            val qsos: HtmlFormat.Appendable = html.Signon(Option {
               Cell("Sorry you need the password. Check with the person who setup the system!")
                 .withCssClass("sad")
             })
