@@ -51,7 +51,7 @@ lazy val javaFXModules = {
     .map( m=> "org.openjfx" % s"javafx-$m" % "15.0.1" classifier osName)
 }
 
-libraryDependencies ++= javaFXModules
+//libraryDependencies ++= javaFXModules
 
 
 val javafxLib = file(sys.env.get("JAVAFX_LIB").getOrElse("Environmental variable JAVAFX_LIB is not set"))
@@ -59,7 +59,7 @@ lazy val akkaHttpVersion = "10.2.4"
 val logbackVersion = "1.2.3"
 
 libraryDependencies ++= Seq(
-  "com.wa9nnn" %% "util" % "0.0.6",
+  "com.wa9nnn" %% "util" % "0.0.7-SNAPSHOT",
   "com.wa9nnn" %% "cabrillo-lib" % "1.0.2",
   "com.typesafe.play" %% "play-json" % "2.8.0-M4",
   "org.specs2" %% "specs2-core" % "4.6.0" % "test",

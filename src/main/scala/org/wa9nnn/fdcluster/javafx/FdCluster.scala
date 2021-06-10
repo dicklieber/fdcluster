@@ -25,6 +25,7 @@ import _root_.scalafx.scene.Scene
 import _root_.scalafx.scene.control.{Tab, TabPane}
 import _root_.scalafx.scene.image.{Image, ImageView}
 import _root_.scalafx.scene.layout.{BorderPane, GridPane}
+import scalafx.Includes._
 import com.google.inject.Guice
 import com.typesafe.scalalogging.LazyLogging
 import com.wa9nnn.util.macos.DockIcon
@@ -40,6 +41,7 @@ import org.wa9nnn.util.CommandLine
 
 import java.awt.Desktop
 import java.lang.management.ManagementFactory
+import java.net.URL
 import scala.util.{Failure, Success, Using}
 
 /**
@@ -106,12 +108,16 @@ object FdCluster extends JFXApp with LazyLogging {
     bottom = bottomPane
     right = injector.instance[NetworkPane]
   }
-  val ourScene = new Scene()
+  val ourScene: Scene = new Scene()
 
-  ourScene.getStylesheets.add(getClass.getResource("/com/sun/javafx/scene/control/skin/modena/modena.css").toExternalForm)
+  private val delegate: Any = ourScene.delegate
+
+//  private val url: URL = getClass.getResource("/com/sun/javafx/scene/control/skin/modena/modena.css")
+//  private val value: List[String] = List(url.toExternalForm)
+//  ourScene.stylesheets  = value
 
   private val cssUrl: String = getClass.getResource("/fdcluster.css").toExternalForm
-  ourScene.getStylesheets.add(cssUrl)
+ ourScene.stylesheets += cssUrl
 
   ourScene.root = rootPane
 

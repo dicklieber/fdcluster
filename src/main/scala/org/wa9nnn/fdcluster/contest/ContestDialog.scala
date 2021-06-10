@@ -39,7 +39,6 @@ class ContestDialog @Inject()(injector: Injector) extends Dialog[Contest] with L
 
   dp.getButtonTypes.addAll(cancelButton)
   dp.getStylesheets.addAll(
-    getClass.getResource("/com/sun/javafx/scene/control/skin/modena/modena.css").toExternalForm,
     getClass.getResource("/fdcluster.css").toExternalForm
   )
 

@@ -11,7 +11,7 @@ object RigctldCommand {
     val valuesMap: Map[String, Any] = Seq(
       "modelId" -> params.rigModel.number,
       "speed" -> params.baudRate,
-      "deviceName" -> params.port.get.port
+      "deviceName" -> params.port.map(_.port).getOrElse("missing")
     ).toMap
     val ss: StringSubstitutor = new StringSubstitutor(valuesMap.asJava, "<", ">")
     // ${fdcluster.rig.rigctldApp} -m <modelId> -r <deviceName>
@@ -25,7 +25,7 @@ class RigctldCommand(rigModelCb: ComboBox[RigModel], speed: ComboBox[String], se
 
   val b: ObjectBinding[String] = Bindings.createObjectBinding[String](
     () => {
-      val cmdLine = RigctldCommand(new RigctldLaunchPrameters {
+      val cmdLine: String = RigctldCommand(new RigctldLaunchPrameters {
         val rigModel = rigModelCb.value.value
 
         val port = Some(serialPortCB.value.value)

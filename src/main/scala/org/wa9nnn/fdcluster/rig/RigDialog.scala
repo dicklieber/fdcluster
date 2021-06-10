@@ -31,6 +31,7 @@ import javafx.event.EventHandler
 import javafx.scene.control
 import org.wa9nnn.fdcluster.javafx.GridOfControls
 import org.wa9nnn.fdcluster.rig.SerialPortSettings.baudRates
+import org.wa9nnn.util.OsSelect
 import scalafx.collections.ObservableBuffer
 import scalafx.scene.image
 import scalafx.scene.image.Image
@@ -43,7 +44,7 @@ import javax.inject.Inject
 import scala.util.{Failure, Success, Using}
 
 class RigDialog @Inject()(rigStore: RigStore, rigList: Rigctld, config: Config) extends Dialog[RigSettings] with LazyLogging {
-
+  resizable = true
   val initRigSettings: RigSettings = rigStore.rigSettings.value
 
   val initRigModel: RigModel = initRigSettings.rigModel
@@ -89,12 +90,20 @@ class RigDialog @Inject()(rigStore: RigStore, rigList: Rigctld, config: Config) 
   }
 
   val enableRig: CheckBox = new CheckBox() {
+    tooltip = """Check to enable FdCluster to poll the radio for frequency and mode."""
     selected = initRigSettings.enable
   }
   val launchRigctldCheckBox: CheckBox = new CheckBox() {
+    tooltip = """Check to attempt to launch HamLib's rigctld with the "Launch rigctld" command line as shown."""
     selected = initRigSettings.launchRigctld
   }
   val rigctldCmd: TextField = new TextField() {
+    tooltip =
+      """Format string to build the command line used to launch rigtcld. <modelId>, <speed> and <deviceName>
+        |will be replaced with value choosen above. This lets you completely customize how rigctld runs.
+        |See the rigctld documentation for complete details.
+        |""".stripMargin
+
     text.value = initRigSettings.rigctldCommand
     prefColumnCount = 50
   }
@@ -105,6 +114,11 @@ class RigDialog @Inject()(rigStore: RigStore, rigList: Rigctld, config: Config) 
   }
 
   val rigctldHostPort: TextField = new TextField() {
+    tooltip =
+      """Use localhost if FdCluster starts rigctld or you manually start. You can run rigctld on another
+        |computer, if so use the IP address or host name of that computer.
+        |""".stripMargin
+
     text.value = initRigSettings.rigctldHostPort
     prefColumnCount = 20
   }
@@ -115,6 +129,10 @@ class RigDialog @Inject()(rigStore: RigStore, rigList: Rigctld, config: Config) 
   }
 
   val portComboBox: ComboBox[SerialPort] = new ComboBox[SerialPort](ObservableBuffer.from(Serial.ports)) {
+    tooltip = OsSelect(ifWindows = """Choose the COMx port where your rig is connected.""",
+      ifUnixLike =
+        """Port names vary a lot. e.g. usbmodem213201 is an IC-705.
+          |""".stripMargin)
     converter = StringConverter.toStringConverter((h: SerialPort) => {
       if (h == null)
         "- Choose Serial Port -"
@@ -156,7 +174,7 @@ class RigDialog @Inject()(rigStore: RigStore, rigList: Rigctld, config: Config) 
       case Failure(exception) =>
         logger.error(s"loading: $imagePath", exception)
       case Success(i) =>
-        graphic.value  = new image.ImageView(i)
+        graphic.value = new image.ImageView(i)
     }
     onAction = { _ =>
       Clipboard.systemClipboard.content = ClipboardContent(
@@ -178,10 +196,8 @@ class RigDialog @Inject()(rigStore: RigStore, rigList: Rigctld, config: Config) 
   goc.addControl("Launch rigctld", new HBox(launchRigctldCheckBox, sampleRigctld, copyRigctldCommandLineButton))
 
   private val dp: control.DialogPane = dialogPane()
-  dp.getStylesheets.addAll(
-    getClass.getResource("/com/sun/javafx/scene/control/skin/modena/modena.css").toExternalForm,
-    getClass.getResource("/fdcluster.css").toExternalForm
-  )
+  dp.stylesheets += getClass.getResource("/fdcluster.css").toExternalForm
+
 
   private val saveButton = new ButtonType("Save")
 
@@ -210,12 +226,16 @@ class RigDialog @Inject()(rigStore: RigStore, rigList: Rigctld, config: Config) 
 
   private val borderPane = new BorderPane() {
     top = new VBox(new Label(
-      """main uses rigctld application from Hamlib to list for frequency and mode from your radio.
+      """FdCluster can use the rigctld application from Hamlib to the frequency and mode from your radio.
         |rigctld is a application that is configured to talk to specific radios, FdCuster talks to an instance of
         |rigctld over IP.
         |You need to install Hamlib for your particular computer. See the Hamlib documentation link below.
         |FCLuster can automatically start and stop rigctld when the application starts and stops or you can
         |start rigctld manually with what ever command line you wish.
+        |
+        |FdCluster work just fine without HamLib, but you need to change band and mode manually.
+        |
+        |Also if using a web client, you need to manually set the band and mode.
         |""".stripMargin) {
       styleClass += "helpPane"
     },

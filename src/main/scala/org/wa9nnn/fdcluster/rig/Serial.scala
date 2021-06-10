@@ -26,7 +26,12 @@ object Serial extends App {
     if (System.getProperty("os.name").toLowerCase.contains("win"))
       Seq.tabulate(15)(SerialPort(_))
     else
-      Paths.get("/dev").toFile.list.filter(_.startsWith("tty.")).map(f => SerialPort(Paths.get("/dev").resolve(f)))
+      Paths.get("/dev")
+        .toFile
+        .list
+        .filter(_.startsWith("tty."))
+        .filterNot(_.contains("Bluetooth-Incoming-Port"))
+        .map(f => SerialPort(Paths.get("/dev").resolve(f)))
   }
 }
 

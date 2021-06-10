@@ -174,13 +174,6 @@ class FdClusterMenu @Inject()(
     }
   }
 
-  private val filesMenuItem = new MenuItem {
-    text = "main Files"
-    onAction = { _ =>
-      desktop.browseFileDirectory(fileManager.directory.toFile)
-    }
-  }
-
   private val exitMenuItem = new MenuItem {
     text = "Exit"
     onAction = { _ =>
@@ -261,7 +254,6 @@ class FdClusterMenu @Inject()(
           dupSheetMenuItem,
           fieldDaySummary,
           new SeparatorMenuItem(),
-          filesMenuItem,
           exitMenuItem,
         )
       }, new Menu("_Debug") {

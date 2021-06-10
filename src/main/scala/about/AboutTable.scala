@@ -33,6 +33,7 @@ class AboutTable @Inject()(appInfo: AppInfo, nodeAddress: NodeAddress, multicast
     tableBuilder("Java Home", Cell(System.getenv("JAVA_HOME")))
 
     tableBuilder("Java Version", ManagementFactory.getRuntimeMXBean.getVmVersion)
+    tableBuilder("JavaFx", System.getProperty("javafx.runtime.version"))
     tableBuilder("Our HTTP", Cell(nodeAddress.display).withUrl(nodeAddress.url))
 
     val args = ManagementFactory.getRuntimeMXBean.getInputArguments.asScala
