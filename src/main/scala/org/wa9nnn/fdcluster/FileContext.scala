@@ -38,7 +38,7 @@ class FileContext extends Persistence {
 
   val logsDirectory: Path = directory.resolve("logs")
   Files.createDirectories(logsDirectory)
-  val logFile: String = logsDirectory.resolve("fdcluster.log").toString
+  val logFile: Path = logsDirectory.resolve("fdcluster.log")
 
   System.setProperty("log.file.path", logFile.toString)
 

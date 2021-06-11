@@ -17,7 +17,6 @@
  */
 package org.wa9nnn.fdcluster.store
 
-import _root_.scalafx.collections.ObservableBuffer
 import akka.actor.ActorRef
 import akka.pattern.ask
 import akka.util.Timeout
@@ -28,6 +27,7 @@ import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHour}
 import org.wa9nnn.fdcluster.store.network.{FdHour, MulticastSender}
 import org.wa9nnn.webclient.{ListSessions, Session}
+import scalafx.collections.ObservableBuffer
 
 import java.security.SecureRandom
 import java.util.UUID
@@ -53,6 +53,7 @@ class StoreLogic @Inject()(na: NodeAddress,
                            val listeners: immutable.Set[AddQsoListener],
                            storeSender: StoreSender,
                            multicastSender: MulticastSender,
+                           qsoBuffer: ObservableBuffer[Qso],
                            @Named("sessionManager")sessionManager: ActorRef
                           )
   extends LazyLogging with QsoSource {
@@ -64,7 +65,6 @@ class StoreLogic @Inject()(na: NodeAddress,
   /**
    * qsoBuffer is shared read-only by DataScene
    */
-  val qsoBuffer = new ObservableBuffer[Qso]
   val byUuid = new TrieMap[UUID, Qso]()
   val byCallSign = new TrieMap[CallSign, Set[Qso]]
 

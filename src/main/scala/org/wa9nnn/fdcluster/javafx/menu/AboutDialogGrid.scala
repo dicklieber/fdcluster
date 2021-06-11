@@ -23,7 +23,7 @@ import _root_.scalafx.scene.layout.{HBox, VBox}
 import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.javafx.GridOfControls
 import org.wa9nnn.fdcluster.model.NodeAddress
-import org.wa9nnn.fdcluster.store.network.multicast.MulticastThing
+import org.wa9nnn.fdcluster.store.network.multicast.MulticastIo
 import org.wa9nnn.fdcluster.{AppInfo, BuildInfo, FileContext}
 import scalafx.geometry.Insets
 
@@ -40,7 +40,7 @@ import scala.jdk.CollectionConverters._
 class AboutDialogGrid @Inject()(appInfo: AppInfo,
                                 fileManager: FileContext,
                                 nodeAddress: NodeAddress,
-                                multicastThing: MulticastThing) extends Dialog with LazyLogging {
+                                multicastThing: MulticastIo) extends Dialog with LazyLogging {
   title = s"About ${BuildInfo.name}"
   resizable = true
   private val cssUrl: String = getClass.getResource("/fdcluster.css").toExternalForm

@@ -36,6 +36,7 @@ import org.wa9nnn.fdcluster.store.network.multicast.MulticastIo
 import org.wa9nnn.fdcluster.store.network.{JsonContainerSender, MultcastSenderActor}
 import org.wa9nnn.util._
 import org.wa9nnn.webclient.SessionManager
+import _root_.scalafx.collections.ObservableBuffer
 
 import javax.inject.{Named, Singleton}
 
@@ -73,6 +74,7 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
         .annotatedWithName("currentStation")
         .toInstance(ObjectProperty(Station()))
       val runningTaskPane = new RunningTaskPane
+      bind[ObservableBuffer[Qso]].to[QsoBuffer]
       bind[RunningTaskPane].toInstance(runningTaskPane)
       bind[RunningTaskInfoConsumer].toInstance(runningTaskPane)
       bind[ActorSystem].toInstance(actorSystem)

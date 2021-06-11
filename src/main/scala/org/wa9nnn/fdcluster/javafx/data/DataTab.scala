@@ -21,7 +21,6 @@ package org.wa9nnn.fdcluster.javafx.data
 
 import _root_.scalafx.Includes._
 import _root_.scalafx.beans.property.{ReadOnlyObjectWrapper, ReadOnlyStringWrapper}
-import _root_.scalafx.collections.ObservableBuffer
 import _root_.scalafx.geometry.Pos
 import _root_.scalafx.scene.control.TableColumn._
 import _root_.scalafx.scene.control._
@@ -34,7 +33,7 @@ import org.wa9nnn.fdcluster.contest.JournalProperty._
 import org.wa9nnn.fdcluster.javafx.entry.Sections
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.Qso
-import org.wa9nnn.fdcluster.store.StoreLogic
+import org.wa9nnn.fdcluster.store.QsoBuffer
 import org.wa9nnn.util.TimeHelpers
 import play.api.libs.json.Json
 
@@ -48,7 +47,7 @@ import scala.util.Try
 /**
  * Create JavaFX UI to view QSOs.
  */
-class DataTab @Inject()(journalManager: JournalProperty, storeLogic: StoreLogic) extends Tab {
+class DataTab @Inject()(journalManager: JournalProperty, qsoBuffer: QsoBuffer) extends Tab {
   text = "Data"
   closable = false
 
@@ -62,7 +61,6 @@ class DataTab @Inject()(journalManager: JournalProperty, storeLogic: StoreLogic)
 
   //  private val allQsoBuffer: ObservableBuffer[Qso] = StoreMapImpl.allQsos
   private val sizeLabel = new Label("--")
-  private val qsoBuffer: ObservableBuffer[Qso] = storeLogic.qsoBuffer
   sizeLabel.text = f"${qsoBuffer.size}%,d"
   qsoBuffer.onChange((ob, _) ⇒
     onFX {

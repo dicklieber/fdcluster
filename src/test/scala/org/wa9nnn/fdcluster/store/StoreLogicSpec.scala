@@ -58,7 +58,8 @@ trait StoreLogicContext extends ForEach[StoreLogic] with Mockito {
       listeners = Set(listener),
       storeSender = storeSender,
       stationProperty = stationProperty,
-      sessionManager = mockSessionManagerActor
+      sessionManager = mockSessionManagerActor,
+      qsoBuffer =  ObservableBuffer[Qso]()
     )
 
 
