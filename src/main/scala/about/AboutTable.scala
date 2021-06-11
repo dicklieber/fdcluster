@@ -2,7 +2,7 @@ package about
 
 import com.wa9nnn.util.tableui.{Cell, Header, Table}
 import org.wa9nnn.fdcluster.model.NodeAddress
-import org.wa9nnn.fdcluster.store.network.multicast.MulticastThing
+import org.wa9nnn.fdcluster.store.network.multicast.MulticastIo
 import org.wa9nnn.fdcluster.{AppInfo, BuildInfo}
 import org.wa9nnn.util.HtmlTableBuider
 import scalafx.scene.control.TextArea
@@ -16,7 +16,7 @@ import scala.collection.mutable
 import scala.jdk.CollectionConverters.ListHasAsScala
 
 @Singleton
-class AboutTable @Inject()(appInfo: AppInfo, nodeAddress: NodeAddress, multicastThing: MulticastThing) {
+class AboutTable @Inject()(appInfo: AppInfo, nodeAddress: NodeAddress, multicastThing: MulticastIo) {
 
   def apply(): Table = {
     val tableBuilder = new HtmlTableBuider(Header("FdCuster", "Field", "Value"))
@@ -33,7 +33,7 @@ class AboutTable @Inject()(appInfo: AppInfo, nodeAddress: NodeAddress, multicast
     tableBuilder("Java Home", Cell(System.getenv("JAVA_HOME")))
 
     tableBuilder("Java Version", ManagementFactory.getRuntimeMXBean.getVmVersion)
-    tableBuilder("JavaFx", System.getProperty("javafx.runtime.version"))
+    tableBuilder("JavaFx Version", System.getProperty("javafx.runtime.version"))
     tableBuilder("Our HTTP", Cell(nodeAddress.display).withUrl(nodeAddress.url))
 
     val args = ManagementFactory.getRuntimeMXBean.getInputArguments.asScala
