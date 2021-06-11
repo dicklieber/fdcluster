@@ -33,8 +33,10 @@
     <logger name="org.wa9nnn.fdcluster.store.network" level="INFO"/>
     <logger name="org.wa9nnn.fdcluster.model.sync.NodeStatusQueueActor" level="INFO"/>
     <logger name="org.wa9nnn.fdcluster.javafx.entry.StatisticsTab" level="INFO"/>
-    <logger name="org.wa9nnn.fdcluster.javafx.cluster.FdHours" level="DEBUG"/>
-    <logger name="org.wa9nnn.fdcluster.javafx.cluster.FdHoursDialog" level="DEBUG"/>
+    <logger name="org.wa9nnn.fdcluster.javafx.cluster.FdHours" level="INFO"/>
+    <logger name="org.wa9nnn.fdcluster.javafx.cluster.FdHoursDialog" level="INFO"/>
+    <logger name="org.wa9nnn.fdcluster.store.network.multicast.HeartBeat" level="INFO"/>
+    <logger name="org.wa9nnn.fdcluster.store.network.multicast.MulticastIo" level="INFO"/>
 
 
     <root level="DEBUG">

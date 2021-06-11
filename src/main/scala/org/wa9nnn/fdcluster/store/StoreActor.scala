@@ -37,7 +37,6 @@ import org.wa9nnn.fdcluster.javafx.sync._
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.store.network.{FdHour, JsonContainerSender}
-import org.wa9nnn.fdcluster.store.network.broadcast.BroadcastThing
 import org.wa9nnn.fdcluster.tools.{GenerateRandomQsos, RandomQsoGenerator}
 import org.wa9nnn.util.ImportAdifTask
 

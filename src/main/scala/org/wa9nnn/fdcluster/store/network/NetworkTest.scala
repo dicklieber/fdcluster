@@ -15,13 +15,13 @@ object NetworkTest extends App with LazyLogging {
   val multicastAddress = InetAddress.getByName("239.73.88.0")
   logger.info(s"NetworkTest on ${localHost.getHostName}")
   val timer = new Timer("PropertyCellTimer", true)
-  private val multicast = new Multicast(multicastAddress, 1120)
-  private val broadcast = new Broadcast(1121)
+  private val multicast = new Multicast(multicastAddress, 1174)
+//  private val broadcast = new Broadcast(1121)
   var sn = 0
   timer.scheduleAtFixedRate(new TimerTask {
     override def run(): Unit = {
       multicast.send(sn)
-      broadcast.send(sn)
+//      broadcast.send(sn)
       sn += 1
     }
   }, 10, 1000)
@@ -40,7 +40,7 @@ object NetworkTest extends App with LazyLogging {
         multicastSocket.receive(recv);
         val data: Array[Byte] = recv.getData
         val sData = new String(data)
-        if (recv.getAddress != localHost)
+//        if (recv.getAddress != localHost)
           logger.info(s"Multicast: addr:${recv.getAddress} => ${localHost.getHostName}:${recv.getPort} message: $sData")
       } while (true)
 
@@ -79,7 +79,7 @@ object NetworkTest extends App with LazyLogging {
         socket.receive(recv);
         val data: Array[Byte] = recv.getData
         val sData = new String(data)
-        if (recv.getAddress != localHost)
+//        if (recv.getAddress != localHost)
           logger.info(s"Broadcast: addr:${recv.getAddress} => ${localHost.getHostName} message: $sData")
       } while (true)
 
