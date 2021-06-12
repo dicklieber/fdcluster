@@ -10,7 +10,7 @@ import org.wa9nnn.util.ScalafxFixture
 class AllContestRulesSpec extends Specification with ScalafxFixture{
 
   private val config: Config = ConfigFactory.load()
-  private val contestProperty = new ContestProperty( MockFileContext())
+  private val contestProperty = new ContestProperty( MockFileContext(), NodeAddress())
   "AllContestRulesSpec" should {
     "names" in {
        val allContestRules = new AllContestRules(config, contestProperty)

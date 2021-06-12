@@ -20,6 +20,7 @@
 package org.wa9nnn.fdcluster.model
 
 import akka.http.scaladsl.model.Uri
+import com.typesafe.config.Config
 import com.wa9nnn.util.tableui.Cell
 import org.wa9nnn.fdcluster.FileContext
 import org.wa9nnn.fdcluster.javafx.cluster.{NamedValueCollector, NodeValueProvider, PropertyCell, PropertyCellName, SimplePropertyCell}
@@ -36,12 +37,12 @@ import scala.jdk.CollectionConverters._
  * @param instance  from application.conf or command line e.g -Dinstance=2
  * @param httpPort  as opposed to the multicast port.
  */
-case class NodeAddress(ipAddress: String = "", hostName: String = "localhost", instance: Option[Int] = None)
+case class NodeAddress(ipAddress: String = "", hostName: String = "localhost", instance: Option[Int] = None, port:Int = 8080)
   extends Ordered[NodeAddress]
     with NodeValueProvider
     with PropertyCellName {
 
-  val httpPort: Int = instance.map(i => 8080 + i).getOrElse(8080)
+  val httpPort: Int = instance.map(i => port + i).getOrElse(port)
 
   override def collectNamedValues(namedValueCollector: NamedValueCollector): Unit = {
     import org.wa9nnn.fdcluster.javafx.cluster.ValueName._
@@ -109,13 +110,13 @@ case class NodeAddress(ipAddress: String = "", hostName: String = "localhost", i
 }
 
 object NodeAddress {
-  def apply(fileManager: FileContext): NodeAddress = {
-
+  def apply(instance: Option[Int], config:Config): NodeAddress = {
+    val httpPort = config.getInt("fdcluster.httpServer.port")
     val inetAddress = determineIp()
     val address = inetAddress.getHostAddress
     NodeAddress(ipAddress = address,
       hostName = InetAddress.getLocalHost.getHostName,
-      fileManager.instance)
+      instance, httpPort)
   }
 
   /**

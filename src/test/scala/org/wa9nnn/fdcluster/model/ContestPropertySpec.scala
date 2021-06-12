@@ -37,9 +37,9 @@ trait FileManagerContext extends ForEach[FileContext] {
 class ContestPropertySpec extends Specification with FileManagerContext {
   sequential
   "ContestProperty" should {
-   "exchange properties" >> { fileManger: FileContext =>
-      val persistence = new PersistenceImpl(fileManger)
-      val contestProperty = new ContestProperty(fileManger)
+   "exchange properties" >> { fileContext: FileContext =>
+      val persistence = new PersistenceImpl(fileContext)
+      val contestProperty = new ContestProperty(fileContext, NodeAddress())
       val ourExchangeProperty = contestProperty.ourExchangeProperty
       val ourExchange = ourExchangeProperty.value
       ourExchange.display must beEqualTo ("1O AB")

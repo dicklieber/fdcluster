@@ -34,7 +34,6 @@ class FileContext extends Persistence {
   val userDir: Path = Paths.get(System.getProperty("user.home")).toAbsolutePath
   val instance: Option[Int] = Option(System.getProperty("instance")).map(_.toInt)
   val directory: Path = userDir.resolve(s"fdcluster${instance.getOrElse("")}")
-  val nodeAddress: NodeAddress = NodeAddress(this)
 
   val logsDirectory: Path = directory.resolve("logs")
   Files.createDirectories(logsDirectory)

@@ -32,15 +32,14 @@ import javax.inject.{Inject, Singleton}
  * @param fileContext saves and loads any a case class.
  */
 @Singleton
-class ContestProperty @Inject()(fileContext: FileContext) extends PersistableProperty[Contest](fileContext){
-
+class ContestProperty @Inject()(fileContext: FileContext, nodeAddress: NodeAddress) extends PersistableProperty[Contest](fileContext){
 
   /**
    * provide a new default instance of T. Needed when there is no file persisted/
    *
    * @return
    */
-  override def defaultInstance: Contest = new Contest(nodeAddress = fileContext.nodeAddress)
+  override def defaultInstance: Contest = new Contest(nodeAddress = nodeAddress)
 
 
   def contest: Contest = value

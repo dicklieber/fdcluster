@@ -66,7 +66,7 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
         deadLetterMonitorActor, classOf[DeadLetter])
       bind[QsoSource].to[StoreLogic]
       bind[NodeAddress]
-        .toInstance(fileManager.nodeAddress)
+        .toInstance(NodeAddress(fileManager.instance, config))
       bind[Persistence]
         .to[PersistenceImpl]
         .asEagerSingleton()

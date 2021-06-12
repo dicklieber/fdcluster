@@ -20,7 +20,7 @@ package org.wa9nnn.fdcluster.contest
 import org.wa9nnn.fdcluster.FileContext
 import org.wa9nnn.fdcluster.contest.JournalProperty.notSet
 import org.wa9nnn.fdcluster.model.MessageFormats._
-import org.wa9nnn.fdcluster.model.{ContestProperty, Journal, PersistableProperty}
+import org.wa9nnn.fdcluster.model.{ContestProperty, Journal, NodeAddress, PersistableProperty}
 import org.wa9nnn.fdcluster.store.{ClearStore, StoreSender}
 import scalafx.beans.property.ObjectProperty
 
@@ -34,7 +34,8 @@ import scala.util.{Failure, Try}
 class JournalProperty @Inject()(
                                  fileContext: FileContext,
                                  contestProperty: ContestProperty,
-                                 storeSender: StoreSender
+                                 storeSender: StoreSender,
+                                 nodeAddress: NodeAddress
                                )
   extends PersistableProperty[Journal](fileContext) {
 
@@ -70,7 +71,7 @@ class JournalProperty @Inject()(
     val contest = contestProperty.contest
     contest.checkValid()
     val id = contest.id
-    val journal = Journal.newJournal(id, fileContext.nodeAddress)
+    val journal = Journal.newJournal(id, nodeAddress)
     update(journal)
     storeSender ! ClearStore
 

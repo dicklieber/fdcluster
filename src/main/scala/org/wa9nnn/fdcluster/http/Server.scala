@@ -33,6 +33,7 @@ import org.wa9nnn.webclient.{QsoLogger, SignOnOff}
 import play.api.libs.json.{JsValue, Json}
 
 import java.net.URL
+import javax.inject.Singleton
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.implicitConversions
 import scala.util.{Failure, Success}
@@ -44,6 +45,7 @@ import scala.util.{Failure, Success}
  * @param config from application.conf and command line.
  * @param nodeInfo who we are.
  */
+@Singleton
 class Server @Inject()(@Inject() @Named("store") val store: ActorRef,
                        system: ActorSystem,
                        config: Config,
