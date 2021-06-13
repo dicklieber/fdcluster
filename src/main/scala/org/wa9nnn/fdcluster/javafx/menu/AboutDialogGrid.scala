@@ -117,6 +117,11 @@ class AboutDialogGrid @Inject()(appInfo: AppInfo,
     val mcastInterface: String = multicastThing.networkInterface.getInetAddresses.asScala.toList.head.getHostAddress
     goc.addText("Multicast Interface", mcastInterface)
 
+    goc.addControl("Log", new Hyperlink(fileManager.logFile.toString ){
+      onAction = _ => {
+        desktop.open(fileManager.logFile.toFile)
+      }
+    })
     goc.addControl("Blame this guy", new Hyperlink("Dick Lieber WA9NNN") {
       onAction = event => {
         if (desktop.isSupported(Desktop.Action.MAIL)) {
