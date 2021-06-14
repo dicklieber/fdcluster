@@ -6,13 +6,15 @@ import org.wa9nnn.webclient.SessionManager.SessionKey
 import java.security.SecureRandom
 import java.time.{Duration, Instant}
 import scala.collection.concurrent.TrieMap
+import scala.util.Try
 
 class SessionManagerLogic(maxSessionSeconds: Long) {
 
+
   private val sessionMap: TrieMap[SessionKey, Session] = new TrieMap[SessionKey, Session]()
 
-  def createSession(createSessionRequest: CreateSessionRequest): Session = {
-    val newSession = Session(createSessionRequest)
+  def createSession(station:Station): Session = {
+    val newSession = Session(station)
     sessionMap.put(newSession.sessionKey, newSession)
     newSession
   }
@@ -25,13 +27,13 @@ class SessionManagerLogic(maxSessionSeconds: Long) {
     }
   }
 
-//  def updateStation(sessionKey: SessionKey, station: Station): Try[Session] = {
-//      Try{
-//        val session = sessionMap(sessionKey).newStation(station)
-//        sessionMap.put(sessionKey, session)
-//        session
-//      }
-//  }
+  def updateStation(sessionKey: SessionKey, station: Station): Try[Session] = {
+      Try{
+        val session = sessionMap(sessionKey).updateStation(station)
+        sessionMap.put(sessionKey, session)
+        session
+      }
+  }
 
   def expireSessions(): Unit = {
     val deathList: Iterable[Session] = sessionMap.values.flatMap { session =>
@@ -59,10 +61,11 @@ class SessionManagerLogic(maxSessionSeconds: Long) {
  * @param started when the session started.
  */
 case class Session( sessionKey: SessionKey, station: Station, touched: Instant, started: Instant = Instant.now()) extends Ordered[Session] {
-//  def newStation(station: Station): Session = {
-//    val stationWithForcedOp = station.copy(operator = callSign)
-//    copy(station = stationWithForcedOp)
-//  }
+
+    def updateStation(newStation: Station): Session = {
+    val stationWithForcedOp = newStation.copy(operator = station.operator)
+    copy(station = stationWithForcedOp)
+  }
 
   def last: Instant = {
     touched
@@ -84,10 +87,9 @@ case class Session( sessionKey: SessionKey, station: Station, touched: Instant, 
 object Session {
   private val secureRandom = new SecureRandom()
 
-  def apply(csr: CreateSessionRequest): Session = {
+  def apply(station:Station): Session = {
     val key = secureRandom.nextLong.toHexString
     val start = Instant.now()
-    val callSign = csr.callSign
-    new Session( key, Station(operator = callSign), start, start)
+    new Session( key, station, start, start)
   }
 }

@@ -25,7 +25,7 @@ import com.github.racc.tscg.TypesafeConfigModule
 import com.google.inject.{AbstractModule, Injector, Provides}
 import configs.Config
 import net.codingwell.scalaguice.{ScalaModule, ScalaMultibinder}
-import org.wa9nnn.fdcluster.contest.{JournalProperty, OkToLogContributer}
+import org.wa9nnn.fdcluster.contest.JournalProperty
 import org.wa9nnn.fdcluster.javafx.cluster.{ClusterTable, FdHours, NodeHistory}
 import org.wa9nnn.fdcluster.javafx.entry.{RunningTaskInfoConsumer, RunningTaskPane, StatsPane}
 import org.wa9nnn.fdcluster.metrics.MetricsReporter
@@ -86,17 +86,20 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
       val qsoListeners = ScalaMultibinder.newSetBinder[AddQsoListener](binder)
       qsoListeners.addBinding.to[StatsPane]
       qsoListeners.addBinding.to[QsoCountCollector]
-
-      val okToLog = ScalaMultibinder.newSetBinder[OkToLogContributer](binder)
-      okToLog.addBinding.to[JournalProperty]
-      okToLog.addBinding.to[ContestProperty]
     }
     catch {
       case e: Throwable ⇒
         e.printStackTrace()
     }
   }
-
+  @Provides
+  @Singleton
+  @Named("sessionManager")
+  def sessionManagerActor(actorSystem: ActorSystem,
+                          config: Config): ActorRef = {
+    actorSystem.actorOf(Props(new SessionManager(config)),
+      "sessionManager")
+  }
 
   @Provides
   @Singleton
@@ -144,12 +147,4 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
       "nodeStatusQueue")
   }
 
-  @Provides
-  @Singleton
-  @Named("sessionManager")
-  def clusterStoreActor(actorSystem: ActorSystem,
-                        config: Config): ActorRef = {
-    actorSystem.actorOf(Props(new SessionManager(config)),
-      "sessionManager")
-  }
 }

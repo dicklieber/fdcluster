@@ -41,7 +41,6 @@ class JournalProperty @Inject()(
 
   lazy val journalFilePathProperty: ObjectProperty[Try[Path]] = ObjectProperty[Try[Path]](Failure(new IllegalStateException()))
 
-
   /**
    * provide a new default instance of T. Needed when there is no file persisted/
    *
@@ -49,20 +48,13 @@ class JournalProperty @Inject()(
    */
   override def defaultInstance: Journal = Journal()
 
-  /**
-   * Invoked initially and when the property changes.
-   */
-  override def onChanged(journal: Journal): Unit = {
+  onChange((_, _, journal: Journal) =>
     journalFilePathProperty.value = Try {
       Files.createDirectories(fileContext.journalDir)
-      journal.check
+      journal.check()
       fileContext.journalDir.resolve(journal.journalFileName)
     }
-
-    okToLogProperty.value = journalFilePathProperty.value.isSuccess
-  }
-
-  okToLogProperty.value = journalFilePathProperty.value.isSuccess
+  )
 
   /**
    * new later journal.
@@ -77,6 +69,18 @@ class JournalProperty @Inject()(
 
   }
 
+  override def isOk: Boolean = value.journalFileName.nonEmpty
+
+  /**
+   * Invoked initially and when the property changes.
+   */
+  override def valueChanged(journal: Journal): Unit = {
+    journalFilePathProperty.value = Try {
+      Files.createDirectories(fileContext.journalDir)
+      journal.check()
+      fileContext.journalDir.resolve(journal.journalFileName)
+    }
+  }
 }
 
 object JournalProperty {

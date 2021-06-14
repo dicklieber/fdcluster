@@ -29,8 +29,8 @@ import com.google.inject.name.Named
 import com.typesafe.scalalogging.LazyLogging
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import org.wa9nnn.fdcluster.cabrillo.{CabrilloDialog, CabrilloExportRequest}
+import org.wa9nnn.fdcluster.contest.{ContestDialog, OkGate}
 import org.wa9nnn.fdcluster.contest.fieldday.{SummaryEngine, WinterFieldDaySettings}
-import org.wa9nnn.fdcluster.contest.{ContestDialog, OkToLogGate}
 import org.wa9nnn.fdcluster.dupsheet.GenerateDupSheet
 import org.wa9nnn.fdcluster.javafx.cluster.FdHoursDialog
 import org.wa9nnn.fdcluster.javafx.debug.{DebugRemoveDialog, ResetDialog}
@@ -60,7 +60,6 @@ class FdClusterMenu @Inject()(
                                contestProperty: ContestProperty,
                                summaryEngine: SummaryEngine,
                                metricsReporter: MetricsReporter,
-                               okToLogGate: OkToLogGate,
                                nodeAddress: NodeAddress,
                                debugRemoveDialog: DebugRemoveDialog) extends LazyLogging {
   private implicit val timeout: Timeout = Timeout(5 seconds)
@@ -214,11 +213,11 @@ class FdClusterMenu @Inject()(
     }
   }
 
-  okToLogGate.onChange { (_, _, nv) =>
+  OkGate.onChange { (_, _, nv) =>
     disable(!nv)
   }
 
-  disable(!okToLogGate.value)
+  disable(!OkGate.value)
 
   def disable(disable: Boolean): Unit = {
     generateTimed.disable = disable

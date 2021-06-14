@@ -1,18 +1,21 @@
 @import com.wa9nnn.util.tableui.Cell
 @import com.wa9nnn.util.tableui.html.attributes
-@(maybeMessgeCell: Option[Cell] = None)
+@import org.wa9nnn.fdcluster.model.Station
+@import org.wa9nnn.fdcluster.model.ContestRules
+@(contestRules: ContestRules, maybeMessgeCell: Option[Cell] = None)
 @org.wa9nnn.fdcluster.html.main("login") {
     <table>
         <form action="doSignon" method="post">
             <table>
                 <tr>
                     <td>Your CallSign</td>
-                    <td><input type="text" name="yourCallSign"></td>
+                    <td><input type="text" name="operator"></td>
                 </tr>
                 <tr title="As setup for the contest.">
-                    <td>Password</td>
+                    <td>Contest Password</td>
                     <td><input type="password" name="password"></td>
                 </tr>
+                @org.wa9nnn.fdcluster.html.StationRows(contestRules, Station())
             </table>
             <input type="submit" name="submit" value="Signon">
         </form>

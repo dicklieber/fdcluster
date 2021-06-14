@@ -1,13 +1,14 @@
 
 package org.wa9nnn.fdcluster.model
 
-import _root_.scalafx.beans.binding.Bindings
-import _root_.scalafx.beans.property.{ObjectProperty, StringProperty}
+import _root_.scalafx.beans.property.StringProperty
+import org.wa9nnn.fdcluster.FileContext
+import org.wa9nnn.fdcluster.contest.{OkGate, OkItem}
 import org.wa9nnn.fdcluster.javafx.cluster.{NamedValueCollector, NodeValueProvider}
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.Station.{Band, Mode}
-import org.wa9nnn.util.Persistence
 
+import java.time.Instant
 import javax.inject.{Inject, Singleton}
 
 /**
@@ -15,11 +16,8 @@ import javax.inject.{Inject, Singleton}
  * With convenience properties and current value accessors.
  */
 @Singleton
-class StationProperty @Inject()(persistence: Persistence)
-  extends ObjectProperty[Station](
-    null,
-    "Station",
-    persistence.loadFromFile[Station](() => Station())) {
+class StationProperty @Inject()(fileContext: FileContext)
+  extends PersistableProperty[Station](fileContext) {
 
   private val currentVals = value
 
@@ -45,19 +43,42 @@ class StationProperty @Inject()(persistence: Persistence)
 
   def bandMode: BandMode = BandMode(bandName, modeName)
 
-  private val b = Bindings.createObjectBinding[Station](
-    () => {
-      val r = Station(bandNameProperty.value, modeNameProperty.value,
-        operatorProperty.value,
-        rigProperty.value, antennaProperty.value)
-      r
-    }, bandNameProperty, modeNameProperty, operatorProperty, rigProperty, antennaProperty
-  )
+  //  private val b = Bindings.createObjectBinding[StationTable](
+  //    () => {
+  //      val r = StationTable(bandNameProperty.value, modeNameProperty.value,
+  //        operatorProperty.value,
+  //        rigProperty.value, antennaProperty.value)
+  //      r
+  //    }, bandNameProperty, modeNameProperty, operatorProperty, rigProperty, antennaProperty
+  //  )
 
-  this <== b
+  //  this <== b
 
-  onChange { (_, _, to) =>
-    persistence.saveToFile(to)
+  /**
+   * provide a new default instance of T. Needed when there is no file persisted/
+   *
+   * @return
+   */
+  override def defaultInstance: Station = {
+    logger.debug("Create new empty StationTable")
+    Station()
+  }
+
+  /**
+   * Invoked initially and when the property changes.
+   */
+  //  override def onChanged(v: StationTable): Unit = {
+  //    okToLogProperty.value = v.isOkToOperate
+  //  }
+
+  override def isOk: Boolean = value.isOk
+
+  /**
+   * Invoked initially and when the property changes.
+   */
+  override def valueChanged(v: Station): Unit = {
+
+
   }
 }
 
@@ -77,8 +98,23 @@ object Station {
  * @param antenna  and this antenna free form.
  */
 case class Station(bandName: Band = "20m", modeName: Mode = "PH",
-                   operator: CallSign = "", rig: String = "", antenna: String = "")
-  extends NodeValueProvider {
+                   operator: CallSign = "", rig: String = "", antenna: String = "",
+                   stamp: Instant = Instant.now()
+                  )
+  extends NodeValueProvider with Stamped[Station] with OkContributor{
+
+  def updateOk(): Unit = {
+    OkGate (OkItem ("StationTable", "band", "Must specify a band!") {() => bandName.nonEmpty})
+    OkGate (OkItem ("StationTable", "mode", "Must specify a band!") {() => modeName.nonEmpty})
+    OkGate (OkItem ("StationTable", "operator", "Must specify operator!") {() => modeName.nonEmpty})
+  }
+
+  def isOk: Boolean = {
+    operator.nonEmpty &&
+      bandName.nonEmpty &&
+      modeName.nonEmpty
+  }
+
   override def toString: String = s"$bandName $modeName $operator"
 
   lazy val bandMode: BandMode = BandMode(bandName, modeName)

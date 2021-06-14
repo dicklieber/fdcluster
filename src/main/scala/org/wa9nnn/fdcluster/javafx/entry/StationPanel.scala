@@ -21,53 +21,49 @@ package org.wa9nnn.fdcluster.javafx.entry
 
 import _root_.scalafx.Includes._
 import _root_.scalafx.event.ActionEvent
-import _root_.scalafx.scene.control.{ComboBox, Control, Label, TextField}
-import _root_.scalafx.scene.layout.GridPane
+import _root_.scalafx.scene.control.{ComboBox, Label, TextField}
 import javafx.collections.ObservableList
 import org.wa9nnn.fdcluster.javafx.GridOfControls
 import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
-import org.wa9nnn.fdcluster.model.{AllContestRules, ContestRules, StationProperty, KnownOperatorsProperty}
+import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.rig.RigInfo
 import org.wa9nnn.util.InputHelper.forceCaps
+import scalafx.beans.binding.Bindings
 import scalafx.collections.ObservableBuffer
 
-import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 
 /**
  * Panel that allows user to manage band, mode, operator etc.
- * Changes to controls taake place immediately.
+ * Changes to controls take place immediately.
  *
- * @param currentStationProperty what this edits.
- * @param bandFactory        available bands and modes.
+ * @param stationProperty        what this edits.
+ * @param allContestRules        to refresh modes and bands if contest changes.
  * @param knownOperatorsProperty Operators who have used fdcluster.
+ * @param rigInfo                hamlib collected info.
  */
-class StationPanel @Inject()(currentStationProperty: StationProperty,
+class StationPanel @Inject()(stationProperty: StationProperty,
                              allContestRules: AllContestRules,
                              knownOperatorsProperty: KnownOperatorsProperty,
                              rigInfo: RigInfo) {
   val rigState = new Label()
- rigState.text <== rigInfo.rigState
+  rigState.text <== rigInfo.rigState
 
-  allContestRules.contestRulesProperty.onChange{(_,_,nv) =>
+  allContestRules.contestRulesProperty.onChange { (_, _, nv) =>
     setup(nv)
   }
 
-  val band: ComboBox[String] = new ComboBox[String]() {
-    value <==> currentStationProperty.bandNameProperty
-  }
-  val mode: ComboBox[String] = new ComboBox[String]() {
-    value <==> currentStationProperty.modeNameProperty
-  }
+  val band: ComboBox[String] = new ComboBox[String]()
+  val mode: ComboBox[String] = new ComboBox[String]()
   val operator: ComboBox[CallSign] = new ComboBox[CallSign](knownOperatorsProperty.value.callSigns) {
     editable.value = true
   }
-  private val currentOperator: String = currentStationProperty.operatorProperty.value
+  private val currentOperator: String = stationProperty.operatorProperty.value
   operator.setValue(currentOperator)
 
-  operator.onAction = (event: ActionEvent) => {
+  operator.onAction = (_: ActionEvent) => {
     val currentEditText = operator.editor.value.text.value
-    currentStationProperty.operatorProperty.value = currentEditText
+    stationProperty.operatorProperty.value = currentEditText
     val items: ObservableList[String] = operator.items.value
     if (!items.contains(currentEditText)) {
       items.add(currentEditText)
@@ -75,17 +71,15 @@ class StationPanel @Inject()(currentStationProperty: StationProperty,
     }
   }
 
-  val rig: TextField = new  TextField(){
-    text <==> currentStationProperty.rigProperty
+  val rig: TextField = new TextField() {
     tooltip = "Rig currently being used at this node."
   }
-    val antenna: TextField = new  TextField(){
-    text <==> currentStationProperty.antennaProperty
-      tooltip = "Antenna currently being used at this node."
+  val antenna: TextField = new TextField() {
+    tooltip = "Antenna currently being used at this node."
   }
 
 
-  val goc = new GridOfControls(4-> 5)
+  val goc = new GridOfControls(4 -> 5)
   goc.addControl("Rig", rigState)
   goc.addControl("Band", band)
   goc.addControl("Mode", mode)
@@ -95,8 +89,22 @@ class StationPanel @Inject()(currentStationProperty: StationProperty,
   forceCaps(operator.editor.value)
   val pane: GridOfControls = goc
 
+  def null2Empty(s:String):String = Option(s).getOrElse("")
+  private val b = Bindings.createObjectBinding[Station](
+    () => {
+      val r = Station(
+        null2Empty(band.value.value),
+        null2Empty(mode.value.value),
+        operator.value.value,
+        rig.text.value,
+        antenna.text.value)
+      r
+    }, band.value, mode.value, operator.value, rig.text, antenna.text
+  )
+  stationProperty <== b
 
-  private def setup(contestRules:ContestRules):Unit= {
+
+  private def setup(contestRules: ContestRules): Unit = {
     band.items = ObservableBuffer.from(contestRules.bands.bands)
     mode.items = ObservableBuffer.from(contestRules.modes.modes)
   }

@@ -186,9 +186,9 @@ class StoreLogic @Inject()(na: NodeAddress,
       qsoCount = byUuid.size,
       qsoHourDigests = hourDigests,
       station = stationProperty.value,
-      contest = contestProperty.maybeValue,
+      contest = contestProperty.exportValue,
       sessions = value.getOrElse(List.empty),
-      journal = journalManager.maybeValue)
+      journal = journalManager.exportValue)
     r
   }
 

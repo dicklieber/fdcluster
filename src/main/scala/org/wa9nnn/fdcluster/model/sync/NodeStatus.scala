@@ -67,7 +67,7 @@ case class NodeStatus(nodeAddress: NodeAddress,
     collector(Stamp, stamp)
     collector(Version, ver)
     collector(OS, osName)
-    collector(OpCount, osName)
+    collector(Sessions, sessions.map(_.station.operator).mkString("\n"))
     qsoHourDigests.foreach { qsd =>
       collector(qsd.fdHour, qsd)
     }

@@ -1,9 +1,9 @@
 package org.wa9nnn.fdcluster.model
 
-import com.wa9nnn.util.TimeConverters.fileStamp
+import org.wa9nnn.fdcluster.contest.{OkGate, OkItem}
 
-import java.time.{Instant, LocalDateTime, ZoneId, ZonedDateTime}
 import java.time.format.DateTimeFormatter
+import java.time.{Instant, LocalDateTime, ZoneId}
 
 /**
  * Holds the journal filename along with some metadata about when and where is was set.
@@ -13,10 +13,15 @@ import java.time.format.DateTimeFormatter
  * @param stamp               when this was created. Newer always replaces older, anywhere in the cluster.
  */
 case class Journal(journalFileName: String = "", nodeAddress: NodeAddress = NodeAddress(), stamp: Instant = Instant.EPOCH)
-  extends Stamped[Journal] {
-  def check(): Unit = if (!isValid) throw new IllegalStateException("Journal Not initialized!")
+  extends Stamped[Journal]  with OkContributor{
+  def isOk: Boolean = journalFileName.nonEmpty
 
-  def isValid: Boolean = journalFileName.nonEmpty
+
+  def check(): Unit = if (!isOk) throw new IllegalStateException("Journal Not initialized!")
+
+  override def updateOk(): Unit = {
+    OkGate(OkItem("Journal", "journal name", "Create a journal!") { () => isOk })
+  }
 }
 
 object Journal {
@@ -28,7 +33,7 @@ object Journal {
     val localDate = localDateTime.toLocalDate
     val localTime = localDateTime.toLocalTime
     val fileName = s"$contestName${localDate.getYear}${localDate.getMonthValue}${localDate.getDayOfMonth}.${localTime.toSecondOfDay}.json"
-//    val fileName = contestName + str + ".json"
+    //    val fileName = contestName + str + ".json"
     new Journal(fileName, nodeAddress, instant)
   }
 

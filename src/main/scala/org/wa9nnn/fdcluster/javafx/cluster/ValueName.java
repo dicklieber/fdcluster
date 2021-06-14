@@ -11,14 +11,14 @@ public enum ValueName implements PropertyCellName {
     FdHours("Number of hours with QSOs"),
     Band("That this station is operating on ."),
     Mode("CW, PH or DI"),
-    Operator("Who is running the station. User provided in the Station Panel."),
-    Rig("Free-form text. User provided in the Station Panel."),
-    Antenna("Free-form text. User provided in the Station Panel."),
+    Operator("Who is running the station. User provided in the StationTable Panel."),
+    Rig("Free-form text. User provided in the StationTable Panel."),
+    Antenna("Free-form text. User provided in the StationTable Panel."),
     Journal("Name of the file where this node stores QSOs. Should  be the same across all nodes."),
     CallSign("CallSign of your station. Should  be the same across all nodes."),
     Contest("FD or WFD"),
     OS("Operating system. Can be different for each node."),
-    OpCount("Number of operators at this node. At least 1, more if web clients."),
+    Sessions("Operators at node. 1st is at FdCluster, other at Web cients."),
 
     Stamp("When the node reported this information."),
     Version("Version of main. Not good to mix version of main!");

@@ -109,10 +109,10 @@ class JournalDialogPane @Inject()(journalProperty: JournalProperty,
     collapsible = false
   }
   {
-    pane.visible = contestProperty.okToLogProperty.value
-    contestProperty.okToLogProperty.onChange {
-      (_, _, nv) =>
-        pane.visible = nv
+    pane.visible = contestProperty.contest.isOk
+    contestProperty.onChange {
+      (_, _, nv: Contest) =>
+        pane.visible = nv.isOk
     }
   }
 

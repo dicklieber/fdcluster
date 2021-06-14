@@ -2,7 +2,7 @@
 package org.wa9nnn.fdcluster.contest
 
 import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
-import org.wa9nnn.fdcluster.model.{Exchange, NodeAddress, Stamped}
+import org.wa9nnn.fdcluster.model.{Exchange, NodeAddress, OkContributor, Stamped}
 
 import java.time.{Instant, LocalDate}
 
@@ -20,9 +20,10 @@ case class Contest(callSign: CallSign = "",
                    ourExchange: Exchange = Exchange(),
                    contestName: String = "FieldDay",
                    nodeAddress: NodeAddress = NodeAddress(),
-                   password:String = "",
+                   password: String = "",
                    stamp: Instant = Instant.now(),
-                  ) extends  Stamped[Contest]{
+                  ) extends Stamped[Contest]with OkContributor {
+
 
   def checkValid(): Unit = {
     if (!isOk) {
@@ -42,6 +43,11 @@ case class Contest(callSign: CallSign = "",
 
   def qsoId: String = {
     f"$id$callSign"
+  }
+
+  override def updateOk(): Unit = {
+    OkGate(OkItem("Contest", "callSign", "Must have entrant CallSign!") { () => isOk })
+
   }
 }
 

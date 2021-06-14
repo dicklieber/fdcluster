@@ -1,13 +1,11 @@
 package org.wa9nnn.webclient
 
-import akka.actor.ActorRef
 import akka.http.scaladsl.model.headers.HttpCookie
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}
 import akka.http.scaladsl.server.Directives.{formFields, onSuccess, path, _}
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.directives.CookieDirectives
 import akka.http.scaladsl.server.directives.RouteDirectives.complete
-import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import com.wa9nnn.util.tableui.Cell
@@ -16,7 +14,7 @@ import org.wa9nnn.fdcluster.html
 import org.wa9nnn.fdcluster.model.{AllContestRules, ContestProperty, Station}
 import play.twirl.api.HtmlFormat
 
-import javax.inject.{Inject, Named, Singleton}
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.duration.DurationInt
 import scala.util.{Failure, Success, Try}
 
@@ -24,7 +22,7 @@ import scala.util.{Failure, Success, Try}
 class SignOnOff @Inject()(contestProperty: ContestProperty,
                           passwordManager: PasswordManager,
                           allContestRules: AllContestRules,
-                          @Named("sessionManager") sessionManager: ActorRef)
+                          sessionManagerSender: SessionManagerSender)
   extends CookieDirectives with LazyLogging {
   implicit lazy val timeout: Timeout = Timeout(5.seconds) // usually we'd obtain the timeout from the system's configuration
 
@@ -33,7 +31,7 @@ class SignOnOff @Inject()(contestProperty: ContestProperty,
       complete {
 
         HttpEntity(ContentTypes.`text/html(UTF-8)`, {
-          val qsos: HtmlFormat.Appendable = html.Signon()
+          val qsos: HtmlFormat.Appendable = html.Signon(allContestRules.currentRules)
           qsos.toString()
         }
         )
@@ -42,39 +40,41 @@ class SignOnOff @Inject()(contestProperty: ContestProperty,
   }
   val logOutRoute: Route = {
     path("logout") {
-        deleteCookie("session")
-        redirect("/", StatusCodes.PermanentRedirect)
+      deleteCookie("session")
+      redirect("/", StatusCodes.PermanentRedirect)
     }
   }
 
 
   val doSignonRoute: Route = {
     path("doSignon") {
-      formFields("yourCallSign", "password") { (yourCallSign, password) =>
-        val contestPassword = passwordManager.decrypt(contestProperty.contest.password)
-        if (password == contestPassword) {
-          onSuccess((
-            sessionManager ? CreateSessionRequest(yourCallSign)
-            ).mapTo[Session]) { session =>
-            setCookie(HttpCookie("session", session.sessionKey))(
-              complete(
-                HttpEntity(ContentTypes.`text/html(UTF-8)`, {
-                  html.QsoEntry(None, allContestRules.currentRules, session.station).toString()
-                }
-                )))
+      formFields("operator", "password", "band", "mode", "rig", "antenna") {
+        (operator, password, band, mode, rig, antenna) =>
+          val contestPassword = passwordManager.decrypt(contestProperty.contest.password)
+          if (password == contestPassword) {
+            onSuccess((
+              sessionManagerSender ?[Session] Station(band, mode, operator, rig, antenna)
+              ).mapTo[Session]) { session =>
+              setCookie(
+                HttpCookie("session", session.sessionKey)
+              )(
+                complete(
+                  HttpEntity(ContentTypes.`text/html(UTF-8)`, {
+                    html.QsoEntry(None, allContestRules.currentRules, session.station).toString()
+                  }
+                  )))
+            }
+          } else {
+            HttpEntity(ContentTypes.`text/html(UTF-8)`, {
+              val qsos: HtmlFormat.Appendable = html.Signon(allContestRules.currentRules, Option {
+                Cell("Sorry you need the password. Check with the person who setup the system!")
+                  .withCssClass("sad")
+              })
+              qsos.toString()
+            }
+            )
+            complete(s"Sorry you need the password. Check with the person who setup the system!")
           }
-
-        } else {
-          HttpEntity(ContentTypes.`text/html(UTF-8)`, {
-            val qsos: HtmlFormat.Appendable = html.Signon(Option {
-              Cell("Sorry you need the password. Check with the person who setup the system!")
-                .withCssClass("sad")
-            })
-            qsos.toString()
-          }
-          )
-          complete(s"Sorry you need the password. Check with the person who setup the system!")
-        }
       }
     }
   }
@@ -86,21 +86,23 @@ class SignOnOff @Inject()(contestProperty: ContestProperty,
         formFields("operator", "band", "mode", "rig", "antenna") {
           (operator, band, mode, rig, antenna) =>
 
-            val newStation = Station(operator, band, mode, rig, antenna)
+            val newStation = Station(bandName = band,
+              modeName = mode,
+              operator = "dontcare here",
+              rig = rig,
+              antenna = antenna)
             val sessionKey = sessionCookie.value
             onSuccess(
-              (sessionManager ? UpdateStation(sessionKey, newStation)).mapTo[Try[Session]]) { triedSession =>
-              triedSession match {
-                case Failure(exception) =>
-                  complete(s"unknown sessionKey!")
-                case Success(session) =>
-                  complete(
-                    HttpEntity(ContentTypes.`text/html(UTF-8)`, {
-                      html.QsoEntry(None, allContestRules.currentRules, session.station).toString()
-                    }
-                    )
+              sessionManagerSender ? [Try[Session]]UpdateStation(sessionKey, newStation)) {
+              case Failure(exception) =>
+                complete(s"unknown sessionKey!")
+              case Success(session) =>
+                complete(
+                  HttpEntity(ContentTypes.`text/html(UTF-8)`, {
+                    html.QsoEntry(None, allContestRules.currentRules, session.station).toString()
+                  }
                   )
-              }
+                )
             }
         }
       }

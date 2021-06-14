@@ -34,13 +34,13 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class ContestProperty @Inject()(fileContext: FileContext, nodeAddress: NodeAddress) extends PersistableProperty[Contest](fileContext){
 
+
   /**
    * provide a new default instance of T. Needed when there is no file persisted/
    *
    * @return
    */
-  override def defaultInstance: Contest = new Contest(nodeAddress = nodeAddress)
-
+  override def defaultInstance: Contest = Contest(nodeAddress = nodeAddress)
 
   def contest: Contest = value
 
@@ -50,7 +50,7 @@ class ContestProperty @Inject()(fileContext: FileContext, nodeAddress: NodeAddre
 
   def contestName: String = contestNameProperty.value match {
     case "FD" => "ARRL-FIELD-DAY"
-      // Winter Fields not in ADIF Contest ID Enumeration at least on 5/19/2021 https://adif.org/312/ADIF_312.htm#Contest_ID
+      // Winter Field Day not in ADIF Contest ID Enumeration at least on 5/19/2021 https://adif.org/312/ADIF_312.htm#Contest_ID
     case x =>
       x
   }
@@ -59,14 +59,14 @@ class ContestProperty @Inject()(fileContext: FileContext, nodeAddress: NodeAddre
 
   def ourExchange: Exchange = ourExchangeProperty.value
 
-  onChanged(value)
+  override def isOk: Boolean = value.isOk
   /**
    * Invoked initially and when the property changes.
    */
-  override def onChanged(contest: Contest): Unit = {
-    contestNameProperty.value = contest.contestName
-    ourExchangeProperty.value = contest.ourExchange
-    okToLogProperty.value = contest.isOk
+  override def valueChanged(v: Contest): Unit = {
+    v.updateOk()
+    contestNameProperty.value = v.contestName
+    ourExchangeProperty.value = v.ourExchange
   }
 
 }

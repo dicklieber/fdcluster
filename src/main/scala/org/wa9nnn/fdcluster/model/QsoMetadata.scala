@@ -25,10 +25,8 @@ import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
 import scalafx.beans.binding.Bindings
 import scalafx.beans.property.ObjectProperty
 
-import java.nio.file.Path
 import java.time.Instant
 import javax.inject.{Inject, Singleton}
-import scala.util.Try
 
 
 /**
@@ -45,11 +43,15 @@ case class QsoMetadata(operator: CallSign = "",
                        ant: String = "",
                        node: String = "localhost;1",
                        journal: String = "",
-                       v: String = BuildInfo.canonicalVersion)
+                       v: String = BuildInfo.canonicalVersion){
+  def forStation(station: Station):QsoMetadata = {
+    copy(operator =  station.operator, rig= station.rig, ant = station.antenna)
+  }
+}
 
 @Singleton
 class OsoMetadataProperty @Inject()(stationProperty: StationProperty, contestProperty: ContestProperty, nodeAddress: NodeAddress, journalProperty: JournalProperty)
-  extends ObjectProperty[QsoMetadata](null, "Station") with QsoBuilder {
+  extends ObjectProperty[QsoMetadata](null, "StationTable") with QsoBuilder{
 
 
   def set(): QsoMetadata = {
@@ -70,14 +72,15 @@ class OsoMetadataProperty @Inject()(stationProperty: StationProperty, contestPro
   )
   this <== b
 
-  override def qso(callSign: CallSign, exchange: Exchange, bandMode: BandMode, stamp:Instant = Instant.now): Qso = {
+   def qso(callSign: CallSign, exchange: Exchange, bandMode: BandMode, stamp:Instant = Instant.now): Qso = {
     Qso(callSign, exchange, bandMode, value, stamp)
+  }
+
+  def qso(callSign: CallSign, exchange: Exchange, station: Station) :Qso = {
+    Qso(callSign, exchange, station.bandMode, value.forStation(station))
   }
 }
 
-trait QsoBuilder {
-  def qso(callSign: CallSign,
-          exchange: Exchange,
-          bandMode: BandMode,
-          stamp:Instant = Instant.now): Qso
+trait QsoBuilder{
+  def qso(callSign: CallSign, exchange: Exchange, bandMode: BandMode, stamp:Instant = Instant.now): Qso
 }

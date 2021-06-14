@@ -24,19 +24,20 @@ import _root_.scalafx.beans.binding.{Bindings, ObjectBinding}
 import _root_.scalafx.event.ActionEvent
 import _root_.scalafx.geometry.{Insets, Pos}
 import _root_.scalafx.scene.control._
-import _root_.scalafx.scene.layout.{BorderPane, HBox, Pane, VBox}
+import _root_.scalafx.scene.layout.{BorderPane, HBox, VBox}
+import akka.actor.ActorRef
 import com.google.inject.{Inject, Injector}
 import com.typesafe.scalalogging.LazyLogging
-import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import org.scalafx.extras.onFX
-import org.wa9nnn.fdcluster.contest.{JournalProperty, OkToLogGate}
+import org.wa9nnn.fdcluster.contest.OkGate
 import org.wa9nnn.fdcluster.javafx.entry.section.SectionField
 import org.wa9nnn.fdcluster.javafx.{CallSignField, ClassField, StatusMessage, StatusPane}
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.store.{AddResult, StoreSender}
 import org.wa9nnn.util.WithDisposition
 
-import javax.inject.Singleton
+import java.lang
+import javax.inject.{Named, Singleton}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.Try
@@ -50,19 +51,21 @@ class EntryTab @Inject()(injector: Injector,
                          contestProperty: ContestProperty,
                          nodeAddress: NodeAddress,
                          classField: ClassField,
-                         qsoBuilder: QsoBuilder,
                          stationProperty: StationProperty,
-                         journalProperty: JournalProperty,
+                         qsoMetadata: OsoMetadataProperty,
                          statsPane: StatsPane,
                          statusPane: StatusPane,
                          storeSender: StoreSender,
-                         okToLogGate: OkToLogGate,
                          callSignField: CallSignField,
                          actionResult: ActionResult,
+                         @Named("sessionManager") sessionManagerActor: ActorRef
                         ) extends Tab with LazyLogging {
   //  private implicit val timeout: Timeout = Timeout(5, TimeUnit.SECONDS)
   text = "Entry"
   closable = false
+
+//  injector.getInstance(classOf[Actor])
+//  @Named("sessionManager") sessionManagerActor: Actor
 
 
   val qsoSection: SectionField = new SectionField() {
@@ -88,6 +91,11 @@ class EntryTab @Inject()(injector: Injector,
       ourExchangeLabel.text = ex.display
       ourExchangeMnomicLabel.text = ex.mnomonics
     }
+  }
+
+  val sessionKey = "todo"
+  stationProperty.onChange{(_,_,station) =>
+
   }
 
 
@@ -151,23 +159,27 @@ class EntryTab @Inject()(injector: Injector,
     }
   }
 
-
-  content = setOk(okToLogGate.value)
-  okToLogGate.onChange { (_, _, nv) =>
-    onFX {
-      content = setOk(nv)
-    }
+  OkGate.onChange { (_, _, nv: lang.Boolean) =>
+    OkGate.allOkItems
   }
 
-  def setOk(ok: Boolean): Pane = {
-    if (ok)
-      entryPane
-    else
-      injector.instance[NotReadyPane]
-  }
+  //  content = setOk(OkGate.value)
+  //  OkGate.onChange { (_, _, nv) =>
+  //    onFX {
+  //      content = setOk(nv)
+  //    }
+  //  }
+  //
+  //  def setOk(ok: Boolean): Pane = {
+  //    if (ok)
+  //      entryPane
+  //    else
+  //      injector.instance[NotReadyPane]
+  //  }
+  content = entryPane
 
   def save(): Unit = {
-    val potentialQso: Qso = qsoBuilder.qso(
+    val potentialQso: Qso = qsoMetadata.qso(
       callSign = callSignField.text.value,
       exchange = Exchange(classField.text.value, qsoSection.text.value),
       bandMode = stationProperty.bandMode
@@ -187,7 +199,6 @@ class EntryTab @Inject()(injector: Injector,
             statusPane.message(StatusMessage("Thanks for using fdcluster, from Dick Lieber WA9NNN", styleClasses = Seq("hiDick")))
           }
         }
-
       }
     }
   }
@@ -210,6 +221,7 @@ class EntryTab @Inject()(injector: Injector,
     destination.requestFocus()
     destination.positionCaret(1)
   }
+
 
   clear()
 
