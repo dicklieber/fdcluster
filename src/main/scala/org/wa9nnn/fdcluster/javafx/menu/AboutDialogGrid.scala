@@ -72,6 +72,7 @@ class AboutDialogGrid @Inject()(appInfo: AppInfo,
       }
     })
     goc.add("Java Version", ManagementFactory.getRuntimeMXBean.getVmVersion)
+    goc.add("JavaFx Version", System.getProperty("javafx.version"))
     goc.addControl("App Directory", new Hyperlink(fileManager.directory.toString) {
       onAction = event => {
         desktop.open(fileManager.directory.toFile)

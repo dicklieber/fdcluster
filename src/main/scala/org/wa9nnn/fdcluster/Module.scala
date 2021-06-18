@@ -18,7 +18,7 @@
 
 package org.wa9nnn.fdcluster
 
-import _root_.scalafx.application.JFXApp.Parameters
+import _root_.scalafx.application.JFXApp3.Parameters
 import _root_.scalafx.beans.property.ObjectProperty
 import akka.actor.{ActorRef, ActorSystem, DeadLetter, Props}
 import com.github.racc.tscg.TypesafeConfigModule
@@ -47,7 +47,8 @@ import javax.inject.{Named, Singleton}
  *
  * @param parameters command line args
  */
-class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
+class Module() extends AbstractModule with ScalaModule {
+//class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
 
   override def configure(): Unit = {
     try {
@@ -56,7 +57,7 @@ class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
       // File manager must be invoked before any logging is done as logback.xml uses the system property  "log.file.path"
       // which gets set by the FileManager.
       val config: Config = ConfigApp.apply
-      bind[CommandLine].toInstance(new CommandLineScalaFxImpl(parameters))
+//      bind[CommandLine].toInstance(new CommandLineScalaFxImpl(parameters))
       //      bind[MulticastListener].asEagerSingleton()
       val actorSystem = ActorSystem("default", config)
       val deadLetterMonitorActor =

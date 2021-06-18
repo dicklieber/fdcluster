@@ -24,9 +24,8 @@ case class NodeCells(nodeAddress: NodeAddress, ourNode: NodeAddress) extends Laz
     nodeStatus.values.foreach { namedValue =>
       cells.getOrElseUpdate(namedValue.name, {
         val propertyCell = PropertyCellFactory(namedValue)
-        propertyCell.update(namedValue)
         propertyCell
-      })
+      }).update(namedValue)
 
     }
   }

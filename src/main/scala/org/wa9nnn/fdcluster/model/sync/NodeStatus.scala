@@ -22,13 +22,13 @@ package org.wa9nnn.fdcluster.model.sync
 import org.wa9nnn.fdcluster.BuildInfo
 import org.wa9nnn.fdcluster.contest.Contest
 import org.wa9nnn.fdcluster.javafx.cluster.{NamedValue, NamedValueCollector, ValueName}
-import org.wa9nnn.fdcluster.model.MessageFormats.CallSign
+import org.wa9nnn.fdcluster.model.sync.NodeStatus.serialNumbers
 import org.wa9nnn.fdcluster.model.{Journal, NodeAddress, Station}
 import org.wa9nnn.fdcluster.store.network.FdHour
 import org.wa9nnn.webclient.Session
 
 import java.time.Instant
-
+import java.util.concurrent.atomic.AtomicInteger
 /**
  *
  * @param nodeAddress        our IP and instance.
@@ -48,7 +48,8 @@ case class NodeStatus(nodeAddress: NodeAddress,
                       sessions:List[Session] = List.empty,
                       osName: String = s"${System.getProperty("os.name")} ${System.getProperty("os.version")}",
                       stamp: Instant = Instant.now(),
-                      ver: String = BuildInfo.version) extends ClusterMessage {
+                      ver: String = BuildInfo.version,
+                      sn:Int = serialNumbers.getAndIncrement()) extends ClusterMessage {
 
   assert(station != null, "null BandModeOperator")
 
@@ -66,6 +67,7 @@ case class NodeStatus(nodeAddress: NodeAddress,
     collector(ValueName.Journal, journal.map(_.journalFileName).getOrElse("Not Set"))
     collector(Age, stamp)
     collector(Version, ver)
+    collector(Sn, sn)
     collector(OS, osName)
     collector(Sessions, sessions.map(_.station.operator).mkString("\n"))
     qsoHourDigests.foreach { qsd =>
@@ -86,6 +88,10 @@ case class NodeStatus(nodeAddress: NodeAddress,
     qsoHourDigests.map(_.fdHour).toSet
   }
 
+}
+
+object NodeStatus {
+  val serialNumbers: AtomicInteger = new AtomicInteger()
 }
 
 

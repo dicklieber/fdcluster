@@ -15,8 +15,9 @@ buildInfoOptions ++= Seq(
   BuildInfoOption.Traits("org.wa9nnn.fdcluster.BuildInfoBase")
 )
 
+
 Compile / sourceDirectories := (Compile / unmanagedSourceDirectories).value
-Compile / mainClass  := Some("org.wa9nnn.fdcluster.javafx.FdCluster")
+Compile / mainClass := Some("org.wa9nnn.fdcluster.javafx.FdCluster")
 Compile / discoveredMainClasses := Seq()
 
 //scalacOptions ++= Seq(
@@ -39,18 +40,18 @@ scalaVersion := "2.13.5"
 lazy val javaFXModules = {
   // Determine OS version of JavaFX binaries
   lazy val osName = System.getProperty("os.name") match {
-    case n if n.startsWith("Linux")   => "linux"
-    case n if n.startsWith("Mac")     => "mac"
+    case n if n.startsWith("Linux") => "linux"
+    case n if n.startsWith("Mac") => "mac"
     case n if n.startsWith("Windows") => "win"
-    case _                            =>
+    case _ =>
       throw new Exception("Unknown platform!")
   }
   // Create dependencies for JavaFX modules
-  Seq("base", "controls",  "graphics", "media", "web")
-    .map( m=> "org.openjfx" % s"javafx-$m" % "15.0.1" classifier osName)
+  Seq("base", "controls", "graphics", "media" )
+    .map(m => "org.openjfx" % s"javafx-$m" % "15.0.1" classifier osName)
 }
 
-//libraryDependencies ++= javaFXModules
+libraryDependencies ++= javaFXModules
 
 
 val javafxLib = file(sys.env.get("JAVAFX_LIB").getOrElse("Environmental variable JAVAFX_LIB is not set"))
