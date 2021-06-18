@@ -24,10 +24,11 @@ import _root_.scalafx.beans.binding.{Bindings, ObjectBinding}
 import _root_.scalafx.event.ActionEvent
 import _root_.scalafx.geometry.{Insets, Pos}
 import _root_.scalafx.scene.control._
-import _root_.scalafx.scene.layout.{BorderPane, HBox, VBox}
-import akka.actor.ActorRef
+import _root_.scalafx.scene.layout.{BorderPane, HBox, Pane, VBox}
+import akka.util.Timeout
 import com.google.inject.{Inject, Injector}
 import com.typesafe.scalalogging.LazyLogging
+import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import org.scalafx.extras.onFX
 import org.wa9nnn.fdcluster.contest.OkGate
 import org.wa9nnn.fdcluster.javafx.entry.section.SectionField
@@ -35,11 +36,14 @@ import org.wa9nnn.fdcluster.javafx.{CallSignField, ClassField, StatusMessage, St
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.store.{AddResult, StoreSender}
 import org.wa9nnn.util.WithDisposition
+import org.wa9nnn.webclient.{Session, SessionManagerSender, UpdateStation}
 
 import java.lang
-import javax.inject.{Named, Singleton}
+import java.util.concurrent.TimeUnit
+import javax.inject.Singleton
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.duration.DurationInt
+import scala.concurrent.{Await, Future}
 import scala.util.Try
 
 /**
@@ -58,14 +62,11 @@ class EntryTab @Inject()(injector: Injector,
                          storeSender: StoreSender,
                          callSignField: CallSignField,
                          actionResult: ActionResult,
-                         @Named("sessionManager") sessionManagerActor: ActorRef
+                         sessionManagerSender: SessionManagerSender
                         ) extends Tab with LazyLogging {
-  //  private implicit val timeout: Timeout = Timeout(5, TimeUnit.SECONDS)
+  private implicit val timeout: Timeout = Timeout(5, TimeUnit.SECONDS)
   text = "Entry"
   closable = false
-
-//  injector.getInstance(classOf[Actor])
-//  @Named("sessionManager") sessionManagerActor: Actor
 
 
   val qsoSection: SectionField = new SectionField() {
@@ -93,9 +94,10 @@ class EntryTab @Inject()(injector: Injector,
     }
   }
 
-  val sessionKey = "todo"
-  stationProperty.onChange{(_,_,station) =>
+  var session: Session = Await.result[Session](sessionManagerSender ?[Session] stationProperty.value, 2.seconds)
 
+  stationProperty.onChange { (_, _, station) =>
+    sessionManagerSender ! UpdateStation(session.sessionKey,station)
   }
 
 
@@ -113,6 +115,7 @@ class EntryTab @Inject()(injector: Injector,
         callSignField,
         actionResult,
         statsPane.pane,
+        OkGate.pane
       ),
       new VBox(
         new Label("Class"),
@@ -163,19 +166,19 @@ class EntryTab @Inject()(injector: Injector,
     OkGate.allOkItems
   }
 
-  //  content = setOk(OkGate.value)
-  //  OkGate.onChange { (_, _, nv) =>
-  //    onFX {
-  //      content = setOk(nv)
-  //    }
-  //  }
-  //
-  //  def setOk(ok: Boolean): Pane = {
-  //    if (ok)
-  //      entryPane
-  //    else
-  //      injector.instance[NotReadyPane]
-  //  }
+//    content = setOk(OkGate.value)
+    OkGate.onChange { (_, _, nv) =>
+//      onFX {
+//        content = setOk(nv)
+//      }
+    }
+
+    def setOk(ok: Boolean): Unit = {
+//      if (ok)
+//        entryPane
+//      else
+//        injector.instance[NotReadyPane]
+    }
   content = entryPane
 
   def save(): Unit = {

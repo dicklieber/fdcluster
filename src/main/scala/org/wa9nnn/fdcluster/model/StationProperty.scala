@@ -77,8 +77,7 @@ class StationProperty @Inject()(fileContext: FileContext)
    * Invoked initially and when the property changes.
    */
   override def valueChanged(v: Station): Unit = {
-
-
+    v.updateOk()
   }
 }
 
@@ -101,12 +100,12 @@ case class Station(bandName: Band = "20m", modeName: Mode = "PH",
                    operator: CallSign = "", rig: String = "", antenna: String = "",
                    stamp: Instant = Instant.now()
                   )
-  extends NodeValueProvider with Stamped[Station] with OkContributor{
+  extends NodeValueProvider with Stamped[Station] with OkContributor {
 
   def updateOk(): Unit = {
-    OkGate (OkItem ("StationTable", "band", "Must specify a band!") {() => bandName.nonEmpty})
-    OkGate (OkItem ("StationTable", "mode", "Must specify a band!") {() => modeName.nonEmpty})
-    OkGate (OkItem ("StationTable", "operator", "Must specify operator!") {() => modeName.nonEmpty})
+    OkGate(OkItem("StationTable", "band", "Must specify a band!") { () => bandName.nonEmpty })
+    OkGate(OkItem("StationTable", "mode", "Must specify a band!") { () => modeName.nonEmpty })
+    OkGate(OkItem("StationTable", "operator", "Must specify operator!") { () => operator.nonEmpty })
   }
 
   def isOk: Boolean = {

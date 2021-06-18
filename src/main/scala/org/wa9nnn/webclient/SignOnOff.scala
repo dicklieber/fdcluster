@@ -88,7 +88,7 @@ class SignOnOff @Inject()(contestProperty: ContestProperty,
 
             val newStation = Station(bandName = band,
               modeName = mode,
-              operator = "dontcare here",
+              operator = operator,
               rig = rig,
               antenna = antenna)
             val sessionKey = sessionCookie.value

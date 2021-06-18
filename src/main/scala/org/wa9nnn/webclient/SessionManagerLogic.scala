@@ -63,8 +63,7 @@ class SessionManagerLogic(maxSessionSeconds: Long) {
 case class Session( sessionKey: SessionKey, station: Station, touched: Instant, started: Instant = Instant.now()) extends Ordered[Session] {
 
     def updateStation(newStation: Station): Session = {
-    val stationWithForcedOp = newStation.copy(operator = station.operator)
-    copy(station = stationWithForcedOp)
+    copy(station = newStation)
   }
 
   def last: Instant = {

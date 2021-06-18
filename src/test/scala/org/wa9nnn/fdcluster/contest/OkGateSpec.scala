@@ -21,13 +21,13 @@ class OkGateSpec extends Specification {
       gate.update(OkItem("test", "testThing", "reason"){ () => true})
       val items = gate.getBad
       items must haveSize(1)
-      val item = items.head
-      item.isOK must beFalse
-      val row = item.row()
-      val cells = row.cells
-      cells.head must beEqualTo(new Cell("test"))
-      cells(1) must beEqualTo(new Cell("testThing"))
-      cells(2) must beEqualTo(new Cell("Need to do something 1st").withCssClass("sad"))
+      val item: OkItemPropertyCell = items.head
+      item.isOk must beFalse
+//      val row = item.tableUiRow()
+//      val cells = row.cells
+//      cells.head must beEqualTo(new Cell("test"))
+//      cells(1) must beEqualTo(new Cell("testThing"))
+//      cells(2) must beEqualTo(new Cell("Need to do something 1st").withCssClass("sad"))
     }
     "update to ok" in {
       val gate = new OkGate
@@ -38,13 +38,13 @@ class OkGateSpec extends Specification {
       val items = gate.getAll
       items must haveSize(1)
       val item = items.head
-      item.isOK must beTrue
+      item.isOk must beTrue
 
-      val row = item.row()
-      val cells = row.cells
-      cells.head must beEqualTo(new Cell("test"))
-      cells(1) must beEqualTo(new Cell("testThing"))
-      cells(2) must beEqualTo(new Cell("Ok").withCssClass("happy"))
+//      val row = item.tableUiRow()
+//      val cells = row.cells
+//      cells.head must beEqualTo(new Cell("test"))
+//      cells(1) must beEqualTo(new Cell("testThing"))
+//      cells(2) must beEqualTo(new Cell("Ok").withCssClass("happy"))
     }
   }
 }

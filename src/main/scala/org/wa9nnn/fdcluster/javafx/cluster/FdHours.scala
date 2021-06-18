@@ -1,5 +1,6 @@
 package org.wa9nnn.fdcluster.javafx.cluster
 
+import akka.http.scaladsl.model.headers.Age
 import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.contest.JournalProperty
 import org.wa9nnn.fdcluster.model.NodeAddress
@@ -29,14 +30,13 @@ class FdHours @Inject()(journalProperty: JournalProperty) extends LazyLogging {
     layoutVersion.value = layoutVersion.value + 1
   }
 
-  def colorHours(fdHour: FdHour): Unit ={
+  def colorHours(fdHour: FdHour): Unit = {
     HourColorer(data.cellsForRow(fdHour))
   }
 
   /**
    *
    * @param nodeStatus incoming.
-   * @return true if we added one or more FdHour row, indicating that the gridPane needs to be refreshed.
    */
   def update(nodeStatus: NodeStatus): Unit = {
     val nodeAddress = nodeStatus.nodeAddress
@@ -48,7 +48,7 @@ class FdHours @Inject()(journalProperty: JournalProperty) extends LazyLogging {
       val cell: QsoDigestPropertyCell = data.getOrElseUpdate(qhd.fdHour, nodeAddress, {
         qhd.PropertyCell
       })
-      cell.update(qhd)
+      cell.update(NamedValue(qhd.fdHour, qhd))
       colorHours(qhd.fdHour)
     }
     if (startMatrixSize != data.size) {
@@ -58,7 +58,7 @@ class FdHours @Inject()(journalProperty: JournalProperty) extends LazyLogging {
   }
 
   def purge(deadNodes: List[NodeAddress]): Unit = {
-    deadNodes.foreach{node =>
+    deadNodes.foreach { node =>
       metadataMap.remove(node)
       data.removeColumn(node)
     }
@@ -92,22 +92,18 @@ class FdHours @Inject()(journalProperty: JournalProperty) extends LazyLogging {
 
 case class ColInfo(nodeAddress: NodeAddress, nodeMetadata: NodeMetadata, iCol: Int)
 
-case class NodeMetadata(nodeAddress: NodeAddress,
-                        ageCell: SimplePropertyCell = SimplePropertyCell(),
-                        qsoCountCell: SimplePropertyCell = SimplePropertyCell.css("number", "clusterCell")) {
+case class NodeMetadata(nodeAddress: NodeAddress) {
+
+  val ageCell: PropertyCellAge = PropertyCellFactory(ValueName.Age, Instant.now()).asInstanceOf[PropertyCellAge]
+  val qslCountCell: PropertyCell = PropertyCellFactory(ValueName.QsoCount, 0)
+
   def update(nodeStatus: NodeStatus): Unit = {
-    ageCell.update(nodeStatus.stamp)
-    qsoCountCell.update(nodeStatus.qsoCount)
+    ageCell.update(NamedValue(ValueName.Age, nodeStatus.stamp))
+    qslCountCell.update(NamedValue(ValueName.QsoCount, nodeStatus.qsoCount))
   }
 
   def clear(): Unit = {
     ageCell.clear()
-  }
-}
-
-object NodeMetadata {
-  def apply(nodeAddress: NodeAddress, stamp: Instant): NodeMetadata = {
-    new NodeMetadata(nodeAddress, SimplePropertyCell(nodeAddress, stamp))
   }
 }
 

@@ -21,7 +21,7 @@ package org.wa9nnn.fdcluster.store.network
 
 import com.typesafe.scalalogging.LazyLogging
 import com.wa9nnn.util.tableui.Cell
-import org.wa9nnn.fdcluster.javafx.cluster.{PropertyCell, PropertyCellName, SimplePropertyCell}
+import org.wa9nnn.fdcluster.javafx.cluster.{NamedValue, PropertyCell, PropertyCellFactory, PropertyCellName}
 import org.wa9nnn.util.TimeHelpers.utcZoneId
 
 import java.time.{Instant, ZonedDateTime}
@@ -41,10 +41,11 @@ case class FdHour private(day: Int, hour: Int) extends Ordered[FdHour] with Prop
     s"$day:$hour"
   }
 
-  def propertyCell: PropertyCell[_] = {
-    SimplePropertyCell(this, Cell(display)
+  def propertyCell: PropertyCell = {
+    val cell = Cell(display)
       .withToolTip(toolTip)
-      .withCssClass("clusterRowHeader"))
+      .withCssClass("clusterRowHeader")
+    PropertyCellFactory(NamedValue(this, cell))
   }
 
   /**

@@ -30,8 +30,10 @@ import org.wa9nnn.fdcluster.rig.RigInfo
 import org.wa9nnn.util.InputHelper.forceCaps
 import scalafx.beans.binding.Bindings
 import scalafx.collections.ObservableBuffer
+import MessageFormats._
+import scalafx.beans.property.ObjectProperty
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 /**
  * Panel that allows user to manage band, mode, operator etc.
@@ -42,6 +44,7 @@ import javax.inject.Inject
  * @param knownOperatorsProperty Operators who have used fdcluster.
  * @param rigInfo                hamlib collected info.
  */
+@Singleton
 class StationPanel @Inject()(stationProperty: StationProperty,
                              allContestRules: AllContestRules,
                              knownOperatorsProperty: KnownOperatorsProperty,
@@ -53,7 +56,7 @@ class StationPanel @Inject()(stationProperty: StationProperty,
     setup(nv)
   }
 
-  val band: ComboBox[String] = new ComboBox[String]()
+  val band: ComboBox[String] = new ComboBox[String](){}
   val mode: ComboBox[String] = new ComboBox[String]()
   val operator: ComboBox[CallSign] = new ComboBox[CallSign](knownOperatorsProperty.value.callSigns) {
     editable.value = true
@@ -90,6 +93,18 @@ class StationPanel @Inject()(stationProperty: StationProperty,
   val pane: GridOfControls = goc
 
   def null2Empty(s:String):String = Option(s).getOrElse("")
+
+
+  private def setup(contestRules: ContestRules): Unit = {
+    band.items = ObservableBuffer.from(contestRules.bands.bands)
+    mode.items = ObservableBuffer.from(contestRules.modes.modes)
+  }
+
+
+  setup(allContestRules.currentRules)
+
+  band.value = stationProperty.value.bandName
+  mode.value = stationProperty.value.modeName
   private val b = Bindings.createObjectBinding[Station](
     () => {
       val r = Station(
@@ -98,18 +113,15 @@ class StationPanel @Inject()(stationProperty: StationProperty,
         operator.value.value,
         rig.text.value,
         antenna.text.value)
+      stationProperty.update(r)
       r
     }, band.value, mode.value, operator.value, rig.text, antenna.text
   )
-  stationProperty <== b
-
-
-  private def setup(contestRules: ContestRules): Unit = {
-    band.items = ObservableBuffer.from(contestRules.bands.bands)
-    mode.items = ObservableBuffer.from(contestRules.modes.modes)
+  val dummyPropp: ObjectProperty[Station] = new ObjectProperty[Station]()
+  dummyPropp <== b
+  dummyPropp.onChange { (_, _, nv) =>
+    println(nv)
   }
-
-  setup(allContestRules.currentRules)
 
 }
 

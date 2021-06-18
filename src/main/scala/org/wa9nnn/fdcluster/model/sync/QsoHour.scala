@@ -21,12 +21,11 @@ package org.wa9nnn.fdcluster.model.sync
 
 import com.wa9nnn.util.tableui.Cell
 import org.scalafx.extras.onFX
-import org.wa9nnn.fdcluster.javafx.cluster.{PropertyCell, PropertyCellName, SimplePropertyCell}
+import org.wa9nnn.fdcluster.javafx.cluster.{NamedValue, PropertyCell, PropertyCellName}
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.{Qso, sync}
 import org.wa9nnn.fdcluster.store.network.FdHour
 import scalafx.scene.control.Label
-import scalafx.scene.layout.{AnchorPane, BorderPane, HBox}
 
 import java.security.MessageDigest
 
@@ -75,7 +74,7 @@ object QsoHour {
  * @param digest      of all the QsoIDs in this hour.
  * @param size        number of Qsos in this hour.  //todo Do we actually need this? isn't the digest sufficient?
  */
-case class QsoHourDigest(fdHour: FdHour, digest: Digest, size: Int)  extends PropertyCellName {
+case class QsoHourDigest(fdHour: FdHour, digest: Digest, size: Int) extends PropertyCellName {
 
   override def toString: Node = {
     super.toString
@@ -94,7 +93,8 @@ case class QsoHourDigest(fdHour: FdHour, digest: Digest, size: Int)  extends Pro
   val toolTip: String = "Number of QSOs and digest for the hour."
 
   val name: String = fdHour.name
-  def PropertyCell:QsoDigestPropertyCell = QsoDigestPropertyCell(this)
+
+  def PropertyCell: QsoDigestPropertyCell = QsoDigestPropertyCell(this)
 }
 
 case class QsoHourIds(startOfHour: FdHour, qsiIds: List[Uuid])
@@ -105,23 +105,21 @@ object DigestFormat {
   }
 }
 
-case class QsoDigestPropertyCell(initialValue: QsoHourDigest) extends BorderPane with PropertyCell[QsoHourDigest] {
+case class QsoDigestPropertyCell(initialValue: QsoHourDigest) extends PropertyCell {
   var current: QsoHourDigest = initialValue
   prefWidth = 150.0
-  val countLabel: Label = new Label(){
-    styleClass += "number"
-  }
+  private val label = new Label()
+  left = label
 
-  right = countLabel
-  styleClass  ++= Seq("clusterCell" , "number")
+  private val classes = Seq("clusterCell", "number")
+  styleClass ++= classes
 
+  update(NamedValue(initialValue.fdHour, initialValue.size))
 
-  update(initialValue)
-
-   def update(qsoHourDigest: QsoHourDigest): Unit = {
-     current = qsoHourDigest
-    onFX{
-      countLabel.text =  Cell(qsoHourDigest.size).value
+  override def update(namedValue: NamedValue): Unit = {
+    cell = Cell(namedValue.value).withCssClass(classes)
+    onFX {
+      label.text = Cell(namedValue.value).value
     }
   }
 }

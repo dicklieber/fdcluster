@@ -36,7 +36,8 @@
     <logger name="org.wa9nnn.fdcluster.javafx.cluster.FdHours" level="INFO"/>
     <logger name="org.wa9nnn.fdcluster.javafx.cluster.FdHoursDialog" level="INFO"/>
     <logger name="org.wa9nnn.fdcluster.store.network.multicast.HeartBeat" level="INFO"/>
-    <logger name="org.wa9nnn.fdcluster.store.network.multicast.MulticastIo" level="INFO"/>
+    <logger name="org.wa9nnn.fdcluster.store.network.mmulticast.MulticastIo" level="INFO"/>
+    <logger name="org.wa9nnn.fdcluster.javafx.cluster.ClusterTable" level="DEBUG"/>
 
 
     <root level="DEBUG">

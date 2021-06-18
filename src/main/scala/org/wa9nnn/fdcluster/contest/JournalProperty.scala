@@ -48,14 +48,6 @@ class JournalProperty @Inject()(
    */
   override def defaultInstance: Journal = Journal()
 
-  onChange((_, _, journal: Journal) =>
-    journalFilePathProperty.value = Try {
-      Files.createDirectories(fileContext.journalDir)
-      journal.check()
-      fileContext.journalDir.resolve(journal.journalFileName)
-    }
-  )
-
   /**
    * new later journal.
    */
@@ -75,6 +67,7 @@ class JournalProperty @Inject()(
    * Invoked initially and when the property changes.
    */
   override def valueChanged(journal: Journal): Unit = {
+    journal.updateOk()
     journalFilePathProperty.value = Try {
       Files.createDirectories(fileContext.journalDir)
       journal.check()

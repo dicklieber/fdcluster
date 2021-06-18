@@ -36,13 +36,13 @@ class NodeColumns @Inject()(ourNodeAddress: NodeAddress) {
   def update(nodeStatus: NodeStatus): Boolean = {
     var changedLayout = false
 
-    val r: NodeCells = map.getOrElseUpdate(nodeStatus.nodeAddress, {
+    val nodeCells: NodeCells = map.getOrElseUpdate(nodeStatus.nodeAddress, {
       changedLayout = true
       NodeCells(nodeStatus.nodeAddress, ourNodeAddress)
 
     })
 
-    r.update(nodeStatus)
+    nodeCells.update(nodeStatus)
     changedLayout
   }
 }

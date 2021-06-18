@@ -49,7 +49,7 @@ class FdHoursDialog @Inject()(fdHours: FdHours, nodeAddress: NodeAddress) extend
       val iCol = colInfo.iCol + 1
       gridPane.add(colInfo.nodeAddress.propertyCell, iCol, headerRow)
       gridPane.add(metadata.ageCell, iCol, ageRow)
-      gridPane.add(metadata.qsoCountCell, iCol, countRow)
+      gridPane.add(metadata.qslCountCell, iCol, countRow)
     }
     gridPane.add(new HBox(new Label("Age")) {
       styleClass += "clusterRowHeader"
@@ -59,7 +59,7 @@ class FdHoursDialog @Inject()(fdHours: FdHours, nodeAddress: NodeAddress) extend
     }, 0, 2)
     // row headers
     val hourRowStart = row.getAndIncrement()
-    fdHours.rows.map(fdHour => fdHour.propertyCell).zipWithIndex.foreach { case (node: PropertyCell[_], iRow) =>
+    fdHours.rows.map(fdHour => fdHour.propertyCell).zipWithIndex.foreach { case (node: PropertyCell, iRow) =>
       gridPane.add(node, 0, iRow + hourRowStart)
     }
 

@@ -64,7 +64,7 @@ case class NodeStatus(nodeAddress: NodeAddress,
       collector(ValueName.Contest, contest.id)
     }
     collector(ValueName.Journal, journal.map(_.journalFileName).getOrElse("Not Set"))
-    collector(Stamp, stamp)
+    collector(Age, stamp)
     collector(Version, ver)
     collector(OS, osName)
     collector(Sessions, sessions.map(_.station.operator).mkString("\n"))

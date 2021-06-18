@@ -20,7 +20,8 @@
 package org.wa9nnn.fdcluster.javafx.runningtask
 
 import com.typesafe.scalalogging.LazyLogging
-import org.wa9nnn.fdcluster.javafx.entry.{RunningTaskInfo, RunningTaskInfoConsumer, StyledText}
+import org.wa9nnn.fdcluster.javafx.entry.{RunningTaskInfo, RunningTaskInfoConsumer}
+import org.wa9nnn.util.scalafx.StyledText
 
 import java.time.Instant
 

@@ -23,7 +23,7 @@ import akka.http.scaladsl.model.Uri
 import com.typesafe.config.Config
 import com.wa9nnn.util.tableui.Cell
 import org.wa9nnn.fdcluster.FileContext
-import org.wa9nnn.fdcluster.javafx.cluster.{NamedValueCollector, NodeValueProvider, PropertyCell, PropertyCellName, SimplePropertyCell}
+import org.wa9nnn.fdcluster.javafx.cluster.{NamedValue, NamedValueCollector, NodeValueProvider, PropertyCell, PropertyCellFactory, PropertyCellName, TextPropertyCell}
 
 import java.net.{Inet4Address, InetAddress, NetworkInterface, URL}
 import scala.jdk.CollectionConverters._
@@ -37,7 +37,7 @@ import scala.jdk.CollectionConverters._
  * @param instance  from application.conf or command line e.g -Dinstance=2
  * @param httpPort  as opposed to the multicast port.
  */
-case class NodeAddress(ipAddress: String = "", hostName: String = "localhost", instance: Option[Int] = None, port:Int = 8080)
+case class NodeAddress(ipAddress: String = "", hostName: String = "localhost", instance: Option[Int] = None, port: Int = 8080)
   extends Ordered[NodeAddress]
     with NodeValueProvider
     with PropertyCellName {
@@ -63,7 +63,8 @@ case class NodeAddress(ipAddress: String = "", hostName: String = "localhost", i
     else
       s"$hostName${instance.map(i => s";$i").getOrElse("")}"
   }
-  def fileUrlSafe:String = {
+
+  def fileUrlSafe: String = {
     s"$hostName${instance.map(i => s"-$i").getOrElse("")}"
   }
 
@@ -78,12 +79,12 @@ case class NodeAddress(ipAddress: String = "", hostName: String = "localhost", i
   val url: URL = {
     new URL("http", ipAddress, httpPort, "")
   }
-  lazy val propertyCell: PropertyCell[_] = {
-     SimplePropertyCell(this,
-      Cell(display)
+  lazy val propertyCell: PropertyCell = {
+    val cell = Cell(display)
       .withToolTip(toolTip)
-      .withCssClass( "clusterRowHeader"))
+      .withCssClass("clusterRowHeader")
 
+    PropertyCellFactory(NamedValue(this, cell))
   }
 
   def uri: Uri = {
@@ -110,7 +111,7 @@ case class NodeAddress(ipAddress: String = "", hostName: String = "localhost", i
 }
 
 object NodeAddress {
-  def apply(instance: Option[Int], config:Config): NodeAddress = {
+  def apply(instance: Option[Int], config: Config): NodeAddress = {
     val httpPort = config.getInt("fdcluster.httpServer.port")
     val inetAddress = determineIp()
     val address = inetAddress.getHostAddress

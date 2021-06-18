@@ -22,6 +22,7 @@ package org.wa9nnn.fdcluster.javafx.entry
 import _root_.scalafx.application.Platform
 import _root_.scalafx.scene.control.{Label, ProgressBar}
 import _root_.scalafx.scene.layout.{BorderPane, VBox}
+import org.wa9nnn.util.scalafx.StyledText
 
 import java.time.Instant
 
@@ -92,19 +93,5 @@ case class RunningTaskInfo(taskName: String, progress: Double = -1.0, top: Style
   }
 }
 
-case class StyledText(text: String, cssStyle: String*) {
-  def applyToLabel(control: Label): Unit = {
-    control.text = text
-    control.styleClass = cssStyle.toIterable
-  }
-}
-
-object StyledText {
-  def apply(): StyledText = new StyledText("")
-
-  def sad(text: String): StyledText = {
-    new StyledText(text, "sad")
-  }
-}
 
 
