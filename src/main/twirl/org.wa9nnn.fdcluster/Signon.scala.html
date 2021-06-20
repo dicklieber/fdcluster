@@ -4,12 +4,15 @@
 @import org.wa9nnn.fdcluster.model.ContestRules
 @(contestRules: ContestRules, maybeMessgeCell: Option[Cell] = None)
 @org.wa9nnn.fdcluster.html.main("login") {
+    <script type="text/javascript">
+
+    </script>
     <table>
         <form action="doSignon" method="post">
             <table>
                 <tr>
                     <td>Your CallSign</td>
-                    <td><input type="text" name="operator"></td>
+                    <td><input type="text" name="operator" class="upcase"></td>
                 </tr>
                 <tr title="As setup for the contest.">
                     <td>Contest Password</td>

@@ -117,6 +117,9 @@ trait UserRoutes extends LazyLogging {
             pathPrefix("css") {
               getFromResourceDirectory("css")
             },
+            pathPrefix("javascripts") {
+              getFromResourceDirectory("javascripts")
+            },
             qsoLogger.qsoEntryRoute,
             signOnOff.signonRoute,
             signOnOff.logOutRoute,
