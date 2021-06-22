@@ -4,6 +4,19 @@
 @import org.wa9nnn.fdcluster.model.Station
 @(maybeMessgeCell: Option[Cell], contestRules: ContestRules, station: Station)
 @org.wa9nnn.fdcluster.html.main("Log QSOs") {
+    <script type="text/javascript">
+            $( document ).ready(function() {
+                $(".initialFocus").focus()
+                // Your code here.
+                $( "#callSign" ).keyup(function(event) {
+
+                    $.get( "dup/" + event.target.value, function( data ) {
+                        $( "#possibleDups" ).html( data );
+                    });
+                });
+            });
+    </script>
+
     <table >
         <tr>
             <td colspan="2" class="operator">
@@ -15,18 +28,19 @@
                 <table>
                     <tr>
                         <td>CallSign</td>
-                        <td><input type="text" name="callSign" width="150" class="upcase"></td>
+                        <td><input autocomplete="off" type="text" id="callSign" name="callSign" width="150" class="upcase initialFocus"></td>
                     </tr>
                     <tr>
                         <td>Class</td>
-                        <td><input type="text" name="class" width="15" class="upcase"></td>
+                        <td><input autocomplete="off" type="text" name="class" width="15" class="upcase"></td>
                     </tr>
                     <tr>
                         <td>Section</td>
-                        <td><input type="text" name="section" width="15" class="upcase"></td>
+                        <td><input autocomplete="off" type="text" name="section" width="15" class="upcase"></td>
                     </tr>
                 </table>
                 <input type="submit" name="logit" value="Log QSO">
+                <div id="possibleDups" class=""></div>
             </form>
             @for(c <- maybeMessgeCell) {
                 <p @attributes("class", c.cssClass) > @c.value</p>

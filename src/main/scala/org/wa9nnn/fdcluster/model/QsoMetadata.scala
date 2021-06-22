@@ -73,11 +73,11 @@ class OsoMetadataProperty @Inject()(stationProperty: StationProperty, contestPro
   this <== b
 
    def qso(callSign: CallSign, exchange: Exchange, bandMode: BandMode, stamp:Instant = Instant.now): Qso = {
-    Qso(callSign, exchange, bandMode, value, stamp)
+    Qso(callSign.toUpperCase, exchange, bandMode, value, stamp)
   }
 
   def qso(callSign: CallSign, exchange: Exchange, station: Station) :Qso = {
-    Qso(callSign, exchange, station.bandMode, value.forStation(station))
+    Qso(callSign.toUpperCase, exchange, station.bandMode, value.forStation(station))
   }
 }
 

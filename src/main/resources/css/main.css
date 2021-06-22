@@ -27,9 +27,6 @@
     text-align: left;
 
 }
-.upcase{
-    text-transform: uppercase;
-}
 
 
 .nav {
@@ -58,6 +55,10 @@ a.nav {
 
 .happyQso {
     color: green;
+}
+
+.possibleDups {
+    color: red;
 }
 
 #content {

@@ -33,12 +33,13 @@ import javax.inject.Singleton
 
 @Singleton
 class StatsPane extends AddQsoListener {
-  val cw = new Kind("CW")
-  val di = new Kind("DI")
-  val ph = new Kind("PH")
+  var cw = new Kind("CW")
+  var di = new Kind("DI")
+  var ph = new Kind("PH")
+
   var totals = new Totals()
   var nonTotals = Seq(cw, di, ph)
-  val map: Map[String, Kind] = nonTotals.map(k => k.mode -> k).toMap
+  var map: Map[String, Kind] = nonTotals.map(k => k.mode -> k).toMap
   val gridPane: GridPane = new GridPane() {
     hgap = 10
     vgap = 5
@@ -75,9 +76,8 @@ class StatsPane extends AddQsoListener {
   }
 
   override def clear(): Unit = {
-    totals = new Totals()
-    nonTotals = Seq(cw, di, ph)
-
+    totals.clear()
+    nonTotals.foreach(_.clear())
   }
 }
 
@@ -96,6 +96,12 @@ trait StatLine {
   var count = 0
   var points = 0
 
+  def clear(): Unit = {
+    count = 0
+    points = 0
+    update()
+  }
+
   def update(): Unit = {
     onFX {
       countCell.text = f"$count%,-6d"
@@ -105,6 +111,7 @@ trait StatLine {
 }
 
 class Kind(val mode: String, val pointsPer: Int = 2) extends StatLine {
+
 
   def increment(): Unit = {
     count += 1

@@ -281,4 +281,5 @@ class FdClusterMenu @Inject()(
       }
     )
   }
+  menuBar.useSystemMenuBar = true
 }

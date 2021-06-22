@@ -5,14 +5,16 @@
 @(contestRules: ContestRules, maybeMessgeCell: Option[Cell] = None)
 @org.wa9nnn.fdcluster.html.main("login") {
     <script type="text/javascript">
-
+            $( document ).ready(function() {
+                $(".initialFocus").focus()
+            });
     </script>
     <table>
         <form action="doSignon" method="post">
             <table>
                 <tr>
                     <td>Your CallSign</td>
-                    <td><input type="text" name="operator" class="upcase"></td>
+                    <td><input type="text" name="operator"  class="upcase initialFocus"></td>
                 </tr>
                 <tr title="As setup for the contest.">
                     <td>Contest Password</td>

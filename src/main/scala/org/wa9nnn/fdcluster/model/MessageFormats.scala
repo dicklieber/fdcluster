@@ -1,4 +1,5 @@
 
+
 /*
  * Copyright (C) 2021  Dick Lieber, WA9NNN
  *
@@ -10,6 +11,7 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  Seeresult the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -27,7 +29,7 @@ import org.wa9nnn.fdcluster.javafx.menu.{BuildLoadRequest, ImportRequest}
 import org.wa9nnn.fdcluster.javafx.sync._
 import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHour, QsoHourDigest, QsoHourIds}
 import org.wa9nnn.fdcluster.rig.{RigModel, RigSettings, SerialPort}
-import org.wa9nnn.fdcluster.store.JsonContainer
+import org.wa9nnn.fdcluster.store.{JsonContainer, PossibleDups}
 import org.wa9nnn.fdcluster.store.network.FdHour
 import org.wa9nnn.webclient.Session
 import play.api.libs.json.{Format, Json}
@@ -60,6 +62,7 @@ object MessageFormats {
   implicit val nodeEventFormat: Format[FdNodeEvent] = Json.format[FdNodeEvent]
   implicit val journalFormat: Format[Journal] = Json.format[Journal]
   implicit val stepFormat: Format[Step] = Json.format[Step]
+  implicit val dupsFormat: Format[PossibleDups] = Json.format[PossibleDups]
   implicit val rqfhFormat: Format[RequestQsosForHour] = Json.format[RequestQsosForHour]
   implicit val rqfuFormat: Format[RequestQsosForUuids] = Json.format[RequestQsosForUuids]
   implicit val uuidsRequestFormat: Format[RequestUuidsForHour] = Json.format[RequestUuidsForHour]

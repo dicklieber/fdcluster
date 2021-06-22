@@ -1,0 +1,11 @@
+@import org.wa9nnn.fdcluster.store.PossibleDups
+@(possibleDups: PossibleDups)\
+@if(possibleDups.hasDups){
+    <fieldset class="possibleDups">
+        <legend>Dups?</legend>
+        <p >
+            @( possibleDups.callSigns.mkString("<br/>"))
+        </p>
+        <p>Of @possibleDups.fullCount</p>
+    </fieldset>
+}

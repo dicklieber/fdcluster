@@ -123,6 +123,8 @@ trait UserRoutes extends LazyLogging {
             qsoLogger.qsoEntryRoute,
             signOnOff.signonRoute,
             signOnOff.logOutRoute,
+            qsoLogger.possibleDupRoute,
+
           )
         },
         post {

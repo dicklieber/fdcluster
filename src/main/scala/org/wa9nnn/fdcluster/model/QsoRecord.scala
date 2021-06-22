@@ -78,7 +78,7 @@ object Qso {
   def apply(callSign: CallSign,
             exchange: Exchange,
             bandMode: BandMode) (implicit qsoMetadata: QsoMetadata):Qso = {
-    new Qso(callSign, exchange, bandMode, qsoMetadata)
+    new Qso(callSign.toUpperCase, exchange, bandMode, qsoMetadata)
   }
   def apply(json: String): Qso = {
     Json.parse(json).as[Qso]

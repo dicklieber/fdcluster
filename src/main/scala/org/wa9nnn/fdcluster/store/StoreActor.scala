@@ -75,12 +75,10 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
       clusterControl.up()
 
     case potentialQso: Qso =>
-
       val triedQso = store.ingestAndPersist(potentialQso)
       triedQso.foreach { qso =>
         jsonContainerSender.send( JsonContainer(DistributedQso(qso, nodeAddress)))
       }
-
       sender ! AddResult(triedQso)
 
     case request: RequestUuidsForHour =>
@@ -222,4 +220,11 @@ case class SearchResult(qsos: Seq[Qso], fullCount: Int, search:Search) {
     else
       ""
   }
+  def possibleDups:PossibleDups = {
+    PossibleDups(qsos.map(_.callSign).toList, fullCount)
+  }
+}
+
+case class PossibleDups(callSigns:List[CallSign], fullCount: Int){
+  val hasDups:Boolean = callSigns.nonEmpty
 }
