@@ -137,7 +137,14 @@ class AboutDialogGrid @Inject()(appInfo: AppInfo,
       Credit("Icons made by", "https://www.freepik.com", Some("Freepik"))
     ))
 
-    //    goc.add("ClassPath", System.getProperty("java.class.path").split(":").mkString("\n"))
+//    val classPathElements = System.getProperty("java.class.path").split(":").toList
+//    val classPathLines = classPathElements.mkString("\n")
+//    val classPathTextArea = new TextArea(classPathLines) {
+//      prefRowCount = classPathElements.size
+//      prefColumnCount = 70
+//      editable = false
+//    }
+//    goc.addControl("ClassPath", classPathTextArea)
 
     val dialogPane1 = dialogPane()
     dialogPane1.getStylesheets.add(cssUrl)
