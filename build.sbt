@@ -166,17 +166,26 @@ credentials += Credentials(Path.userHome / ".sbt" / "jfrog.credentials")
 //Compile / packageDoc := Seq.empty
 mappings in (Compile, packageDoc) := Seq()
 
-
-releaseProcess := Seq[ReleaseStep](
-  checkSnapshotDependencies,              // : ReleaseStep
-  inquireVersions,                        // : ReleaseStep
-  runClean,                               // : ReleaseStep
-  runTest,                                // : ReleaseStep
-  setReleaseVersion,                      // : ReleaseStep
-  commitReleaseVersion,                   // : ReleaseStep, performs the initial git checks
-  tagRelease,                             // : ReleaseStep
-  publishArtifacts,                       // : ReleaseStep, checks whether `publishTo` is properly set up
-  setNextVersion,                         // : ReleaseStep
-  commitNextVersion,                      // : ReleaseStep
-  pushChanges                             // : ReleaseStep, also checks that an upstream branch is properly configured
+val buildUniversal = (ref: ProjectRef) => ReleaseStep(
+  action = releaseStepTaskAggregated(packageBin in Universal in ref)
 )
+
+
+releaseProcess <<= thisProjectRef apply { ref =>
+// releaseProcess := Seq[ReleaseStep]{ref =>
+
+   Seq[ReleaseStep](
+    checkSnapshotDependencies, // : ReleaseStep
+    inquireVersions, // : ReleaseStep
+    runClean, // : ReleaseStep
+    runTest, // : ReleaseStep
+    setReleaseVersion, // : ReleaseStep
+    commitReleaseVersion, // : ReleaseStep, performs the initial git checks
+    tagRelease, // : ReleaseStep
+    //  publishArtifacts,                       // : ReleaseStep, checks whether `publishTo` is properly set up
+    buildUniversal(ref),
+    setNextVersion, // : ReleaseStep
+    commitNextVersion, // : ReleaseStep
+    pushChanges // : ReleaseStep, also checks that an upstream branch is properly configured
+  )
+}
