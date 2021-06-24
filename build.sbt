@@ -1,5 +1,6 @@
 import sbtbuildinfo.BuildInfoPlugin.autoImport.buildInfoOptions
 import ReleaseTransformations._
+import com.typesafe.sbt.packager.SettingsHelper.makeDeploymentSettings
 
 
 maintainer := "wa9nnn@u505.com"
@@ -161,26 +162,9 @@ resolvers += ("Typesafe repository" at "http://repo.typesafe.com/typesafe/releas
 
 publishTo := Some("Artifactory Realm" at "https://wa9nnn.jfrog.io/artifactory/wa9nnn")
 credentials += Credentials(Path.userHome / ".sbt" / "jfrog.credentials")
-//makeDeploymentSettings(Universal, packageBin in Universal, "zip")
+makeDeploymentSettings(Universal, packageBin in Universal, "zip")
 
 //Compile / packageDoc := Seq.empty
 mappings in (Compile, packageDoc) := Seq()
 
-val buildUniversal =  ReleaseStep(
-  action = releaseStepTaskAggregated(Universal / packageBin )
-)
 
-
-releaseProcess := Seq[ReleaseStep](
-  checkSnapshotDependencies,              // : ReleaseStep
-  inquireVersions,                        // : ReleaseStep
-  runClean,                               // : ReleaseStep
-  runTest,                                // : ReleaseStep
-  setReleaseVersion,                      // : ReleaseStep
-  commitReleaseVersion,                   // : ReleaseStep, performs the initial git checks
-  tagRelease,                             // : ReleaseStep
-  buildUniversal,                       //
-  setNextVersion,                         // : ReleaseStep
-  commitNextVersion,                      // : ReleaseStep
-  pushChanges                             // : ReleaseStep, also checks that an upstream branch is properly configured
-)
