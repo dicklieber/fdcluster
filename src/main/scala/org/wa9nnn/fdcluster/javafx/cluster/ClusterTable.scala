@@ -35,9 +35,9 @@ class ClusterTable @Inject()(nodeColumns: NodeColumns) extends GridPane with Laz
       // row headers
       val namesWithIndex = ValueName.values().zipWithIndex
       namesWithIndex.foreach { case (propertyCellName, iRow) =>
-        add(PropertyCellFactory(propertyCellName,
+        add(TextPropertyCell(NamedValue( propertyCellName,
           Cell(propertyCellName.name)
-            .withCssClass("clusterRowHeader")),
+            .withCssClass("clusterRowHeader"))),
           0, iRow)
       }
       // node values e.g. body
