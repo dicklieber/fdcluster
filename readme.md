@@ -8,8 +8,7 @@ Goals:
 * Nodes can enter or leave and will resync automatically
 * Each node can have native (or provide Web access to clients, sometime)
 * Free open-source
-* Runs on Linux, Mac or Microsoft Windows
-* Raspberry Pi Support (download image, copy to SD card, sometime)
+* Runs on Mac, Microsoft Windows and Linux
 
 #Technologies
 * Written in [Scala](https://www.scala-lang.org) with a few Java enums.
@@ -19,6 +18,8 @@ Goals:
 * HTTP client and Server using [AKKA-HTTP](https://doc.akka.io/docs/akka-http/current/index.html).
 * Dependency injection using [Googe Guice](https://github.com/google/guice).
 * Configuration via [Typesafe config](https://github.com/lightbend/config) using [HOCON](https://en.wikipedia.org/wiki/HOCON) syntax.
+
+
 
 
 #Building
