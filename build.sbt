@@ -171,7 +171,7 @@ val buildUniversal = (ref: ProjectRef) => ReleaseStep(
 )
 
 
-releaseProcess <<= thisProjectRef apply { ref =>
+releaseProcess := thisProjectRef apply { ref =>
 // releaseProcess := Seq[ReleaseStep]{ref =>
 
    Seq[ReleaseStep](
