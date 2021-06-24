@@ -167,7 +167,7 @@ credentials += Credentials(Path.userHome / ".sbt" / "jfrog.credentials")
 mappings in (Compile, packageDoc) := Seq()
 
 val buildUniversal = (ref: ProjectRef) => ReleaseStep(
-  action = releaseStepTaskAggregated(packageBin in Universal in ref)
+  action = releaseStepTaskAggregated(Universal / packageBin )
 )
 
 
