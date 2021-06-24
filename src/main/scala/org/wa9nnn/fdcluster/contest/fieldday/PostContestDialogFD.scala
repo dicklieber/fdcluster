@@ -7,6 +7,7 @@ import scalafx.scene.control.{ButtonType, Dialog, Hyperlink, Label}
 import scalafx.scene.layout.VBox
 
 import java.awt.Desktop
+import java.net.URI
 import javax.inject.{Inject, Singleton}
 
 
@@ -35,13 +36,24 @@ class PostContestDialogFD @Inject()(summaryEngine: SummaryEngine, generateDupShe
   dupSheet.onAction = _ =>
     generateDupSheet.invoke()
 
+  val feedbackLink = new Hyperlink("Send FdCluster feedback. ") {
+    onAction = event => {
+      if (desktop.isSupported(Desktop.Action.MAIL)) {
+        val uri = s"mailto:${BuildInfo.maintainer}?subject=${BuildInfo.name}%20version:${BuildInfo.version}"
+        val mailto = new URI(uri)
+        desktop.mail(mailto)
+      }
+    }
+  }
+
 
   val dialogPane1: DialogPane = dialogPane()
   dialogPane1.getStylesheets.add(cssUrl)
   dialogPane1.setContent(new VBox(
     help,
     summarySheet,
-    dupSheet
+    dupSheet,
+    feedbackLink
   ))
 
 }
