@@ -20,14 +20,33 @@
 package org.wa9nnn.fdcluster.dupsheet
 
 import com.typesafe.scalalogging.LazyLogging
-import org.wa9nnn.fdcluster.model.{ContestProperty, Qso}
+import org.wa9nnn.fdcluster.FileContext
+import org.wa9nnn.fdcluster.model.{ContestProperty, ExportFile, Qso}
 import org.wa9nnn.fdcluster.store.QsoSource
 
+import java.awt.Desktop
 import java.io.PrintWriter
+import java.nio.file.Files
 import javax.inject.{Inject, Singleton}
+import scala.util.{Failure, Success, Try, Using}
 @Singleton
 class GenerateDupSheet @Inject()(qsoSource: QsoSource,
-                                 contestProperty:ContestProperty) extends LazyLogging {
+                                 contestProperty:ContestProperty,
+                                 fileContext: FileContext) extends LazyLogging {
+
+  def invoke(): Unit = {
+    val dupFile: ExportFile = fileContext.defaultExportFile("dup", contestProperty)
+    val r: Try[Int] = Using(new PrintWriter(Files.newBufferedWriter(dupFile.path))) { pw =>
+      apply(pw)
+    }
+    r match {
+      case Failure(exception) =>
+        logger.error("Generating Dup", exception)
+      case Success(_) =>
+        Desktop.getDesktop.open(dupFile.path.toFile)
+    }
+
+  }
   /**
    *
    * @param pw where to write to.

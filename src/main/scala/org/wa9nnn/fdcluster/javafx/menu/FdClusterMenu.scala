@@ -29,35 +29,29 @@ import com.google.inject.name.Named
 import com.typesafe.scalalogging.LazyLogging
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import org.wa9nnn.fdcluster.cabrillo.{CabrilloDialog, CabrilloExportRequest}
+import org.wa9nnn.fdcluster.contest.fieldday.{PostContestDialogFD, SummaryEngine}
 import org.wa9nnn.fdcluster.contest.{ContestDialog, OkGate}
-import org.wa9nnn.fdcluster.contest.fieldday.{SummaryEngine, WinterFieldDaySettings}
 import org.wa9nnn.fdcluster.dupsheet.GenerateDupSheet
 import org.wa9nnn.fdcluster.javafx.cluster.FdHoursDialog
 import org.wa9nnn.fdcluster.javafx.debug.{DebugRemoveDialog, ResetDialog}
 import org.wa9nnn.fdcluster.metrics.MetricsReporter
-import org.wa9nnn.fdcluster.model.{ContestProperty, ExportFile, NodeAddress}
+import org.wa9nnn.fdcluster.model.{ContestProperty, NodeAddress}
 import org.wa9nnn.fdcluster.rig.RigDialog
 import org.wa9nnn.fdcluster.store.ClearStore
 import org.wa9nnn.fdcluster.tools.RandomQsoDialog
 import org.wa9nnn.fdcluster.{FileContext, QsoCountCollector}
-import scalafx.scene.control.Alert.AlertType
 
 import java.awt.Desktop
-import java.io.{PrintWriter, StringWriter}
-import java.nio.file.Files
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.duration.DurationInt
 import scala.language.postfixOps
-import scala.util.{Failure, Success, Try, Using}
 
 @Singleton
 class FdClusterMenu @Inject()(
                                injector: Injector,
                                @Named("store") store: ActorRef,
                                aboutDialog: AboutDialogGrid,
-                               fileManager: FileContext,
                                generateDupSheet: GenerateDupSheet,
-                               contestProperty: ContestProperty,
                                summaryEngine: SummaryEngine,
                                metricsReporter: MetricsReporter,
                                nodeAddress: NodeAddress,
@@ -65,7 +59,7 @@ class FdClusterMenu @Inject()(
   private implicit val timeout: Timeout = Timeout(5 seconds)
   private val desktop = Desktop.getDesktop
 
-  private val webClient :MenuItem = new MenuItem{
+  private val webClient: MenuItem = new MenuItem {
     text = "Use Web Client"
     onAction = { _: ActionEvent =>
       desktop.browse(nodeAddress.url.toURI)
@@ -81,8 +75,7 @@ class FdClusterMenu @Inject()(
   private val postContestMenuItem: MenuItem = new MenuItem {
     text = "Post Contest"
     onAction = { _: ActionEvent =>
-      new Alert(AlertType.Information, "Todo!").showAndWait()
-//      injector.instance[ContestDialog].showAndWait()
+      injector.instance[PostContestDialogFD].showAndWait()
     }
   }
   private val dumpStatsMenuItem = new MenuItem {
@@ -151,17 +144,7 @@ class FdClusterMenu @Inject()(
   private val fieldDaySummary = new MenuItem {
     text = "FieldDay Entry Summary"
     onAction = { _ =>
-      val writer = new StringWriter
-
-      val wfd = WinterFieldDaySettings()
-      summaryEngine(writer, contestProperty.contest, wfd)
-      writer.close()
-
-      fileManager.defaultExportFile(".html", contestProperty)
-      val path = Files.createTempFile("SummaryEngineSpec", ".html")
-      Files.writeString(path, writer.toString)
-      val uri = path.toUri
-      Desktop.getDesktop.browse(uri)
+      summaryEngine.invoke()
     }
   }
 
@@ -183,18 +166,7 @@ class FdClusterMenu @Inject()(
   private val dupSheetMenuItem = new MenuItem {
     text = "Dup Sheet"
     onAction = { _ =>
-
-      val dupFile: ExportFile = fileManager.defaultExportFile("dup", contestProperty)
-      val r: Try[Int] = Using(new PrintWriter(Files.newBufferedWriter(dupFile.path))) { pw =>
-        generateDupSheet(pw)
-      }
-      r match {
-        case Failure(exception) =>
-          logger.error("Generating Dup", exception)
-        case Success(_) =>
-          Desktop.getDesktop.open(dupFile.path.toFile)
-      }
-    }
+      generateDupSheet.invoke()    }
   }
 
 
@@ -266,7 +238,7 @@ class FdClusterMenu @Inject()(
           postContestMenuItem
         )
       },
-      new Menu("Web"){
+      new Menu("Web") {
         mnemonicParsing = true
         items = List(
           webClient,

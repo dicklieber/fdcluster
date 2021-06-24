@@ -3,6 +3,7 @@ package org.wa9nnn.fdcluster.contest.fieldday
 import com.typesafe.config.ConfigFactory
 import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
+import org.wa9nnn.fdcluster.MockFileContext
 import org.wa9nnn.fdcluster.contest.Contest
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.store.QsoSource
@@ -38,8 +39,7 @@ class SummaryEngineSpec extends Specification with Mockito {
 
       val qsoSource = mock[QsoSource]
       qsoSource.qsoIterator returns(allQsos)
-
-      val summaryEngine = new SummaryEngine(allContestRules, new BandModeBreakDown(qsoSource, allContestRules:AllContestRules))
+      val summaryEngine = new SummaryEngine(allContestRules,contestProperty,  MockFileContext(), new BandModeBreakDown(qsoSource, allContestRules:AllContestRules))
       val writer = new StringWriter
       summaryEngine(writer, contest, wfd)
       writer.close()
