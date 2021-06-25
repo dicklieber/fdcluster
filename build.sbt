@@ -17,9 +17,9 @@ buildInfoOptions ++= Seq(
 )
 
 
-Compile / sourceDirectories := (Compile / unmanagedSourceDirectories).value
+Compile / sourceDirectories := (Compile / unmanagedourceDirectories).value
 Compile / mainClass := Some("org.wa9nnn.fdcluster.javafx.FdCluster")
-//Compile / discoveredMainClasses := Seq()
+Compile / discoveredMainClasses := Seq()
 
 //scalacOptions ++= Seq(
 //  "-encoding", "utf8", // Option and arguments on same line
@@ -28,6 +28,7 @@ Compile / mainClass := Some("org.wa9nnn.fdcluster.javafx.FdCluster")
 //  "-unchecked",
 //  "-language:implicitConversions",
 //  "-language:higherKinds",
+//  "-language:existentials",
 //  "-language:existentials",
 //  "-language:postfixOps"
 //)

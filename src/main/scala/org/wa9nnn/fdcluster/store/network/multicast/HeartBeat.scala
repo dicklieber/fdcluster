@@ -29,6 +29,7 @@ class HeartBeat @Inject()(storeSender: StoreSender,
                           actorSystem: ActorSystem,
                           sender: JsonContainerSender,
                           @TypesafeConfig("fdcluster.multicast.heartbeat") heartBeatDuration: Duration,
+                          @TypesafeConfig("fdcluster.cluster.method") method: String,
                          ) extends LazyLogging {
 
 
