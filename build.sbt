@@ -17,7 +17,7 @@ buildInfoOptions ++= Seq(
 )
 
 
-Compile / sourceDirectories := (Compile / unmanagedourceDirectories).value
+Compile / sourceDirectories := (Compile / unmanagedSourceDirectories).value
 Compile / mainClass := Some("org.wa9nnn.fdcluster.javafx.FdCluster")
 Compile / discoveredMainClasses := Seq()
 

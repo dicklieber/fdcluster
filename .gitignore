@@ -24,3 +24,4 @@ conf/generated.keystore
 .bsp/
 sbt.json
 NodeVitalsSpec.scala
+log.file.path_IS_UNDEFINED
