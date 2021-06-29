@@ -2,7 +2,6 @@ package org.wa9nnn.fdcluster.model
 
 import org.wa9nnn.fdcluster.contest.{OkGate, OkItem}
 
-import java.time.format.DateTimeFormatter
 import java.time.{Instant, LocalDateTime, ZoneId}
 
 /**
@@ -12,7 +11,7 @@ import java.time.{Instant, LocalDateTime, ZoneId}
  * @param nodeAddress         who started the instance.
  * @param stamp               when this was created. Newer always replaces older, anywhere in the cluster.
  */
-case class Journal(journalFileName: String = "", nodeAddress: NodeAddress = NodeAddress(), stamp: Instant = Instant.EPOCH)
+case class Journal(journalFileName: String = "", nodeAddress: NodeAddress, stamp: Instant = Instant.EPOCH)
   extends Stamped[Journal]  with OkContributor{
   def isOk: Boolean = journalFileName.nonEmpty
 
@@ -25,9 +24,6 @@ case class Journal(journalFileName: String = "", nodeAddress: NodeAddress = Node
 }
 
 object Journal {
-  private val fileStamp = DateTimeFormatter.ofPattern("YYMMdd")
-
-
   def newJournal(contestName: String, nodeAddress: NodeAddress, instant: Instant = Instant.now()): Journal = {
     val localDateTime = LocalDateTime.ofInstant(instant, ZoneId.of("UTC"))
     val localDate = localDateTime.toLocalDate
@@ -37,7 +33,7 @@ object Journal {
     new Journal(fileName, nodeAddress, instant)
   }
 
-  def apply(): Journal = new Journal()
+  def apply(nodeAddress: NodeAddress): Journal = new Journal(nodeAddress = nodeAddress )
 }
 
 

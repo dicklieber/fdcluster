@@ -2,10 +2,12 @@ package org.wa9nnn.fdcluster.model
 
 import org.specs2.mutable.Specification
 
+import java.net.URL
+
 class NodeAddressSpec extends Specification {
-  val na0 = NodeAddress("10.10.10.0")
-  val na1 = NodeAddress("10.10.10.1")
-  val na1i1 = NodeAddress("10.10.10.1", instance = Option(1))
+  val na0 = NodeAddress(new URL("http", "10.10.10.0", 8081, ""))
+  val na1 = NodeAddress(new URL("http", "10.10.10.1",8081, ""))
+  val na1i1 = NodeAddress(new URL("http", "10.10.10.1", 8081,""), instance = Option(1))
 
   "NodeAddress" should {
     "compareTo" in {
@@ -14,9 +16,9 @@ class NodeAddressSpec extends Specification {
       na1 must not equalTo (na1i1)
     }
     "display" >> {
-      val na0 = NodeAddress("10.10.10.0")
-      na0.displayWithIp must beEqualTo("localhost (10.10.10.0)")
-      na1i1.displayWithIp must beEqualTo("localhost;1 (10.10.10.1)")
+      val na0 = NodeAddress(new URL("http", "localhost", ""))
+      na0.displayWithIp must beEqualTo("localhost  (127.0.0.1)")
+      na1i1.displayWithIp must beEqualTo("10.10.10.1 ;1 (10.10.10.1)")
     }
     "uri" >> {
       na1i1.uri.toString() must beEqualTo ("//10.10.10.1:8081")

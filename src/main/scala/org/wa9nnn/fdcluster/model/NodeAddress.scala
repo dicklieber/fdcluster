@@ -22,63 +22,58 @@ package org.wa9nnn.fdcluster.model
 import akka.http.scaladsl.model.Uri
 import com.typesafe.config.Config
 import com.wa9nnn.util.tableui.Cell
-import org.wa9nnn.fdcluster.FileContext
-import org.wa9nnn.fdcluster.javafx.cluster.{NamedValue, NamedValueCollector, NodeValueProvider, PropertyCell, PropertyCellFactory, PropertyCellName, TextPropertyCell}
+import org.wa9nnn.fdcluster.javafx.cluster._
+import play.api.libs.json._
 
 import java.net.{Inet4Address, InetAddress, NetworkInterface, URL}
 import scala.jdk.CollectionConverters._
+import scala.util.matching.Regex
 
 /**
  * Identifies one node in the cluster.
  * For testing there can be more than one node at an IP address. So the instance is used to qualify them.
  * This is not suitable to send messages to a node. That's in org.wa9nnn.fdcluster.model.sync.NodeStatus#apiUrl()
  *
- * @param ipAddress ip address of this node.
+ * @param url       this node.
  * @param instance  from application.conf or command line e.g -Dinstance=2
- * @param httpPort  as opposed to the multicast port.
  */
-case class NodeAddress(ipAddress: String = "", hostName: String = "localhost", instance: Option[Int] = None, port: Int = 8080)
+//case class NodeAddress(ipAddress: String = "", hostName: String = "localhost", instance: Option[Int] = None, port: Int = 8080)
+case class NodeAddress(url: URL = new URL("http:///"), instance: Option[Int] = None)
   extends Ordered[NodeAddress]
     with NodeValueProvider
     with PropertyCellName {
 
-  val httpPort: Int = instance.map(i => port + i).getOrElse(port)
+  val inetAddress: InetAddress = InetAddress.getByName(url.getHost)
+
 
   override def collectNamedValues(namedValueCollector: NamedValueCollector): Unit = {
     import org.wa9nnn.fdcluster.javafx.cluster.ValueName._
 
-    namedValueCollector(Node, hostName)
+    namedValueCollector(Node, url.getHost)
     namedValueCollector(HTTP, Cell(url.toExternalForm).withUrl(url))
   }
 
-  val displayWithIp: String = {
-    if (ipAddress == "")
-      "Not Set"
-    else
-      s"$hostName${instance.map(i => s";$i").getOrElse("")} ($ipAddress)"
+  lazy val displayWithIp: String = {
+    val address = InetAddress.getByName(url.getHost).getHostAddress
+    s"${url.getHost} ${instance.map(i => s";$i").getOrElse("")} ($address)"
   }
   val display: String = {
-    if (ipAddress == "")
-      "Not Set"
-    else
-      s"$hostName${instance.map(i => s";$i").getOrElse("")}"
+    s"$url.getHost${instance.map(i => s";$i").getOrElse("")}"
   }
 
   def fileUrlSafe: String = {
-    s"$hostName${instance.map(i => s"-$i").getOrElse("")}"
+    s"${url.getHost}${instance.map(i => s"-$i").getOrElse("")}"
   }
 
   val qsoNode: String = {
-    s"$ipAddress:$instance"
+    s"$url.getHost:$instance"
   }
 
   val graphiteName: String = {
-    s"${ipAddress.replace('.', '_')}:$instance"
+    s"${url.getHost.replace('.', '_')}:$instance"
   }
 
-  val url: URL = {
-    new URL("http", ipAddress, httpPort, "")
-  }
+
   lazy val propertyCell: PropertyCell = {
     val cell = Cell(display)
       .withToolTip(toolTip)
@@ -89,14 +84,13 @@ case class NodeAddress(ipAddress: String = "", hostName: String = "localhost", i
 
   def uri: Uri = {
     Uri()
-      .withHost(ipAddress)
-      .withPort(httpPort)
+      .withHost(url.getHost)
+      .withPort(url.getPort)
   }
 
-  val inetAddress: InetAddress = InetAddress.getByName(ipAddress)
 
   override def compare(that: NodeAddress): Int = {
-    val ret = ipAddress compareTo that.ipAddress
+    val ret = url.toExternalForm compareTo that.url.toExternalForm
     if (ret == 0) {
       val thisI = instance.getOrElse(-1)
       val thatI = that.instance.getOrElse(-1)
@@ -110,14 +104,15 @@ case class NodeAddress(ipAddress: String = "", hostName: String = "localhost", i
   override def name: String = display
 }
 
+
 object NodeAddress {
   def apply(instance: Option[Int], config: Config): NodeAddress = {
     val httpPort = config.getInt("fdcluster.httpServer.port")
     val inetAddress = determineIp()
-    val address = inetAddress.getHostAddress
-    NodeAddress(ipAddress = address,
-      hostName = InetAddress.getLocalHost.getHostName,
-      instance, httpPort)
+    val address: String = inetAddress.getHostAddress
+    val port = instance.map(_ + httpPort).getOrElse(httpPort)
+    val url = new URL("http", address, port, "")
+    new NodeAddress(url, instance)
   }
 
   /**
@@ -134,6 +129,35 @@ object NodeAddress {
     })
       .headOption.getOrElse(throw new IllegalStateException("No IP address!"))
 
+  }
+
+  //  private val r: Regex = """(.*)(?:\|(\d+))?""".r
+  /**
+   * to make JSON a bit more compact
+   */
+  implicit val nodeAddressformat: Format[NodeAddress] = new Format[NodeAddress] {
+    override def reads(json: JsValue): JsResult[NodeAddress] = {
+      val ss = json.as[String]
+      try {
+        val strings = ss.split("""\|""")
+        //        val r(sUrl, i) = ss
+
+        val url = new URL(strings.head)
+        val instance = if (strings.length > 1)
+          Option(strings(1)).map(_.toInt)
+        else
+          None
+        JsSuccess(new NodeAddress(url, instance))
+      } catch {
+        case e: Exception =>
+          JsError(s"NodeAddress: $ss note parsable!")
+      }
+    }
+
+    override def writes(na: NodeAddress): JsValue = {
+      val instancePart = na.instance.map(instance => s"|$instance").getOrElse("")
+      JsString(s"${na.url.toExternalForm}$instancePart")
+    }
   }
 
 }

@@ -13,7 +13,7 @@ class NodeStatusQueueSpec extends Specification {
     qsoHourDigests = List.empty,
     station = Station(),
     contest = Option(Contest()),
-    journal = Option(Journal())
+    journal = Option(Journal(address0))
   )
 
   "NodeStatusQueue" >> {

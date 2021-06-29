@@ -38,7 +38,9 @@ import java.time.LocalDateTime
 import java.time.format.{DateTimeFormatter, FormatStyle}
 import java.util.UUID
 import scala.language.implicitConversions
+import org.wa9nnn.fdcluster.model.UrlFormt.urlFormat
 import org.wa9nnn.fdcluster.model.InetAddressFormat.inetAddressFormat
+import org.wa9nnn.fdcluster.model.NodeAddress.nodeAddressformat
 /**
  * Creates [[play.api.libs.json.Format]] needed by Play JSon to parse and render JSON for case classes.
  * Usually includes with {{import org.wa9nnn.fdcluster.model.MessageFormats._}}
@@ -58,7 +60,7 @@ object MessageFormats {
   implicit val fdcFromat: Format[FdClass] = Json.format[FdClass]
   implicit val sectFromat: Format[Section] = Json.format[Section]
   implicit val fdHourFormat: Format[FdHour] = Json.format[FdHour]
-  implicit val nodeAddressFormat: Format[NodeAddress] = Json.format[NodeAddress]
+//  implicit val nodeAddressFormat: Format[NodeAddress] = Json.format[NodeAddress]
   implicit val nodeEventFormat: Format[FdNodeEvent] = Json.format[FdNodeEvent]
   implicit val journalFormat: Format[Journal] = Json.format[Journal]
   implicit val stepFormat: Format[Step] = Json.format[Step]

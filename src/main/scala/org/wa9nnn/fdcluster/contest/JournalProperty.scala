@@ -46,7 +46,7 @@ class JournalProperty @Inject()(
    *
    * @return
    */
-  override def defaultInstance: Journal = Journal()
+  override def defaultInstance: Journal = Journal(nodeAddress)
 
   /**
    * new later journal.
