@@ -3,13 +3,16 @@ package org.wa9nnn.fdcluster.store.network.testapp
 import com.typesafe.scalalogging.LazyLogging
 import org.scalafx.extras.onFX
 import org.wa9nnn.fdcluster.javafx.GridOfControls
+import org.wa9nnn.fdcluster.model.NodeAddress
+import play.api.libs.json.Json
 import scalafx.application.JFXApp3
 import scalafx.application.JFXApp3.PrimaryStage
+import scalafx.beans.property.StringProperty
 import scalafx.collections.ObservableBuffer
 import scalafx.scene.Scene
 import scalafx.scene.control.{Label, Slider}
 import scalafx.scene.layout.{HBox, TilePane, VBox}
-
+import org.wa9nnn.fdcluster.model.MessageFormats._
 import java.io.IOException
 import java.net.{DatagramPacket, DatagramSocket, InetAddress, MulticastSocket}
 import java.util.{Timer, TimerTask}
@@ -38,13 +41,11 @@ object NetworkApp extends JFXApp3 with LazyLogging {
     stage = new PrimaryStage {
       scene = new Scene {
         content = new VBox(
-
           new HBox(goc),
           tilePane
         )
       }
     }
-
 
     def add(received: Received): Unit = {
       onFX {
@@ -58,7 +59,6 @@ object NetworkApp extends JFXApp3 with LazyLogging {
           tilePane.children = ObservableBuffer.from(hosts.values)
         }
       }
-
     }
 
     val multicast = new Multicast(multicastAddress, 1501)((r: Received) =>
@@ -73,8 +73,10 @@ object NetworkApp extends JFXApp3 with LazyLogging {
       override def run(): Unit = {
         val length = slider.value.toInt
         val message: String = s"$sn:$length ${"%" * length}".take(length)
-        multicast.send(message)
-        broadcast.send(message)
+        val testMessage = TestMessage(sn, message)
+        val bytes = Json.toJson(testMessage).toString()
+        multicast.send(bytes)
+        broadcast.send(bytes)
         sn += 1
       }
     }, 10, 3000)
@@ -158,3 +160,5 @@ object NetworkApp extends JFXApp3 with LazyLogging {
     val errControl = new Label()
   }
 }
+
+case class TestMessage(sn:Int, message:String,  os:String =  s"${System.getProperty("os.name")}")

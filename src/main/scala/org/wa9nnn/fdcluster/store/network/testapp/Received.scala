@@ -1,20 +1,27 @@
 package org.wa9nnn.fdcluster.store.network.testapp
 
-import scalafx.beans.property.{IntegerProperty, ObjectProperty, ReadOnlyIntegerProperty, ReadOnlyIntegerWrapper, StringProperty}
+import play.api.libs.json.Json
+import scalafx.beans.property.{IntegerProperty, ObjectProperty, ReadOnlyIntegerProperty, ReadOnlyIntegerWrapper, ReadOnlyStringProperty, StringProperty}
 import scalafx.collections.ObservableBuffer
 import scalafx.scene.control.{TableColumn, TableView, TitledPane}
-
+import org.wa9nnn.fdcluster.model.MessageFormats._
+import scalafx.Includes._
 import java.net.{DatagramPacket, InetAddress}
 import java.time.LocalTime
 import java.time.format.{DateTimeFormatter, FormatStyle}
 
 abstract class  Received(recv: DatagramPacket, _kind:String) {
+
+
   val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM)
 
   val source: InetAddress = recv.getAddress
-  val message: StringProperty = StringProperty(new String(recv.getData, 0, recv.getLength))
+  recv.getData
+
+  private val sReceived = new String(recv.getData, 0, recv.getLength)
+   val testMessage: ObjectProperty[TestMessage] =  ObjectProperty[TestMessage]( Json.parse(sReceived).as[TestMessage])
+
   val time: StringProperty = StringProperty(dateTimeFormatter.format(LocalTime.now()))
-  val osName: StringProperty = StringProperty(s"${System.getProperty("os.name")}")
   val kind: StringProperty = StringProperty(_kind.take(1))
 
   val length: IntegerProperty =  IntegerProperty(recv.getLength)
@@ -37,7 +44,7 @@ class HostMessages(val source: InetAddress) extends TitledPane {
       },
         new TableColumn[Received, String] {
         text = "Os"
-        cellValueFactory = { value => value.value.osName }
+        cellValueFactory = { value => new ReadOnlyStringProperty(null, "os", value.value.testMessage.value.os )}
       },
       new TableColumn[Received, String] {
         text = "B/M"
@@ -46,13 +53,13 @@ class HostMessages(val source: InetAddress) extends TitledPane {
       new TableColumn[Received, Int] {
         text = "Length"
         cellValueFactory = { value =>  {
-          ObjectProperty[Int](value.value.message.value.length)
+          ObjectProperty[Int](value.value.testMessage.value.message.length)
         }}
       },
       new TableColumn[Received, String] {
         text = "Message"
         prefWidth = 150
-        cellValueFactory = { value => value.value.message }
+        cellValueFactory = { value => new ReadOnlyStringProperty(null, "message", value.value.testMessage.value.message )}
       }
     )
   }

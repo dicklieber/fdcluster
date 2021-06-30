@@ -41,6 +41,7 @@ import scala.language.implicitConversions
 import org.wa9nnn.fdcluster.model.UrlFormt.urlFormat
 import org.wa9nnn.fdcluster.model.InetAddressFormat.inetAddressFormat
 import org.wa9nnn.fdcluster.model.NodeAddress.nodeAddressformat
+import org.wa9nnn.fdcluster.store.network.testapp.TestMessage
 /**
  * Creates [[play.api.libs.json.Format]] needed by Play JSon to parse and render JSON for case classes.
  * Usually includes with {{import org.wa9nnn.fdcluster.model.MessageFormats._}}
@@ -94,6 +95,7 @@ object MessageFormats {
   implicit val cabriloFormat: Format[CabrilloValue] = Json.format[CabrilloValue]
   implicit val cabrilosFormat: Format[CabrilloValues] = Json.format[CabrilloValues]
   implicit val CabrilloExportRequestFormat: Format[CabrilloExportRequest] = Json.format[CabrilloExportRequest]
+  implicit val fmtTestMessage: Format[TestMessage] = Json.format[TestMessage]
 
 
   type CallSign = String
