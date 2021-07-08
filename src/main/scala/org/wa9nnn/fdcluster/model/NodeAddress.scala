@@ -123,7 +123,7 @@ object NodeAddress {
     (for {
       networkInterface <- NetworkInterface.getNetworkInterfaces.asScala.toList
       inetAddresses <- networkInterface.getInetAddresses.asScala
-      if !inetAddresses.isLoopbackAddress && inetAddresses.isInstanceOf[Inet4Address]
+      if !inetAddresses.isLoopbackAddress && inetAddresses.isInstanceOf[Inet4Address] && !inetAddresses.isLinkLocalAddress
     } yield {
       inetAddresses
     })

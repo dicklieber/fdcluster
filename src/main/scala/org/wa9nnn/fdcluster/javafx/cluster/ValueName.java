@@ -21,8 +21,8 @@ public enum ValueName implements PropertyCellName {
     Sessions("Operators at node. 1st is at FdCluster, other at Web cients."),
 
     Age("When the node reported this information."),
-    Version("Version of main. Not good to mix version of main!"),
-    Sn("Serial number from sending node.");
+    Digest("Over NodeStatus."),
+    Version("Version of main. Not good to mix version of main!");
 
     private final String display;
     private final String toolTip;

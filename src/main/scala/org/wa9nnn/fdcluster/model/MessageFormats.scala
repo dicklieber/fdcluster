@@ -27,10 +27,11 @@ import org.wa9nnn.fdcluster.javafx.cluster.FdNodeEvent
 import org.wa9nnn.fdcluster.javafx.entry.section.Section
 import org.wa9nnn.fdcluster.javafx.menu.{BuildLoadRequest, ImportRequest}
 import org.wa9nnn.fdcluster.javafx.sync._
-import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHour, QsoHourDigest, QsoHourIds}
+import org.wa9nnn.fdcluster.model.sync._
 import org.wa9nnn.fdcluster.rig.{RigModel, RigSettings, SerialPort}
-import org.wa9nnn.fdcluster.store.{JsonContainer, PossibleDups}
 import org.wa9nnn.fdcluster.store.network.FdHour
+import org.wa9nnn.fdcluster.store.network.testapp.TestMessage
+import org.wa9nnn.fdcluster.store.{JsonContainer, PossibleDups}
 import org.wa9nnn.webclient.Session
 import play.api.libs.json.{Format, Json}
 
@@ -38,10 +39,6 @@ import java.time.LocalDateTime
 import java.time.format.{DateTimeFormatter, FormatStyle}
 import java.util.UUID
 import scala.language.implicitConversions
-import org.wa9nnn.fdcluster.model.UrlFormt.urlFormat
-import org.wa9nnn.fdcluster.model.InetAddressFormat.inetAddressFormat
-import org.wa9nnn.fdcluster.model.NodeAddress.nodeAddressformat
-import org.wa9nnn.fdcluster.store.network.testapp.TestMessage
 /**
  * Creates [[play.api.libs.json.Format]] needed by Play JSon to parse and render JSON for case classes.
  * Usually includes with {{import org.wa9nnn.fdcluster.model.MessageFormats._}}
@@ -81,7 +78,10 @@ object MessageFormats {
   implicit val qsosFromNodeFormat: Format[QsosFromNode] = Json.format[QsosFromNode]
   implicit val qsoHourDigestFormat: Format[QsoHourDigest] = Json.format[QsoHourDigest]
   implicit val qsoPeriodFormat: Format[QsoHour] = Json.format[QsoHour]
+  implicit val basenodeStatsormat: Format[BaseNodeStatus] = Json.format[BaseNodeStatus]
   implicit val nodeStatsFormat: Format[NodeStatus] = Json.format[NodeStatus]
+  implicit val nodeStatsRequestFormat: Format[NodeStatusRequest] = Json.format[NodeStatusRequest]
+  implicit val hbmFormart = Json.format[HeartBeatMessage]
   implicit val jsonContainerFormat: Format[JsonContainer] = Json.format[JsonContainer]
   implicit val jhFormat: Format[JournalHeader] = Json.format[JournalHeader]
   implicit val spFormat: Format[SerialPort] = Json.format[SerialPort]

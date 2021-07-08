@@ -1,7 +1,5 @@
 package org.wa9nnn.fdcluster.model.sync
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import de.undercouch.bson4jackson.BsonFactory
 import org.specs2.mutable.Specification
 import org.wa9nnn.fdcluster.contest.Contest
 import org.wa9nnn.fdcluster.model.{Journal, NodeAddress, Station}
@@ -12,15 +10,17 @@ import java.time.Instant
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.sync.NodeStatusQueueSpec.bigNodeStatus
 import play.api.libs.json.Json
+
+import java.security.MessageDigest
 class NodeStatusQueueSpec extends Specification {
   val address0 = new NodeAddress()
-  val ns0: NodeStatus = NodeStatus(nodeAddress = address0,
+  val ns0: NodeStatus = NodeStatus(BaseNodeStatus(nodeAddress = address0,
     qsoCount = 42,
     qsoHourDigests = List.empty,
     station = Station(),
     contest = Option(Contest()),
     journal = Option(Journal(address0))
-  )
+  ))
 
   "NodeStatusQueue" >> {
     "Happy" >> {
@@ -52,7 +52,7 @@ class NodeStatusQueueSpec extends Specification {
 //        contest = Option(Contest()),
 //        journal = Option(Journal(address0))
 //      )
-      val ns0 = bigNodeStatus
+      val ns0: NodeStatus = bigNodeStatus
 
       val jsonContainer = JsonContainer(ns0)
       val jsonContainerBytes = jsonContainer.bytes
@@ -67,6 +67,10 @@ class NodeStatusQueueSpec extends Specification {
 
       val sJson = Json.toJson(ns0).toString()
 
+//      val sha256 = MessageDigest.getInstance("MD5")
+      val sha256 = MessageDigest.getInstance("SHA-256")
+      val digest: Array[Byte] = sha256.digest(jsonContainerBytes)
+
 
         pending
     }
@@ -74,7 +78,7 @@ class NodeStatusQueueSpec extends Specification {
 }
 
 object NodeStatusQueueSpec {
-  val bigNodeStatus: NodeStatus = Json.parse("""{
+  val base: BaseNodeStatus = Json.parse("""{
                                    |  "nodeAddress" : "http://10.37.129.2:8081|1",
                                    |  "qsoCount" : 10000,
                                    |  "qsoHourDigests" : [ {
@@ -218,10 +222,10 @@ object NodeStatusQueueSpec {
                                    |    "started" : "2021-06-30T18:19:57.821707Z"
                                    |  } ],
                                    |  "osName" : "Mac OS X 10.16",
-                                   |  "stamp" : "2021-06-30T18:24:00.204778Z",
                                    |  "ver" : "0.0.9-SNAPSHOT",
                                    |  "sn" : 23
-                                   |}""".stripMargin).as[NodeStatus]
+                                   |}""".stripMargin).as[BaseNodeStatus]
+  val bigNodeStatus = NodeStatus(base)
 }
 
 

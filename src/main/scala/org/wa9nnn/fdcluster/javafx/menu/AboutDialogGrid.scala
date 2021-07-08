@@ -23,7 +23,6 @@ import _root_.scalafx.scene.layout.{HBox, VBox}
 import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.javafx.GridOfControls
 import org.wa9nnn.fdcluster.model.NodeAddress
-import org.wa9nnn.fdcluster.store.network.multicast.MulticastIo
 import org.wa9nnn.fdcluster.{AppInfo, BuildInfo, FileContext}
 import scalafx.geometry.Insets
 
@@ -39,8 +38,8 @@ import scala.jdk.CollectionConverters._
 @Singleton
 class AboutDialogGrid @Inject()(appInfo: AppInfo,
                                 fileManager: FileContext,
-                                nodeAddress: NodeAddress,
-                                multicastThing: MulticastIo) extends Dialog with LazyLogging {
+                                nodeAddress: NodeAddress
+                                ) extends Dialog with LazyLogging {
   title = s"About ${BuildInfo.name}"
   resizable = true
   private val cssUrl: String = getClass.getResource("/fdcluster.css").toExternalForm
@@ -114,9 +113,6 @@ class AboutDialogGrid @Inject()(appInfo: AppInfo,
       editable = false
     }
     goc.addControl("Network Interfaces", netIfControl)
-
-    val mcastInterface: String = multicastThing.networkInterface.getInetAddresses.asScala.toList.head.getHostAddress
-    goc.addText("Multicast Interface", mcastInterface)
 
     goc.addControl("Log", new Hyperlink(fileManager.logFile.toString ){
       onAction = _ => {

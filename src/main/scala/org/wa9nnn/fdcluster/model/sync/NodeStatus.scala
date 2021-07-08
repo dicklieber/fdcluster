@@ -21,41 +21,47 @@ package org.wa9nnn.fdcluster.model.sync
 
 import org.wa9nnn.fdcluster.BuildInfo
 import org.wa9nnn.fdcluster.contest.Contest
+import org.wa9nnn.fdcluster.http.DestinationActor
 import org.wa9nnn.fdcluster.javafx.cluster.{NamedValue, NamedValueCollector, ValueName}
+import org.wa9nnn.fdcluster.javafx.sync.ResponseMessage
+import org.wa9nnn.fdcluster.model.MessageFormats.Digest
 import org.wa9nnn.fdcluster.model.sync.NodeStatus.serialNumbers
 import org.wa9nnn.fdcluster.model.{Journal, NodeAddress, Station}
+import org.wa9nnn.fdcluster.store.JsonContainer
 import org.wa9nnn.fdcluster.store.network.FdHour
 import org.wa9nnn.webclient.Session
-
+import org.wa9nnn.fdcluster.model.MessageFormats._
+import java.security.MessageDigest
 import java.time.Instant
 import java.util.concurrent.atomic.AtomicInteger
+
 /**
  *
  * @param nodeAddress        our IP and instance.
  * @param qsoCount           of QSOs in db.
  * @param qsoHourDigests     for quickly determining what we have.
  * @param station            band mode and current operator
- * @param stamp              when this message was generated.
- * @param ver                FDCLuster Version that built this so we can detect mismatched versions.
+ * @param ver                FdCluster version that built this so we can detect mismatched versions.
+ * @param sn                 so something changes
  *
  */
-case class NodeStatus(nodeAddress: NodeAddress,
-                      qsoCount: Int = 0,
-                      qsoHourDigests: List[QsoHourDigest] = List.empty,
-                      station: Station = Station(),
-                      contest: Option[Contest] = None,
-                      journal: Option[Journal] = None,
-                      sessions:List[Session] = List.empty,
-                      osName: String = s"${System.getProperty("os.name")} ${System.getProperty("os.version")}",
-                      stamp: Instant = Instant.now(),
-                      ver: String = BuildInfo.version,
-                      sn:Int = serialNumbers.getAndIncrement()) extends ClusterMessage {
+case class BaseNodeStatus(nodeAddress: NodeAddress,
+                          qsoCount: Int = 0,
+                          qsoHourDigests: List[QsoHourDigest] = List.empty,
+                          station: Station = Station(),
+                          contest: Option[Contest] = None,
+                          journal: Option[Journal] = None,
+                          sessions: List[Session] = List.empty,
+                          osName: String = s"${System.getProperty("os.name")} ${System.getProperty("os.version")}",
+                          ver: String = BuildInfo.version,
+                          sn: Int = serialNumbers.getAndIncrement()) extends ClusterMessage {
 
   assert(station != null, "null BandModeOperator")
 
-  def values: Iterable[NamedValue] = {
+
+  def collectValues(collector: NamedValueCollector): Iterable[NamedValue] = {
     import ValueName._
-    val collector = new NamedValueCollector()
+
     nodeAddress.collectNamedValues(collector)
     collector(QsoCount, qsoCount)
     collector(FdHours, qsoHourDigests.length)
@@ -65,9 +71,7 @@ case class NodeStatus(nodeAddress: NodeAddress,
       collector(ValueName.Contest, contest.id)
     }
     collector(ValueName.Journal, journal.map(_.journalFileName).getOrElse("Not Set"))
-    collector(Age, stamp)
     collector(Version, ver)
-    collector(Sn, sn)
     collector(OS, osName)
     collector(Sessions, sessions.map(_.station.operator).mkString("\n"))
     qsoHourDigests.foreach { qsd =>
@@ -90,8 +94,54 @@ case class NodeStatus(nodeAddress: NodeAddress,
 
 }
 
+
+case class NodeStatus(nodeStatus: BaseNodeStatus, digest: Digest, stamp: Instant = Instant.now()) extends ClusterMessage with ResponseMessage {
+  def digestForHour(fdHour: FdHour) = DestinationActor.cluster
+
+  def qsoHourDigests: List[QsoHourDigest] = nodeStatus.qsoHourDigests
+
+  def contest: Option[Contest] = nodeStatus.contest
+
+  def journal: Option[Journal] = nodeStatus.journal
+
+  val nodeAddress: NodeAddress = nodeStatus.nodeAddress
+
+  lazy val values: Iterable[NamedValue] = {
+    import ValueName._
+    val collector = new NamedValueCollector()
+    nodeStatus.collectValues(collector)
+    collector(Age, stamp)
+    collector(Digest, digest)
+    collector.result
+  }
+
+  lazy val heartBeatMessage: JsonContainer = {
+   JsonContainer( HeartBeatMessage(nodeStatus.nodeAddress, digest, stamp))
+  }
+  override val destination: DestinationActor = DestinationActor.cluster
+}
+
 object NodeStatus {
+  def apply(nodeStatus: BaseNodeStatus): NodeStatus = {
+    nodeStatus.toString
+    val sha256 = MessageDigest.getInstance("SHA-256")
+    val digest: Array[Byte] = sha256.digest(nodeStatus.toString.getBytes)
+
+    val encoder = java.util.Base64.getEncoder
+    val bytes1 = encoder.encode(digest)
+    val sDigest = new String(bytes1)
+
+    new NodeStatus(nodeStatus, sDigest)
+  }
+
   val serialNumbers: AtomicInteger = new AtomicInteger()
+
+}
+
+case class HeartBeatMessage(nodeAddress: NodeAddress, nodStatusDigest: Digest, stamp: Instant = Instant.now) extends ClusterMessage {
+  def needNodeStatus(candidate: Option[HeartBeatMessage]): Boolean = {
+    candidate.forall(_.nodStatusDigest != nodStatusDigest)
+  }
 }
 
 

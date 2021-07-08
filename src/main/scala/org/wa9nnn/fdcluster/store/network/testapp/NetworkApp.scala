@@ -128,7 +128,6 @@ object NetworkApp extends JFXApp3 with LazyLogging {
     var buf = new Array[Byte](10000)
 
     new Thread(() => {
-      logger.info(s"Listening on ${address.getHostName}:$port")
       do {
         val recv: DatagramPacket = new DatagramPacket(buf, buf.length)
         socket.receive(recv)

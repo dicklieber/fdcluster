@@ -24,6 +24,7 @@ import akka.http.scaladsl.model.{ContentTypes, HttpRequest}
 import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.http.DestinationActor
 import org.wa9nnn.fdcluster.model.MessageFormats.{Uuid, _}
+import org.wa9nnn.fdcluster.model.sync.NodeStatus
 import org.wa9nnn.fdcluster.model.{NodeAddress, Qso}
 import org.wa9nnn.fdcluster.store.network.FdHour
 import play.api.libs.json.{JsObject, Json}
@@ -143,7 +144,13 @@ object RequestQsosForHour {
   }
 }
 
+case class NodeStatusRequest(dontcare:String = "") extends Sendable {
+  override def className: String = getClass.getName
 
+  override def jsObject: JsObject = Json.toJson(this).asInstanceOf[JsObject]
+
+  override def parseResponse(jsObject: JsObject): ResponseMessage = jsObject.as[NodeStatus]
+}
 
 
 case class Step(name: String, instant: Instant = Instant.now())

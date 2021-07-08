@@ -2,7 +2,6 @@ package about
 
 import com.wa9nnn.util.tableui.{Cell, Header, Table}
 import org.wa9nnn.fdcluster.model.NodeAddress
-import org.wa9nnn.fdcluster.store.network.multicast.MulticastIo
 import org.wa9nnn.fdcluster.{AppInfo, BuildInfo}
 import org.wa9nnn.util.HtmlTableBuider
 import scalafx.scene.control.TextArea
@@ -16,7 +15,7 @@ import scala.collection.mutable
 import scala.jdk.CollectionConverters.ListHasAsScala
 
 @Singleton
-class AboutTable @Inject()(appInfo: AppInfo, nodeAddress: NodeAddress, multicastThing: MulticastIo) {
+class AboutTable @Inject()(appInfo: AppInfo, nodeAddress: NodeAddress) {
 
   def apply(): Table = {
     val tableBuilder = new HtmlTableBuider(Header("FdCuster", "Field", "Value"))
@@ -68,7 +67,6 @@ class AboutTable @Inject()(appInfo: AppInfo, nodeAddress: NodeAddress, multicast
     }
     tableBuilder("Network Interfaces", netIfControl)
 
-    tableBuilder("Multicast Interface", multicastThing.networkInterface.getInetAddresses.asScala.toList.head.getHostAddress)
     tableBuilder.result
   }
 }

@@ -9,6 +9,7 @@ import play.api.libs.json.{Json, Writes}
 
 import java.io.ByteArrayInputStream
 import java.security.SecureRandom
+import java.time.Instant
 import java.util.concurrent.atomic.AtomicLong
 import java.util.zip.{GZIPInputStream, GZIPOutputStream}
 import scala.reflect.{ClassTag, classTag}
@@ -21,7 +22,7 @@ import scala.util.{Try, Using}
  * @param className
  * @param json
  */
-case class JsonContainer private(className: String, json: String, node:Long, sn:Long) {
+case class JsonContainer private(className: String, json: String, stamp:Instant = Instant.now()) {
   def bytes: Array[Byte] = {
     val baos = new ByteArrayOutputStream()
     val gzInputStream: GZIPOutputStream = new GZIPOutputStream(baos)
@@ -60,6 +61,6 @@ object JsonContainer extends LazyLogging{
     val clazz: Class[_] = classTag[T].runtimeClass
     val className: String = clazz.getName
     val json = Json.toJson(canBeJson).toString()
-    JsonContainer(className, json, node, sn.getAndIncrement())
+    new JsonContainer(className, json)
   }
 }

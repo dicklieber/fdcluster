@@ -26,7 +26,6 @@ import org.specs2.specification.{After, ForEach}
 import org.wa9nnn.fdcluster.contest.{JournalProperty, JournalWriter}
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
-import org.wa9nnn.fdcluster.store.network.MulticastSender
 import org.wa9nnn.fdcluster.{FileContext, MockFileContext}
 import scalafx.collections.ObservableBuffer
 
@@ -44,14 +43,11 @@ trait StoreLogicContext extends ForEach[StoreLogic] with Mockito {
     val stationProperty = mock[StationProperty]
     val contestProperty: ContestProperty = mock[ContestProperty]
     val storeSender: StoreSender = mock[StoreSender]
-    val multicastSender: MulticastSender = mock[MulticastSender]
     val qsoMetadataProperty: OsoMetadataProperty = mock[OsoMetadataProperty]
     val mockSessionManagerActor = mock[ActorRef]
     val storeLogic = new StoreLogic(
       na = NodeAddress(),
-      qsoMetadataProperty = qsoMetadataProperty,
       contestProperty = contestProperty,
-      multicastSender = multicastSender,
       journalManager = journalManager,
       journalLoader = journalLoader,
       journalWriter = journalWriter,
@@ -76,9 +72,7 @@ class StoreLogicSpec extends Specification with After with StoreLogicContext {
   val allQsos = new ObservableBuffer[Qso]()
   implicit val qsoMetadata: QsoMetadata = QsoMetadata()
 
-  private val worked: CallSign = "K2ORS"
   private val exchange: Exchange = Exchange("2I", "WPA")
-  private val bandMode = BandMode()
 
   "StoreMapImplSpec" >> {
     val qso = Qso("WA9NNN", Exchange(), BandMode())

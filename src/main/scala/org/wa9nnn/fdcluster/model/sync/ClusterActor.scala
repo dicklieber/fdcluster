@@ -12,6 +12,7 @@ import org.wa9nnn.fdcluster.javafx.sync._
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.{ContestProperty, NodeAddress}
 
+import scala.collection.concurrent.TrieMap
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.language.postfixOps
@@ -31,13 +32,19 @@ class ClusterActor(nodeAddress: NodeAddress,
   private implicit val timeout: Timeout = Timeout(5 seconds)
   context.system.scheduler.scheduleAtFixedRate(17 seconds, 17 seconds, self, Purge)
   private val httpClient: ActorRef = context.actorOf(Props(classOf[HttpClientActor], store, context.self))
-
-  private var ourNodeStatus: NodeStatus = NodeStatus(nodeAddress = nodeAddress)
-
+  private val heartBeatMap = new TrieMap[NodeAddress, HeartBeatMessage]()
+  private var ourNodeStatus: NodeStatus = NodeStatus(BaseNodeStatus(nodeAddress = nodeAddress))
 
   override def receive: Receive = {
 
     case s: SendContainer => httpClient ! s
+
+    case hb: HeartBeatMessage =>
+      logger.debug(s"Got: $hb")
+      // if no HB or digest is different then as for NodeStatus via HTTP.
+      if(hb.needNodeStatus(heartBeatMap.get(hb.nodeAddress))){
+        SendContainer(NodeStatusRequest(), hb.nodeAddress)
+      }
 
     case ns: NodeStatus ⇒
       val theirNodeAddress = ns.nodeAddress
@@ -56,7 +63,7 @@ class ClusterActor(nodeAddress: NodeAddress,
             _.map { ns =>
               val messages = ns.qsoHourDigests.flatMap { otherQsoHourDigest: QsoHourDigest =>
                 val fdHour = otherQsoHourDigest.fdHour
-                ourNodeStatus.digestForHour(fdHour) match {
+                ourNodeStatus.nodeStatus.digestForHour(fdHour) match {
                   case Some(ourQsoHourDigest: QsoHourDigest) =>
                     if (ourQsoHourDigest.digest == otherQsoHourDigest.digest) {
                       // we match them, nothing to do
@@ -79,7 +86,7 @@ class ClusterActor(nodeAddress: NodeAddress,
         }
       }
 
-    case Purge => {
+    case Purge =>
       val deadNodes: List[NodeAddress] = nodeHistory.grimReaper()
       if (deadNodes.nonEmpty) {
         logger.whenDebugEnabled {
@@ -89,10 +96,9 @@ class ClusterActor(nodeAddress: NodeAddress,
         clusterTable.purge(deadNodes)
         fdHours.purge(deadNodes)
       }
-    }
 
-    case rufh: RequestUuidsForHour =>
-      httpClient ! rufh
+    case requestUuidsForHour: RequestUuidsForHour =>
+      httpClient ! requestUuidsForHour
 
     case uc: UuidsAtHost =>
       (store ? uc).mapTo[RequestQsosForUuids].map(requestQsosForUuids =>

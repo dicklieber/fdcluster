@@ -24,8 +24,8 @@ import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.contest.{JournalProperty, JournalWriter}
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
-import org.wa9nnn.fdcluster.model.sync.{NodeStatus, QsoHour}
-import org.wa9nnn.fdcluster.store.network.{FdHour, MulticastSender}
+import org.wa9nnn.fdcluster.model.sync.{BaseNodeStatus, NodeStatus, QsoHour}
+import org.wa9nnn.fdcluster.store.network.FdHour
 import org.wa9nnn.webclient.{ListSessions, Session}
 import scalafx.collections.ObservableBuffer
 
@@ -44,7 +44,6 @@ import scala.util.Try
  */
 @Singleton
 class StoreLogic @Inject()(na: NodeAddress,
-                           qsoMetadataProperty: OsoMetadataProperty,
                            contestProperty: ContestProperty,
                            stationProperty: StationProperty,
                            journalLoader: JournalLoader,
@@ -52,9 +51,8 @@ class StoreLogic @Inject()(na: NodeAddress,
                            journalManager: JournalProperty,
                            val listeners: immutable.Set[AddQsoListener],
                            storeSender: StoreSender,
-                           multicastSender: MulticastSender,
                            qsoBuffer: ObservableBuffer[Qso],
-                           @Named("sessionManager")sessionManager: ActorRef
+                           @Named("sessionManager") sessionManager: ActorRef
                           )
   extends LazyLogging with QsoSource {
   implicit lazy val timeout: Timeout = Timeout(5.seconds) // usually we'd obtain the timeout from the system's configuration
@@ -100,9 +98,9 @@ class StoreLogic @Inject()(na: NodeAddress,
     }
   }
 
-  def sendNodeStatus(): Unit = {
-    multicastSender ! JsonContainer(nodeStatus)
-  }
+//  def sendNodeStatus(): Unit = {
+//    multicastSender ! JsonContainer(nodeStatus)
+//  }
 
   def filterAlreadyPresent(iterator: Iterator[Uuid]): Iterator[Uuid] = {
     iterator.filterNot(uuid => byUuid.contains(uuid))
@@ -130,20 +128,20 @@ class StoreLogic @Inject()(na: NodeAddress,
 
   /**
    *
-   * @param candidateQso
+   * @param candidateQso that could be a dup.
    * @throws DupContact if duplicate contact found.
    */
   def checkDup(candidateQso: Qso): Unit = {
     for {
       contacts <- byCallSign.get(candidateQso.callSign)
-      dup ← contacts.find(_.isDup(candidateQso))
+      _ ← contacts.find(_.isDup(candidateQso))
     } yield {
       throw new DupContact(candidateQso)
     }
   }
 
   def search(search: Search): SearchResult = {
-    logger.whenTraceEnabled{
+    logger.whenTraceEnabled {
       logger.trace(s"Search in: $search")
     }
     if (search.partial.isEmpty) {
@@ -157,7 +155,7 @@ class StoreLogic @Inject()(na: NodeAddress,
 
       val limited = matching.take(max)
       val result = SearchResult(limited, matching.length, search)
-      logger.whenTraceEnabled{
+      logger.whenTraceEnabled {
         logger.trace(s"Search out: $result")
       }
       result
@@ -181,16 +179,16 @@ class StoreLogic @Inject()(na: NodeAddress,
     val eventualSessions: Future[List[Session]] = (sessionManager ? ListSessions).mapTo[List[Session]]
     val value: Try[List[Session]] = Try(Await.result[List[Session]](eventualSessions, timeout.duration))
 
-    val r = sync.NodeStatus(
+    NodeStatus(BaseNodeStatus(
       nodeAddress = nodeAddress,
       qsoCount = byUuid.size,
       qsoHourDigests = hourDigests,
       station = stationProperty.value,
       contest = contestProperty.exportValue,
       sessions = value.getOrElse(List.empty),
-      journal = journalManager.exportValue)
-    r
+      journal = journalManager.exportValue))
   }
+
 
   def uuidForHour(fdHour: FdHour): List[Uuid] = {
     qsoBuffer.filter((qsr: Qso) => qsr.fdHour == fdHour)

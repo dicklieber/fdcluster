@@ -1,6 +1,5 @@
 package org.wa9nnn.fdcluster.javafx.cluster
 
-import akka.http.scaladsl.model.headers.Age
 import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.contest.JournalProperty
 import org.wa9nnn.fdcluster.model.NodeAddress
@@ -39,12 +38,12 @@ class FdHours @Inject()(journalProperty: JournalProperty) extends LazyLogging {
    * @param nodeStatus incoming.
    */
   def update(nodeStatus: NodeStatus): Unit = {
-    val nodeAddress = nodeStatus.nodeAddress
+    val nodeAddress = nodeStatus.nodeStatus.nodeAddress
 
     val startMatrixSize = data.size
 
     metadataMap.getOrElseUpdate(nodeAddress, NodeMetadata(nodeAddress)).update(nodeStatus)
-    nodeStatus.qsoHourDigests.foreach { qhd =>
+    nodeStatus.nodeStatus.qsoHourDigests.foreach { qhd =>
       val cell: QsoDigestPropertyCell = data.getOrElseUpdate(qhd.fdHour, nodeAddress, {
         qhd.PropertyCell
       })
@@ -97,9 +96,10 @@ case class NodeMetadata(nodeAddress: NodeAddress) {
   val ageCell: PropertyCellAge = PropertyCellFactory(ValueName.Age, Instant.now()).asInstanceOf[PropertyCellAge]
   val qslCountCell: PropertyCell = PropertyCellFactory(ValueName.QsoCount, 0)
 
-  def update(nodeStatus: NodeStatus): Unit = {
-    ageCell.update(NamedValue(ValueName.Age, nodeStatus.stamp))
-    qslCountCell.update(NamedValue(ValueName.QsoCount, nodeStatus.qsoCount))
+  def update(nodeStatusWithDigest: NodeStatus): Unit = {
+    ageCell.update(NamedValue(ValueName.Age, nodeStatusWithDigest.stamp))
+
+    qslCountCell.update(NamedValue(ValueName.QsoCount, nodeStatusWithDigest.nodeStatus.qsoCount))
   }
 
   def clear(): Unit = {

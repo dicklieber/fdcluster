@@ -18,8 +18,8 @@
 
 package org.wa9nnn.fdcluster
 
-import _root_.scalafx.application.JFXApp3.Parameters
 import _root_.scalafx.beans.property.ObjectProperty
+import _root_.scalafx.collections.ObservableBuffer
 import akka.actor.{ActorRef, ActorSystem, DeadLetter, Props}
 import com.github.racc.tscg.TypesafeConfigModule
 import com.google.inject.{AbstractModule, Injector, Provides}
@@ -32,11 +32,8 @@ import org.wa9nnn.fdcluster.metrics.MetricsReporter
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.model.sync.{ClusterActor, NodeStatusQueueActor}
 import org.wa9nnn.fdcluster.store._
-import org.wa9nnn.fdcluster.store.network.multicast.MulticastIo
-import org.wa9nnn.fdcluster.store.network.{JsonContainerSender, MultcastSenderActor}
 import org.wa9nnn.util._
 import org.wa9nnn.webclient.SessionManager
-import _root_.scalafx.collections.ObservableBuffer
 
 import javax.inject.{Named, Singleton}
 
@@ -83,7 +80,6 @@ class Module() extends AbstractModule with ScalaModule {
       install(TypesafeConfigModule.fromConfigWithPackage(config, "org.wa9nnn"))
       bind[MetricsReporter].asEagerSingleton()
       bind[QsoBuilder].to[OsoMetadataProperty]
-      bind[JsonContainerSender].to[MulticastIo]
       val qsoListeners = ScalaMultibinder.newSetBinder[AddQsoListener](binder)
       qsoListeners.addBinding.to[StatsPane]
       qsoListeners.addBinding.to[QsoCountCollector]
@@ -128,17 +124,6 @@ class Module() extends AbstractModule with ScalaModule {
       "cluster")
   }
 
-  @Provides
-  @Singleton
-  @Named("multicastSender")
-  def clusterStoreActor(actorSystem: ActorSystem,
-                        config: Config,
-                        clusterControl: NetworkControl
-                       ): ActorRef = {
-    actorSystem.actorOf(Props(
-      new MultcastSenderActor(config, clusterControl)),
-      "multicastSender")
-  }
 
   @Provides
   @Singleton

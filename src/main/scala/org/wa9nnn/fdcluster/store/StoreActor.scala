@@ -20,10 +20,9 @@
 package org.wa9nnn.fdcluster.store
 
 import akka.actor.Status.Failure
-import akka.actor.{Actor, ActorRef}
+import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 import akka.util.Timeout
 import com.google.inject.Injector
-import com.google.inject.name.Names
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
@@ -36,7 +35,8 @@ import org.wa9nnn.fdcluster.javafx.menu.ImportRequest
 import org.wa9nnn.fdcluster.javafx.sync._
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model._
-import org.wa9nnn.fdcluster.store.network.{FdHour, JsonContainerSender}
+import org.wa9nnn.fdcluster.model.sync.NodeStatus
+import org.wa9nnn.fdcluster.store.network.{BroadcastSender, FdHour}
 import org.wa9nnn.fdcluster.tools.{GenerateRandomQsos, RandomQsoGenerator}
 import org.wa9nnn.util.ImportAdifTask
 
@@ -50,11 +50,12 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
   val nodeAddress: NodeAddress = injector.instance[NodeAddress]
   val config: Config = injector.instance[Config]
   val randomQso: RandomQsoGenerator = injector.instance[RandomQsoGenerator]
-  val multicastSender: ActorRef = injector.instance[ActorRef](Names.named("multicastSender"))
+  val broadcastSender: ActorRef = context.actorOf( Props(classOf[BroadcastSender],config), "broadcastSender")
 
-  val jsonContainerSender: JsonContainerSender = injector.instance[JsonContainerSender]
   val store: StoreLogic = injector.instance[StoreLogic]
   val clusterControl: NetworkControl = injector.instance[NetworkControl]
+  var currentNodeStatus: Option[NodeStatus] = None
+
 
   logger.info(s"StoreActor: ${self.path}")
 
@@ -77,7 +78,7 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
     case potentialQso: Qso =>
       val triedQso = store.ingestAndPersist(potentialQso)
       triedQso.foreach { qso =>
-        jsonContainerSender.send( JsonContainer(DistributedQso(qso, nodeAddress)))
+        broadcastSender ! JsonContainer(DistributedQso(qso, nodeAddress))
       }
       sender ! AddResult(triedQso)
 
@@ -92,10 +93,10 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
       logger.debug(requestQsosForUuids.toString)
       sender ! requestQsosForUuids // send to cluster on this host
 
-    case rqfu: RequestQsosForUuids =>
-      logger.debug(rqfu.toString)
+    case requestQsosForUuids: RequestQsosForUuids =>
+      logger.debug(requestQsosForUuids.toString)
 
-      val qsos: List[Qso] = rqfu.uuids.flatMap(uuid =>
+      val qsos: List[Qso] = requestQsosForUuids.uuids.flatMap(uuid =>
         store.get(uuid)
       )
       val qsosFromNode = QsosFromNode(qsos)
@@ -116,8 +117,8 @@ class StoreActor(injector: Injector) extends Actor with LazyLogging with Default
 
     case d: DistributedQso ⇒
       val qso = d.qso
-      val remoteNodeAddress = qso.qsoMetadata.node
-      if (remoteNodeAddress != nodeAddress) {
+      val remoteNodeAddress: String = qso.qsoMetadata.node
+      if (remoteNodeAddress != nodeAddress.displayWithIp) { //todo does this work?
         logger.debug(s"Ingesting $qso from $remoteNodeAddress")
         store.ingestAndPersist(qso)
       } else {

@@ -20,6 +20,7 @@
     </appender>
 
 
+    <logger name="akka.event.slf4j.Slf4jLogger" level="TRACE"/>
     <logger name="com.codahale.metrics.graphite.GraphiteReporter" level="ERROR"/>
     <logger name="javax.management" level="INFO"/>
     <logger name="org.wa9nnn" level="INFO"/>
@@ -35,7 +36,6 @@
     <logger name="org.wa9nnn.fdcluster.javafx.entry.StatisticsTab" level="INFO"/>
     <logger name="org.wa9nnn.fdcluster.javafx.cluster.FdHours" level="INFO"/>
     <logger name="org.wa9nnn.fdcluster.javafx.cluster.FdHoursDialog" level="INFO"/>
-    <logger name="org.wa9nnn.fdcluster.store.network.multicast.HeartBeat" level="INFO"/>
     <logger name="org.wa9nnn.fdcluster.store.network.mmulticast.MulticastIo" level="INFO"/>
     <logger name="org.wa9nnn.fdcluster.javafx.cluster.ClusterTable" level="DEBUG"/>
     <logger name="u" level="DEBUG"/>
