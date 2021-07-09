@@ -40,11 +40,12 @@ import org.wa9nnn.fdcluster.store.network.{BroadcastSender, FdHour}
 import org.wa9nnn.fdcluster.tools.{GenerateRandomQsos, RandomQsoGenerator}
 import org.wa9nnn.util.ImportAdifTask
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-class StoreActor(injector: Injector) extends Actor with LazyLogging with DefaultInstrumented {
+class StoreActor @Inject()(injector: Injector) extends Actor with LazyLogging with DefaultInstrumented {
   private implicit val timeout: Timeout = Timeout(5 seconds)
 
   val nodeAddress: NodeAddress = injector.instance[NodeAddress]

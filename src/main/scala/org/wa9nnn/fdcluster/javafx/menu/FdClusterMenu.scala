@@ -22,12 +22,11 @@ import _root_.scalafx.Includes._
 import _root_.scalafx.application.Platform
 import _root_.scalafx.event.ActionEvent
 import _root_.scalafx.scene.control._
-import akka.actor.ActorRef
 import akka.util.Timeout
 import com.google.inject.Injector
-import com.google.inject.name.Named
 import com.typesafe.scalalogging.LazyLogging
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
+import org.wa9nnn.fdcluster.QsoCountCollector
 import org.wa9nnn.fdcluster.cabrillo.{CabrilloDialog, CabrilloExportRequest}
 import org.wa9nnn.fdcluster.contest.fieldday.{PostContestDialogFD, SummaryEngine}
 import org.wa9nnn.fdcluster.contest.{ContestDialog, OkGate}
@@ -35,11 +34,10 @@ import org.wa9nnn.fdcluster.dupsheet.GenerateDupSheet
 import org.wa9nnn.fdcluster.javafx.cluster.FdHoursDialog
 import org.wa9nnn.fdcluster.javafx.debug.{DebugRemoveDialog, ResetDialog}
 import org.wa9nnn.fdcluster.metrics.MetricsReporter
-import org.wa9nnn.fdcluster.model.{ContestProperty, NodeAddress}
+import org.wa9nnn.fdcluster.model.NodeAddress
 import org.wa9nnn.fdcluster.rig.RigDialog
-import org.wa9nnn.fdcluster.store.ClearStore
+import org.wa9nnn.fdcluster.store.{ClearStore, StoreSender}
 import org.wa9nnn.fdcluster.tools.RandomQsoDialog
-import org.wa9nnn.fdcluster.{FileContext, QsoCountCollector}
 
 import java.awt.Desktop
 import javax.inject.{Inject, Singleton}
@@ -49,7 +47,7 @@ import scala.language.postfixOps
 @Singleton
 class FdClusterMenu @Inject()(
                                injector: Injector,
-                               @Named("store") store: ActorRef,
+                               store: StoreSender,
                                aboutDialog: AboutDialogGrid,
                                generateDupSheet: GenerateDupSheet,
                                summaryEngine: SummaryEngine,

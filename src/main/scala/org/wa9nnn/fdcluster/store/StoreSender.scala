@@ -1,27 +1,17 @@
 package org.wa9nnn.fdcluster.store
 
 import akka.actor.ActorRef
-import akka.pattern.ask
-import akka.util.Timeout
-import com.google.inject.name.Named
+import com.google.inject.Injector
+import com.sandinh.akuice.ActorInject
+import org.wa9nnn.akka.ActorSender
 
-import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
-import scala.reflect.ClassTag
 
 /**
  * Convenient way for non-actor to send a message to the Store
  * Easy to mock.
  */
 @Singleton
-class StoreSender @Inject()(@Named("store") store: ActorRef) {
-  private implicit val timeout: Timeout = Timeout(65, TimeUnit.SECONDS)
-
-  def !(message: Any): Unit = {
-    store ! message
-  }
-  def ? [T:ClassTag](message: Any):Future[T] = {
-    (store ? message).mapTo[T]
-  }
+class StoreSender @Inject()(implicit val injector: Injector) extends ActorInject with ActorSender {
+  val actor: ActorRef = injectTopActor[StoreActor]("storeActor")
 }

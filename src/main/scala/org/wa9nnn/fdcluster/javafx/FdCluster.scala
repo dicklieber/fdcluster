@@ -24,7 +24,9 @@ import _root_.scalafx.scene.Scene
 import _root_.scalafx.scene.control.{Tab, TabPane}
 import _root_.scalafx.scene.image.{Image, ImageView}
 import _root_.scalafx.scene.layout.{BorderPane, GridPane}
-import com.google.inject.Guice
+import akka.actor.{ActorRef, ActorSystem}
+import com.google.inject.{Guice, Injector}
+import com.sandinh.akuice.ActorInject
 import com.typesafe.scalalogging.LazyLogging
 import com.wa9nnn.util.macos.DockIcon
 import javafx.application.Application
@@ -36,7 +38,9 @@ import org.wa9nnn.fdcluster.javafx.cluster.ClusterTab
 import org.wa9nnn.fdcluster.javafx.data.DataTab
 import org.wa9nnn.fdcluster.javafx.entry.{EntryTab, RunningTaskPane, StatisticsTab}
 import org.wa9nnn.fdcluster.javafx.menu.FdClusterMenu
+import org.wa9nnn.fdcluster.model.sync.ClusterActor
 import org.wa9nnn.fdcluster.model.{AllContestRules, ContestProperty, NodeAddress}
+import org.wa9nnn.fdcluster.store.network.BroadcastListener
 import org.wa9nnn.fdcluster.{Module, NetworkPane}
 import scalafx.Includes._
 //import scalafx.stage.Stage
@@ -56,20 +60,25 @@ object FdCluster extends App {
 /**
  * Main for FDLog
  */
-class FdCluster1 extends Application with LazyLogging {
+class FdCluster1 extends Application with LazyLogging with ActorInject {
+  println(s"JAVA_HOME: \t${System.getenv("JAVA_HOME")}")
+  println(s"java.home \t${System.getProperty("java.home")}")
+  println(s"Java Version: \t${ManagementFactory.getRuntimeMXBean.getVmVersion}")
+  println(s"Java VmName: \t${ManagementFactory.getRuntimeMXBean.getVmName}")
+  println(s"Java VmVendor: \t${ManagementFactory.getRuntimeMXBean.getVmVendor}")
+  val injector: Injector = Guice.createInjector(new Module())
+
   override def start(stage: Stage): Unit = {
 
 
-    println(s"JAVA_HOME: \t${System.getenv("JAVA_HOME")}")
-    println(s"java.home \t${System.getProperty("java.home")}")
-    println(s"Java Version: \t${ManagementFactory.getRuntimeMXBean.getVmVersion}")
-    println(s"Java VmName: \t${ManagementFactory.getRuntimeMXBean.getVmName}")
-    println(s"Java VmVendor: \t${ManagementFactory.getRuntimeMXBean.getVmVendor}")
+    implicit val actorSystem = injector.instance[ActorSystem]
+    // top level actors
+//    val clusterActor: ActorRef = injectTopActor[ClusterActor]("clusterActor")
+    val broqadcastListener: ActorRef = injectTopActor[BroadcastListener]("broadcastListener")
 
-    //  private val parameters1: Application.Parameters = Application.Parameters
-    val injector = Guice.createInjector(new Module())
-    val entryTab = injector.instance[EntryTab]
+
     val dataTab = injector.instance[DataTab]
+    val entryTab = injector.instance[EntryTab]
     val clusterTab: ClusterTab = injector.instance[ClusterTab]
     val statisticsTab = injector.instance[StatisticsTab]
     val nodeAddress: NodeAddress = injector.instance[NodeAddress]

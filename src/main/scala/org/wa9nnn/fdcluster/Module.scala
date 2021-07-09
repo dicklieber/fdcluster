@@ -23,6 +23,7 @@ import _root_.scalafx.collections.ObservableBuffer
 import akka.actor.{ActorRef, ActorSystem, DeadLetter, Props}
 import com.github.racc.tscg.TypesafeConfigModule
 import com.google.inject.{AbstractModule, Injector, Provides}
+import com.typesafe.scalalogging.LazyLogging
 import configs.Config
 import net.codingwell.scalaguice.{ScalaModule, ScalaMultibinder}
 import org.wa9nnn.fdcluster.contest.JournalProperty
@@ -44,19 +45,20 @@ import javax.inject.{Named, Singleton}
  *
  * @param parameters command line args
  */
-class Module() extends AbstractModule with ScalaModule {
-//class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
+class Module() extends AbstractModule with ScalaModule with LazyLogging{
+  //class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
 
   override def configure(): Unit = {
+    logger.debug("configure()")
     try {
       val fileManager = new FileContext()
       bind[FileContext].toInstance(fileManager)
       // File manager must be invoked before any logging is done as logback.xml uses the system property  "log.file.path"
       // which gets set by the FileManager.
       val config: Config = ConfigApp.apply
-//      bind[CommandLine].toInstance(new CommandLineScalaFxImpl(parameters))
+      //      bind[CommandLine].toInstance(new CommandLineScalaFxImpl(parameters))
       //      bind[MulticastListener].asEagerSingleton()
-      val actorSystem = ActorSystem("default", config)
+     implicit  val actorSystem = ActorSystem("default", config)
       val deadLetterMonitorActor =
         actorSystem.actorOf(Props[DeadLetterMonitorActor],
           name = "deadlettermonitoractor")
@@ -79,6 +81,7 @@ class Module() extends AbstractModule with ScalaModule {
       bind[Config].toInstance(config)
       install(TypesafeConfigModule.fromConfigWithPackage(config, "org.wa9nnn"))
       bind[MetricsReporter].asEagerSingleton()
+
       bind[QsoBuilder].to[OsoMetadataProperty]
       val qsoListeners = ScalaMultibinder.newSetBinder[AddQsoListener](binder)
       qsoListeners.addBinding.to[StatsPane]
@@ -89,6 +92,7 @@ class Module() extends AbstractModule with ScalaModule {
         e.printStackTrace()
     }
   }
+
   @Provides
   @Singleton
   @Named("sessionManager")
@@ -98,32 +102,29 @@ class Module() extends AbstractModule with ScalaModule {
       "sessionManager")
   }
 
-  @Provides
-  @Singleton
-  @Named("store")
-  def storeActor(actorSystem: ActorSystem, injector: Injector): ActorRef = {
-    actorSystem.actorOf(Props(new StoreActor(injector)),
-      "store")
-  }
+//  @Provides
+//  @Singleton
+//  @Named("store")
+//  def storeActor(actorSystem: ActorSystem, injector: Injector): ActorRef = {
+//    actorSystem.actorOf(Props(new StoreActor(injector)),
+//      "store")
+//  }
 
-  @Provides
-  @Singleton
-  @Named("cluster")
-  def clusterStoreActor(actorSystem: ActorSystem,
-                        nodeAddress: NodeAddress,
-                        @Named("store") storeActor: ActorRef,
-                        @Named("nodeStatusQueue") nodestatusQueue: ActorRef,
-                        contestProperty: ContestProperty,
-                        journalProperty: JournalProperty,
-                        clusterTable: ClusterTable,
-                        fdHours: FdHours,
-                        nodeHistory: NodeHistory
-                       ): ActorRef = {
-    actorSystem.actorOf(Props(
-      new ClusterActor(nodeAddress, storeActor, nodestatusQueue, contestProperty, journalProperty, clusterTable, fdHours, nodeHistory)),
-      "cluster")
-  }
-
+//  @Provides
+//  @Singleton
+//  @Named("cluster")
+//  def clusterStoreActor(actorSystem: ActorSystem,
+//                        nodeAddress: NodeAddress,
+//                        @Named("store") storeActor: ActorRef,
+//                        @Named("nodeStatusQueue") nodestatusQueue: ActorRef,
+//                        contestProperty: ContestProperty,
+//                        journalProperty: JournalProperty,
+//                        clusterTable: ClusterTable,
+//                        fdHours: FdHours,
+//                        nodeHistory: NodeHistory,
+//                        config: Config,
+//                        injector:Injector
+//                       )
 
   @Provides
   @Singleton

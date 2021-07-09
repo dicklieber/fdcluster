@@ -94,6 +94,7 @@ libraryDependencies ++= Seq(
   "javax.servlet" % "javax.servlet-api" % "3.0.1",
   "commons-codec" % "commons-codec" % "1.15",
   "org.apache.commons" % "commons-text" % "1.9",
+  "com.sandinh" %% "akka-guice" % "3.3.0",
 )
 
 

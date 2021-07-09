@@ -19,13 +19,12 @@
 
 package org.wa9nnn.fdcluster.javafx.debug
 
-import akka.actor.ActorRef
-import com.google.inject.name.Named
-import javax.inject.Inject
-import org.wa9nnn.fdcluster.store.DebugKillRandom
 import _root_.scalafx.scene.control.TextInputDialog
+import org.wa9nnn.fdcluster.store.{DebugKillRandom, StoreSender}
 
-class DebugRemoveDialog @Inject()(@Named("store") store: ActorRef) extends TextInputDialog("1") {
+import javax.inject.Inject
+
+class DebugRemoveDialog @Inject()(store: StoreSender) extends TextInputDialog("1") {
   title = "Debug Random QSO Killer"
   headerText = "Randomly remove some QSOs from this node."
   contentText = "Number top kill:"

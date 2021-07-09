@@ -1,17 +1,22 @@
 package org.wa9nnn.fdcluster.model.sync
 
-import akka.actor.{Actor, ActorRef, Props}
+import akka.actor.{Actor, ActorRef}
 import akka.pattern.ask
 import akka.util.Timeout
+import com.google.inject.Injector
 import com.google.inject.name.Named
+import com.sandinh.akuice.ActorInject
 import com.typesafe.scalalogging.LazyLogging
+import org.wa9nnn.akka.ActorSender
 import org.wa9nnn.fdcluster.contest.JournalProperty
 import org.wa9nnn.fdcluster.http.HttpClientActor
 import org.wa9nnn.fdcluster.javafx.cluster.{ClusterTable, FdHours, NodeHistory}
 import org.wa9nnn.fdcluster.javafx.sync._
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.{ContestProperty, NodeAddress}
+import org.wa9nnn.fdcluster.store.StoreSender
 
+import javax.inject.{Inject, Singleton}
 import scala.collection.concurrent.TrieMap
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
@@ -20,18 +25,20 @@ import scala.language.postfixOps
 /**
  * Handles [[NodeStatus]] messages from all nodes, including our own.
  */
-class ClusterActor(nodeAddress: NodeAddress,
-                   @Named("store") store: ActorRef,
-                   @Named("nodeStatusQueue") nodeStatusQueue: ActorRef,
-                   contestProperty: ContestProperty,
-                   journalProperty: JournalProperty,
-                   clusterTable: ClusterTable,
-                   fdHours: FdHours,
-                   nodeHistory: NodeHistory,
-                  ) extends Actor with LazyLogging {
+class ClusterActor @Inject()(nodeAddress: NodeAddress,
+                             val injector: Injector,
+                             store: StoreSender,
+                             @Named("nodeStatusQueue") nodeStatusQueue: ActorRef,
+                             contestProperty: ContestProperty,
+                             journalProperty: JournalProperty,
+                             clusterTable: ClusterTable,
+                             fdHours: FdHours,
+                             nodeHistory: NodeHistory,
+                            ) extends Actor with LazyLogging with ActorInject {
+  logger.info("Starting ClusterActor")
   private implicit val timeout: Timeout = Timeout(5 seconds)
   context.system.scheduler.scheduleAtFixedRate(17 seconds, 17 seconds, self, Purge)
-  private val httpClient: ActorRef = context.actorOf(Props(classOf[HttpClientActor], store, context.self))
+  private val httpClient: ActorRef = injectActor[HttpClientActor]
   private val heartBeatMap = new TrieMap[NodeAddress, HeartBeatMessage]()
   private var ourNodeStatus: NodeStatus = NodeStatus(BaseNodeStatus(nodeAddress = nodeAddress))
 
@@ -42,8 +49,9 @@ class ClusterActor(nodeAddress: NodeAddress,
     case hb: HeartBeatMessage =>
       logger.debug(s"Got: $hb")
       // if no HB or digest is different then as for NodeStatus via HTTP.
-      if(hb.needNodeStatus(heartBeatMap.get(hb.nodeAddress))){
-        SendContainer(NodeStatusRequest(), hb.nodeAddress)
+      if (hb.needNodeStatus(heartBeatMap.get(hb.nodeAddress))) {
+        heartBeatMap.put(hb.nodeAddress, hb)
+        httpClient ! SendContainer(NodeStatusRequest(), hb.nodeAddress)
       }
 
     case ns: NodeStatus ⇒
@@ -108,7 +116,14 @@ class ClusterActor(nodeAddress: NodeAddress,
     case x =>
       logger.error(s"Unexpected message: $x")
   }
+
 }
 
 case object Purge
+
+@Singleton
+class ClusterSender @Inject()(implicit val injector: Injector) extends ActorInject with ActorSender {
+  val actor: ActorRef = injectTopActor[ClusterActor]("cluster")
+}
+
 

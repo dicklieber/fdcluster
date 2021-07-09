@@ -34,7 +34,7 @@ import org.wa9nnn.fdcluster.javafx.sync._
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.sync.NodeStatus
 import org.wa9nnn.fdcluster.model.{ContestProperty, NodeAddress}
-import org.wa9nnn.fdcluster.store.RequestNodeStatus
+import org.wa9nnn.fdcluster.store.{RequestNodeStatus, StoreSender}
 import org.wa9nnn.webclient.{QsoLogger, SignOnOff}
 import play.api.libs.json.JsValue
 
@@ -61,7 +61,7 @@ trait UserRoutes extends LazyLogging {
    */
   implicit def jsonToString(jsValue: JsValue): ToResponseMarshallable
 
-  val store: ActorRef
+  val store: StoreSender
 
   // Required by the `ask` (?) method below
   implicit lazy val timeout: Timeout = Timeout(5 seconds) // usually we'd obtain the timeout from the system's configuration
@@ -99,7 +99,7 @@ trait UserRoutes extends LazyLogging {
             },
             path("nodeStatus") {
               onSuccess((
-                store ? RequestNodeStatus
+                store ?[NodeStatus] RequestNodeStatus
                 ).mapTo[NodeStatus]) { nodeStatus ⇒
                 complete {
                   nodeStatus
@@ -133,7 +133,16 @@ trait UserRoutes extends LazyLogging {
 
             signOnOff.doSignonRoute,
             signOnOff.changeStation,
+            path("nodeStatusRequest") {
+              onSuccess((
+                store ?[NodeStatus] RequestNodeStatus
+                ).mapTo[NodeStatus]) { nodeStatus ⇒
+                complete {
+                  nodeStatus
+                }
+              }
 
+            },
             path({
               val str = ClassToPath(classOf[RequestUuidsForHour])
               str

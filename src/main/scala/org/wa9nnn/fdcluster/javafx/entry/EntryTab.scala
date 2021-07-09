@@ -24,11 +24,10 @@ import _root_.scalafx.beans.binding.{Bindings, ObjectBinding}
 import _root_.scalafx.event.ActionEvent
 import _root_.scalafx.geometry.{Insets, Pos}
 import _root_.scalafx.scene.control._
-import _root_.scalafx.scene.layout.{BorderPane, HBox, Pane, VBox}
+import _root_.scalafx.scene.layout.{BorderPane, HBox, VBox}
 import akka.util.Timeout
-import com.google.inject.{Inject, Injector}
+import com.google.inject.Inject
 import com.typesafe.scalalogging.LazyLogging
-import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import org.scalafx.extras.onFX
 import org.wa9nnn.fdcluster.contest.OkGate
 import org.wa9nnn.fdcluster.javafx.entry.section.SectionField
@@ -50,7 +49,7 @@ import scala.util.Try
  * Create ScalaFX UI for field day entry mode.
  */
 @Singleton
-class EntryTab @Inject()(injector: Injector,
+class EntryTab @Inject()(
                          currentStationPanel: StationPanel,
                          contestProperty: ContestProperty,
                          nodeAddress: NodeAddress,

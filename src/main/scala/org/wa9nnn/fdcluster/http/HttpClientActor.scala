@@ -22,15 +22,20 @@ package org.wa9nnn.fdcluster.http
 import akka.actor.{Actor, ActorRef, ActorSystem}
 import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.{Http, model}
-import akka.stream.{Materializer, StreamTcpException}
 import akka.stream.scaladsl.Source
+import akka.stream.{Materializer, StreamTcpException}
 import akka.util.ByteString
-import com.google.inject.name.Named
+import com.google.inject.Injector
+import com.sandinh.akuice.ActorInject
 import com.typesafe.scalalogging.LazyLogging
+import org.wa9nnn.akka.ActorSender
 import org.wa9nnn.fdcluster.Markers.syncMarker
 import org.wa9nnn.fdcluster.javafx.sync.{ResponseMessage, SendContainer}
+import org.wa9nnn.fdcluster.model.sync.ClusterSender
+import org.wa9nnn.fdcluster.store.StoreSender
 import play.api.libs.json.{JsObject, Json}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
@@ -40,8 +45,8 @@ import scala.util.{Failure, Success}
  * @param store actor that manages QSOs
  * @param cluster actor that handles custer stuff.
  */
-class HttpClientActor(@Named("store") store: ActorRef,
-                      @Named("cluster") cluster: ActorRef,
+class HttpClientActor @Inject()(store: StoreSender,
+                      cluster: ClusterSender,
                      ) extends Actor with LazyLogging {
 
   private implicit val materializer: Materializer = Materializer.apply(context)
@@ -97,6 +102,10 @@ class HttpClientActor(@Named("store") store: ActorRef,
   }
 }
 
+@Singleton
+class HttpClientSender @Inject()(implicit val injector: Injector) extends ActorInject with ActorSender {
+  val actor: ActorRef = injectTopActor[HttpClientActor]
+}
 
 
 

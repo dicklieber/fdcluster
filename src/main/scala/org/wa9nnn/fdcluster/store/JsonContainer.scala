@@ -22,7 +22,7 @@ import scala.util.{Try, Using}
  * @param className
  * @param json
  */
-case class JsonContainer private(className: String, json: String, stamp:Instant = Instant.now()) {
+case class JsonContainer private(className: String, json: String, stamp: Instant = Instant.now()) {
   def bytes: Array[Byte] = {
     val baos = new ByteArrayOutputStream()
     val gzInputStream: GZIPOutputStream = new GZIPOutputStream(baos)
@@ -43,11 +43,16 @@ case class JsonContainer private(className: String, json: String, stamp:Instant 
   }
 }
 
-object JsonContainer extends LazyLogging{
-  val node:Long = new SecureRandom().nextLong()
+object JsonContainer extends LazyLogging {
+  val node: Long = new SecureRandom().nextLong()
   val sn = new AtomicLong()
+
+  def apply(byteString: ByteString): Try[JsonContainer] = {
+    apply(byteString.toArray)
+  }
+
   def apply(bytes: Array[Byte]): Try[JsonContainer] = {
-   val triedMessage =  Using(new GZIPInputStream(new ByteArrayInputStream(bytes))) { gzis =>
+    val triedMessage = Using(new GZIPInputStream(new ByteArrayInputStream(bytes))) { gzis =>
       val jsValue = Json.parse(gzis)
       jsValue.as[JsonContainer]
     }
