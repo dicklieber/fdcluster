@@ -49,7 +49,6 @@ import java.awt.Desktop
 import java.lang.management.ManagementFactory
 import scala.util.{Failure, Success, Using}
 
-
 object FdCluster extends App {
   //  def main(args: Array[String]): Unit = {
   println("at org.wa9nnn.fdcluster.javafx.FdCluster")
@@ -74,7 +73,7 @@ class FdCluster1 extends Application with LazyLogging with ActorInject {
     implicit val actorSystem = injector.instance[ActorSystem]
     // top level actors
 //    val clusterActor: ActorRef = injectTopActor[ClusterActor]("clusterActor")
-    val broqadcastListener: ActorRef = injectTopActor[BroadcastListener]("broadcastListener")
+    val broqadcastListener: BroadcastListener = injector.instance[BroadcastListener]
 
 
     val dataTab = injector.instance[DataTab]

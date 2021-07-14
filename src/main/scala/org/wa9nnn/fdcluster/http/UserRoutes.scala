@@ -40,6 +40,7 @@ import play.api.libs.json.JsValue
 
 import scala.concurrent.duration._
 import scala.language.postfixOps
+import scala.util.{Failure, Success}
 
 //todo mmake this an injectable clas
 trait UserRoutes extends LazyLogging {
@@ -74,125 +75,125 @@ trait UserRoutes extends LazyLogging {
     encodeResponse(
       logRequestResult("overall")(
 
-      concat(
-        get {
-          concat(
-            pathSingleSlash {
-              complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, {
-                html.Landing().toString()
-              }
-              ))
-            },
-          )
-        }, get {
+        concat(
+          get {
+            concat(
+              pathSingleSlash {
+                complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, {
+                  html.Landing().toString()
+                }
+                ))
+              },
+            )
+          }, get {
 
-          concat(
-            // logs just the request method and response status at info level
+            concat(
+              // logs just the request method and response status at info level
 
-            path("about") {
+              path("about") {
                 complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, {
                   val table = aboutTable()
                   html.AboutDialog(table).toString()
                 }
                 ))
 
-            },
-            path("nodeStatus") {
-              onSuccess((
-                store ?[NodeStatus] RequestNodeStatus
-                ).mapTo[NodeStatus]) { nodeStatus ⇒
-                complete {
-                  nodeStatus
-                }
-              }
-
-            },
-            path("contestImage") {
-              val imagePath: String = s"images/${contestProperty.contestName}.png"
-              getFromResource(imagePath)
-            },
-            pathPrefix("images") {
-              getFromResourceDirectory("images")
-            },
-            pathPrefix("css") {
-              getFromResourceDirectory("css")
-            },
-            pathPrefix("javascripts") {
-              getFromResourceDirectory("javascripts")
-            },
-            qsoLogger.qsoEntryRoute,
-            signOnOff.signonRoute,
-            signOnOff.logOutRoute,
-            qsoLogger.possibleDupRoute,
-
-          )
-        },
-        post {
-
-          concat(
-
-            signOnOff.doSignonRoute,
-            signOnOff.changeStation,
-            path("nodeStatusRequest") {
-              onSuccess((
-                store ?[NodeStatus] RequestNodeStatus
-                ).mapTo[NodeStatus]) { nodeStatus ⇒
-                complete {
-                  nodeStatus
-                }
-              }
-
-            },
-            path({
-              val str = ClassToPath(classOf[RequestUuidsForHour])
-              str
-            }) {
-              val um = as[RequestUuidsForHour]
-              entity(um) { uuidRequest ⇒
+              },
+              path("nodeStatus") {
                 onSuccess((
-                  store ? uuidRequest
-                  ).mapTo[UuidsAtHost]) { uuids: UuidsAtHost ⇒
+                  store ?[NodeStatus] RequestNodeStatus
+                  ).mapTo[NodeStatus]) { nodeStatus ⇒
                   complete {
-                    uuids
+                    nodeStatus
+                  }
+                }
+
+              },
+              path("contestImage") {
+                val imagePath: String = s"images/${contestProperty.contestName}.png"
+                getFromResource(imagePath)
+              },
+              pathPrefix("images") {
+                getFromResourceDirectory("images")
+              },
+              pathPrefix("css") {
+                getFromResourceDirectory("css")
+              },
+              pathPrefix("javascripts") {
+                getFromResourceDirectory("javascripts")
+              },
+              qsoLogger.qsoEntryRoute,
+              signOnOff.signonRoute,
+              signOnOff.logOutRoute,
+              qsoLogger.possibleDupRoute,
+
+            )
+          },
+          post {
+
+            concat(
+
+              signOnOff.doSignonRoute,
+              signOnOff.changeStation,
+              path("nodeStatusRequest") {
+                onSuccess((
+                  store ?[NodeStatus] RequestNodeStatus
+                  ).mapTo[NodeStatus]) { nodeStatus ⇒
+                  complete {
+                    nodeStatus
+                  }
+                }
+
+              },
+              path({
+                val str = ClassToPath(classOf[RequestUuidsForHour])
+                str
+              }) {
+                val um = as[RequestUuidsForHour]
+                entity(um) { uuidRequest ⇒
+                  onSuccess((
+                    store ? uuidRequest
+                    ).mapTo[UuidsAtHost]) { uuids: UuidsAtHost ⇒
+                    complete {
+                      uuids
+                    }
                   }
                 }
               }
-            }
-            ,
-            path(ClassToPath(classOf[RequestQsosForUuids])) {
-              val um = as[RequestQsosForUuids]
-              entity(um) { uuidRequest ⇒
-                onSuccess((
-                  store ? uuidRequest
-                  ).mapTo[QsosFromNode]) { qsosFromNode ⇒
-                  complete {
-                    qsosFromNode
+              ,
+              path(ClassToPath(classOf[RequestQsosForUuids])) {
+                val um = as[RequestQsosForUuids]
+                entity(um) { uuidRequest ⇒
+                  onSuccess((
+                    store ? uuidRequest
+                    ).mapTo[QsosFromNode]) { qsosFromNode ⇒
+                    complete {
+                      qsosFromNode
+                    }
                   }
                 }
-              }
-            },
-            path(ClassToPath(classOf[RequestQsosForHour])) {
-              val um = as[RequestQsosForHour]
-              entity(um) { qsoRequest ⇒
-                onSuccess((
-                  store ? qsoRequest
-                  ).mapTo[QsosFromNode]) { qsosFromNode ⇒
-                  complete {
-                    qsosFromNode
+              },
+              path(ClassToPath(classOf[RequestQsosForHour])) {
+                val um = as[RequestQsosForHour]
+                entity(um) { qsoRequest ⇒
+                  onSuccess((
+                    store ?[QsosFromNode] qsoRequest
+                    ).mapTo[QsosFromNode]) { qsosFromNode ⇒
+                    complete {
+                      qsosFromNode
+                    }
                   }
                 }
-              }
-            },
-            qsoLogger.logQsoRoute
-            //            Xyzzy.apply
-            //            path("LogQso") {
-            //              formFields("callSign", "class", "section") { (callSign, clas, section) =>
-            //                complete(s"Please log $callSign $clas $section")
-            //              }
-            //            }
-          )
-        }
-      )
+              },
+              qsoLogger.logQsoRoute
+              //            Xyzzy.apply
+              //            path("LogQso") {
+              //              formFields("callSign", "class", "section") { (callSign, clas, section) =>
+              //                complete(s"Please log $callSign $clas $section")
+              //              }
+              //            }
+            )
+          }
+        )
       )
     )
 

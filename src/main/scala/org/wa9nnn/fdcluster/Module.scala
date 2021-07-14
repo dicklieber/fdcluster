@@ -49,7 +49,6 @@ class Module() extends AbstractModule with ScalaModule with LazyLogging{
   //class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
 
   override def configure(): Unit = {
-    logger.debug("configure()")
     try {
       val fileManager = new FileContext()
       bind[FileContext].toInstance(fileManager)

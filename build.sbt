@@ -5,7 +5,7 @@ import com.typesafe.sbt.packager.SettingsHelper.makeDeploymentSettings
 
 maintainer := "wa9nnn@u505.com"
 
-enablePlugins(JavaAppPackaging, GitPlugin, BuildInfoPlugin, SbtTwirl, WindowsPlugin)
+enablePlugins(JavaAppPackaging, GitPlugin, BuildInfoPlugin, SbtTwirl, UniversalDeployPlugin)
 buildInfoKeys ++= Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, maintainer,
   git.gitCurrentTags, git.gitCurrentBranch, git.gitHeadCommit, git.gitHeadCommitDate, git.baseVersion)
 buildInfoPackage := "org.wa9nnn.fdcluster"
@@ -36,6 +36,8 @@ Compile / discoveredMainClasses := Seq()
 // wix build information
 wixProductId := "268963af-6f14-445a-bcc7-21775b5bdcc5"
 wixProductUpgradeId := "6b10420e-df5b-4c6c-9ca0-c12daf4b239d"
+
+
 
 scalaVersion := "2.13.5"
 

@@ -69,8 +69,9 @@ case class NodeAddress(url: URL = new URL("http:///"), instance: Option[Int] = N
     s"$url.getHost:$instance"
   }
 
-  val graphiteName: String = {
-    s"${url.getHost.replace('.', '_')}:$instance"
+  lazy val graphiteName: String = {
+    val graphiteSafeUrl = url.getHost.replace('.', '_')
+    s"$graphiteSafeUrl${instance.map(instance => s"_$instance").getOrElse("")}"
   }
 
 
@@ -127,6 +128,8 @@ object NodeAddress {
     } yield {
       inetAddresses
     })
+      .sortBy(_.toString)
+      .reverse
       .headOption.getOrElse(throw new IllegalStateException("No IP address!"))
 
   }

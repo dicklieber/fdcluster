@@ -16,25 +16,29 @@ object ConfigApp extends LazyLogging {
       val userConf = userHome.resolve("fdcluster").resolve("user.conf")
 
       val userConfig = ConfigFactory.parseFile(userConf.toFile)
-      val userOrigin = userConfig.origin()
-      Option(userOrigin.url()).foreach(url => {
-        logger.info(s"config items from: ${userOrigin.url()}")
-        dumpConfig(userConfig)
+      logger.whenDebugEnabled {
+        val userOrigin = userConfig.origin()
+        Option(userOrigin.url()).foreach(url => {
+          logger.info(s"config items from: ${userOrigin.url()}")
+          dumpConfig(userConfig)
+        }
+        )
       }
-      )
 
       val finalConfig = userConfig.withFallback(builtinConfig)
-      val finalOrigin = finalConfig.origin()
-      val parts = finalOrigin.description.split("""\s+@\s+""")
-        .filterNot(line => line.startsWith("jar:"))
-      parts.foreach(part => logger.info(part))
-      logger.info(s"final config:")
-      dumpConfig(finalConfig.getConfig("fdcluster"))
+      logger.whenDebugEnabled {
+        val finalOrigin = finalConfig.origin()
+        val parts = finalOrigin.description.split("""\s+@\s+""")
+          .filterNot(line => line.startsWith("jar:"))
+        parts.foreach(part => logger.info(part))
+        logger.info(s"final config:")
+        dumpConfig(finalConfig.getConfig("fdcluster"))
+      }
 
 
       finalConfig
     } catch {
-      case e:Throwable =>
+      case e: Throwable =>
         logger.error("loading configuratuib", e)
         exit(1)
     }
