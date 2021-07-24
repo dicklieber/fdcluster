@@ -1,0 +1,76 @@
+<included>
+
+
+    <appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>127.0.0.1:5046</destination>
+
+                <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+<!--        <encoder class="net.logstash.logback.encoder.LogstashEncoder">-->
+        <providers>
+<!--            &lt;!&ndash;                <mdc/>&ndash;&gt;-->
+<!--            &lt;!&ndash;                <context/>&ndash;&gt;-->
+<!--            &lt;!&ndash;                <version/>&ndash;&gt;-->
+<!--            <logLevel/>-->
+<!--            <loggerName/>-->
+
+<!--            &lt;!&ndash;                <threadName/>&ndash;&gt;-->
+<!--            <provider class="net.logstash.logback.composite.loggingevent.MessageJsonProvider"/>-->
+<!--            &lt;!&ndash;                <provider class="com.foreach.across.modules.logging.request.RequestLoggerJsonProvider"/>&ndash;&gt;-->
+
+<!--            &lt;!&ndash;                <logstashMarkers/>&ndash;&gt;-->
+<!--            <arguments/>-->
+
+<!--            <stackTrace/>-->
+
+            <pattern>
+                <pattern>
+                    {
+<!--                    "instance": property{"instance"}-->
+<!--                    "message": "XYZY"-->
+<!--                    "message": "#asJson{%message}"-->
+                    "message": "#tryJson{%message}"
+
+<!--                    "message": "#{%message}"-->
+                    }
+                </pattern>
+            </pattern>
+        </providers>
+    </encoder>
+</appender>
+        <!--    <appender name="elk-errors"  class="org.wa9nnn.fdcluster.logging.RequestLoggerJsonProvider">-->
+        <!--        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
+        <!--            <level>ERROR</level>-->File
+        <!--        </filter>-->
+        <!--        <destination>127.0.0.1:5046</destination>-->
+        <!--        <encoder>-->
+        <!--            <pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>-->
+        <!--        </encoder>-->
+
+        <!--        &lt;!&ndash;        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">&ndash;&gt;-->
+        <!--&lt;!&ndash;            <providers>&ndash;&gt;-->
+        <!--&lt;!&ndash;                <mdc/>&ndash;&gt;-->
+        <!--&lt;!&ndash;                <context/>&ndash;&gt;-->
+        <!--&lt;!&ndash;                <version/>&ndash;&gt;-->
+        <!--&lt;!&ndash;                <logLevel/>&ndash;&gt;-->
+        <!--&lt;!&ndash;                <loggerName/>&ndash;&gt;-->
+
+        <!--&lt;!&ndash;                <threadName/>&ndash;&gt;-->
+        <!--&lt;!&ndash;                <message/>&ndash;&gt;-->
+
+        <!--&lt;!&ndash;                <logstashMarkers/>&ndash;&gt;-->
+        <!--&lt;!&ndash;                <arguments/>&ndash;&gt;-->
+
+        <!--&lt;!&ndash;                <stackTrace/>&ndash;&gt;-->
+
+        <!--&lt;!&ndash;                <pattern>&ndash;&gt;-->
+        <!--&lt;!&ndash;                    <pattern>&ndash;&gt;-->
+        <!--&lt;!&ndash;                        {&ndash;&gt;-->
+        <!--&lt;!&ndash;                        "application": "${logging.logstash.application}",&ndash;&gt;-->
+        <!--&lt;!&ndash;                        "appender": "errors"&ndash;&gt;-->
+        <!--&lt;!&ndash;                        }&ndash;&gt;-->
+        <!--&lt;!&ndash;                    </pattern>&ndash;&gt;-->
+        <!--&lt;!&ndash;                </pattern>&ndash;&gt;-->
+        <!--&lt;!&ndash;            </providers>&ndash;&gt;-->
+        <!--&lt;!&ndash;        </encoder>&ndash;&gt;-->
+        <!--    </appender>-->
+        </included>

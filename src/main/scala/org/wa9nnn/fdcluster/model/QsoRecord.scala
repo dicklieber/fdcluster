@@ -19,6 +19,8 @@
 package org.wa9nnn.fdcluster.model
 
 import akka.util.ByteString
+import net.logstash.logback.argument.StructuredArguments.kv
+import org.wa9nnn.fdcluster.logging.Loggable
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.sync.StoreMessage
 import org.wa9nnn.fdcluster.store.network.FdHour
@@ -44,7 +46,7 @@ case class Qso(callSign: CallSign,
                qsoMetadata: QsoMetadata,
                stamp: Instant = Instant.now(),
                uuid: UUID = UUID.randomUUID
-              ) extends Ordered[Qso] {
+              ) extends Ordered[Qso] with Loggable {
   def isDup(that: Qso): Boolean = {
     this.callSign == that.callSign &&
       this.bandMode == that.bandMode
@@ -72,14 +74,27 @@ case class Qso(callSign: CallSign,
   def toJsonPretty: String = {
     Json.prettyPrint(Json.toJson(this))
   }
+
+  override def log(): Unit = {
+
+    logger.info("newqso {} {} {} {} {} {}",
+      kv("callsign", callSign),
+      kv("operator", qsoMetadata.operator),
+      kv("class", exchange.entryClass),
+      kv("section", exchange.sectionCode),
+      kv("band", bandMode.bandName),
+      kv("mode", bandMode.modeName)
+    )
+  }
 }
 
 object Qso {
   def apply(callSign: CallSign,
             exchange: Exchange,
-            bandMode: BandMode) (implicit qsoMetadata: QsoMetadata):Qso = {
+            bandMode: BandMode)(implicit qsoMetadata: QsoMetadata): Qso = {
     new Qso(callSign.toUpperCase, exchange, bandMode, qsoMetadata)
   }
+
   def apply(json: String): Qso = {
     Json.parse(json).as[Qso]
   }
@@ -92,7 +107,11 @@ object Qso {
  * @param qso         the new QSO
  * @param nodeAddress where this came from.
  */
-case class DistributedQso(qso: Qso, nodeAddress: NodeAddress) extends StoreMessage
+case class DistributedQso(qso: Qso, nodeAddress: NodeAddress) extends StoreMessage with Loggable{
+  override def log(): Unit = {
+    qso.log()
+  }
+}
 
 
 

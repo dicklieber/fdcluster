@@ -24,21 +24,24 @@ import _root_.scalafx.scene.Scene
 import _root_.scalafx.scene.control.{Tab, TabPane}
 import _root_.scalafx.scene.image.{Image, ImageView}
 import _root_.scalafx.scene.layout.{BorderPane, GridPane}
-import akka.actor.{ActorRef, ActorSystem}
+import akka.actor.ActorSystem
 import com.google.inject.{Guice, Injector}
 import com.sandinh.akuice.ActorInject
 import com.typesafe.scalalogging.LazyLogging
 import com.wa9nnn.util.macos.DockIcon
+import io.prometheus.client.CollectorRegistry
 import javafx.application.Application
 import javafx.stage.Stage
 import net.codingwell.scalaguice.InjectorExtensions._
+import net.logstash.logback.argument.StructuredArguments.kv
 import org.scalafx.extras.onFX
 import org.wa9nnn.fdcluster.http.Server
 import org.wa9nnn.fdcluster.javafx.cluster.ClusterTab
 import org.wa9nnn.fdcluster.javafx.data.DataTab
 import org.wa9nnn.fdcluster.javafx.entry.{EntryTab, RunningTaskPane, StatisticsTab}
 import org.wa9nnn.fdcluster.javafx.menu.FdClusterMenu
-import org.wa9nnn.fdcluster.model.sync.ClusterActor
+import org.wa9nnn.fdcluster.logging.LogManager
+import org.wa9nnn.fdcluster.model.sync.HeartBeatMessage.instanceId
 import org.wa9nnn.fdcluster.model.{AllContestRules, ContestProperty, NodeAddress}
 import org.wa9nnn.fdcluster.store.network.BroadcastListener
 import org.wa9nnn.fdcluster.{Module, NetworkPane}
@@ -57,7 +60,7 @@ object FdCluster extends App {
 }
 
 /**
- * Main for FDLog
+ * Main for FdCluster
  */
 class FdCluster1 extends Application with LazyLogging with ActorInject {
   println(s"JAVA_HOME: \t${System.getenv("JAVA_HOME")}")
@@ -72,7 +75,7 @@ class FdCluster1 extends Application with LazyLogging with ActorInject {
 
     implicit val actorSystem = injector.instance[ActorSystem]
     // top level actors
-//    val clusterActor: ActorRef = injectTopActor[ClusterActor]("clusterActor")
+    //    val clusterActor: ActorRef = injectTopActor[ClusterActor]("clusterActor")
     val broqadcastListener: BroadcastListener = injector.instance[BroadcastListener]
 
 
@@ -94,6 +97,8 @@ class FdCluster1 extends Application with LazyLogging with ActorInject {
         e.printStackTrace()
     }
     val fdMenu: FdClusterMenu = injector.instance[FdClusterMenu]
+
+    val logManager = injector.instance[LogManager]
 
     val fdclusterTabs: Seq[Tab] = Seq(entryTab, dataTab, clusterTab, statisticsTab)
     val tabPane: TabPane = new TabPane {
@@ -197,5 +202,20 @@ class FdCluster1 extends Application with LazyLogging with ActorInject {
           logger.debug("Icon switch", et)
       }
     }
+
+    logger.info("Start FdCluster",
+      kv("instanceId", instanceId))
   }
+}
+
+object FdCluster1 {
+
+  import fr.davit.akka.http.metrics.prometheus.{PrometheusRegistry, PrometheusSettings}
+
+  import io.prometheus.client.hotspot.DefaultExports
+
+  val prometheus: CollectorRegistry = CollectorRegistry.defaultRegistry // your prometheus registry
+  val settings: PrometheusSettings = PrometheusSettings.default
+  val registry = PrometheusRegistry(prometheus, settings) // or PrometheusRegistry() to use the default registry & settings
+  DefaultExports.register(prometheus)
 }

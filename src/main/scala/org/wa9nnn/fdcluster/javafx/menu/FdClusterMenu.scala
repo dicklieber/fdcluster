@@ -33,6 +33,7 @@ import org.wa9nnn.fdcluster.contest.{ContestDialog, OkGate}
 import org.wa9nnn.fdcluster.dupsheet.GenerateDupSheet
 import org.wa9nnn.fdcluster.javafx.cluster.FdHoursDialog
 import org.wa9nnn.fdcluster.javafx.debug.{DebugRemoveDialog, ResetDialog}
+import org.wa9nnn.fdcluster.logging.LogStashDialog
 import org.wa9nnn.fdcluster.metrics.MetricsReporter
 import org.wa9nnn.fdcluster.model.NodeAddress
 import org.wa9nnn.fdcluster.rig.RigDialog
@@ -96,6 +97,14 @@ class FdClusterMenu @Inject()(
       debugRemoveDialog()
     }
   }
+
+  private val centralDataCollection = new MenuItem{
+    text = "Central Data Collection"
+    onAction = { _: ActionEvent =>
+      injector.instance[LogStashDialog]
+    }
+  }
+
   private val aboutMenuItem = new MenuItem {
     text = "_About "
     onAction = { _: ActionEvent =>
@@ -221,6 +230,7 @@ class FdClusterMenu @Inject()(
         mnemonicParsing = true
         items = List(
           fdHours,
+          centralDataCollection,
           upDown,
           dumpStatsMenuItem,
           debugClearStoreMenuItem,

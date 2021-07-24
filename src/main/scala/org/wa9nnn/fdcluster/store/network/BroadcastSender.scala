@@ -1,20 +1,24 @@
 package org.wa9nnn.fdcluster.store.network
 
-import akka.actor.{Actor, ActorRef, Cancellable, PoisonPill, Props, Scheduler}
+import akka.actor.{Actor, ActorRef, Cancellable, PoisonPill, Scheduler}
 import akka.io.Udp.SO
 import akka.io.{IO, Udp, UdpConnected}
 import akka.pattern.{ask, pipe}
 import akka.util.Timeout
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
+import net.logstash.logback.argument.StructuredArgument
+import net.logstash.logback.argument.StructuredArguments.kv
 import org.wa9nnn.fdcluster.model.sync.NodeStatus
 import org.wa9nnn.fdcluster.store.{JsonContainer, RequestNodeStatus}
 
 import java.net.InetSocketAddress
 import java.time.Duration
+import java.util.concurrent.atomic.AtomicInteger
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.DurationInt
 import scala.language.postfixOps
+
 
 class BroadcastSender(config: Config) extends Actor with LazyLogging {
   val heartBeatDuration: Duration = config.getDuration("fdcluster.broadcast.heartbeat")
@@ -26,7 +30,6 @@ class BroadcastSender(config: Config) extends Actor with LazyLogging {
   private var cancellable: Option[Cancellable] =  Option(scheduler.scheduleOnce(heartBeatDuration, self, SendHeartbeat, global, self))
   private implicit val timeout: Timeout = Timeout(50 seconds)
   val storeActor: ActorRef = context.parent
-
   import context.system
 
   IO(Udp) ! Udp.SimpleSender(Seq(broadcast))
@@ -43,6 +46,7 @@ class BroadcastSender(config: Config) extends Actor with LazyLogging {
   }
 
   def ready(connection: ActorRef): Receive = {
+
     case jc: JsonContainer =>
       cancellable.foreach { c =>
         c.cancel()
@@ -51,11 +55,15 @@ class BroadcastSender(config: Config) extends Actor with LazyLogging {
 
       import scala.concurrent.ExecutionContext.Implicits.global
 
+
+
       connection ! Udp.Send(jc.toByteString, broadcastSocketAddress)
       cancellable = Option(scheduler.scheduleOnce(heartBeatDuration, self, SendHeartbeat, global, self))
 
     case SendHeartbeat =>
-      (storeActor ? RequestNodeStatus).mapTo[NodeStatus].map(_.heartBeatMessage).pipeTo(self)
+      (storeActor ? RequestNodeStatus).mapTo[NodeStatus].map{ ns =>
+        ns.heartBeatMessage
+      }.pipeTo(self)
 
     case UdpConnected.Disconnect =>
       connection ! UdpConnected.Disconnect

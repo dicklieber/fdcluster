@@ -22,7 +22,7 @@ package org.wa9nnn.fdcluster.metrics
 import com.codahale.metrics.ConsoleReporter
 
 import java.net.InetSocketAddress
-import com.codahale.metrics.graphite.{Graphite, GraphiteReporter}
+//import com.codahale.metrics.graphite.{Graphite, GraphiteReporter}
 import javafx.scene.control.{DialogPane, ScrollPane}
 import javafx.scene.layout.VBox
 import javafx.scene.text
@@ -43,15 +43,15 @@ class MetricsReporter @Inject()(nodeAddress: NodeAddress) extends DefaultInstrum
   import com.codahale.metrics.MetricFilter
   import java.util.concurrent.TimeUnit
 
-    val graphite = new Graphite(new InetSocketAddress("localhost", 2003));
-
-    val reporter: GraphiteReporter = GraphiteReporter
-      .forRegistry(metricRegistry)
-      .prefixedWith(s"fdcluster.${nodeAddress.graphiteName}")
-      .convertRatesTo(TimeUnit.MINUTES)
-      .convertDurationsTo(TimeUnit.MILLISECONDS)
-      .filter(MetricFilter.ALL).build(graphite)
-      reporter.start(15, TimeUnit.SECONDS)
+//    val graphite = new Graphite(new InetSocketAddress("localhost", 2003));
+//
+//    val reporter: GraphiteReporter = GraphiteReporter
+//      .forRegistry(metricRegistry)
+//      .prefixedWith(s"fdcluster.${nodeAddress.graphiteName}")
+//      .convertRatesTo(TimeUnit.MINUTES)
+//      .convertDurationsTo(TimeUnit.MILLISECONDS)
+//      .filter(MetricFilter.ALL).build(graphite)
+//      reporter.start(15, TimeUnit.SECONDS)
 
 
   def report(): Unit = {

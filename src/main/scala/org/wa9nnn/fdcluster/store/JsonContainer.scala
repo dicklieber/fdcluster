@@ -3,6 +3,7 @@ package org.wa9nnn.fdcluster.store
 import akka.util.ByteString
 import com.typesafe.scalalogging.LazyLogging
 import org.apache.commons.io.output.ByteArrayOutputStream
+import org.wa9nnn.fdcluster.logging.Loggable
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.store.JsonContainer.node
 import org.wa9nnn.fdcluster.store.network.MessageDecoder
@@ -72,6 +73,12 @@ object JsonContainer extends LazyLogging {
   def apply[T: ClassTag](canBeJson: T)(implicit tjs: Writes[T]): JsonContainer = {
     val clazz: Class[_] = classTag[T].runtimeClass
     val className: String = clazz.getName
+
+    canBeJson match {
+      case loggable: Loggable=>
+        loggable.log()
+    }
+
     val json = Json.toJson(canBeJson).toString()
     new JsonContainer(className, json)
   }

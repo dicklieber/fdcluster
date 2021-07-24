@@ -2,8 +2,7 @@ package org.wa9nnn.fdcluster.store.network
 
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
-import nl.grons.metrics4.scala
-import nl.grons.metrics4.scala.DefaultInstrumented
+import io.prometheus.client.Gauge
 import org.wa9nnn.fdcluster.model.sync.{ClusterMessage, ClusterSender, StoreMessage}
 import org.wa9nnn.fdcluster.store.{JsonContainer, StoreSender}
 
@@ -14,11 +13,19 @@ import java.time.Duration
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 
-class BroadcastListener @Inject()(config: Config, cluster: ClusterSender, store: StoreSender) extends LazyLogging with DefaultInstrumented {
+class BroadcastListener @Inject()(config: Config, cluster: ClusterSender, store: StoreSender) extends LazyLogging {
   val socketTimeout: Duration = config.getDuration("fdcluster.broadcast.timeout")
   val port: Int = config.getInt("fdcluster.broadcast.port")
-  val messagesReceivedMeter: scala.Meter = metrics.meter("messagesReceived")
+//  val messagesReceivedMeter: scala.Meter = metrics.meter("messagesReceived")
+  val receivedCounter: Gauge = Gauge.build
+    .name("BroadcastsReceived")
+    .help(s"Broadcast messages received on port: $port")
+    .register
 
+  import io.prometheus.client.Summary
+
+  val receivedBytes: Summary = Summary.build.name("broadcastSize").help("Request size in bytes.").register
+  val requestLatency: Summary = Summary.build.name("broadcastsPerMinute").help("broadcasts per minute.").register
 
   import java.nio.channels.DatagramChannel
 
@@ -38,26 +45,6 @@ class BroadcastListener @Inject()(config: Config, cluster: ClusterSender, store:
     datagramChannel
   }
 
-  //  val t: Boolean = true
-  //  private val socket: DatagramSocket = new DatagramSocket()
-  //    .setOption[java.lang.Boolean](SO_REUSEPORT, java.lang.Boolean.TRUE)
-  //    .setOption[java.lang.Boolean](SO_REUSEADDR, t)
-  //  //  socket.bind(new InetSocketAddress(port))
-
-  //  private val reuseAddress: Boolean = socket.getReuseAddress
-  //  private val b: Boolean = socket.getBroadcast
-  //  private val localSocketAddress: SocketAddress = socket.getLocalSocketAddress
-  //  private val localPort: Int = socket.getLocalPort
-  //  private val port1: Int = socket.getPort
-  //  private val reuseAddr: lang.Boolean = socket.getOption(SO_REUSEADDR)
-  //  private val resusePort: lang.Boolean = socket.getOption(SO_REUSEPORT)
-
-  //  private val socket2: DatagramSocket = new DatagramSocket()
-  //    .setOption[java.lang.Boolean](SO_REUSEPORT, java.lang.Boolean.TRUE)
-  //    .setOption[java.lang.Boolean](SO_REUSEADDR, t)
-  //  socket.bind(new InetSocketAddress(port))
-  //  private val reuseAddr2: lang.Boolean = socket2.getOption(SO_REUSEADDR)
-  //  private val resusePort2: lang.Boolean = socket2.getOption(SO_REUSEPORT)
 
 
   Runtime.getRuntime.addShutdownHook(new Thread(() => {
@@ -79,17 +66,20 @@ class BroadcastListener @Inject()(config: Config, cluster: ClusterSender, store:
   new Thread(() => {
     do {
       try {
+        val timer = requestLatency.startTimer()
         //        val recv: DatagramPacket = new DatagramPacket(buf, buf.length)
         val byteBuffer = ByteBuffer.allocate(10000)
         val address = channel.receive(byteBuffer)
-
+        val bytes = byteBuffer.array()
+        receivedBytes.observe(bytes.length)
+        timer.observeDuration()
         for {
-          jc <- JsonContainer(byteBuffer.array())
+          jc <- JsonContainer(bytes)
           rec <- jc.received()
         } {
           packetCount.incrementAndGet()
           logger.trace(s"Broadcast packet received. sn: ${packetCount.incrementAndGet()}")
-          messagesReceivedMeter.mark()
+          receivedCounter.inc()
           logger.whenTraceEnabled {
             logger.trace(s"Got: $jc from  ${address}")
           }

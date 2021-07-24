@@ -19,19 +19,22 @@
 
 package org.wa9nnn.fdcluster.model.sync
 
+import net.logstash.logback.argument.StructuredArguments.kv
 import org.wa9nnn.fdcluster.BuildInfo
 import org.wa9nnn.fdcluster.contest.Contest
 import org.wa9nnn.fdcluster.http.DestinationActor
 import org.wa9nnn.fdcluster.javafx.cluster.{NamedValue, NamedValueCollector, ValueName}
 import org.wa9nnn.fdcluster.javafx.sync.ResponseMessage
-import org.wa9nnn.fdcluster.model.MessageFormats.Digest
+import org.wa9nnn.fdcluster.logging.{LocalLog, Loggable}
+import org.wa9nnn.fdcluster.model.MessageFormats.{Digest, _}
+import org.wa9nnn.fdcluster.model.sync.HeartBeatMessage.{heartBeatSerialNumber, instanceId}
 import org.wa9nnn.fdcluster.model.sync.NodeStatus.serialNumbers
 import org.wa9nnn.fdcluster.model.{Journal, NodeAddress, Station}
 import org.wa9nnn.fdcluster.store.JsonContainer
 import org.wa9nnn.fdcluster.store.network.FdHour
 import org.wa9nnn.webclient.Session
-import org.wa9nnn.fdcluster.model.MessageFormats._
-import java.security.MessageDigest
+
+import java.security.{MessageDigest, SecureRandom}
 import java.time.Instant
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -116,7 +119,7 @@ case class NodeStatus(nodeStatus: BaseNodeStatus, digest: Digest, stamp: Instant
   }
 
   lazy val heartBeatMessage: JsonContainer = {
-   JsonContainer( HeartBeatMessage(nodeStatus.nodeAddress, digest, stamp))
+    JsonContainer(HeartBeatMessage(nodeStatus.nodeAddress, digest, stamp))
   }
   override val destination: DestinationActor = DestinationActor.cluster
 }
@@ -138,10 +141,26 @@ object NodeStatus {
 
 }
 
-case class HeartBeatMessage(nodeAddress: NodeAddress, nodStatusDigest: Digest, stamp: Instant = Instant.now) extends ClusterMessage {
+case class HeartBeatMessage(nodeAddress: NodeAddress, nodStatusDigest: Digest, stamp: Instant = Instant.now)
+  extends ClusterMessage with Loggable {
+
+  //  log("heartbeat", LocalLog.nolocal, kv("sn", heartBeatSerialNumber.getAndIncrement()))
+
   def needNodeStatus(candidate: Option[HeartBeatMessage]): Boolean = {
     candidate.forall(_.nodStatusDigest != nodStatusDigest)
   }
+
+  override def log(): Unit = {
+    logger.info("HeartBeat",
+      kv("local", false),
+      kv("instanceId", instanceId),
+      kv("sn", heartBeatSerialNumber.getAndIncrement()))
+  }
+}
+
+object HeartBeatMessage {
+  val heartBeatSerialNumber = new AtomicInteger()
+  val instanceId: String = new SecureRandom().nextLong().toHexString
 }
 
 

@@ -28,6 +28,7 @@ import _root_.scalafx.scene.layout.{BorderPane, HBox, VBox}
 import akka.util.Timeout
 import com.google.inject.Inject
 import com.typesafe.scalalogging.LazyLogging
+import io.prometheus.client.{Counter, Summary}
 import org.scalafx.extras.onFX
 import org.wa9nnn.fdcluster.contest.OkGate
 import org.wa9nnn.fdcluster.javafx.entry.section.SectionField
@@ -66,7 +67,6 @@ class EntryTab @Inject()(
   private implicit val timeout: Timeout = Timeout(5, TimeUnit.SECONDS)
   text = "Entry"
   closable = false
-
 
   val qsoSection: SectionField = new SectionField() {
     styleClass += "qsoSection"
@@ -182,6 +182,7 @@ class EntryTab @Inject()(
 
   def save(): Unit = {
     val potentialQso: Qso = qsoMetadata.qso(
+
       callSign = callSignField.text.value,
       exchange = Exchange(classField.text.value, qsoSection.text.value),
       bandMode = stationProperty.bandMode

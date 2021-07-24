@@ -1,23 +1,5 @@
 
 
-/*
- * Copyright (C) 2021  Dick Lieber, WA9NNN
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  Seeresult the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
 
 package org.wa9nnn.fdcluster.model
 
@@ -27,18 +9,21 @@ import org.wa9nnn.fdcluster.javafx.cluster.FdNodeEvent
 import org.wa9nnn.fdcluster.javafx.entry.section.Section
 import org.wa9nnn.fdcluster.javafx.menu.{BuildLoadRequest, ImportRequest}
 import org.wa9nnn.fdcluster.javafx.sync._
+import org.wa9nnn.fdcluster.logging.EnabledDestination
 import org.wa9nnn.fdcluster.model.sync._
 import org.wa9nnn.fdcluster.rig.{RigModel, RigSettings, SerialPort}
 import org.wa9nnn.fdcluster.store.network.FdHour
 import org.wa9nnn.fdcluster.store.network.testapp.TestMessage
 import org.wa9nnn.fdcluster.store.{JsonContainer, PossibleDups}
+import org.wa9nnn.util.HostPort
 import org.wa9nnn.webclient.Session
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.{Format, Json, OFormat}
 
 import java.time.LocalDateTime
 import java.time.format.{DateTimeFormatter, FormatStyle}
 import java.util.UUID
 import scala.language.implicitConversions
+
 /**
  * Creates [[play.api.libs.json.Format]] needed by Play JSon to parse and render JSON for case classes.
  * Usually includes with {{import org.wa9nnn.fdcluster.model.MessageFormats._}}
@@ -47,18 +32,20 @@ import scala.language.implicitConversions
 object MessageFormats {
 
   val builder = Array.newBuilder[Format[_]]
+
   def c[T](f: Format[T]): Format[T] = {
     val str: Node = f.toString
     builder += f
     f
   }
-  implicit val iuuidf =  org.wa9nnn.util.UuidUtil.uuidFormat
+
+  implicit val iuuidf = org.wa9nnn.util.UuidUtil.uuidFormat
 
   implicit val entcFromat: Format[EntryCategory] = c(Json.format[EntryCategory])
   implicit val fdcFromat: Format[FdClass] = Json.format[FdClass]
   implicit val sectFromat: Format[Section] = Json.format[Section]
   implicit val fdHourFormat: Format[FdHour] = Json.format[FdHour]
-//  implicit val nodeAddressFormat: Format[NodeAddress] = Json.format[NodeAddress]
+  //  implicit val nodeAddressFormat: Format[NodeAddress] = Json.format[NodeAddress]
   implicit val nodeEventFormat: Format[FdNodeEvent] = Json.format[FdNodeEvent]
   implicit val journalFormat: Format[Journal] = Json.format[Journal]
   implicit val stepFormat: Format[Step] = Json.format[Step]
@@ -81,7 +68,7 @@ object MessageFormats {
   implicit val basenodeStatsormat: Format[BaseNodeStatus] = Json.format[BaseNodeStatus]
   implicit val nodeStatsFormat: Format[NodeStatus] = Json.format[NodeStatus]
   implicit val nodeStatsRequestFormat: Format[NodeStatusRequest] = Json.format[NodeStatusRequest]
-  implicit val hbmFormart = Json.format[HeartBeatMessage]
+  implicit val hbmFormart: OFormat[HeartBeatMessage] = Json.format[HeartBeatMessage]
   implicit val jsonContainerFormat: Format[JsonContainer] = Json.format[JsonContainer]
   implicit val jhFormat: Format[JournalHeader] = Json.format[JournalHeader]
   implicit val spFormat: Format[SerialPort] = Json.format[SerialPort]
@@ -97,6 +84,8 @@ object MessageFormats {
   implicit val CabrilloExportRequestFormat: Format[CabrilloExportRequest] = Json.format[CabrilloExportRequest]
   implicit val fmtTestMessage: Format[TestMessage] = Json.format[TestMessage]
 
+  implicit val hotPortFormat: OFormat[HostPort] = Json.format[HostPort]
+  implicit val edestFormat: OFormat[EnabledDestination] = Json.format[EnabledDestination]
 
   type CallSign = String
   type Uuid = UUID

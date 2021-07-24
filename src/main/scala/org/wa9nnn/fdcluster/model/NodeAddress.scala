@@ -44,6 +44,7 @@ case class NodeAddress(url: URL = new URL("http:///"), instance: Option[Int] = N
     with PropertyCellName {
 
   val inetAddress: InetAddress = InetAddress.getByName(url.getHost)
+  lazy val instancePart: String = instance.map(i => s";$i").getOrElse("")
 
 
   override def collectNamedValues(namedValueCollector: NamedValueCollector): Unit = {
@@ -55,14 +56,14 @@ case class NodeAddress(url: URL = new URL("http:///"), instance: Option[Int] = N
 
   lazy val displayWithIp: String = {
     val address = InetAddress.getByName(url.getHost).getHostAddress
-    s"${url.getHost} ${instance.map(i => s";$i").getOrElse("")} ($address)"
+    s"${url.getHost} $instancePart ($address)"
   }
   val display: String = {
-    s"$url.getHost${instance.map(i => s";$i").getOrElse("")}"
+    s"${url.getHost}$instancePart"
   }
 
   def fileUrlSafe: String = {
-    s"${url.getHost}${instance.map(i => s"-$i").getOrElse("")}"
+    s"${url.getHost}${instancePart}"
   }
 
   val qsoNode: String = {

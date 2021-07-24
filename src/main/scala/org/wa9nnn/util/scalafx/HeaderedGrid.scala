@@ -41,7 +41,11 @@ class HeaderedGrid extends GridPane {
         pane.styleClass += "clusterRowHeader"
       else
         pane.styleClass += "clusterCell"
-      add(pane, iCol, iRow, cell.colSpan, cell.rowSpan)
+      if (cell!=null) {
+        add(pane, iCol, iRow, cell.colSpan, cell.rowSpan)
+      }else{
+        println(s"cell is null!")
+      }
     }
   }
 

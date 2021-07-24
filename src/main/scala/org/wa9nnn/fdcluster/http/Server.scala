@@ -84,7 +84,7 @@ class Server @Inject()(@Inject()
 
   serverBinding.onComplete {
     case Success(bound) =>
-      logger.info(s"HTTP server online at http://${bound.localAddress.getHostString}:${bound.localAddress.getPort}/")
+      logger.debug(s"HTTP server online at http://${bound.localAddress.getHostString}:${bound.localAddress.getPort}/")
     case Failure(e) =>
       logger.error(s"HTTP Server did not start!", e)
       system.terminate()

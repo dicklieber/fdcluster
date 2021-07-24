@@ -24,6 +24,7 @@ import org.wa9nnn.util.{Persistence, PersistenceImpl}
 import play.api.libs.json.{Reads, Writes}
 
 import java.nio.file.{Files, Path, Paths}
+import java.security.SecureRandom
 import java.time.ZonedDateTime
 import scala.reflect.ClassTag
 
@@ -40,6 +41,8 @@ class FileContext extends Persistence {
   val logFile: Path = logsDirectory.resolve("fdcluster.log")
 
   System.setProperty("log.file.path", logFile.toString)
+  private val secureRandom = new SecureRandom()
+  System.setProperty("instance", secureRandom.nextInt().toString)
 
 
   val persistenceDelegate: Persistence = new PersistenceImpl(this)

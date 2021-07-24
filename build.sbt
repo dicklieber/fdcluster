@@ -38,14 +38,13 @@ wixProductId := "268963af-6f14-445a-bcc7-21775b5bdcc5"
 wixProductUpgradeId := "6b10420e-df5b-4c6c-9ca0-c12daf4b239d"
 
 
-
 scalaVersion := "2.13.5"
 
 lazy val fdcluster = (project in file("."))
   .settings(
-      name := "fdcluster"
+    name := "fdcluster"
 
-)
+  )
 lazy val javaFXModules = {
   // Determine OS version of JavaFX binaries
   lazy val osName = System.getProperty("os.name") match {
@@ -56,12 +55,13 @@ lazy val javaFXModules = {
       throw new Exception("Unknown platform!")
   }
   // Create dependencies for JavaFX modules
-  Seq("base", "controls", "graphics", "media" )
+  Seq("base", "controls", "graphics", "media")
     .map(m => "org.openjfx" % s"javafx-$m" % "15.0.1" classifier osName)
 }
 
 //libraryDependencies ++= javaFXModules
 
+javaOptions in Test += "-Dconfig.file=conf/test.conf"
 
 val javafxLib = file(sys.env.get("JAVAFX_LIB").getOrElse("Environmental variable JAVAFX_LIB is not set"))
 lazy val akkaHttpVersion = "10.2.4"
@@ -70,7 +70,7 @@ val logbackVersion = "1.2.3"
 libraryDependencies ++= Seq(
   "com.wa9nnn" %% "util" % "0.0.7",
   "com.wa9nnn" %% "cabrillo-lib" % "1.0.2",
-  "com.typesafe.play" %% "play-json" % "2.8.0-M4",
+  "com.typesafe.play" %% "play-json" % "2.9.2",
   "org.specs2" %% "specs2-core" % "4.6.0" % "test",
   "org.specs2" %% "specs2-mock" % "4.6.0" % "test",
   "com.google.inject" % "guice" % "4.2.2",
@@ -85,12 +85,11 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-slf4j" % "2.6.4",
   "ch.qos.logback" % "logback-classic" % logbackVersion,
   "ch.qos.logback" % "logback-core" % logbackVersion,
+  "net.logstash.logback" % "logstash-logback-encoder" % "6.6",
   "com.github.andyglow" %% "typesafe-config-scala" % "1.1.0" % Compile,
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
-  "nl.grons" %% "metrics4-scala" % "4.1.19",
-  "io.dropwizard.metrics" % "metrics-core" % "4.1.2",
-  "io.dropwizard.metrics" % "metrics-graphite" % "4.1.2",
-  "io.dropwizard.metrics" % "metrics-servlets" % "4.1.19",
+  "fr.davit" %% "akka-http-metrics-prometheus" % "1.6.0",
+  "io.prometheus" % "simpleclient_hotspot" % "0.11.0",
   "commons-io" % "commons-io" % "2.8.0",
   "org.apache.commons" % "commons-math3" % "3.6.1",
   "javax.servlet" % "javax.servlet-api" % "3.0.1",
@@ -169,22 +168,21 @@ credentials += Credentials(Path.userHome / ".sbt" / "jfrog.credentials")
 makeDeploymentSettings(Universal, packageBin in Universal, "zip")
 
 //Compile / packageDoc := Seq.empty
-mappings in (Compile, packageDoc) := Seq()
-
+mappings in(Compile, packageDoc) := Seq()
 
 
 releaseProcess := Seq[ReleaseStep](
-  checkSnapshotDependencies,              // : ReleaseStep
-  inquireVersions,                        // : ReleaseStep
-  runClean,                               // : ReleaseStep
-  runTest,                                // : ReleaseStep
-  setReleaseVersion,                      // : ReleaseStep
-  commitReleaseVersion,                   // : ReleaseStep, performs the initial git checks
-  tagRelease,                             // : ReleaseStep
-  ReleaseStep(releaseStepTask(Universal / packageBin )),
+  checkSnapshotDependencies, // : ReleaseStep
+  inquireVersions, // : ReleaseStep
+  runClean, // : ReleaseStep
+  runTest, // : ReleaseStep
+  setReleaseVersion, // : ReleaseStep
+  commitReleaseVersion, // : ReleaseStep, performs the initial git checks
+  tagRelease, // : ReleaseStep
+  ReleaseStep(releaseStepTask(Universal / packageBin)),
 
   //  publishArtifacts,                       // : ReleaseStep, checks whether `publishTo` is properly set up
-  setNextVersion,                         // : ReleaseStep
-  commitNextVersion,                      // : ReleaseStep
-  pushChanges                             // : ReleaseStep, also checks that an upstream branch is properly configured
+  setNextVersion, // : ReleaseStep
+  commitNextVersion, // : ReleaseStep
+  pushChanges // : ReleaseStep, also checks that an upstream branch is properly configured
 )

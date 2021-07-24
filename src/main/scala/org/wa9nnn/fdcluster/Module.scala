@@ -26,9 +26,11 @@ import com.google.inject.{AbstractModule, Injector, Provides}
 import com.typesafe.scalalogging.LazyLogging
 import configs.Config
 import net.codingwell.scalaguice.{ScalaModule, ScalaMultibinder}
+import org.apache.commons.math3.analysis.function.Log
 import org.wa9nnn.fdcluster.contest.JournalProperty
 import org.wa9nnn.fdcluster.javafx.cluster.{ClusterTable, FdHours, NodeHistory}
 import org.wa9nnn.fdcluster.javafx.entry.{RunningTaskInfoConsumer, RunningTaskPane, StatsPane}
+import org.wa9nnn.fdcluster.logging.LogManager
 import org.wa9nnn.fdcluster.metrics.MetricsReporter
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.fdcluster.model.sync.{ClusterActor, NodeStatusQueueActor}
@@ -45,18 +47,21 @@ import javax.inject.{Named, Singleton}
  *
  * @param parameters command line args
  */
-class Module() extends AbstractModule with ScalaModule with LazyLogging{
+class Module() extends AbstractModule with ScalaModule {
   //class Module(parameters: Parameters) extends AbstractModule with ScalaModule {
 
+
   override def configure(): Unit = {
+
+
     try {
-      val fileManager = new FileContext()
-      bind[FileContext].toInstance(fileManager)
-      // File manager must be invoked before any logging is done as logback.xml uses the system property  "log.file.path"
-      // which gets set by the FileManager.
+      val fileContext = new FileContext()
       val config: Config = ConfigApp.apply
-      //      bind[CommandLine].toInstance(new CommandLineScalaFxImpl(parameters))
-      //      bind[MulticastListener].asEagerSingleton()
+      val nodeAddress = NodeAddress(fileContext.instance, config)
+      val logManager = new LogManager(fileContext, nodeAddress)
+
+      bind[LogManager].toInstance(logManager)
+      bind[FileContext].toInstance(fileContext)
      implicit  val actorSystem = ActorSystem("default", config)
       val deadLetterMonitorActor =
         actorSystem.actorOf(Props[DeadLetterMonitorActor],
@@ -65,7 +70,7 @@ class Module() extends AbstractModule with ScalaModule with LazyLogging{
         deadLetterMonitorActor, classOf[DeadLetter])
       bind[QsoSource].to[StoreLogic]
       bind[NodeAddress]
-        .toInstance(NodeAddress(fileManager.instance, config))
+        .toInstance(nodeAddress)
       bind[Persistence]
         .to[PersistenceImpl]
         .asEagerSingleton()

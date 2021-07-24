@@ -20,13 +20,12 @@
 package org.wa9nnn.fdcluster.store
 
 import akka.actor.Status.Failure
-import akka.actor.{Actor, ActorRef, ActorSystem, Props}
+import akka.actor.{Actor, ActorRef, Props}
 import akka.util.Timeout
 import com.google.inject.Injector
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
-import nl.grons.metrics4.scala.DefaultInstrumented
 import org.wa9nnn.fdcluster.Markers.syncMarker
 import org.wa9nnn.fdcluster.NetworkControl
 import org.wa9nnn.fdcluster.adif.AdiExporter
@@ -45,7 +44,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-class StoreActor @Inject()(injector: Injector) extends Actor with LazyLogging with DefaultInstrumented {
+class StoreActor @Inject()(injector: Injector) extends Actor with LazyLogging  {
   private implicit val timeout: Timeout = Timeout(5 seconds)
 
   val nodeAddress: NodeAddress = injector.instance[NodeAddress]
