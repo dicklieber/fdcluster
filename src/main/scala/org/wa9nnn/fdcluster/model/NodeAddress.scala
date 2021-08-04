@@ -46,6 +46,12 @@ case class NodeAddress(url: URL = new URL("http:///"), instance: Option[Int] = N
   val inetAddress: InetAddress = InetAddress.getByName(url.getHost)
   lazy val instancePart: String = instance.map(i => s";$i").getOrElse("")
 
+  lazy val hostPort:String = {
+    val host = url.getHost
+    val port = url.getPort
+    s"$host:$port"
+  }
+
 
   override def collectNamedValues(namedValueCollector: NamedValueCollector): Unit = {
     import org.wa9nnn.fdcluster.javafx.cluster.ValueName._
