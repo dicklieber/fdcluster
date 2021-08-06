@@ -96,6 +96,8 @@ libraryDependencies ++= Seq(
   "commons-codec" % "commons-codec" % "1.15",
   "org.apache.commons" % "commons-text" % "1.9",
   "com.sandinh" %% "akka-guice" % "3.3.0",
+//  "org.dhatim.io.dropwizard" % "dropwizard-metrics-elasticsearch" % "1.0.9",
+  "com.linagora" %  "metrics-elasticsearch-reporter" % "6.0.0-RC3"
 )
 
 

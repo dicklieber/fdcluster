@@ -20,28 +20,23 @@
 package org.wa9nnn.fdcluster.metrics
 
 import com.codahale.metrics.ConsoleReporter
-
-import java.net.InetSocketAddress
+import com.linagora.elasticsearch.metrics.ElasticsearchReporter
+//import org.elasticsearch.metrics.ElasticsearchReporter
 //import com.codahale.metrics.graphite.{Graphite, GraphiteReporter}
-import javafx.scene.control.{DialogPane, ScrollPane}
-import javafx.scene.layout.VBox
-import javafx.scene.text
-
-import javax.inject.{Inject, Singleton}
-import nl.grons.metrics4.scala.DefaultInstrumented
-import org.wa9nnn.fdcluster.model.NodeAddress
-import _root_.scalafx.scene.control.{Button, ButtonType, Dialog, TextArea}
-import _root_.scalafx.scene.text.{Font, Text}
 import _root_.scalafx.Includes._
 import _root_.scalafx.beans.property.StringProperty
+import _root_.scalafx.scene.control.{Button, ButtonType, Dialog}
+import _root_.scalafx.scene.text.{Font, Text}
+import javafx.scene.control.{DialogPane, ScrollPane}
+import javafx.scene.layout.VBox
+import nl.grons.metrics4.scala.DefaultInstrumented
+import org.wa9nnn.fdcluster.model.NodeAddress
 
-import java.io.{ByteArrayOutputStream, PrintStream, StringWriter}
+import java.io.{ByteArrayOutputStream, PrintStream}
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class MetricsReporter @Inject()(nodeAddress: NodeAddress) extends DefaultInstrumented {
-
-  import com.codahale.metrics.MetricFilter
-  import java.util.concurrent.TimeUnit
 
 //    val graphite = new Graphite(new InetSocketAddress("localhost", 2003));
 //
@@ -53,6 +48,13 @@ class MetricsReporter @Inject()(nodeAddress: NodeAddress) extends DefaultInstrum
 //      .filter(MetricFilter.ALL).build(graphite)
 //      reporter.start(15, TimeUnit.SECONDS)
 
+  import java.util.concurrent.TimeUnit
+
+  val reporter = ElasticsearchReporter.forRegistry(metricRegistry)
+    .hosts("127.0.0.1:9200")
+    .index("fdmetrics").indexDateFormat(null).build //no date suffix
+
+  reporter.start(10, TimeUnit.SECONDS)
 
   def report(): Unit = {
     def loadreport(sp: StringProperty): Unit = {

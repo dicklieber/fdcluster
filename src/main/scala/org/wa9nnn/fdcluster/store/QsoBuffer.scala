@@ -8,12 +8,12 @@ import scalafx.collections.ObservableBuffer
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class QsoBuffer @Inject()() extends ObservableBuffer[Qso]  {
-  //  override lazy val metricBaseName = MetricName("QsoBuffer")
-  //
-  //  metrics.gauge("QsoBuffer") {
-  //    length
-  //  }
+class QsoBuffer @Inject()() extends ObservableBuffer[Qso]  with DefaultInstrumented {
+    override lazy val metricBaseName = MetricName("QsoBuffer")
+
+    metrics.gauge("QsoBuffer") {
+      length
+    }
 
   import io.prometheus.client.Gauge
 
