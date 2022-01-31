@@ -74,8 +74,8 @@ class CabrilloGenerator @Inject()(qsoSource: QsoSource,
 
 
   def qso(q: fdQso): TagValue = {
-    val band = q.bandMode.bandName //todo map to cabrillo
-    val mode = q.bandMode.modeName //todo map to cabrillo?
+    val band = q.cabFreq
+    val mode = q.bandMode.cabMode
     val datetime = ZonedDateTime.ofInstant(q.stamp, TimeHelpers.utcZoneId).format(cabrilloDtFormat)
     val ourCallSign = contestProperty.callSign
     val entryClass = contestProperty.ourExchange.entryClass

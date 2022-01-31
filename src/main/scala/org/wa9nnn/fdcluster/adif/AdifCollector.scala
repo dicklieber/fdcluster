@@ -37,12 +37,12 @@ object AdifCollector {
     )
 
     val r: Seq[AdifResult] = entries.result()
-    val (heads, qsos) = r.span(_ != AdifResult.eoh)
+    val (heads: Seq[AdifResult], qsos: Seq[AdifResult]) = r.span(_ != AdifResult.eoh)
 
     val adifQsos: Seq[AdifQso] = qsos
       .tail // past EOH
       .foldLeft(Seq(Seq.empty[AdifEntry])) {
-        (acc, i) =>
+        (acc: Seq[Seq[AdifEntry]], i: AdifResult) =>
           if (i == AdifResult.eor) acc :+ Seq.empty
           else acc.init :+ (acc.last :+ i.asInstanceOf[AdifEntry])
       }

@@ -75,7 +75,9 @@ class StoreLogicSpec extends Specification with After with StoreLogicContext {
   private val exchange: Exchange = Exchange("2I", "WPA")
 
   "StoreMapImplSpec" >> {
-    val qso = Qso("WA9NNN", Exchange(), BandMode())
+    val qso = Qso(callSign = "WA9NNN",
+      exchange = Exchange(),
+      bandMode = BandMode())
 
     "ingest to memory" >> { storeLogic: StoreLogic =>
 

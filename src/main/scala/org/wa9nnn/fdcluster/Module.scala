@@ -27,7 +27,7 @@ import com.typesafe.scalalogging.LazyLogging
 import configs.Config
 import net.codingwell.scalaguice.{ScalaModule, ScalaMultibinder}
 import org.apache.commons.math3.analysis.function.Log
-import org.wa9nnn.fdcluster.contest.JournalProperty
+import org.wa9nnn.fdcluster.contest.{JournalFileNameSource, JournalProperty}
 import org.wa9nnn.fdcluster.javafx.cluster.{ClusterTable, FdHours, NodeHistory}
 import org.wa9nnn.fdcluster.javafx.entry.{RunningTaskInfoConsumer, RunningTaskPane, StatsPane}
 import org.wa9nnn.fdcluster.logging.LogManager
@@ -87,6 +87,8 @@ class Module() extends AbstractModule with ScalaModule {
       bind[MetricsReporter].asEagerSingleton()
 
       bind[QsoBuilder].to[OsoMetadataProperty]
+      bind[JournalFileNameSource].to[JournalProperty]
+
       val qsoListeners = ScalaMultibinder.newSetBinder[AddQsoListener](binder)
       qsoListeners.addBinding.to[StatsPane]
       qsoListeners.addBinding.to[QsoCountCollector]

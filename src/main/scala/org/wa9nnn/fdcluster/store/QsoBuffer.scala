@@ -2,6 +2,7 @@ package org.wa9nnn.fdcluster.store
 
 import com.codahale.metrics.{MetricRegistry, SharedMetricRegistries}
 import nl.grons.metrics4.scala.{DefaultInstrumented, MetricName}
+import org.wa9nnn.fdcluster.model
 import org.wa9nnn.fdcluster.model.Qso
 import scalafx.collections.ObservableBuffer
 

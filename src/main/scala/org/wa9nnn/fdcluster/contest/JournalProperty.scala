@@ -37,7 +37,7 @@ class JournalProperty @Inject()(
                                  storeSender: StoreSender,
                                  nodeAddress: NodeAddress
                                )
-  extends PersistableProperty[Journal](fileContext) {
+  extends PersistableProperty[Journal](fileContext) with JournalFileNameSource {
 
   lazy val journalFilePathProperty: ObjectProperty[Try[Path]] = ObjectProperty[Try[Path]](Failure(new IllegalStateException()))
 
@@ -59,6 +59,10 @@ class JournalProperty @Inject()(
     update(journal)
     storeSender ! ClearStore
 
+  }
+
+  override def journalFileName:String = {
+    value.journalFileName
   }
 
   override def isOk: Boolean = value.journalFileName.nonEmpty

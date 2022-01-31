@@ -50,11 +50,11 @@ class MetricsReporter @Inject()(nodeAddress: NodeAddress) extends DefaultInstrum
 
   import java.util.concurrent.TimeUnit
 
-  val reporter = ElasticsearchReporter.forRegistry(metricRegistry)
-    .hosts("127.0.0.1:9200")
-    .index("fdmetrics").indexDateFormat(null).build //no date suffix
+//  val reporter = ElasticsearchReporter.forRegistry(metricRegistry)
+//    .hosts("127.0.0.1:9200")
+//    .index("fdmetrics").indexDateFormat(null).build //no date suffix
 
-  reporter.start(10, TimeUnit.SECONDS)
+// todo reporter.start(10, TimeUnit.SECONDS)
 
   def report(): Unit = {
     def loadreport(sp: StringProperty): Unit = {

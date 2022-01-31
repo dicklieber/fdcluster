@@ -20,7 +20,7 @@
 package org.wa9nnn.fdcluster.adif
 
 import org.wa9nnn.fdcluster._
-import org.wa9nnn.fdcluster.contest.JournalProperty
+import org.wa9nnn.fdcluster.contest.JournalFileNameSource
 import org.wa9nnn.fdcluster.model._
 import org.wa9nnn.util.TimeHelpers.utcZoneId
 import org.wa9nnn.util.UuidUtil.{fromBase64, toBase64}
@@ -28,10 +28,11 @@ import org.wa9nnn.util.UuidUtil.{fromBase64, toBase64}
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatter.BASIC_ISO_DATE
 import java.time.{Instant, LocalDate, LocalTime, ZonedDateTime}
+import java.util.UUID
 import javax.inject.Inject
 import scala.language.implicitConversions
 
-class AdifQsoAdapter @Inject()(journalProperty: JournalProperty, nodeAddress: NodeAddress) {
+class AdifQsoAdapter @Inject()(journalFileNameSource: JournalFileNameSource, nodeAddress: NodeAddress) {
   private val timeFormat = DateTimeFormatter.ofPattern("HHmmss")
 
   /**
@@ -58,13 +59,32 @@ class AdifQsoAdapter @Inject()(journalProperty: JournalProperty, nodeAddress: No
             throw x
         }
       }
+
+      def o(args: Any*): String = {
+        val tagName = sc.parts.head
+        try {
+          map.getOrElse(tagName, "")
+        } catch {
+          case x: Throwable =>
+            throw x
+        }
+      }
     }
 
     val bandMode = BandMode(
       bandName = m"BAND",
       modeName = m"MODE"
     )
-    val exchange = Exchange(m"CLASS", m"ARRL_SECT")
+    val exchange: Exchange = {
+      val rr: Option[Exchange] = map.get("SRX_STRING").map {
+        Exchange(_)
+      }
+
+      rr.getOrElse(
+        Exchange(m"CLASS", m"ARRL_SECT")
+      )
+
+    }
 
     val stamp: Instant = {
       ZonedDateTime.of(
@@ -72,20 +92,23 @@ class AdifQsoAdapter @Inject()(journalProperty: JournalProperty, nodeAddress: No
         LocalTime.parse(m"TIME_ON", timeFormat),
         utcZoneId).toInstant
     }
-    Qso(callSign = m"CALL",
-      bandMode = bandMode,
-      exchange = exchange,
-      stamp = stamp,
-      uuid = fromBase64(m"APP_FDC_UUID"),
-      qsoMetadata = QsoMetadata(
-        operator = m"OPERATOR",
-        rig = m"MY_RIG",
-        ant = m"MY_ANTENNA",
-        node = nodeAddress.displayWithIp,
-        journal = journalProperty.value.journalFileName,
-        v = BuildInfo.canonicalVersion
-      )
-    )
+    Qso(callSign = m"CALL", exchange = exchange, bandMode = bandMode, qsoMetadata = QsoMetadata(
+            operator = o"OPERATOR",
+            rig = o"MY_RIG",
+            ant = o"MY_ANTENNA",
+            node = nodeAddress.displayWithIp,
+            journal = journalFileNameSource.journalFileName,
+            v = BuildInfo.canonicalVersion
+          ), mHz =  Option(( m"FREQ".toFloat)), stamp = stamp, uuid = {
+            try {
+              fromBase64(m"APP_FDC_UUID")
+            } catch {
+              case _: MissingRequiredTag =>
+                // APP_FDC_UUID is specific to adif files written by fdcluster
+                // if missing, create one.
+                UUID.randomUUID
+            }
+          })
 
   }
 

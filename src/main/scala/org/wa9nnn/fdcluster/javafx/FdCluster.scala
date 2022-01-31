@@ -62,7 +62,7 @@ object FdCluster extends App {
 /**
  * Main for FdCluster
  */
-class FdCluster1 extends Application with LazyLogging with ActorInject {
+class FdCluster1 extends Application with LazyLogging  {
   println(s"JAVA_HOME: \t${System.getenv("JAVA_HOME")}")
   println(s"java.home \t${System.getProperty("java.home")}")
   println(s"Java Version: \t${ManagementFactory.getRuntimeMXBean.getVmVersion}")

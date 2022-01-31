@@ -16,5 +16,15 @@ class QsoRecordSpec extends Specification {
       val backAgain = Qso(json)
       backAgain must beEqualTo(qso)
     }
+
+    "without frequency" >> {
+      val cabFreq: String = qso.cabFreq
+      cabFreq must beEqualTo("14035")
+    }
+    "with frequency" >> {
+      val q = qso.copy(mHz = Option(224.52F))
+      val cabFreq = q.cabFreq
+      cabFreq must beEqualTo("224520")
+    }
   }
 }

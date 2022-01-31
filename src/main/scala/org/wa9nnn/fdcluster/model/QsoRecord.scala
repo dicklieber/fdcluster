@@ -33,20 +33,15 @@ import java.util.UUID
 /**
  * This is what's in the store and journal.log.
  *
- * @param callSign    of the worked station.
- * @param exchange    from the worked station.
- * @param bandMode    that was used.
- * @param stamp       when QSO occurred.
- * @param uuid        id unique QSO id in time & space.
- * @param qsoMetadata info about ur station.
+ * @param callSign      of the worked station.
+ * @param exchange      from the worked station.
+ * @param bandMode      that was used.
+ * @param mHz           may not be known if not connectd to a rig
+ * @param stamp         when QSO occurred.
+ * @param uuid          id unique QSO id in time & space.
+ * @param qsoMetadata   info about ur station.
  */
-case class Qso(callSign: CallSign,
-               exchange: Exchange,
-               bandMode: BandMode,
-               qsoMetadata: QsoMetadata,
-               stamp: Instant = Instant.now(),
-               uuid: UUID = UUID.randomUUID
-              ) extends Ordered[Qso] with Loggable {
+case class Qso(callSign: CallSign, exchange: Exchange, bandMode: BandMode, qsoMetadata: QsoMetadata, mHz: Option[Float] = None, stamp: Instant = Instant.now(), uuid: Uuid = UUID.randomUUID) extends Ordered[Qso] with Loggable {
   def isDup(that: Qso): Boolean = {
     this.callSign == that.callSign &&
       this.bandMode == that.bandMode
@@ -62,6 +57,19 @@ case class Qso(callSign: CallSign,
   lazy val fdHour: FdHour = {
     FdHour(stamp)
   }
+
+  /**
+   * @see https://wwrof.org/cabrillo/cabrillo-qso-data/
+   * @return frequency for a cab file.
+   *         As integer KHz
+   */
+  def cabFreq: String = {
+    mHz.map { mHz =>
+      val kHz = mHz * 1000.0F
+      f"${kHz}%.0f"
+    }.getOrElse(bandMode.cabFreq)
+  }
+
 
   def toByteString: ByteString = {
     ByteString(Json.toBytes(Json.toJson(this)))
@@ -83,7 +91,8 @@ case class Qso(callSign: CallSign,
       kv("class", exchange.entryClass),
       kv("section", exchange.sectionCode),
       kv("band", bandMode.bandName),
-      kv("mode", bandMode.modeName)
+      kv("mode", bandMode.modeName),
+      kv("frequency", mHz),
     )
   }
 }
@@ -91,8 +100,9 @@ case class Qso(callSign: CallSign,
 object Qso {
   def apply(callSign: CallSign,
             exchange: Exchange,
-            bandMode: BandMode)(implicit qsoMetadata: QsoMetadata): Qso = {
-    new Qso(callSign.toUpperCase, exchange, bandMode, qsoMetadata)
+            bandMode: BandMode
+           )(implicit qsoMetadata: QsoMetadata): Qso = {
+    new Qso(callSign = callSign.toUpperCase, exchange = exchange, bandMode = bandMode, qsoMetadata = qsoMetadata)
   }
 
   def apply(json: String): Qso = {

@@ -1,8 +1,9 @@
 package org.wa9nnn.fdcluster.adif
 
+import org.mockito.Mockito.when
 import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
-import org.wa9nnn.fdcluster.contest.JournalProperty
+import org.wa9nnn.fdcluster.contest.{JournalFileNameSource, JournalProperty}
 import org.wa9nnn.fdcluster.model.{ContestProperty, NodeAddress, Qso}
 
 import scala.io.Source
@@ -49,8 +50,9 @@ class AdifQsoAdaptersSpec extends Specification with Mockito {
 
   val adifFile: AdifFile = AdifCollector.read(Source.fromString(sAdif))
   private val adifQso: AdifQso = adifFile.records.head
-implicit val contestProperty = mock[ContestProperty]
-  private val journalProperty: JournalProperty = mock[JournalProperty]
+//implicit val contestProperty = mock[ContestProperty]
+  private val journalProperty: JournalFileNameSource = mock[JournalFileNameSource]
+  when(journalProperty.journalFileName) .thenReturn("mockjournalfile")
   private val adifQsoAdapter = new AdifQsoAdapter(journalProperty, NodeAddress())
 
   "AdifQsoAdaptersSpec" should {

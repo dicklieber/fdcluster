@@ -68,8 +68,8 @@ lazy val akkaHttpVersion = "10.2.4"
 val logbackVersion = "1.2.3"
 
 libraryDependencies ++= Seq(
-  "com.wa9nnn" %% "util" % "0.0.7",
-  "com.wa9nnn" %% "cabrillo-lib" % "1.0.2",
+  "com.wa9nnn" %% "util" % "0.0.8-SNAPSHOT",
+  "com.wa9nnn" %% "cabrillo-lib" % "1.0.3-SNAPSHOT",
   "com.typesafe.play" %% "play-json" % "2.9.2",
   "org.specs2" %% "specs2-core" % "4.6.0" % "test",
   "org.specs2" %% "specs2-mock" % "4.6.0" % "test",
