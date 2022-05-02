@@ -5,7 +5,7 @@ import com.typesafe.sbt.packager.SettingsHelper.makeDeploymentSettings
 
 maintainer := "wa9nnn@u505.com"
 
-enablePlugins(JavaAppPackaging, GitPlugin, BuildInfoPlugin, SbtTwirl, UniversalDeployPlugin)
+enablePlugins(JavaAppPackaging, GitPlugin, BuildInfoPlugin, SbtTwirl, UniversalPlugin)
 buildInfoKeys ++= Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, maintainer,
   git.gitCurrentTags, git.gitCurrentBranch, git.gitHeadCommit, git.gitHeadCommitDate, git.baseVersion)
 buildInfoPackage := "org.wa9nnn.fdcluster"
@@ -97,7 +97,8 @@ libraryDependencies ++= Seq(
   "org.apache.commons" % "commons-text" % "1.9",
   "com.sandinh" %% "akka-guice" % "3.3.0",
 //  "org.dhatim.io.dropwizard" % "dropwizard-metrics-elasticsearch" % "1.0.9",
-  "com.linagora" %  "metrics-elasticsearch-reporter" % "6.0.0-RC3"
+  "com.linagora" %  "metrics-elasticsearch-reporter" % "6.0.0-RC3",
+
 )
 
 

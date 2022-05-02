@@ -44,4 +44,9 @@ Source code at: https://github.com/dicklieber/fdcluster
 
 Discuission at: https://groups.io/g/FDCluster
 
+#Installation
+## Raspberry Pi
+### Install Java
+
+https://bell-sw.com/pages/downloads/#mn Dowload the 32bit ARM *Full* verfsion deb file
 

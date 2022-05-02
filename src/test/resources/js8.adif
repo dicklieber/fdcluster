@@ -1,0 +1,33 @@
+JS8Call ADIF Export<eoh>
+<call:4>
+W2XH <gridsquare:0>
+ <mode:4>
+MFSK <submode:3>
+JS8 <SRX_STRING:5>1H EMA
+<qso_date:8>
+20220129 <time_on:6>
+192100 <qso_date_off:8>
+20220129 <time_off:6>
+194641 <band:3>
+20m <freq:9>
+14.079500 <station_callsign:6>
+WA9NNN <my_gridsquare:4>
+EN61 <operator:6>
+WA9NNN <eor>
+
+<call:4>
+W0MG <gridsquare:0>
+ <mode:4>
+MFSK <submode:3>
+JS8 <rst_sent:0>
+ <rst_rcvd:0>
+ <qso_date:8>20220129 <time_on:6>
+223134 <qso_date_off:8>
+20220129 <time_off:6>
+223629 <band:3>
+40m <freq:8>
+7.080363 <station_callsign:6>
+WA9NNN <my_gridsquare:4>
+EN61 <SRX_STRING:5> 2I IA <operator:6>
+WA9NNN <eor>
+
