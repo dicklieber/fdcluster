@@ -106,7 +106,7 @@ resolvers += ("spray repo" at "http://repo.spray.io").withAllowInsecureProtocol(
 
 resolvers += "Artifactory" at "https://wa9nnn.jfrog.io/artifactory/wa9nnn"
 resolvers += ("Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/").withAllowInsecureProtocol(true)
-resolvers += ("Sonatype Nexus Repository Manager" at  "http://localhost:8081/repository/maven-snapshots").withAllowInsecureProtocol(true)
+resolvers += ("Sonatype Nexus Repository Manager" at  "http://192.168.0.205:8081/repository/maven-snapshots").withAllowInsecureProtocol(true)
 
 publishTo := Some("Artifactory Realm" at "https://wa9nnn.jfrog.io/artifactory/wa9nnn")
 credentials += Credentials(Path.userHome / ".sbt" / "jfrog.credentials")
