@@ -68,7 +68,7 @@ lazy val akkaHttpVersion = "10.2.4"
 val logbackVersion = "1.2.3"
 
 libraryDependencies ++= Seq(
-  "com.wa9nnn" %% "util" % "0.0.8-SNAPSHOT",
+  "com.wa9nnn" %% "util" % "0.0.11-SNAPSHOT",
   "com.wa9nnn" %% "cabrillo-lib" % "1.0.3-SNAPSHOT",
   "com.typesafe.play" %% "play-json" % "2.9.2",
   "org.specs2" %% "specs2-core" % "4.6.0" % "test",
@@ -102,69 +102,11 @@ libraryDependencies ++= Seq(
 )
 
 
-//jlinkModules := {
-//  jlinkModules.value :+ "jdk.unsupported"
-//}
-
-//jlinkIgnoreMissingDependency := JlinkIgnore.only(
-//  "afu.org.checkerframework.checker.formatter" -> "afu.org.checkerframework.checker.formatter.qual",
-//  "afu.org.checkerframework.checker.nullness" -> "afu.org.checkerframework.checker.nullness.qual",
-//  "afu.org.checkerframework.checker.regex" -> "afu.org.checkerframework.dataflow.qual",
-//  "afu.org.checkerframework.checker.regex" -> "afu.org.checkerframework.framework.qual",
-//  "ch.qos.logback.classic" -> "javax.servlet.http",
-//  "ch.qos.logback.classic.boolex" -> "groovy.lang",
-//  "ch.qos.logback.classic.boolex" -> "org.codehaus.groovy.control",
-//  "ch.qos.logback.classic.boolex" -> "org.codehaus.groovy.reflection",
-//  "ch.qos.logback.classic.boolex" -> "org.codehaus.groovy.runtime",
-//  "ch.qos.logback.classic.boolex" -> "org.codehaus.groovy.runtime.callsite",
-//  "ch.qos.logback.classic.boolex" -> "org.codehaus.groovy.runtime.typehandling",
-//  "ch.qos.logback.classic.gaffer" -> "groovy.lang",
-//  "ch.qos.logback.classic.gaffer" -> "org.codehaus.groovy.control",
-//  "ch.qos.logback.classic.gaffer" -> "org.codehaus.groovy.control.customizers",
-//  "ch.qos.logback.classic.gaffer" -> "org.codehaus.groovy.reflection",
-//  "ch.qos.logback.classic.gaffer" -> "org.codehaus.groovy.runtime",
-//  "ch.qos.logback.classic.gaffer" -> "org.codehaus.groovy.runtime.callsite",
-//  "ch.qos.logback.classic.gaffer" -> "org.codehaus.groovy.runtime.typehandling",
-//  "ch.qos.logback.classic.gaffer" -> "org.codehaus.groovy.runtime.wrappers",
-//  "ch.qos.logback.classic.gaffer" -> "org.codehaus.groovy.transform",
-//  "ch.qos.logback.classic.helpers" -> "javax.servlet",
-//  "ch.qos.logback.classic.helpers" -> "javax.servlet.http",
-//  "ch.qos.logback.classic.selector.servlet" -> "javax.servlet",
-//  "ch.qos.logback.classic.servlet" -> "javax.servlet",
-//  "ch.qos.logback.core.boolex" -> "org.codehaus.janino",
-//  "ch.qos.logback.core.joran.conditional" -> "org.codehaus.commons.compiler",
-//  "ch.qos.logback.core.joran.conditional" -> "org.codehaus.janino",
-//  "ch.qos.logback.core.net" -> "javax.mail",
-//  "ch.qos.logback.core.net" -> "javax.mail.internet",
-//  "ch.qos.logback.core.status" -> "javax.servlet",
-//  "ch.qos.logback.core.status" -> "javax.servlet.http",
-//  "com.codahale.metrics.health.jvm" -> "com.codahale.metrics.jvm",
-//  "com.rabbitmq.client.impl" -> "io.micrometer.core.instrument",
-//  "com.sun.media.jfxmediaimpl.platform" -> "com.sun.media.jfxmediaimpl.platform.ios",
-//  "org.checkerframework.checker.formatter" -> "org.checkerframework.checker.formatter.qual",
-//  "org.checkerframework.checker.nullness" -> "org.checkerframework.checker.nullness.qual",
-//  "org.checkerframework.checker.regex" -> "org.checkerframework.dataflow.qual",
-//  "org.checkerframework.checker.regex" -> "org.checkerframework.framework.qual",
-//  "org.joda.time" -> "org.joda.convert",
-//  "org.joda.time.base" -> "org.joda.convert",
-//  "org.reflections.serializers" -> "com.google.gson",
-//  "org.reflections.serializers" -> "org.dom4j",
-//  "org.reflections.serializers" -> "org.dom4j.io",
-//  "org.reflections.util" -> "javax.servlet",
-//  "org.reflections.vfs" -> "org.apache.commons.vfs2",
-//  "org.scalafx.extras" -> "javafx.embed.swing",
-//  "scalafx" -> "javafx.embed.swing",
-//  "scalafx" -> "javafx.scene.web",
-//  "scalafx.embed.swing" -> "javafx.embed.swing",
-//  "scalafx.scene.web" -> "javafx.scene.web",
-//  "scalafxml.core" -> "javafx.fxml",
-//  "com.papertrail.profiler.jaxrs" -> "javax.ws.rs"
-//
-//)
 resolvers += ("spray repo" at "http://repo.spray.io").withAllowInsecureProtocol(true)
 
 resolvers += "Artifactory" at "https://wa9nnn.jfrog.io/artifactory/wa9nnn"
 resolvers += ("Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/").withAllowInsecureProtocol(true)
+resolvers += ("Sonatype Nexus Repository Manager" at  "http://localhost:8081/repository/maven-snapshots").withAllowInsecureProtocol(true)
 
 publishTo := Some("Artifactory Realm" at "https://wa9nnn.jfrog.io/artifactory/wa9nnn")
 credentials += Credentials(Path.userHome / ".sbt" / "jfrog.credentials")
