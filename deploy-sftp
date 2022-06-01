@@ -1,5 +1,5 @@
 #!/bin/sh
+ssh dlieber@pi400-2.local 'rm -fr fdcluster-0.0.9-SNAPSHOT'
 scp target/universal/fdcluster-0.0.9-SNAPSHOT.zip  dlieber@pi400-2.local:
 ssh dlieber@pi400-2.local 'unzip fdcluster-0.0.9-SNAPSHOT.zip'
 
-pass

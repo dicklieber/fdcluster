@@ -25,6 +25,9 @@ import org.wa9nnn.util.WithDisposition
 import _root_.scalafx.Includes._
 import _root_.scalafx.scene.control.TextField
 import _root_.scalafx.scene.input.KeyEvent
+import javafx.event.EventHandler
+import javafx.scene.input
+import scalafx.beans.property.ObjectProperty
 
 /**
  * Section entry field for entring QSOs
@@ -42,6 +45,21 @@ class SectionField() extends TextField with WithDisposition with NextField {
     if (ch == '\r' && validProperty.value) {
       onDoneFunction("") // noting to pass on, were at the end of the QSO
     }
+  }
+
+
+  override def onKeyPressed: ObjectProperty[EventHandler[_ >: input.KeyEvent]] = {
+    super.onKeyPressed
+  }
+
+
+  override def onKeyTyped: ObjectProperty[EventHandler[_ >: input.KeyEvent]] = {
+    super.onKeyTyped
+  }
+
+
+  override def onKeyReleased_=(v: EventHandler[_ >: input.KeyEvent]): Unit = {
+    super.onKeyReleased_=(v)
   }
 
   override def onDone(f: String => Unit): Unit = super.onDone(f)
