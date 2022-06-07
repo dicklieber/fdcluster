@@ -68,8 +68,8 @@ lazy val akkaHttpVersion = "10.2.4"
 val logbackVersion = "1.2.3"
 
 libraryDependencies ++= Seq(
-  "com.wa9nnn" %% "util" % "0.0.11-SNAPSHOT",
-  "com.wa9nnn" %% "cabrillo-lib" % "1.0.3-SNAPSHOT",
+  "com.wa9nnn" %% "util" % "0.1.6",
+  "com.wa9nnn" %% "cabrillo-lib" % "1.0.3",
   "com.typesafe.play" %% "play-json" % "2.9.2",
   "org.specs2" %% "specs2-core" % "4.6.0" % "test",
   "org.specs2" %% "specs2-mock" % "4.6.0" % "test",
@@ -106,7 +106,7 @@ resolvers += ("spray repo" at "http://repo.spray.io").withAllowInsecureProtocol(
 
 resolvers += ("Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/").withAllowInsecureProtocol(true)
 //resolvers += ("Sonatype Nexus Repository Manager" at  "http://192.168.0.205:8081/repository/maven-snapshots").withAllowInsecureProtocol(true)
-resolvers += ("Sonatype Nexus Repository Manager" at  "http://localhost:8081/repository/maven-snapshots").withAllowInsecureProtocol(true)
+resolvers += ("Reposilite" at  "http://194.113.64.105:8080/releases").withAllowInsecureProtocol(true)
 
 //publishTo := Some("Artifactory Realm" at "https://wa9nnn.jfrog.io/artifactory/wa9nnn")
 //credentials += Credentials(Path.userHome / ".sbt" / "jfrog.credentials")
