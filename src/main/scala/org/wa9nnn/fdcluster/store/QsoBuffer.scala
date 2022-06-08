@@ -16,18 +16,6 @@ class QsoBuffer @Inject()() extends ObservableBuffer[Qso]  with DefaultInstrumen
       length
     }
 
-  import io.prometheus.client.Gauge
-
-  val qsoCount: Gauge = Gauge.build
-    .name("Qsos")
-    .help("QSO count in memory.")
-    .register
-  qsoCount.set(size)
-
-  onChange { (_, _) =>
-    qsoCount.set(size)
-  }
-
 
 //  import io.prometheus.client.CollectorRegistry
 //  import io.prometheus.client.dropwizard.DropwizardExports

@@ -27,10 +27,7 @@ import com.google.inject.{Guice, Injector}
 import com.sandinh.akuice.ActorInject
 import com.typesafe.scalalogging.LazyLogging
 import com.wa9nnn.util.macos.DockIcon
-import io.prometheus.client.CollectorRegistry
 import javafx.application.Application
-import javafx.scene.control.{Tab, TabPane}
-import javafx.scene.image.{Image, ImageView}
 import javafx.stage.Stage
 import net.codingwell.scalaguice.InjectorExtensions._
 import net.logstash.logback.argument.StructuredArguments.kv
@@ -46,6 +43,8 @@ import org.wa9nnn.fdcluster.model.{AllContestRules, ContestProperty, NodeAddress
 import org.wa9nnn.fdcluster.store.network.BroadcastListener
 import org.wa9nnn.fdcluster.{Module, NetworkPane}
 import scalafx.Includes._
+import scalafx.scene.control.{Tab, TabPane}
+import scalafx.scene.image.{Image, ImageView}
 //import scalafx.stage.Stage
 
 import java.awt.Desktop
@@ -211,12 +210,12 @@ class FdCluster1 extends Application with LazyLogging  {
 
 object FdCluster1 {
 
-  import fr.davit.akka.http.metrics.prometheus.{PrometheusRegistry, PrometheusSettings}
+//  import fr.davit.akka.http.metrics.prometheus.{PrometheusRegistry, PrometheusSettings}
 
-  import io.prometheus.client.hotspot.DefaultExports
+//  import io.prometheus.client.hotspot.DefaultExports
 
-  val prometheus: CollectorRegistry = CollectorRegistry.defaultRegistry // your prometheus registry
-  val settings: PrometheusSettings = PrometheusSettings.default
-  val registry = PrometheusRegistry(prometheus, settings) // or PrometheusRegistry() to use the default registry & settings
-  DefaultExports.register(prometheus)
+//  val prometheus: CollectorRegistry = CollectorRegistry.defaultRegistry // your prometheus registry
+//  val settings: PrometheusSettings = PrometheusSettings.default
+//  val registry = PrometheusRegistry(prometheus, settings) // or PrometheusRegistry() to use the default registry & settings
+//  DefaultExports.register(prometheus)
 }

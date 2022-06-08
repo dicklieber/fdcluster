@@ -31,7 +31,6 @@ import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import org.wa9nnn.fdcluster.html
 import org.wa9nnn.fdcluster.javafx.sync._
-import org.wa9nnn.fdcluster.metrics.MetricsRoute
 import org.wa9nnn.fdcluster.model.MessageFormats._
 import org.wa9nnn.fdcluster.model.sync.NodeStatus
 import org.wa9nnn.fdcluster.model.{ContestProperty, NodeAddress}
@@ -126,7 +125,6 @@ trait UserRoutes extends LazyLogging {
               signOnOff.signonRoute,
               signOnOff.logOutRoute,
               qsoLogger.possibleDupRoute,
-              MetricsRoute.metricsRoute
             )
           },
           post {

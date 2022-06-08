@@ -28,7 +28,6 @@ import _root_.scalafx.scene.layout.{BorderPane, HBox, VBox}
 import akka.util.Timeout
 import com.google.inject.Inject
 import com.typesafe.scalalogging.LazyLogging
-import io.prometheus.client.{Counter, Summary}
 import org.scalafx.extras.onFX
 import org.wa9nnn.fdcluster.contest.OkGate
 import org.wa9nnn.fdcluster.javafx.entry.section.SectionField

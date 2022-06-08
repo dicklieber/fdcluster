@@ -21,20 +21,18 @@ package org.wa9nnn.fdcluster.javafx.entry
 
 import _root_.scalafx.scene.control.Label
 import com.typesafe.scalalogging.LazyLogging
-import io.prometheus.client.Counter
 import org.scalafx.extras.{onFX, onFXAndWait}
 import org.wa9nnn.fdcluster.javafx.entry.ActionResult.qsosLogged
 import org.wa9nnn.fdcluster.model.Qso
 import org.wa9nnn.fdcluster.store.SearchResult
 import org.wa9nnn.util.WithDisposition
-import play.api.libs.json.Json
 import scalafx.beans.property.StringProperty
 
+import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Singleton
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}
-import org.wa9nnn.fdcluster.model.MessageFormats._
 @Singleton
 class ActionResult extends Label("") with WithDisposition with LazyLogging {
   val tp: StringProperty = text
@@ -51,7 +49,7 @@ class ActionResult extends Label("") with WithDisposition with LazyLogging {
         text = exception.getMessage
         sad()
       case Success(qso) =>
-        qsosLogged.inc()
+        qsosLogged.incrementAndGet()
 //todo        logger.info(Json.toJson(qso).toString())
         tp.value = s"Added ${qso.callSign}"
         happy()
@@ -85,6 +83,6 @@ class ActionResult extends Label("") with WithDisposition with LazyLogging {
 }
 
 object ActionResult {
-  val qsosLogged: Counter = Counter.build.name("qsosLogged").help("Qsos logged.").register
+  val qsosLogged = new AtomicInteger()
 
 }

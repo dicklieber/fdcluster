@@ -16,14 +16,14 @@ class BroadcastListener @Inject()(config: Config, cluster: ClusterSender, store:
   val socketTimeout: Duration = config.getDuration("fdcluster.broadcast.timeout")
   val port: Int = config.getInt("fdcluster.broadcast.port")
 //  val messagesReceivedMeter: scala.Meter = metrics.meter("messagesReceived")
-  val receivedCounter: Gauge = Gauge.build
-    .name("BroadcastsReceived")
-    .help(s"Broadcast messages received on port: $port")
-    .register
-
-
-  val receivedBytes: Summary = Summary.build.name("broadcastSize").help("Request size in bytes.").register
-  val requestLatency: Summary = Summary.build.name("broadcastsPerMinute").help("broadcasts per minute.").register
+//  val receivedCounter: Gauge = Gauge.build
+//    .name("BroadcastsReceived")
+//    .help(s"Broadcast messages received on port: $port")
+//    .register
+//
+//
+//  val receivedBytes: Summary = Summary.build.name("broadcastSize").help("Request size in bytes.").register
+//  val requestLatency: Summary = Summary.build.name("broadcastsPerMinute").help("broadcasts per minute.").register
 
   import java.nio.channels.DatagramChannel
 
@@ -64,20 +64,16 @@ class BroadcastListener @Inject()(config: Config, cluster: ClusterSender, store:
   new Thread(() => {
     do {
       try {
-        val timer = requestLatency.startTimer()
         //        val recv: DatagramPacket = new DatagramPacket(buf, buf.length)
         val byteBuffer = ByteBuffer.allocate(10000)
         val address = channel.receive(byteBuffer)
         val bytes = byteBuffer.array()
-        receivedBytes.observe(bytes.length)
-        timer.observeDuration()
         for {
           jc <- JsonContainer(bytes)
           rec <- jc.received()
         } {
           packetCount.incrementAndGet()
           logger.trace(s"Broadcast packet received. sn: ${packetCount.incrementAndGet()}")
-          receivedCounter.inc()
           logger.whenTraceEnabled {
             logger.trace(s"Got: $jc from  ${address}")
           }
