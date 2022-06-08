@@ -92,6 +92,7 @@ class Module() extends AbstractModule with ScalaModule {
       val qsoListeners = ScalaMultibinder.newSetBinder[AddQsoListener](binder)
       qsoListeners.addBinding.to[StatsPane]
       qsoListeners.addBinding.to[QsoCountCollector]
+      println("Module done")
     }
     catch {
       case e: Throwable ⇒

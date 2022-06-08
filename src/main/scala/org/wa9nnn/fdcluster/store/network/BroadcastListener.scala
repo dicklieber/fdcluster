@@ -2,7 +2,6 @@ package org.wa9nnn.fdcluster.store.network
 
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
-import io.prometheus.client.Gauge
 import org.wa9nnn.fdcluster.model.sync.{ClusterMessage, ClusterSender, StoreMessage}
 import org.wa9nnn.fdcluster.store.{JsonContainer, StoreSender}
 
@@ -22,7 +21,6 @@ class BroadcastListener @Inject()(config: Config, cluster: ClusterSender, store:
     .help(s"Broadcast messages received on port: $port")
     .register
 
-  import io.prometheus.client.Summary
 
   val receivedBytes: Summary = Summary.build.name("broadcastSize").help("Request size in bytes.").register
   val requestLatency: Summary = Summary.build.name("broadcastsPerMinute").help("broadcasts per minute.").register
@@ -34,8 +32,8 @@ class BroadcastListener @Inject()(config: Config, cluster: ClusterSender, store:
   def startServer(): DatagramChannel = {
     val datagramChannel: DatagramChannel = DatagramChannel.open()
     try {
-      datagramChannel.setOption[java.lang.Boolean](SO_REUSEADDR, java.lang.Boolean.TRUE)
-      datagramChannel.setOption[java.lang.Boolean](SO_REUSEPORT, java.lang.Boolean.TRUE)
+//      datagramChannel.setOption[java.lang.Boolean](SO_REUSEADDR, java.lang.Boolean.TRUE)
+//      datagramChannel.setOption[java.lang.Boolean](SO_REUSEPORT, java.lang.Boolean.TRUE)
       datagramChannel.bind(new InetSocketAddress(port))
     } catch {
       case e: Exception =>

@@ -21,8 +21,6 @@ package org.wa9nnn.fdcluster.javafx
 
 import _root_.scalafx.application.Platform
 import _root_.scalafx.scene.Scene
-import _root_.scalafx.scene.control.{Tab, TabPane}
-import _root_.scalafx.scene.image.{Image, ImageView}
 import _root_.scalafx.scene.layout.{BorderPane, GridPane}
 import akka.actor.ActorSystem
 import com.google.inject.{Guice, Injector}
@@ -31,6 +29,8 @@ import com.typesafe.scalalogging.LazyLogging
 import com.wa9nnn.util.macos.DockIcon
 import io.prometheus.client.CollectorRegistry
 import javafx.application.Application
+import javafx.scene.control.{Tab, TabPane}
+import javafx.scene.image.{Image, ImageView}
 import javafx.stage.Stage
 import net.codingwell.scalaguice.InjectorExtensions._
 import net.logstash.logback.argument.StructuredArguments.kv
@@ -68,7 +68,8 @@ class FdCluster1 extends Application with LazyLogging  {
   println(s"Java Version: \t${ManagementFactory.getRuntimeMXBean.getVmVersion}")
   println(s"Java VmName: \t${ManagementFactory.getRuntimeMXBean.getVmName}")
   println(s"Java VmVendor: \t${ManagementFactory.getRuntimeMXBean.getVmVendor}")
-  val injector: Injector = Guice.createInjector(new Module())
+  private val module = new Module()
+  val injector: Injector = Guice.createInjector(module)
 
   override def start(stage: Stage): Unit = {
 
