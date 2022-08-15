@@ -21,7 +21,7 @@ object NetworkTest extends App with LazyLogging {
   timer.scheduleAtFixedRate(new TimerTask {
     override def run(): Unit = {
       multicast.send(sn)
-      broadcast.send(sn)
+//      broadcast.send(sn)
       sn += 1
     }
   }, 10, 1000)
