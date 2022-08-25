@@ -3,9 +3,11 @@ import ReleaseTransformations._
 import com.typesafe.sbt.packager.SettingsHelper.makeDeploymentSettings
 
 
-maintainer := "wa9nnn@u505.com"
+maintainer := "Dick Lieber <wa9nnn@u505.com>"
+packageSummary := "Field Day Cluster Logger"
+packageDescription := """Multiplatform Logging Application for ARRL and Winter Field days"""
 
-enablePlugins(JavaAppPackaging, GitPlugin, BuildInfoPlugin, SbtTwirl, UniversalPlugin)
+enablePlugins(JavaAppPackaging, GitPlugin, BuildInfoPlugin, SbtTwirl, UniversalPlugin, WindowsPlugin)
 buildInfoKeys ++= Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, maintainer,
   git.gitCurrentTags, git.gitCurrentBranch, git.gitHeadCommit, git.gitHeadCommitDate, git.baseVersion)
 buildInfoPackage := "org.wa9nnn.fdcluster"
@@ -19,7 +21,7 @@ buildInfoOptions ++= Seq(
 
 Compile / sourceDirectories := (Compile / unmanagedSourceDirectories).value
 Compile / mainClass := Some("org.wa9nnn.fdcluster.javafx.FdCluster")
-Compile / discoveredMainClasses := Seq()
+//Compile / discoveredMainClasses := Seq()
 
 //scalacOptions ++= Seq(
 //  "-encoding", "utf8", // Option and arguments on same line
@@ -68,7 +70,8 @@ lazy val akkaHttpVersion = "10.2.4"
 val logbackVersion = "1.2.3"
 
 libraryDependencies ++= Seq(
-  "com.wa9nnn" %% "util" % "0.1.6",
+  "com.wa9nnn" %% "util" % "0.1.8",
+
   "com.wa9nnn" %% "cabrillo-lib" % "1.0.4",
   "com.typesafe.play" %% "play-json" % "2.9.2",
   "org.specs2" %% "specs2-core" % "4.6.0" % "test",
